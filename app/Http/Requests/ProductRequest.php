@@ -2,6 +2,7 @@
 
 namespace App\Http\Requests;
 
+use Attribute;
 use Illuminate\Foundation\Http\FormRequest;
 
 class ProductRequest extends FormRequest
@@ -21,10 +22,16 @@ class ProductRequest extends FormRequest
      */
     public function rules(): array
     {
+        $id = $this->route()->product;
+        $nameRule = 'required|string|unique:products,product_name|max:255';
+        if ($id) {
+            $nameRule .= ",{$id}";        
+        }
+
         return [
-            'product_name' => 'required|string|max:255',
-            'category_id' => 'required',
-            'supplier_id' => 'required',
+            'product_name' => $nameRule,
+            'category_id' => 'required|exists:categories,category_id',
+            'supplier_id' => 'required|exists:suppliers,supplier_id',
             'price' => 'required|numeric|min:0',
             'stock_quantity' => 'required|integer|min:0',
             'description' => 'nullable|string',
@@ -36,6 +43,32 @@ class ProductRequest extends FormRequest
     }
 
     public function messages() {
-        return [];
+        return [
+            'exists' => ':attribute không tồn tai',
+            'required' => ':attribute không được để trống',
+            'unique' => ':attribute đã tồn tại',
+            'max' => ':attribute không được vượt quá :max ký tự',
+            'numeric' => ':attribute phải là số',
+            'integer' => ':attribute phải là số nguyên',
+            'min' => ':attribute phải lớn hơn hoặc bằng :min',
+            'image' => ':attribute phải là định dạng ảnh (jpeg, png, bmp, gif, svg, hoặc webp)',
+            'mimes' => ':attribute phải là định dạng: :values',
+            'max.file' => ':attribute không được vượt quá :max kilobytes',
+        ];
+    }
+
+    public function attributes() {
+        return [
+            'product_name' => 'Tên',
+            'category_id' => 'Danh mục',
+            'supplier_id' => 'Nhà cung cấp',
+            'price' => 'Giá',
+            'stock_quantity' => 'Số lượng trong kho',
+            'description' => 'Mô tả',
+            'volume_sold' => 'Số lượng đã bán',
+            'cover_image' => 'Ảnh bìa',
+            'warranty_period' => 'Thời gian bảo hành',
+            'release_date' => 'Ngày phát hành'
+        ];
     }
 }

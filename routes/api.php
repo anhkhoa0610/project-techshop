@@ -4,4 +4,4 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\ProductController;
 
-Route::apiResource('products', ProductController::class)->only(['show', 'store']);
+Route::apiResource('products', ProductController::class)->only(['show', 'store', 'update', 'index', 'destroy']);
