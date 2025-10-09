@@ -41,6 +41,15 @@
                             @foreach ($suppliers as $supplier)
                                 <tr>
                                     <td>{{ $supplier->supplier_id }}</td>
+                                    <td>
+                                    @if ($supplier->logo)
+                                        <img src="{{ asset('images/' . $supplier->logo) }}" alt=""
+                                            class="img-fluid rounded shadow" style="max-height: 50px;">
+                                    @else
+                                        <img src="{{ asset('images/placeholder.png') }}" alt=""
+                                            class="img-fluid rounded shadow" style="max-height: 50px;">
+                                    @endif
+                                    </td>
                                     <td>{{ $supplier->name }}</td>
                                     <td>{{ $supplier->email ?? '—' }}</td>
                                     <td>{{ $supplier->phone ?? '—' }}</td>
