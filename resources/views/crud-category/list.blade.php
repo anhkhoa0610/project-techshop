@@ -9,11 +9,11 @@
                     <div class="table-title">
                         <div class="row">
                             <div class="col-sm-4">
-                                <button class="btn btn-info add-new">Thêm Mới Sản Phẩm
+                                <button class="btn btn-info add-new">Thêm mới danh mục
                                 </button>
                             </div>
                             <div class="col-sm-4">
-                                <h2 class="text-center"><b>Quản Lý Sản Phẩm</b></h2>
+                                <h2 class="text-center"><b>Quản Lý danh mục</b></h2>
                             </div>
                             <div class="col-sm-4">
                                 <div class="search-box">
