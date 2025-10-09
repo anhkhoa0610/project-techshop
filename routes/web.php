@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\CategoryController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\ProductController;
 use App\Http\Controllers\SupplierController;
@@ -20,4 +21,8 @@ Route::prefix('supplier')->group(function () {
     Route::get('/create', [SupplierController::class, 'create'])->name('supplier.create');
     Route::post('/store', [SupplierController::class, 'post'])->name('supplier.store');
     
+});
+Route::prefix('category')->group(function () {
+    Route::get('/', [CategoryController::class, 'index'])->name('category.index');
+   
 });
