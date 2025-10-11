@@ -1,4 +1,7 @@
 @extends('layouts.dashboard')
+<style>
+
+</style>
 
 @section('content')
     <!-- Main Content -->
@@ -16,12 +19,16 @@
                                 <h2 class="text-center"><b>Quản Lý Sản Phẩm</b></h2>
                             </div>
                             <div class="col-sm-4">
-                                <div class="search-box">
+                                <form class="search-box" method="GET" action="{{ url()->current() }}">
                                     <div class="input-group">
                                         <span class="input-group-addon"><i class="material-icons">&#xE8B6;</i></span>
-                                        <input type="text" class="form-control" placeholder="Search&hellip;">
+                                        <input type="text" class="form-control" name="search" placeholder="Tìm kiếm..."
+                                            value="{{ request('search') }}">
+                                        <div class="input-group-append">
+                                            <button class="btn btn-primary" type="submit">Search</button>
+                                        </div>
                                     </div>
-                                </div>
+                                </form>
                             </div>
                         </div>
                     </div>
@@ -97,16 +104,11 @@
                         </tbody>
                     </table>
                     <div class="clearfix">
-                        <div class="hint-text">Showing <b>5</b> out of <b>25</b> entries</div>
-                        <ul class="pagination">
-                            <li class="page-item disabled"><a href="#">Previous</a></li>
-                            <li class="page-item"><a href="#" class="page-link">1</a></li>
-                            <li class="page-item"><a href="#" class="page-link">2</a></li>
-                            <li class="page-item active"><a href="#" class="page-link">3</a></li>
-                            <li class="page-item"><a href="#" class="page-link">4</a></li>
-                            <li class="page-item"><a href="#" class="page-link">5</a></li>
-                            <li class="page-item"><a href="#" class="page-link">Next</a></li>
-                        </ul>
+                        <div class="clearfix">
+                            <nav>
+                                {{ $products->withQueryString()->links('pagination::bootstrap-5') }}
+                            </nav>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -224,7 +226,8 @@
                             <div class="col-md-6">
                                 <div class="form-group">
                                     <label for="add_product_name">Tên sản phẩm</label>
-                                    <input type="text" class="form-control" id="add_product_name" name="product_name" required>
+                                    <input type="text" class="form-control" id="add_product_name" name="product_name"
+                                        required>
                                 </div>
                                 <div class="form-group">
                                     <label for="add_description">Mô tả</label>
@@ -232,11 +235,13 @@
                                 </div>
                                 <div class="form-group">
                                     <label for="add_stock_quantity">Số lượng tồn</label>
-                                    <input type="number" class="form-control" id="add_stock_quantity" name="stock_quantity" required>
+                                    <input type="number" class="form-control" id="add_stock_quantity" name="stock_quantity"
+                                        required>
                                 </div>
                                 <div class="form-group">
                                     <label for="add_release_date">Ngày phát hành</label>
-                                    <input type="date" class="form-control" id="add_release_date" name="release_date" required>
+                                    <input type="date" class="form-control" id="add_release_date" name="release_date"
+                                        required>
                                 </div>
                                 <div class="form-group">
                                     <label for="add_supplier_id">Nhà cung cấp</label>
@@ -262,22 +267,26 @@
                                 <div class="form-group">
                                     <label for="add_cover_image">Hình ảnh</label>
                                     <div class="mt-2 text-center">
-                                        <img id="add_preview_image" src="{{ asset('images/place-holder.jpg') }}" alt="Ảnh sản phẩm"
-                                            style="max-width: 120px; border-radius: 6px;">
+                                        <img id="add_preview_image" src="{{ asset('images/place-holder.jpg') }}"
+                                            alt="Ảnh sản phẩm" style="max-width: 120px; border-radius: 6px;">
                                     </div>
-                                    <input type="file" class="form-control" id="add_cover_image" name="cover_image" accept="image/*">
+                                    <input type="file" class="form-control" id="add_cover_image" name="cover_image"
+                                        accept="image/*">
                                 </div>
                                 <div class="form-group">
                                     <label for="add_price">Giá</label>
-                                    <input type="number" step="0.01" class="form-control" id="add_price" name="price" required>
+                                    <input type="number" step="0.01" class="form-control" id="add_price" name="price"
+                                        required>
                                 </div>
                                 <div class="form-group">
                                     <label for="add_volume_sold">Đã bán</label>
-                                    <input type="number" class="form-control" id="add_volume_sold" name="volume_sold" required>
+                                    <input type="number" class="form-control" id="add_volume_sold" name="volume_sold"
+                                        required>
                                 </div>
                                 <div class="form-group">
                                     <label for="add_warranty_period">Bảo hành</label>
-                                    <input type="number" class="form-control" id="add_warranty_period" name="warranty_period" required>
+                                    <input type="number" class="form-control" id="add_warranty_period"
+                                        name="warranty_period" required>
                                 </div>
                             </div>
                         </div>
@@ -331,7 +340,7 @@
             if (file) {
                 const reader = new FileReader();
                 reader.onload = function (event) {
-                    preview.src = event.target.result; 
+                    preview.src = event.target.result;
                 };
                 reader.readAsDataURL(file);
             }

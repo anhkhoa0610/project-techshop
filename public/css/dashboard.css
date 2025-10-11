@@ -159,50 +159,8 @@ table.table td i {
     font-size: 19px;
 }
 
-.pagination {
-    float: right;
-    margin: 0 0 5px;
-}
 
-.pagination li a {
-    border: none;
-    font-size: 13px;
-    min-width: 30px;
-    min-height: 30px;
-    padding: 0 10px;
-    color: #999;
-    margin: 0 2px;
-    line-height: 30px;
-    border-radius: 30px !important;
-    text-align: center;
-}
 
-.pagination li a:hover {
-    color: #666;
-}
-
-.pagination li.active a {
-    background: #03A9F4;
-}
-
-.pagination li.active a:hover {
-    background: #0397d6;
-}
-
-.pagination li.disabled i {
-    color: #ccc;
-}
-
-.pagination li i {
-    font-size: 16px;
-    padding-top: 6px
-}
-
-.hint-text {
-    float: left;
-    margin-top: 10px;
-    font-size: 13px;
-}
 
 .logo img {
     margin-top: -30px;
@@ -228,4 +186,30 @@ table td {
 
 .add-new {
     margin-left: -160px;
+}
+
+.search-box .input-group {
+    border-radius: 8px;
+    overflow: hidden;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+}
+
+.search-box input.form-control {
+    border: none;
+    box-shadow: none;
+}
+
+.search-box input.form-control:focus {
+    outline: none;
+    box-shadow: none;
+}
+
+.search-box button.btn-primary {
+    background-color: #007bff;
+    border: none;
+    transition: background-color 0.2s;
+}
+
+.search-box button.btn-primary:hover {
+    background-color: #0056b3;
 }

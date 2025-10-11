@@ -12,7 +12,15 @@ class ProductController extends Controller
     // Hiển thị danh sách sản phẩm
     public function list()
     {
-        $products = Product::with(['category', 'supplier'])->get();
+        $query = Product::with(['category', 'supplier']);
+
+        // Nếu có tham số tìm kiếm
+        if (request()->has('search') && request('search')) {
+            $search = request('search');
+            $query->where('product_name', 'like', '%' . $search . '%');
+        }
+
+        $products = $query->paginate(5);
         $suppliers = Supplier::all();
         $categories = Category::all();
 
