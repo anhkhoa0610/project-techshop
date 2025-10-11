@@ -23,7 +23,7 @@ class ProductRequest extends FormRequest
     public function rules(): array
     {
         $id = $this->route()->product;
-        $nameRule = 'required|string|unique:products,product_name|max:255';
+        $nameRule = 'required|string|max:255';
         if ($id) {
             $nameRule .= ",{$id}";        
         }
