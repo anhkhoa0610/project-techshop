@@ -30,6 +30,7 @@
                             <tr>
                                 <th>ID</th>
                                 <th>Name</th>
+                                <th>Image</th>
                                 <th>Description</th>
                                 <th>Price</th>
                                 <th>Stock Quantity</th>
@@ -44,9 +45,25 @@
                         </thead>
                         <tbody>
                             @foreach ($products as $product)
-                                <tr>
+                                <tr data-product-id="{{ $product->product_id }}"
+                                    data-product-name="{{ $product->product_name }}"
+                                    data-description="{{ $product->description }}"
+                                    data-cover-image="{{ $product->cover_image }}" data-price="{{ $product->price }}"
+                                    data-stock-quantity="{{ $product->stock_quantity }}"
+                                    data-supplier-id="{{ $product->supplier_id }}"
+                                    data-category-id="{{ $product->category_id }}"
+                                    data-warranty-period="{{ $product->warranty_period }}"
+                                    data-volume-sold="{{ $product->volume_sold }}"
+                                    data-release-date="{{ $product->release_date }}">
                                     <td>{{ $product->product_id }}</td>
                                     <td>{{ $product->product_name }}</td>
+                                    <td>
+                                        @if($product->cover_image)
+                                            <img src="{{ asset('uploads/' . $product->cover_image) }}" alt="{{ $product->product_name }}" style="max-width: 100px;">
+                                        @else
+                                            <img src="{{ asset('images/place-holder.jpg') }}" alt="place-holder" style="max-width: 100px;">
+                                        @endif
+                                    </td>
                                     <td>{{ $product->description }}</td>
                                     <td>{{ number_format($product->price, 2) }}</td>
                                     <td>{{ $product->stock_quantity }}</td>
@@ -58,8 +75,10 @@
                                     <td>
                                         <a href="#" class="view" title="View" data-toggle="tooltip"><i
                                                 class="material-icons">&#xE417;</i></a>
-                                        <a href="#" class="edit" title="Edit" data-toggle="tooltip"><i
-                                                class="material-icons">&#xE254;</i></a>
+                                        <a href="#" class="edit" title="Edit" data-toggle="modal"
+                                            data-target="#editProductModal">
+                                            <i class="material-icons">&#xE254;</i>
+                                        </a>
                                         <form action="{{ url('/api/products/' . $product->product_id) }}" method="POST"
                                             style="display:inline;">
                                             @csrf
@@ -96,9 +115,8 @@
     <div class="modal fade" id="editProductModal" tabindex="-1" role="dialog" aria-labelledby="editProductModalLabel"
         aria-hidden="true">
         <div class="modal-dialog" role="document">
-            <form id="editProductForm" method="POST">
+            <form id="editProductForm" method="POST" enctype="multipart/form-data">
                 @csrf
-                @method('PUT')
                 <div class="modal-content">
                     <div class="modal-header">
                         <h5 class="modal-title" id="editProductModalLabel">Chỉnh sửa sản phẩm</h5>
@@ -107,43 +125,70 @@
                         </button>
                     </div>
                     <div class="modal-body">
-                        <!-- Các trường chỉnh sửa sản phẩm -->
-                        <div class="form-group">
-                            <label for="product_name">Tên sản phẩm</label>
-                            <input type="text" class="form-control" id="product_name" name="product_name" required>
+                        <div class="row">
+                            <!-- Cột trái -->
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label for="product_name">Tên sản phẩm</label>
+                                    <input type="text" class="form-control" id="product_name" name="product_name" required>
+                                </div>
+                                <div class="form-group">
+                                    <label for="description">Mô tả</label>
+                                    <textarea class="form-control" id="description" name="description"></textarea>
+                                </div>
+                                <div class="form-group">
+                                    <label for="stock_quantity">Số lượng tồn</label>
+                                    <input type="number" class="form-control" id="stock_quantity" name="stock_quantity"
+                                        required>
+                                </div>
+                                <div class="form-group">
+                                    <label for="release_date">Ngày phát hành</label>
+                                    <input type="date" class="form-control" id="release_date" name="release_date" required>
+                                </div>
+                                <div class="form-group">
+                                    <label for="supplier_id">Nhà cung cấp</label>
+                                    <select class="form-control" id="supplier_id" name="supplier_id" required>
+                                        <option value="">-- Chọn nhà cung cấp --</option>
+                                        @foreach ($suppliers as $supplier)
+                                            <option value="{{ $supplier->supplier_id }}">{{ $supplier->name }}</option>
+                                        @endforeach
+                                    </select>
+                                </div>
+                            </div>
+
+                            <!-- Cột phải -->
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label for="cover_image">Hình ảnh</label>
+                                    <input type="file" class="form-control" id="cover_image" name="cover_image"
+                                        accept="image/*">
+                                </div>
+                                <div class="form-group">
+                                    <label for="price">Giá</label>
+                                    <input type="number" step="0.01" class="form-control" id="price" name="price" required>
+                                </div>
+                                <div class="form-group">
+                                    <label for="volume_sold">Đã bán</label>
+                                    <input type="number" class="form-control" id="volume_sold" name="volume_sold" required>
+                                </div>
+                                <div class="form-group">
+                                    <label for="warranty_period">Bảo hành</label>
+                                    <input type="number" class="form-control" id="warranty_period" name="warranty_period"
+                                        required>
+                                </div>
+                                <div class="form-group">
+                                    <label for="category_id">Danh mục</label>
+                                    <select class="form-control" id="category_id" name="category_id" required>
+                                        <option value="">-- Chọn danh mục --</option>
+                                        @foreach ($categories as $category)
+                                            <option value="{{ $category->category_id }}">{{ $category->category_name }}</option>
+                                        @endforeach
+                                    </select>
+                                </div>
+                            </div>
                         </div>
-                        <div class="form-group">
-                            <label for="description">Mô tả</label>
-                            <textarea class="form-control" id="description" name="description"></textarea>
-                        </div>
-                        <div class="form-group">
-                            <label for="price">Giá</label>
-                            <input type="number" class="form-control" id="price" name="price" required>
-                        </div>
-                        <div class="form-group">
-                            <label for="stock_quantity">Số lượng tồn</label>
-                            <input type="number" class="form-control" id="stock_quantity" name="stock_quantity" required>
-                        </div>
-                        <div class="form-group">
-                            <label for="supplier_id">Nhà cung cấp</label>
-                            <select class="form-control" id="supplier_id" name="supplier_id" required>
-                                <option value="">-- Chọn nhà cung cấp --</option>
-                                @foreach ($suppliers as $supplier)
-                                    <option value="{{ $supplier->supplier_id }}">{{ $supplier->name }}</option>
-                                @endforeach
-                            </select>
-                        </div>
-                        <div class="form-group">
-                            <label for="category_id">Danh mục</label>
-                            <select class="form-control" id="category_id" name="category_id" required>
-                                <option value="">-- Chọn danh mục --</option>
-                                @foreach ($categories as $category)
-                                    <option value="{{ $category->category_id }}">{{ $category->category_name }}</option>
-                                @endforeach
-                            </select>
-                        </div>
-                        <!-- Thêm các trường khác nếu cần -->
                     </div>
+
                     <div class="modal-footer">
                         <button type="button" class="btn btn-secondary" data-dismiss="modal">Đóng</button>
                         <button type="submit" class="btn btn-primary">Lưu thay đổi</button>
@@ -154,24 +199,72 @@
     </div>
 
     <script>
-        // Bắt sự kiện click nút Edit
         document.querySelectorAll('.edit').forEach(function (btn) {
             btn.addEventListener('click', function (e) {
                 e.preventDefault();
-                // Lấy thông tin sản phẩm từ dòng hiện tại
                 var row = btn.closest('tr');
-                document.getElementById('product_name').value = row.children[1].textContent;
-                document.getElementById('description').value = row.children[2].textContent;
-                document.getElementById('price').value = row.children[3].textContent.replace(/,/g, '');
-                document.getElementById('stock_quantity').value = row.children[4].textContent;
-                // Cập nhật action cho form
-                var productId = row.children[0].textContent;
-                document.getElementById('editProductForm').action = '/api/products/' + productId;
-                // Hiển thị modal
+   
+                document.getElementById('product_name').value = row.getAttribute('data-product-name') || '';
+                document.getElementById('description').value = row.getAttribute('data-description') || '';
+                document.getElementById('price').value = row.getAttribute('data-price') || '';
+                document.getElementById('stock_quantity').value = row.getAttribute('data-stock-quantity') || '';
+                document.getElementById('supplier_id').value = row.getAttribute('data-supplier-id') || '';
+                document.getElementById('category_id').value = row.getAttribute('data-category-id') || '';
+                document.getElementById('warranty_period').value = row.getAttribute('data-warranty-period') || '';
+                document.getElementById('volume_sold').value = row.getAttribute('data-volume-sold') || '';
+                document.getElementById('release_date').value = row.getAttribute('data-release-date') || '';
+ 
+                document.getElementById('editProductForm').dataset.id = row.getAttribute('data-product-id');
+
                 $('#editProductModal').modal('show');
             });
         });
+        // Xử lý submit form
+        document.getElementById('editProductForm').addEventListener('submit', async function (e) {
+            e.preventDefault();
+
+            const id = this.dataset.id;
+            const url = `/api/products/${id}`;
+
+            const formData = new FormData();
+            formData.append('_method', 'PUT');
+            formData.append('product_name', document.getElementById('product_name').value);
+            formData.append('description', document.getElementById('description').value);
+            formData.append('stock_quantity', document.getElementById('stock_quantity').value);
+            formData.append('price', document.getElementById('price').value);
+            formData.append('volume_sold', document.getElementById('volume_sold').value);
+            formData.append('category_id', document.getElementById('category_id').value);
+            formData.append('supplier_id', document.getElementById('supplier_id').value);
+            formData.append('warranty_period', document.getElementById('warranty_period').value);
+            formData.append('release_date', document.getElementById('release_date').value);
+            const fileInput = document.getElementById('cover_image');
+            if (fileInput.files.length > 0) {
+                formData.append('cover_image', fileInput.files[0]);
+            }
+
+            const response = await fetch(url, {
+                method: 'POST', 
+                headers: {
+                    'Accept': 'application/json',
+                    'X-CSRF-TOKEN': '{{ csrf_token() }}'
+                },
+                body: formData
+            });
+
+            for (let [key, value] of formData.entries()) {
+                console.log(key, value);
+            }
+
+            if (response.ok) {
+                alert('Cập nhật sản phẩm thành công!');
+                $('#editProductModal').modal('hide');
+                location.reload();
+            } else {
+                const err = await response.json();
+
+                console.error(err);
+                alert('Cập nhật thất bại: ' + (err.message || 'Lỗi không xác định'));
+            }
+        });
     </script>
-    <!-- Kết thúc modal -->
-    {{-- filepath: c:\Users\LAPTOP\Desktop\project-techshop\resources\views\crud-product\list.blade.php --}}
 @endsection

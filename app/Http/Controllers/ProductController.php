@@ -53,13 +53,32 @@ class ProductController extends Controller
     public function update(ProductRequest $request, string $id)
     {
         $product = Product::find($id);
+
         if (!$product) {
             return response()->json([
                 'success' => false,
                 'message' => 'Product not found',
             ], 404);
         }
-        $product->update($request->all());
+
+        $data = $request->all();
+
+        if ($request->hasFile('cover_image')) {
+            $file = $request->file('cover_image');
+
+            $filename = $file->getClientOriginalName();
+
+            $file->move(public_path('uploads'), $filename);
+
+            if ($product->cover_image && file_exists(public_path('uploads/' . $product->cover_image))) {
+                unlink(public_path('uploads/' . $product->cover_image));
+            }
+
+            $data['cover_image'] = $filename;
+        }
+
+        $product->update($data);
+
         return response()->json([
             'success' => true,
             'data' => $product,
