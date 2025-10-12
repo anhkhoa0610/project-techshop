@@ -24,8 +24,8 @@ return new class extends Migration {
             $table->decimal('total_price', 10, 2)->default(0.00);
 
             // Quan hệ khóa ngoại
-            $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');
-            $table->foreign('voucher_id')->references('id')->on('vouchers')->onDelete('set null');
+            $table->foreign('user_id')->references('user_id')->on('users')->onDelete('cascade');
+            $table->foreign('voucher_id')->references('voucher_id')->on('vouchers')->onDelete('set null');
 
             $table->timestamps(); // created_at, updated_at
         });
