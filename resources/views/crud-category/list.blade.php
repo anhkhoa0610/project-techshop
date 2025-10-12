@@ -157,6 +157,7 @@
     </div>
 
     <script>
+          // Xử lý khi click nút Edit
         document.querySelectorAll('.edit').forEach(function (btn) {
             btn.addEventListener('click', function (e) {
                 e.preventDefault();
@@ -172,7 +173,7 @@
 
        
 
-        // Xử lý submit form
+        // Xử lý submit formn edit
         document.getElementById('editCategoryForm').addEventListener('submit', async function (e) {
             e.preventDefault();
 
