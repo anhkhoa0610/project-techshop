@@ -27,7 +27,6 @@
                         <input type="date" id="end_date" name="end_date" value="{{ request('end_date') }}"
                             class="form-control">
                     </div>
-                    
 
                     <div class="col-sm-2">
                         <button type="submit" class="btn btn-primary w-100">
@@ -106,7 +105,7 @@
                                     <td>{{ $order->voucher->code ?? "không áp dụng"}}</td>
                                     <td>{{ number_format($order->total_price, 2) }}</td>
                                     <td>
-                                        <a href="#" class="view" title="View" data-toggle="tooltip"><i
+                                        <a href="{{ route("orderDetail.index",[ $order->order_id]) }}" class="view" title="View" data-toggle="tooltip"><i
                                                 class="material-icons">&#xE417;</i></a>
                                         <a href="#" class="edit" title="Edit" data-toggle="modal"
                                             data-target="#editProductModal">

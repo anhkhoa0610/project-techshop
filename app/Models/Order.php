@@ -50,5 +50,11 @@ class Order extends Model
         return $this->belongsTo(Voucher::class, 'voucher_id', 'voucher_id');
     }
 
-    
+    // Mỗi đơn hàng có nhiều chi tiết đơn hàng
+    public function orderDetails()
+    {
+        return $this->hasMany(OrderDetail::class, 'order_id', 'order_id');
+    }
+
+
 }
