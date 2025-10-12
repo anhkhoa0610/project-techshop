@@ -17,10 +17,16 @@
                             </div>
                             <div class="col-sm-4">
                                 <div class="search-box">
-                                    <div class="input-group">
-                                        <span class="input-group-addon"><i class="material-icons">&#xE8B6;</i></span>
-                                        <input type="text" class="form-control" placeholder="Search&hellip;">
-                                    </div>
+                                    <form class="search-box" method="GET" action="{{ url()->current() }}">
+                                        <div class="input-group">
+                                            <span class="input-group-addon"><i class="material-icons">&#xE8B6;</i></span>
+                                            <input type="text" class="form-control" name="search" placeholder="Tìm kiếm..."
+                                                value="{{ request('search') }}">
+                                            <div class="input-group-append">
+                                                <button class="btn btn-primary" type="submit">Search</button>
+                                            </div>
+                                        </div>
+                                    </form>
                                 </div>
                             </div>
                         </div>
@@ -37,38 +43,31 @@
                         </thead>
                         <tbody>
                             @foreach ($categories as $category)
-                                <tr
-                                data-category-id="{{ $category->category_id }}"
-                                data-category-name="{{ $category->category_name }}"
-                                data-category-description="{{ $category->description }}"
-                                >
+                                <tr data-category-id="{{ $category->category_id }}"
+                                    data-category-name="{{ $category->category_name }}"
+                                    data-category-description="{{ $category->description }}">
                                     <td>{{ $category->category_id }}</td>
                                     <td>{{ $category->category_name }}</td>
                                     <td>{{ $category->description }}</td>
-                                   
+
                                     <td>
-                                    <a href="#" class="view" title="View" data-toggle="tooltip"><i
-                                            class="material-icons">&#xE417;</i></a>
-                                    <a href="#" class="edit" title="Edit" data-toggle="tooltip"><i
-                                            class="material-icons">&#xE254;</i></a>
-                                    <a href="#" class="delete" title="Delete" data-toggle="tooltip"><i
-                                            class="material-icons">&#xE872;</i></a>
-                                </td>
+                                        <a href="#" class="view" title="View" data-toggle="tooltip"><i
+                                                class="material-icons">&#xE417;</i></a>
+                                        <a href="#" class="edit" title="Edit" data-toggle="tooltip"><i
+                                                class="material-icons">&#xE254;</i></a>
+                                        <a href="#" class="delete" title="Delete" data-toggle="tooltip"><i
+                                                class="material-icons">&#xE872;</i></a>
+                                    </td>
                                 </tr>
                             @endforeach
                         </tbody>
                     </table>
                     <div class="clearfix">
-                        <div class="hint-text">Showing <b>5</b> out of <b>25</b> entries</div>
-                        <ul class="pagination">
-                            <li class="page-item disabled"><a href="#">Previous</a></li>
-                            <li class="page-item"><a href="#" class="page-link">1</a></li>
-                            <li class="page-item"><a href="#" class="page-link">2</a></li>
-                            <li class="page-item active"><a href="#" class="page-link">3</a></li>
-                            <li class="page-item"><a href="#" class="page-link">4</a></li>
-                            <li class="page-item"><a href="#" class="page-link">5</a></li>
-                            <li class="page-item"><a href="#" class="page-link">Next</a></li>
-                        </ul>
+                        <div class="clearfix">
+                            <nav>
+                                {{ $categories->withQueryString()->links('pagination::bootstrap-5') }}
+                            </nav>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -76,7 +75,7 @@
     </div>
 
 
-      <!-- Modal Edit Product -->
+    <!-- Modal Edit category -->
     <div class="modal fade" id="editCategoryModal" tabindex="-1" role="dialog" aria-labelledby="editCategoryModalLabel"
         aria-hidden="true">
         <div class="modal-dialog" role="document">
@@ -91,17 +90,18 @@
                     </div>
                     <div class="modal-body">
                         <div class="row">
-                            <!-- Cột trái -->
                             <div class="col-md-12">
                                 <div class="form-group">
                                     <label for="category_name">Tên danh mục</label>
-                                    <input type="text" class="form-control" id="category_name" name="category_name" required>
+                                    <input type="text" class="form-control" id="category_name" name="category_name">
+                                    <div class="text-danger error-message" id="error_category_name"></div>
                                 </div>
                                 <div class="form-group">
                                     <label for="description">Mô tả</label>
                                     <textarea class="form-control" id="description" name="description"></textarea>
+                                    <div class="text-danger error-message" id="error_description"></div>
                                 </div>
-                               
+
                             </div>
 
                         </div>
@@ -116,7 +116,7 @@
         </div>
     </div>
 
-    <!-- Modal Thêm Mới Sản Phẩm -->
+    <!-- Modal Thêm Mới danh mục -->
     <div class="modal fade" id="addCategoryModal" tabindex="-1" role="dialog" aria-labelledby="addCategoryModalLabel"
         aria-hidden="true">
         <div class="modal-dialog" role="document">
@@ -131,20 +131,21 @@
                     </div>
                     <div class="modal-body">
                         <div class="row">
-                            <!-- Cột trái -->
+
                             <div class="col-md-12">
                                 <div class="form-group">
                                     <label for="add_product_name">Tên danh mục</label>
-                                    <input type="text" class="form-control" id="add_category_name" name="category_name"
-                                        required>
+                                    <input type="text" class="form-control" id="add_category_name" name="category_name">
+                                    <div class="text-danger error-message" id="error_category_name"></div>
                                 </div>
                                 <div class="form-group">
                                     <label for="add_description">Mô tả</label>
                                     <textarea class="form-control" id="add_description" name="description"></textarea>
+                                    <div class="text-danger error-message" id="error_description"></div>
                                 </div>
-                               
+
                             </div>
-                           
+
                         </div>
                     </div>
                     <div class="modal-footer">
@@ -157,7 +158,7 @@
     </div>
 
     <script>
-          // Xử lý khi click nút Edit
+        // Xử lý khi click nút Edit
         document.querySelectorAll('.edit').forEach(function (btn) {
             btn.addEventListener('click', function (e) {
                 e.preventDefault();
@@ -171,7 +172,7 @@
             });
         });
 
-       
+
 
         // Xử lý submit formn edit
         document.getElementById('editCategoryForm').addEventListener('submit', async function (e) {
@@ -184,7 +185,7 @@
             formData.append('_method', 'PUT');
             formData.append('category_name', document.getElementById('category_name').value);
             formData.append('description', document.getElementById('description').value);
-            
+
             const response = await fetch(url, {
                 method: 'POST',
                 headers: {
@@ -194,9 +195,6 @@
                 body: formData
             });
 
-            for (let [key, value] of formData.entries()) {
-                console.log(key, value);
-            }
 
             if (response.ok) {
                 alert('Cập nhật danh mục thành công!');
@@ -205,24 +203,34 @@
             } else {
                 const err = await response.json();
 
-                console.error(err);
-                alert('Cập nhật thất bại: ' + (err.message || 'Lỗi không xác định'));
+                if (err.errors) {
+                    Object.keys(err.errors).forEach(field => {
+                        const errorDiv = document.getElementById(`error_${field}`);
+                        if (errorDiv) {
+                            errorDiv.textContent = err.errors[field][0];
+                        }
+                    });
+                } else {
+                    alert('Thêm thất bại: ' + (err.message || 'Lỗi không xác định'));
+                }
             }
         });
 
-        // Hiển thị modal khi nhấn nút "Thêm Mới Sản Phẩm"
+        // Hiển thị modal khi nhấn nút "Thêm Mới danh mục"
         document.querySelector('.add-new').addEventListener('click', function () {
             // Reset form
             $('#addCategoryModal').modal('show');
         });
 
 
-        // Xử lý submit form thêm mới
+        // Xử lý submit form thêm mới danh mục
         document.getElementById('addCategoryForm').addEventListener('submit', async function (e) {
             e.preventDefault();
 
             const url = '/api/categories';
             const formData = new FormData(this);
+            // Xóa lỗi cũ
+            document.querySelectorAll('.error-message').forEach(el => el.textContent = '');
 
             const response = await fetch(url, {
                 method: 'POST',
@@ -239,7 +247,16 @@
                 location.reload();
             } else {
                 const err = await response.json();
-                alert('Thêm thất bại: ' + (err.message || 'Lỗi không xác định'));
+                if (err.errors) {
+                    Object.keys(err.errors).forEach(field => {
+                        const errorDiv = document.getElementById(`error_${field}`);
+                        if (errorDiv) {
+                            errorDiv.textContent = err.errors[field][0];
+                        }
+                    });
+                } else {
+                    alert('Thêm thất bại: ' + (err.message || 'Lỗi không xác định'));
+                }
             }
         });
     </script>
