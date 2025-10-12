@@ -12,8 +12,19 @@ class CategoryController extends Controller
      */
     public function index()
     {
-        $categories = Category::all();
+        // Khởi tạo query gốc
+        $query = Category::query();
 
+        // Nếu có tham số tìm kiếm
+        if (request()->has('search') && request('search')) {
+            $search = request('search');
+            $query->where('category_name', 'like', '%' . $search . '%');
+        }
+
+        // Phân trang sau khi lọc
+        $categories = $query->paginate(5);
+
+        // Gửi dữ liệu sang view
         return view('crud-category.list', compact('categories'));
     }
 
@@ -75,7 +86,7 @@ class CategoryController extends Controller
     public function update(CategoryRequest $request, string $id)
     {
         $category = Category::find($id);
-        if(!$category){
+        if (!$category) {
             return response()->json([
                 'status' => false,
                 'message' => 'Cập nhật danh mục thất bại',
