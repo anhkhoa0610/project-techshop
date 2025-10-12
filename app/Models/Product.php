@@ -36,4 +36,10 @@ class Product extends Model
     {
         return $this->belongsTo(Supplier::class, 'supplier_id', 'supplier_id');
     }
+
+    // Mỗi sản phẩm có nhiều chi tiết đơn hàng
+    public function orderDetails()
+    {
+        return $this->hasMany(OrderDetail::class, 'product_id', 'product_id');
+    }
 }

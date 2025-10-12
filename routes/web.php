@@ -5,6 +5,7 @@ use App\Http\Controllers\OrderController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\ProductController;
 use App\Http\Controllers\SupplierController;
+use App\Http\Controllers\OrderDetailController;
 
 
 Route::get('/', function () {
@@ -24,11 +25,16 @@ Route::prefix('supplier')->group(function () {
     
 });
 Route::prefix('categories')->group(function () {
-    Route::get('/', [CategoryController::class, 'index'])->name('categories.index');
+    Route::get('/', [CategoryController::class, 'index'])->name('category.index');
    
 });
 
 Route::prefix('orders')->group(function () {
-    Route::get('/', [OrderController::class, 'index'])->name('orders.index');
+    Route::get('/', [OrderController::class, 'index'])->name('order.index');
+   
+});
+
+Route::prefix('orderDetails')->group(function () {
+    Route::get('/{order_id}', [OrderDetailController::class, 'index'])->name('orderDetail.index');
    
 });
