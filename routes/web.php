@@ -23,12 +23,12 @@ Route::prefix('supplier')->group(function () {
     Route::post('/store', [SupplierController::class, 'post'])->name('supplier.store');
     
 });
-Route::prefix('category')->group(function () {
-    Route::get('/', [CategoryController::class, 'index'])->name('category.index');
+Route::prefix('categories')->group(function () {
+    Route::get('/', [CategoryController::class, 'index'])->name('categories.index');
    
 });
 
-Route::prefix('order')->group(function () {
-    Route::get('/', [OrderController::class, 'index'])->name('order.index');
+Route::prefix('orders')->group(function () {
+    Route::get('/', [OrderController::class, 'index'])->name('orders.index');
    
 });

@@ -248,7 +248,7 @@
 
             if (response.ok) {
                 alert('Thêm danh mục thành công!');
-                $('#addCategoeyModal').modal('hide');
+                $('#addCategoryModal').modal('hide');
                 location.reload();
             } else {
                 const err = await response.json();

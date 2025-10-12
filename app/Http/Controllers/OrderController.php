@@ -2,7 +2,10 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\OrderRequest;
 use App\Models\Order;
+use App\Models\User;
+use App\Models\Voucher;
 use Illuminate\Http\Request;
 
 class OrderController extends Controller
@@ -13,19 +16,27 @@ class OrderController extends Controller
     public function index()
     {
         $orders = Order::with(['user', 'voucher'])
-            ->orderByDesc('order_id')  
             ->paginate(5);
+        $users =  User::all();
+        $vouchers =  Voucher::all();
 
-        return view('crud-orders.list', compact('orders'));
+        return view('crud-orders.list', compact('orders', 'users', 'vouchers'));
     }
 
     /**
      * Show the form for creating a new resource.
      */
 
-    public function store(Request $request)
+    public function store(OrderRequest $request)
     {
-        //
+        $order = new Order();
+        $order->fill($request->all());
+        $order->save();
+        return response()->json([
+            'success' => true,
+            'data' => $order,
+            'message' => 'Thành công!'
+        ]);
     }
 
     /**
