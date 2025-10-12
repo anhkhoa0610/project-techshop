@@ -6,19 +6,56 @@
 @section('content')
     <!-- Main Content -->
     <div class="content">
+
+        <div class="row">
+            <div class="col-sm-4">
+
+            </div>
+            <div class="col-sm-4">
+
+            </div>
+            <div class="col-sm-4">
+                <form method="GET" action="{{ route('orders.index') }}" class="row g-3  align-items-end">
+                    <div class="col-sm-4">
+                        <label for="start_date" class="form-label">Từ ngày</label>
+                        <input type="date" id="start_date" name="start_date" value="{{ request('start_date') }}"
+                            class="form-control">
+                    </div>
+
+                    <div class="col-sm-4">
+                        <label for="end_date" class="form-label">Đến ngày</label>
+                        <input type="date" id="end_date" name="end_date" value="{{ request('end_date') }}"
+                            class="form-control">
+                    </div>
+                    
+
+                    <div class="col-sm-2">
+                        <button type="submit" class="btn btn-primary w-100">
+                            <i class="bi bi-search"></i> Lọc
+                        </button>
+                    </div>
+                </form>
+
+            </div>
+
+        </div>
         <div class="container-xl">
             <div class="table-responsive text-center">
                 <div class="table-wrapper">
                     <div class="table-title">
+
                         <div class="row">
                             <div class="col-sm-4">
                                 <button class="btn btn-info add-new">Thêm Mới đơn hàng
                                 </button>
+
                             </div>
+
                             <div class="col-sm-4">
                                 <h2 class="text-center"><b>Quản Lý đơn hàng</b></h2>
                             </div>
                             <div class="col-sm-4">
+
                                 <form class="search-box" method="GET" action="{{ url()->current() }}">
                                     <div class="input-group">
                                         <span class="input-group-addon"><i class="material-icons">&#xE8B6;</i></span>
@@ -29,10 +66,15 @@
                                         </div>
                                     </div>
                                 </form>
+
                             </div>
+
                         </div>
+
+
                     </div>
                     <table class="table table-bordered">
+
                         <thead>
                             <tr>
                                 <th>ID</th>
@@ -96,6 +138,7 @@
                 </div>
             </div>
         </div>
+
     </div>
 
 

@@ -15,10 +15,23 @@ class OrderController extends Controller
      */
     public function index()
     {
-        $orders = Order::with(['user', 'voucher'])
-            ->paginate(5);
-        $users =  User::all();
-        $vouchers =  Voucher::all();
+        $query = Order::with(['user', 'voucher']);
+
+        // Nếu có tham số tìm kiếm
+        if (request()->has('search') && request('search')) {
+            $search = request('search');
+            $query->where('order_id', 'like', '%' . $search . '%')
+                ->orWhereRelation('user', 'full_name', 'like', '%' . $search . '%');
+        }
+        // nếu có lọc theo khoảng ngày tháng
+
+        if (request()->filled(['start_date', 'end_date'])) {
+            $query->whereBetween('order_date', [request('start_date'), request('end_date')]);
+        }
+
+        $orders = $query->paginate(5);
+        $users = User::all();
+        $vouchers = Voucher::all();
 
         return view('crud-orders.list', compact('orders', 'users', 'vouchers'));
     }
