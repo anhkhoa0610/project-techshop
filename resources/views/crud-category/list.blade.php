@@ -94,12 +94,12 @@
                                 <div class="form-group">
                                     <label for="category_name">Tên danh mục</label>
                                     <input type="text" class="form-control" id="category_name" name="category_name">
-                                    <div class="text-danger error-message" id="error_category_name"></div>
+                                    <div class="text-danger error-message" id="error_edit_category_name"></div>
                                 </div>
                                 <div class="form-group">
                                     <label for="description">Mô tả</label>
                                     <textarea class="form-control" id="description" name="description"></textarea>
-                                    <div class="text-danger error-message" id="error_description"></div>
+                                    <div class="text-danger error-message" id="error_edit_description"></div>
                                 </div>
 
                             </div>
@@ -136,12 +136,12 @@
                                 <div class="form-group">
                                     <label for="add_product_name">Tên danh mục</label>
                                     <input type="text" class="form-control" id="add_category_name" name="category_name">
-                                    <div class="text-danger error-message" id="error_category_name"></div>
+                                    <div class="text-danger error-message" id="error_add_category_name"></div>
                                 </div>
                                 <div class="form-group">
                                     <label for="add_description">Mô tả</label>
                                     <textarea class="form-control" id="add_description" name="description"></textarea>
-                                    <div class="text-danger error-message" id="error_description"></div>
+                                    <div class="text-danger error-message" id="error_add_description"></div>
                                 </div>
 
                             </div>
@@ -161,6 +161,8 @@
         // Xử lý khi click nút Edit
         document.querySelectorAll('.edit').forEach(function (btn) {
             btn.addEventListener('click', function (e) {
+                // Xóa lỗi cũ
+                document.querySelectorAll('.error-message').forEach(el => el.textContent = '');
                 e.preventDefault();
                 var row = btn.closest('tr');
 
@@ -182,6 +184,7 @@
             const url = `/api/categories/${id}`;
 
             const formData = new FormData();
+
             formData.append('_method', 'PUT');
             formData.append('category_name', document.getElementById('category_name').value);
             formData.append('description', document.getElementById('description').value);
@@ -205,7 +208,7 @@
 
                 if (err.errors) {
                     Object.keys(err.errors).forEach(field => {
-                        const errorDiv = document.getElementById(`error_${field}`);
+                        const errorDiv = document.getElementById(`error_edit_${field}`);
                         if (errorDiv) {
                             errorDiv.textContent = err.errors[field][0];
                         }
@@ -219,6 +222,8 @@
         // Hiển thị modal khi nhấn nút "Thêm Mới danh mục"
         document.querySelector('.add-new').addEventListener('click', function () {
             // Reset form
+            // Xóa lỗi cũ
+            document.querySelectorAll('.error-message').forEach(el => el.textContent = '');
             $('#addCategoryModal').modal('show');
         });
 
@@ -249,7 +254,7 @@
                 const err = await response.json();
                 if (err.errors) {
                     Object.keys(err.errors).forEach(field => {
-                        const errorDiv = document.getElementById(`error_${field}`);
+                        const errorDiv = document.getElementById(`error_add_${field}`);
                         if (errorDiv) {
                             errorDiv.textContent = err.errors[field][0];
                         }
