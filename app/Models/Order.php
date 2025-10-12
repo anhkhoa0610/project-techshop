@@ -41,7 +41,7 @@ class Order extends Model
     // Mỗi đơn hàng thuộc về một người dùng
     public function user()
     {
-        return $this->belongsTo(User::class, 'user_id', 'id');
+        return $this->belongsTo(User::class, 'user_id', 'user_id');
     }
 
     // Mỗi đơn hàng có thể liên kết với 1 voucher
@@ -50,9 +50,5 @@ class Order extends Model
         return $this->belongsTo(Voucher::class, 'voucher_id', 'voucher_id');
     }
 
-    // Nếu bạn có bảng order_items (chi tiết sản phẩm trong đơn)
-    // public function items()
-    // {
-    //     return $this->hasMany(OrderItem::class, 'order_id', 'order_id');
-    // }
+    
 }

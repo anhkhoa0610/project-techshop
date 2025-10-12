@@ -12,12 +12,16 @@ class OrderController extends Controller
      */
     public function index()
     {
-        //
+        $orders = Order::with(['user', 'voucher'])
+            ->orderByDesc('order_id')  // sắp xếp đơn hàng mới nhất lên trước (tuỳ chọn)
+            ->paginate(5);
+
+        return view('crud-orders.list', compact('orders'));
     }
 
     /**
      * Show the form for creating a new resource.
-     */   
+     */
 
     public function store(Request $request)
     {
