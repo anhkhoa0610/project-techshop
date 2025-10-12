@@ -25,7 +25,7 @@
             <li><a href="#"><i class="fa fa-users"></i> Quản Lý Khách Hàng</a></li>
             <li><a href="{{ route('products.list') }}"><i class="fa fa-archive"></i> Quản Lý Sản Phẩm</a></li>
             <li><a href="{{ route('category.index') }}"><i class="fa fa-list"></i> Quản Lý Danh Mục</a></li>
-            <li><a href="#"><i class="fa fa-shopping-bag"></i> Quản Lý Đơn Hàng</a></li>
+            <li><a href="{{ route('order.index')}}"><i class="fa fa-shopping-bag"></i> Quản Lý Đơn Hàng</a></li>
             <li><a href="#"><i class="fa fa-file-text"></i> Quản Lý Chi Tiết Đơn Hàng</a></li>
             <li><a href="{{ route('supplier.index') }}"><i class="fa fa-truck"></i> Quản Lý Nhà Phân Phối</a></li>
             <li><a href="#"><i class="fa fa-ticket"></i> Quản Lý Voucher</a></li>
