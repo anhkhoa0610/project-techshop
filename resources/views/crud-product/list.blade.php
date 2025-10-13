@@ -1,7 +1,4 @@
 @extends('layouts.dashboard')
-<style>
-
-</style>
 
 @section('content')
     <!-- Main Content -->
