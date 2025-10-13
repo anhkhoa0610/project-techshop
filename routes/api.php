@@ -19,4 +19,4 @@ Route::apiResource('orderDetails', OrderDetailController::class);
 
 
 // supplier
-Route::apiResource('suppliers', SupplierController::class)->only(['update', 'destroy']);
+Route::apiResource('suppliers', SupplierController::class)->only(['update', 'destroy', 'store']);

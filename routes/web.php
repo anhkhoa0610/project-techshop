@@ -20,8 +20,6 @@ Route::prefix('products')->group(function () {
 });
 Route::prefix('supplier')->group(function () {
     Route::get('/', [SupplierController::class, 'index'])->name('supplier.index');
-    Route::get('/create', [SupplierController::class, 'create'])->name('supplier.create');
-    Route::post('/store', [SupplierController::class, 'post'])->name('supplier.store');
     
 });
 Route::prefix('categories')->group(function () {
