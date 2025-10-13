@@ -9,7 +9,8 @@
                     <div class="table-title">
                         <div class="row">
                             <div class="col-sm-4">
-                                <a href="{{ route('supplier.create') }}" class="btn btn-info add-new">Thêm Mới Nhà Cung Cấp</a>
+                                <a href="#" title="Add" data-toggle="modal"
+                                            data-target="#addSupplierModal" class="btn btn-info add-new">Thêm Nhà Cung Cấp</a>
                             </div>
                             <div class="col-sm-4">
                                 <h2 class="text-center"><b>Quản Lý Nhà Phân Phối</b></h2>
@@ -62,8 +63,10 @@
                                     <td>{{ $supplier->address ?? '—' }}</td>
                                     <td>{{ $supplier->description ?? '—' }}</td>
                                     <td>
-                                    <a href="#" class="view" title="View" data-toggle="tooltip"><i
-                                            class="material-icons">&#xE417;</i></a>
+                                    <a href="#" class="view" title="View" data-toggle="modal" 
+                                            data-target="#viewSupplierModal">
+                                            <i class="material-icons">&#xE417;</i>
+                                        </a>
                                     <a href="#" class="edit" title="Edit" data-toggle="modal"
                                             data-target="#editSupplierModal">
                                             <i class="material-icons">&#xE254;</i>
@@ -82,7 +85,7 @@
                             @endforeach
                         </tbody>
                     </table>
-                    <!-- Modal Edit Product -->
+                    <!-- Modal Edit Supplier -->
                     <div class="modal fade" id="editSupplierModal" tabindex="-1" role="dialog" aria-labelledby="editSupplierModalLabel"
                         aria-hidden="true">
                         <div class="modal-dialog" role="document">
@@ -141,114 +144,123 @@
                             </form>
                         </div>
                     </div>
-                    <div class="clearfix">
-                        <div class="hint-text">Showing <b>5</b> out of <b>25</b> entries</div>
-                        <ul class="pagination">
-                            <li class="page-item disabled"><a href="#">Previous</a></li>
-                            <li class="page-item"><a href="#" class="page-link">1</a></li>
-                            <li class="page-item"><a href="#" class="page-link">2</a></li>
-                            <li class="page-item active"><a href="#" class="page-link">3</a></li>
-                            <li class="page-item"><a href="#" class="page-link">4</a></li>
-                            <li class="page-item"><a href="#" class="page-link">5</a></li>
-                            <li class="page-item"><a href="#" class="page-link">Next</a></li>
-                        </ul>
+                    <!-- Modal Add Supplier -->
+                    <div class="modal fade" id="addSupplierModal" tabindex="-1" role="dialog" aria-labelledby="addSupplierModalLabel"
+                        aria-hidden="true">
+                        <div class="modal-dialog" role="document">
+                            <form id="addSupplierForm" method="POST" enctype="multipart/form-data">
+                                @csrf
+                                <div class="modal-content">
+                                    <div class="modal-header">
+                                        <h5 class="modal-title" id="editSupplierModalLabel">Thêm Nhà Cung Cấp</h5>
+                                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                            <span aria-hidden="true">&times;</span>
+                                        </button>
+                                    </div>
+                                    <div class="modal-body">
+                                        <div class="row">
+                                            <!-- Cột trái -->
+                                            <div class="col-md-6">
+                                                <div class="form-group">
+                                                    <label for="logo">Hình ảnh</label><br>
+                                                    <img id="add_logo_preview" src="" alt="Logo hiện tại" style="max-height: 50px; margin-bottom: 2px;">
+                                                    <input type="file" class="form-control" id="add_logo" name="logo"
+                                                        accept="image/*">
+                                                </div>
+                                                <div class="form-group">
+                                                    <label for="name">Tên Nhà Phân Phối</label>
+                                                    <input type="text" class="form-control" id="edit_name" name="name" required>
+                                                </div>
+                                                <div class="form-group">
+                                                    <label for="email">Email</label>
+                                                    <input type="text" class="form-control" id="edit_email" name="email">
+                                                </div>
+                                            </div>
+
+                                            <!-- Cột phải -->
+                                            <div class="col-md-6">
+                                                <div class="form-group">
+                                                    <label for="phone">Số điện thoại</label>
+                                                    <input type="text" class="form-control" id="edit_phone" name="phone">
+                                                </div>
+                                                <div class="form-group">
+                                                    <label for="address">Địa chỉ</label>
+                                                    <input type="text" class="form-control" id="edit_address" name="address">
+                                                </div>
+                                                <div class="form-group">
+                                                    <label for="description">Mô tả</label>
+                                                    <textarea class="form-control" id="edit_description" name="description"></textarea>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="modal-footer">
+                                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Đóng</button>
+                                        <button type="submit" class="btn btn-primary">Lưu thay đổi</button>
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
                     </div>
+                    <!-- Modal View Supplier -->
+                    <div class="modal fade" id="viewSupplierModal" tabindex="-1" role="dialog" aria-labelledby="viewSupplierModalLabel" aria-hidden="true">
+                        <div class="modal-dialog modal-lg" role="document">
+                            <div class="modal-content shadow-lg">
+                                <div class="modal-header bg-secondary text-white">
+                                    <h5 class="modal-title" id="viewSupplierModalLabel">                                    
+                                        Thông tin Nhà Cung Cấp
+                                    </h5>
+                                </div>
+                                <div class="modal-body bg-light">
+                                    <div class="row">
+                                        <div class="col-md-4 text-center">
+                                            <div class="mb-3">
+                                                <img id="view_logo" src="" alt="Logo hiện tại" class="img-thumbnail shadow" style="max-height: 120px; background: #fff;">
+                                            </div>
+                                            <h4 id="view_name" class="font-weight-bold text-secondary mb-2"></h4>
+                                        </div>
+                                        <div class="col-md-8">
+                                            <div class="card border-0 bg-white shadow-sm">
+                                                <div class="card-body p-3">
+                                                    <div class="row mb-2">
+                                                        <div class="col-4 font-weight-bold text-secondary">Email:</div>
+                                                        <div class="col-8" id="view_email"></div>
+                                                    </div>
+                                                    <div class="row mb-2">
+                                                        <div class="col-4 font-weight-bold text-secondary">Số điện thoại:</div>
+                                                        <div class="col-8" id="view_phone"></div>
+                                                    </div>
+                                                    <div class="row mb-2">
+                                                        <div class="col-4 font-weight-bold text-secondary">Địa chỉ:</div>
+                                                        <div class="col-8" id="view_address"></div>
+                                                    </div>
+                                                    <div class="row">
+                                                        <div class="col-4 font-weight-bold text-secondary">Mô tả:</div>
+                                                        <div class="col-8" id="view_description"></div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="modal-footer bg-white">
+                                    <button type="button" class="btn btn-secondary" data-dismiss="modal">
+                                        <i class="material-icons align-middle">close</i> Đóng
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
                 </div>
             </div>
         </div>
     </div>
-    <script>
-        document.querySelectorAll('.edit').forEach(function (btn) {
-            btn.addEventListener('click', function (e) {
-                e.preventDefault();
-                var row = btn.closest('tr');
-
-                document.getElementById('edit_logo').value = '';
-                const logo = row.getAttribute('data-logo');
-                const logoPreview = document.getElementById('edit_logo_preview');
-                if (logo) {
-                    logoPreview.src = '/uploads/' + logo;
-                } else {
-                    logoPreview.src = '/uploads/place-holder.jpg';
-                }
-
-                document.getElementById('edit_name').value = row.getAttribute('data-name') || '';
-                document.getElementById('edit_email').value = row.getAttribute('data-email') || '';
-                document.getElementById('edit_phone').value = row.getAttribute('data-phone') || '';
-                document.getElementById('edit_address').value = row.getAttribute('data-address') || '';
-                document.getElementById('edit_description').value = row.getAttribute('data-description') || '';
-
-                 // Lưu ID nhà cung cấp vào thuộc tính data của form
-
-                document.getElementById('editSupplierForm').dataset.id = row.getAttribute('data-supplier-id');
-
-                $('#editSupplierModal').modal('show');
-            });
-        });
-        document.getElementById('edit_logo').addEventListener('change', function (e) {
-            const [file] = this.files;
-            if (file) {
-                document.getElementById('edit_logo_preview').src = URL.createObjectURL(file);
-            }
-        });
-        // Xử lý submit form
-        document.getElementById('editSupplierForm').addEventListener('submit', async function (e) {
-            e.preventDefault();
-
-            const id = this.dataset.id;
-            const url = `/api/suppliers/${id}`;
-
-            const formData = new FormData();
-            formData.append('_method', 'PUT');
-            formData.append('name', document.getElementById('edit_name').value);
-            formData.append('description', document.getElementById('edit_description').value);
-            formData.append('email', document.getElementById('edit_email').value);
-            formData.append('phone', document.getElementById('edit_phone').value);
-            formData.append('address', document.getElementById('edit_address').value);
-            const fileInput = document.getElementById('edit_logo');
-            if (fileInput.files.length > 0) {
-                formData.append('logo', fileInput.files[0]);
-            }
-
-            const response = await fetch(url, {
-                method: 'POST', 
-                headers: {
-                    'Accept': 'application/json',
-                    'X-CSRF-TOKEN': '{{ csrf_token() }}'
-                },
-                body: formData
-            });
-
-            for (let [key, value] of formData.entries()) {
-                console.log(key, value);
-            }
-
-            if (response.ok) {
-                alert('Cập nhật Nhà Phân Phối thành công!');
-                $('#editSupplierModal').modal('hide');
-                location.reload();
-            } else {
-                const err = await response.json();
-
-                console.error(err);
-                alert('Cập nhật thất bại: ' + (err.message || 'Lỗi không xác định'));
-            }
-        });
-
-        function confirmDelete(supplierId) {
-            Swal.fire({
-                title: 'Xác nhận xóa',
-                text: 'Bạn có chắc chắn muốn xóa tác nhà cũng cấp này không?',
-                icon: 'warning',
-                showCancelButton: true,
-                confirmButtonText: 'Xóa',
-                cancelButtonText: 'Hủy'
-            }).then((result) => {
-                if (result.isConfirmed) {
-                    document.getElementById('delete-form-' + supplierId).submit();
-                }
-            });
-        }
+    <!-- End Main Content -->
+     <script>
+    window.csrfToken = '{{ csrf_token() }}';
     </script>
+    <script src="{{ asset('js/supplier.js') }}"></script>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 @endsection
