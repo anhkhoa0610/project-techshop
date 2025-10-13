@@ -22,7 +22,7 @@ class SupplierController extends Controller
     }
 
     // Lưu nhà cung cấp mới
-    public function post(Request $request)
+    public function store(Request $request)
     {
         $validated = $request->validate([
             'logo' => 'nullable|image|mimes:jpeg,png,jpg,svg|max:2048',
@@ -54,8 +54,13 @@ class SupplierController extends Controller
             $validated['logo'] = 'placeholder.png';
         }
 
-        Supplier::create($validated);
-        return redirect()->route('supplier.index')->with('success', 'Nhà cung cấp đã được tạo thành công.');
+        $supplier = Supplier::create($validated);
+
+        return response()->json([
+            'success' => true,
+            'data' => $supplier,
+            'message' => 'Supplier created successfully',
+        ]);
     }
 
     public function update(Request $request, $id)
