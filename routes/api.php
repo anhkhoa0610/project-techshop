@@ -5,6 +5,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\OrderDetailController;
+use App\Http\Controllers\SupplierController;
 
 
 Route::apiResource('categories', CategoryController::class);
@@ -17,3 +18,5 @@ Route::apiResource('orders', OrderController::class);
 Route::apiResource('orderDetails', OrderDetailController::class);
 
 
+// supplier
+Route::apiResource('suppliers', SupplierController::class)->only(['update', 'destroy']);
