@@ -86,12 +86,12 @@
                                             <i class="material-icons">&#xE254;</i>
                                         </a>
                                         <form action="{{ url('/api/products/' . $product->product_id) }}" method="POST"
-                                            style="display:inline;">
+                                            style="display:inline;" id="delete-form-{{ $product->product_id }}">
                                             @csrf
                                             @method('DELETE')
-                                            <button type="submit" class="btn btn-link p-0 m-0 align-baseline delete"
+                                            <button type="button" class="btn btn-link p-0 m-0 align-baseline delete"
                                                 title="Delete" data-toggle="tooltip"
-                                                onclick="return confirm('Bạn có chắc muốn xóa sản phẩm này không?')">
+                                                onclick="confirmDelete({{ $product->product_id }})">
                                                 <i class="material-icons text-danger">&#xE872;</i>
                                             </button>
                                         </form>
@@ -437,5 +437,21 @@
                 alert('Thêm thất bại: ' + (err.message || 'Lỗi không xác định'));
             }
         });
+
+        function confirmDelete(id) {
+            Swal.fire({
+                title: 'Xác nhận xóa',
+                text: 'Bạn có chắc chắn muốn xóa sản phẩm này không?',
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonText: 'Xóa',
+                cancelButtonText: 'Hủy'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    document.getElementById('delete-form-' + id).submit();
+                }
+            });
+        }
     </script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 @endsection
