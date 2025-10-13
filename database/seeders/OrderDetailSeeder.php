@@ -11,7 +11,7 @@ class OrderDetailSeeder extends Seeder
     /**
      * Run the database seeds.
      */
-     public function run(): void
+    public function run(): void
     {
         DB::table('order_details')->insert([
             [
@@ -37,6 +37,12 @@ class OrderDetailSeeder extends Seeder
                 'product_id' => 2,
                 'quantity' => 1,
                 'unit_price' => 350000.00,
+            ],
+            [
+                'order_id' => 1,
+                'product_id' => 1,
+                'quantity' => 5,
+                'unit_price' => 99000.00,
             ],
             [
                 'order_id' => 1,

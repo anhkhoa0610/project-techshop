@@ -38,7 +38,9 @@ class OrderRequest extends FormRequest
             'shipping_address.max' => 'Địa chỉ giao hàng không được vượt quá 255 ký tự.',
             'shipping_address.min' => 'Địa chỉ giao hàng phải có ít nhất 10 ký tự.',
             'payment_method.in' => 'Phương thức thanh toán không hợp lệ.',
+            'payment_method.required' => 'Vui lòng chọn phương thức thanh toán.',
             'status.in' => 'Trạng thái đơn hàng không hợp lệ.',
+            'status.required' => 'Vui lòng chọn trạng thái đơn hàng.',
             'voucher_id.exists' => 'Voucher không tồn tại.',
 
         ];
