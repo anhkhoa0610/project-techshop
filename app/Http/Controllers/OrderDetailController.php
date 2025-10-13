@@ -14,10 +14,17 @@ class OrderDetailController extends Controller
      */
     public function index($order_id)
     {
-        $orderDetails = OrderDetail::where('order_id', $order_id)
-            ->with('product')
-            ->get();
-        return view('crud-orderDetails.list', compact('orderDetails'));
+        $query = OrderDetail::where('order_id', $order_id)
+            ->with('product');
+
+        // Nếu có tham số tìm kiếm
+        if (request()->has('search') && request('search')) {
+            $search = request('search');
+            $query->whereRelation('product','product_name', 'like', '%' . $search . '%');
+        }
+
+        $orderDetails = $query->paginate(5);
+        return view('crud-orderDetails.list', compact('orderDetails', 'order_id'));
     }
 
     /**
