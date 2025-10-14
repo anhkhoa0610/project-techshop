@@ -80,7 +80,17 @@ document.addEventListener('DOMContentLoaded', function () {
         }
     });
 
+
     // Xử lý submit form thêm mới
+    document.getElementById('close').addEventListener('click', function () {
+        document.getElementById('addSupplierForm').reset();
+        document.getElementById('add_logo_preview').src = '/uploads/place-holder.jpg';
+    });
+
+    document.getElementById('addNewSupplierBtn').addEventListener('click', function (e) {
+        document.getElementById('add_logo_preview').src = '/uploads/place-holder.jpg';
+    });
+
     document.getElementById('addSupplierForm').addEventListener('submit', async function (e) {
         e.preventDefault();
 
@@ -123,16 +133,16 @@ document.addEventListener('DOMContentLoaded', function () {
     }
 
     document.querySelectorAll('.view').forEach(function (btn) {
-    btn.addEventListener('click', function (e) {
-        e.preventDefault();
-        var row = btn.closest('tr');
-        document.getElementById('view_logo').src = row.getAttribute('data-logo') ? '/uploads/' + row.getAttribute('data-logo') : '/uploads/place-holder.jpg';
-        document.getElementById('view_name').textContent = row.getAttribute('data-name') || '';
-        document.getElementById('view_email').textContent = row.getAttribute('data-email') || '';
-        document.getElementById('view_phone').textContent = row.getAttribute('data-phone') || '';
-        document.getElementById('view_address').textContent = row.getAttribute('data-address') || '';
-        document.getElementById('view_description').textContent = row.getAttribute('data-description') || '';
-        $('#viewSupplierModal').modal('show');
+        btn.addEventListener('click', function (e) {
+            e.preventDefault();
+            var row = btn.closest('tr');
+            document.getElementById('view_logo').src = row.getAttribute('data-logo') ? '/uploads/' + row.getAttribute('data-logo') : '/uploads/place-holder.jpg';
+            document.getElementById('view_name').textContent = row.getAttribute('data-name') || '';
+            document.getElementById('view_email').textContent = row.getAttribute('data-email') || '';
+            document.getElementById('view_phone').textContent = row.getAttribute('data-phone') || '';
+            document.getElementById('view_address').textContent = row.getAttribute('data-address') || '';
+            document.getElementById('view_description').textContent = row.getAttribute('data-description') || '';
+            $('#viewSupplierModal').modal('show');
+        });
     });
-});
 });
