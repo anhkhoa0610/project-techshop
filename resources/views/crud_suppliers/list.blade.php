@@ -17,10 +17,16 @@
                             </div>
                             <div class="col-sm-4">
                                 <div class="search-box">
-                                    <div class="input-group">
-                                        <span class="input-group-addon"><i class="material-icons">&#xE8B6;</i></span>
-                                        <input type="text" class="form-control" placeholder="Search&hellip;">
-                                    </div>
+                                    <form class="search-box" method="GET" action="{{ url()->current() }}">
+                                        <div class="input-group">
+                                            <span class="input-group-addon"><i class="material-icons">&#xE8B6;</i></span>
+                                            <input type="text" class="form-control" name="search" placeholder="Tìm kiếm..."
+                                                value="{{ request('search') }}">
+                                            <div class="input-group-append">
+                                                <button class="btn btn-primary" type="submit">Search</button>
+                                            </div>
+                                        </div>
+                                    </form>
                                 </div>
                             </div>
                         </div>
