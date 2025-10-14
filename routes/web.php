@@ -19,7 +19,7 @@ Route::prefix('products')->group(function () {
     // Route::post('/store', [ProductController::class, 'store'])->name('product.store');
 });
 Route::prefix('supplier')->group(function () {
-    Route::get('/', [SupplierController::class, 'index'])->name('supplier.index');
+    Route::get('/', [SupplierController::class, 'list'])->name('supplier.list');
     
 });
 Route::prefix('categories')->group(function () {
