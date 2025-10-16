@@ -90,11 +90,11 @@
                         </thead>
                         <tbody>
                             @foreach ($orders as $order)
-                                <tr data-order-id="{{ $order->order_id }}" data-user-name="{{ $order->user->full_name }}"
+                                <tr data-order-id="{{ $order->order_id }}" data-user-id="{{ $order->user->user_id }}"
                                     data-order-date="{{ $order->order_date }}" data-status="{{ $order->status }}"
                                     data-shipping-address="{{ $order->shipping_address }}"
                                     data-payment-method="{{ $order->payment_method }}"
-                                    data-voucher-code="{{ $order->voucher->code ?? "Không áp dụng" }}"
+                                    data-voucher-id="{{ $order->voucher->voucher_id ?? ""}}"
                                     data-total-price="{{ $order->total_price }}">
                                     <td>{{ $order->order_id }}</td>
                                     <td>{{ $order->user->full_name }}</td>
@@ -105,10 +105,9 @@
                                     <td>{{ $order->voucher->code ?? "không áp dụng"}}</td>
                                     <td>{{ number_format($order->total_price, 2) }}</td>
                                     <td>
-                                        <a href="{{ route("orderDetail.index",[ $order->order_id]) }}" class="view" title="View" data-toggle="tooltip"><i
-                                                class="material-icons">&#xE417;</i></a>
-                                        <a href="#" class="edit" title="Edit" data-toggle="modal"
-                                            data-target="#editProductModal">
+                                        <a href="{{ route("orderDetails.list", [$order->order_id]) }}" class="view" title="View"
+                                            data-toggle="tooltip"><i class="material-icons">&#xE417;</i></a>
+                                        <a href="#" class="edit" title="Edit" data-toggle="modal" data-target="#editOrderModal">
                                             <i class="material-icons">&#xE254;</i>
                                         </a>
                                         <form action="{{ url('/api/orders/' . $order->order_id) }}" method="POST"
@@ -232,9 +231,161 @@
         </div>
     </div>
 
+    <!-- Modal chỉnh sửa order -->
+    <div class="modal fade" id="editOrderModal" tabindex="-1" role="dialog" aria-labelledby="editOrderModalLabel"
+        aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <form id="editOrderForm" method="POST" enctype="multipart/form-data">
+                @csrf
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="editOrderModalLabel">Chỉnh sửa đơn hàng</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        <div class="row">
+                            <!-- Cột trái -->
+                            <div class="col-md-6">
+                                {{-- Người dùng --}}
+                                <div class="form-group">
+                                    <label for="edit_user_id">Người dùng</label>
+                                    <select class="form-control" id="edit_user_id" name="user_id">
+                                        <option value="">-- Chọn người dùng --</option>
+                                        @foreach ($users as $user)
+                                            <option value="{{ $user->user_id }}">{{ $user->full_name }}</option>
+                                        @endforeach
+                                    </select>
+                                    <div class="text-danger error-message" id="error_edit_user_id"></div>
+                                </div>
+
+                                {{-- Trạng thái --}}
+                                <div class="form-group">
+                                    <label for="edit_status">Trạng thái</label>
+                                    <select class="form-control" id="edit_status" name="status">
+                                        <option value="">-- Chọn trạng thái --</option>
+                                        <option value="pending">pending</option>
+                                        <option value="processing">processing</option>
+                                        <option value="completed">completed</option>
+                                        <option value="cancelled">cancelled</option>
+                                    </select>
+                                    <div class="text-danger error-message" id="error_edit_status"></div>
+                                </div>
+
+                                {{-- Địa chỉ giao hàng --}}
+                                <div class="form-group">
+                                    <label for="edit_shipping_address">Địa chỉ giao hàng</label>
+                                    <textarea name="shipping_address" id="edit_shipping_address"></textarea>
+                                    <div class="text-danger error-message" id="error_edit_shipping_address"></div>
+                                </div>
+                            </div>
+                            <!-- Cột phải -->
+                            <div class="col-md-6">
+
+
+                                {{-- Phương thức thanh toán --}}
+                                <div class="form-group">
+                                    <label for="edit_payment_method">Phương thức thanh toán</label>
+                                    <select class="form-control" id="edit_payment_method" name="payment_method">
+                                        <option value="">-- Chọn phương thức thanh toán--</option>
+                                        <option value="cash">cash</option>
+                                        <option value="card">card</option>
+                                        <option value="transfer">transfer</option>
+                                    </select>
+                                    <div class="text-danger error-message" id="error_edit_payment_method"></div>
+                                </div>
+
+                                {{-- Voucher --}}
+                                <div class="form-group">
+                                    <label for="edit_voucher_id">Mã giảm giá (Voucher)</label>
+                                    <select class="form-control" id="edit_voucher_id" name="voucher_id">
+                                        <option value="{{ null }}">-- Không áp dụng --</option>
+                                        @foreach ($vouchers as $voucher)
+                                            <option value="{{ $voucher->voucher_id }}">{{ $voucher->code }}</option>
+                                        @endforeach
+                                    </select>
+                                    <div class="text-danger error-message" id="error_edit_voucher_id"></div>
+                                </div>
+
+
+                            </div>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Đóng</button>
+                        <button type="submit" class="btn btn-success">Lưu thay đổi</button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+
     <script>
         // Hiển thị modal khi nhấn nút "Chỉnh Sửa"
+        document.querySelectorAll('.edit').forEach(function (btn) {
+            btn.addEventListener('click', function (e) {
+                e.preventDefault();
+                // Reset form và xóa lỗi cũ
+                document.querySelectorAll('.error-message').forEach(el => el.textContent = '');
 
+                var row = btn.closest('tr'); // Lấy dòng chứa nút edit được bấm
+
+                // Gán dữ liệu vào form
+                document.getElementById('edit_user_id').value = row.getAttribute('data-user-id') || '';
+                document.getElementById('edit_status').value = row.getAttribute('data-status') || '';
+                document.getElementById('edit_shipping_address').value = row.getAttribute('data-shipping-address') || '';
+                document.getElementById('edit_payment_method').value = row.getAttribute('data-payment-method') || '';
+                document.getElementById('edit_voucher_id').value = row.getAttribute('data-voucher-id') || '';
+                document.getElementById('editOrderForm').dataset.id = row.getAttribute('data-order-id');
+
+                // Hiển thị modal
+                $('#editOrderModal').modal('show');
+            });
+        });
+
+
+        // xử lý submit form chỉnh sửa
+        document.getElementById('editOrderForm').addEventListener('submit', async function (e) {
+            e.preventDefault();
+
+            const orderId = this.dataset.id;
+            const url = `/api/orders/${orderId}`;
+            const formData = new FormData(this);
+            formData.append('_method', 'PUT');
+            formData.append('shipping_address', document.getElementById('edit_shipping_address').value);
+            formData.append('order_id', this.dataset.id);
+            formData.append('user_id', document.getElementById('edit_user_id').value);
+            formData.append('status', document.getElementById('edit_status').value);
+            formData.append('payment_method', document.getElementById('edit_payment_method').value);
+            formData.append('voucher_id', document.getElementById('edit_voucher_id').value);
+            const response = await fetch(url, {
+                method: 'POST',
+                headers: {
+                    'Accept': 'application/json',
+                    'X-CSRF-TOKEN': '{{ csrf_token() }}'
+                },
+                body: formData
+            });
+
+            if (response.ok) {
+                alert('Cập nhật đơn hàng thành công!');
+                $('#editOrderModal').modal('hide');
+                location.reload();
+            } else {
+                const err = await response.json();
+                if (err.errors) {
+                    Object.keys(err.errors).forEach(field => {
+                        const errorDiv = document.getElementById(`error_edit_${field}`);
+                        if (errorDiv) {
+                            errorDiv.textContent = err.errors[field][0];
+                        }
+                    });
+                } else {
+                    alert('cập nhật đơn hàng thất bại ' + (err.message || 'Lỗi không xác định'));
+                }
+            }
+        });
 
         // Hiển thị modal khi nhấn nút "Thêm mới đơn hàng"
         document.querySelector('.add-new').addEventListener('click', function () {
@@ -244,8 +395,6 @@
             document.getElementById('addOrderForm').reset();
             $('#addOrderModal').modal('show');
         });
-
-
 
         // Xử lý submit form thêm mới
         document.getElementById('addOrderForm').addEventListener('submit', async function (e) {
@@ -277,7 +426,7 @@
                         }
                     });
                 } else {
-                    alert('Thêm thất bại: ' + (err.message || 'Lỗi không xác định'));
+                    alert('Thêm đơn hàng thất bại: ' + (err.message || 'Lỗi không xác định'));
                 }
             }
         });

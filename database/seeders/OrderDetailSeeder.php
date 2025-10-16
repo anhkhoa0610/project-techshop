@@ -5,6 +5,7 @@ namespace Database\Seeders;
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\DB;
+use App\Models\Order;
 
 class OrderDetailSeeder extends Seeder
 {
@@ -51,5 +52,10 @@ class OrderDetailSeeder extends Seeder
                 'unit_price' => 99000.00,
             ],
         ]);
+         // Cập nhật lại tổng tiền cho các đơn hàng đã tạo
+        $orders = Order::all();
+        foreach ($orders as $order) {
+            $order->updateTotalPrice(); // gọi hàm trong model Order
+        }
     }
 }

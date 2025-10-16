@@ -214,7 +214,7 @@
                         }
                     });
                 } else {
-                    alert('Thêm thất bại: ' + (err.message || 'Lỗi không xác định'));
+                    alert('Cập nhật danh mục thất bại: ' + (err.message || 'Lỗi không xác định'));
                 }
             }
         });
@@ -260,7 +260,7 @@
                         }
                     });
                 } else {
-                    alert('Thêm thất bại: ' + (err.message || 'Lỗi không xác định'));
+                    alert('Thêm danh mục thất bại: ' + (err.message || 'Lỗi không xác định'));
                 }
             }
         });

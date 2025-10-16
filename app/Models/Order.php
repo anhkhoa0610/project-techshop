@@ -4,6 +4,11 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use App\Models\User;
+use App\Models\Voucher;
+use App\Models\OrderDetail;
+use Illuminate\Support\Facades\DB;
+
 
 
 class Order extends Model
@@ -26,7 +31,6 @@ class Order extends Model
         'shipping_address',
         'payment_method',
         'voucher_id',
-        'total_price',
     ];
 
     // Nếu có cột datetime tự động
@@ -55,6 +59,40 @@ class Order extends Model
     {
         return $this->hasMany(OrderDetail::class, 'order_id', 'order_id');
     }
+
+    // hàm caaph nhật giá, áp dụng mã giảm mỗi khi thay đổi,tạo mới chi tiết đơn hàng
+    public function updateTotalPrice()
+    {
+        // 1. Tính tổng giá gốc
+        $total = $this->orderDetails()->sum(DB::raw('quantity * unit_price'));
+        $finalPrice = $total;
+
+        // 2. Áp dụng mã giảm giá (nếu có)
+        if ($this->voucher_id) {
+            $voucher = Voucher::where('voucher_id', $this->voucher_id)
+                ->where('status', 'active')
+                ->first();
+
+            if ($voucher) {
+                $today = now()->toDateString();
+
+                if ($voucher->start_date <= $today && $voucher->end_date >= $today) {
+                    if ($voucher->discount_type === 'percent') {
+                        $discountAmount = $total * ($voucher->discount_value / 100);
+                    } else {
+                        $discountAmount = $voucher->discount_value;
+                    }
+
+                    $finalPrice = max($total - $discountAmount, 0);
+                }
+            }
+        }
+
+        // 3. Cập nhật lại order
+        $this->total_price = $finalPrice;
+        $this->save();
+    }
+
 
 
 }

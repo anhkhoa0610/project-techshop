@@ -23,16 +23,16 @@ Route::prefix('supplier')->group(function () {
     
 });
 Route::prefix('categories')->group(function () {
-    Route::get('/', [CategoryController::class, 'index'])->name('category.index');
+    Route::get('/', [CategoryController::class, 'list'])->name('categories.list');
    
 });
 
 Route::prefix('orders')->group(function () {
-    Route::get('/', [OrderController::class, 'index'])->name('order.index');
+    Route::get('/', [OrderController::class, 'list'])->name('orders.list');
    
 });
 
 Route::prefix('orderDetails')->group(function () {
-    Route::get('/{order_id}', [OrderDetailController::class, 'index'])->name('orderDetail.index');
+    Route::get('/{order_id}', [OrderDetailController::class, 'list'])->name('orderDetails.list');
    
 });
