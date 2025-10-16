@@ -9,7 +9,7 @@
                     <div class="table-title">
                         <div class="row">
                             <div class="col-sm-4">
-                                <a href="#" title="Add" data-toggle="modal"
+                                <a href="#" title="Add" data-toggle="modal" id = "addNewSupplierBtn"
                                             data-target="#addSupplierModal" class="btn btn-info add-new">Thêm Nhà Cung Cấp</a>
                             </div>
                             <div class="col-sm-4">
@@ -17,10 +17,16 @@
                             </div>
                             <div class="col-sm-4">
                                 <div class="search-box">
-                                    <div class="input-group">
-                                        <span class="input-group-addon"><i class="material-icons">&#xE8B6;</i></span>
-                                        <input type="text" class="form-control" placeholder="Search&hellip;">
-                                    </div>
+                                    <form class="search-box" method="GET" action="{{ url()->current() }}">
+                                        <div class="input-group">
+                                            <span class="input-group-addon"><i class="material-icons">&#xE8B6;</i></span>
+                                            <input type="text" class="form-control" name="search" placeholder="Tìm kiếm..."
+                                                value="{{ request('search') }}">
+                                            <div class="input-group-append">
+                                                <button class="btn btn-primary" type="submit">Search</button>
+                                            </div>
+                                        </div>
+                                    </form>
                                 </div>
                             </div>
                         </div>
@@ -196,7 +202,7 @@
                                     </div>
 
                                     <div class="modal-footer">
-                                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Đóng</button>
+                                        <button id = "close" type="button" class="btn btn-secondary" data-dismiss="modal">Đóng</button>
                                         <button type="submit" class="btn btn-primary">Lưu thay đổi</button>
                                     </div>
                                 </div>
@@ -207,7 +213,7 @@
                     <div class="modal fade" id="viewSupplierModal" tabindex="-1" role="dialog" aria-labelledby="viewSupplierModalLabel" aria-hidden="true">
                         <div class="modal-dialog modal-lg" role="document">
                             <div class="modal-content shadow-lg">
-                                <div class="modal-header bg-secondary text-white">
+                                <div class="modal-header bg-info text-white">
                                     <h5 class="modal-title" id="viewSupplierModalLabel">                                    
                                         Thông tin Nhà Cung Cấp
                                     </h5>

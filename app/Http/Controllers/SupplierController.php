@@ -12,13 +12,29 @@ class SupplierController extends Controller
     public function index()
     {
         $suppliers = Supplier::all();
-        return view('crud_suppliers.list', compact('suppliers'));
+        return response()->json([
+            'success' => true,
+            'data' => $suppliers,
+            'message' => 'Suppliers retrieved successfully',
+        ]);
     }
 
     // Hiển thị form tạo mới nhà cung cấp
-    public function create()
+    // Hiển thị danh sách nhà cung cấp
+
+    public function list()
     {
-        return view('crud_suppliers.create');
+        $query = Supplier::query();
+
+        // Nếu có tham số tìm kiếm
+        if (request()->has('search') && request('search')) {
+            $search = request('search');
+            $query->where('name', 'like', '%' . $search . '%');
+        }
+
+        $suppliers = $query->paginate(5);
+
+        return view('crud_suppliers.list', compact('suppliers'));
     }
 
     // Lưu nhà cung cấp mới
