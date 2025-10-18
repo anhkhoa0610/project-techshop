@@ -4,6 +4,7 @@ namespace App\Http\Requests;
 
 use Attribute;
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Validation\Rule;
 
 class ProductRequest extends FormRequest
 {
@@ -23,10 +24,12 @@ class ProductRequest extends FormRequest
     public function rules(): array
     {
         $id = $this->route()->product;
-        $nameRule = 'required|string|max:255';
-        if ($id) {
-            $nameRule .= ",{$id}";        
-        }
+        $nameRule = [
+        'required',
+        'string',
+        'max:255',
+        Rule::unique('products', 'product_name')->ignore($id, 'product_id'),
+    ];
 
         return [
             'product_name' => $nameRule,

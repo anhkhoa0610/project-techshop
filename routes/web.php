@@ -12,6 +12,11 @@ Route::get('/', function () {
     return view('layouts.dashboard');
 });
 
+Route::get('/index', function () {
+    return view('index');
+});
+
+
 Route::prefix('products')->group(function () {
     Route::get('/', [ProductController::class, 'list'])->name('products.list');
     // Sau này bạn có thể thêm các route khác:
