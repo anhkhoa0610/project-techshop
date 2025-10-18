@@ -23,7 +23,7 @@
                     <input type="search" placeholder="Tìm kiếm sản phẩm..." class="search-input">
                     <button class="search-btn">🔍</button>
                 </div>
-                <button class="cart-btn">
+                <button class="cart-btn" onclick="window.location.href='{{ route('cart.index') }}'">
                     🛒
                     <span class="cart-count">2</span>
                 </button>

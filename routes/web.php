@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\CartController;
 use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\OrderController;
 use Illuminate\Support\Facades\Route;
@@ -39,3 +40,15 @@ Route::prefix('orderDetails')->group(function () {
     Route::get('/{order_id}', [OrderDetailController::class, 'list'])->name('orderDetails.list');
    
 });
+
+
+
+
+
+
+Route::get('/cart', [CartController::class, 'index'])->name('cart.index');
+
+
+
+
+
