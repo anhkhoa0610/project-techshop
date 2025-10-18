@@ -3,11 +3,13 @@
 use App\Http\Controllers\CartController;
 use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\OrderController;
+use App\Http\Controllers\PayController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\ProductController;
 use App\Http\Controllers\SupplierController;
 use App\Http\Controllers\OrderDetailController;
 use App\Http\Controllers\IndexController;
+
 
 
 Route::get('/', function () {
@@ -47,7 +49,7 @@ Route::prefix('orderDetails')->group(function () {
 
 
 Route::get('/cart', [CartController::class, 'index'])->name('cart.index');
-
+Route::get('/pay', [PayController::class, 'index'])->name('pay.index');
 
 
 
