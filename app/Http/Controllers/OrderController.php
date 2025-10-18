@@ -7,6 +7,7 @@ use App\Models\Order;
 use App\Models\User;
 use App\Models\Voucher;
 use Illuminate\Http\Request;
+use Str;
 
 class OrderController extends Controller
 {
@@ -110,8 +111,14 @@ class OrderController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(Order $order)
+    public function destroy(string $order_id)
     {
-        //
+        $order = Order::findOrFail($order_id);
+
+        $order->delete();
+        return response()->json([
+            'success' => true,
+            'message' => 'Xóa đơn hàng thành công!'
+        ]);
     }
 }

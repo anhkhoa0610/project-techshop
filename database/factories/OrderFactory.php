@@ -1,7 +1,8 @@
 <?php
 
 namespace Database\Factories;
-
+use App\Models\User;
+use App\Models\Voucher;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 /**
@@ -17,12 +18,12 @@ class OrderFactory extends Factory
     public function definition(): array
     {
         return [
-            'user_id' => $this->faker->numberBetween(1, 2),
+            'user_id' => User::inRandomOrder()->first()?->id ?? User::factory(),
             'order_date' => $this->faker->dateTimeBetween('-1 month', 'now'),
             'status' => $this->faker->randomElement(['pending', 'processing', 'completed', 'cancelled']),
             'shipping_address' => $this->faker->address(),
             'payment_method' => $this->faker->randomElement(['cash', 'card', 'transfer']),
-            'voucher_id' => $this->faker->optional()->numberBetween(1, 3),
+            'voucher_id' => Voucher::inRandomOrder()->first()?->id ?? null,
             'created_at' => now(),
             'updated_at' => now(),
         ];

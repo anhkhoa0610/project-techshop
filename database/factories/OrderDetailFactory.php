@@ -19,11 +19,8 @@ class OrderDetailFactory extends Factory
     public function definition(): array
     {
         return [
-            // Gắn ngẫu nhiên order và product hợp lệ
-            'order_id' => Order::inRandomOrder()->first()?->order_id ?? Order::factory(),
-            'product_id' => Product::inRandomOrder()->first()?->product_id ?? Product::factory(),
-
-            // Tạo dữ liệu ngẫu nhiên
+            'order_id' => Order::query()->inRandomOrder()->value('order_id'),
+            'product_id' => Product::query()->inRandomOrder()->value('product_id'),
             'quantity' => $this->faker->numberBetween(1, 5),
             'unit_price' => $this->faker->randomFloat(2, 50000, 500000),
             'created_at' => now(),

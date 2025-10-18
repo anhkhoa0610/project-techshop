@@ -10,16 +10,19 @@ class Voucher extends Model
 {
   use HasFactory;
 
-    protected $primaryKey = 'voucher_id';
-    public $incrementing = true;
-    protected $keyType = 'int';
+  protected $primaryKey = 'voucher_id';
+  public $incrementing = true;
+  protected $keyType = 'int';
 
-    protected $fillable = [
-        'code',
-        'discount_type',
-        'discount_value',
-        'start_date',
-        'end_date',
-        'status',
-    ];
+  protected $fillable = [
+    'code',
+    'discount_type',
+    'discount_value',
+    'start_date',
+    'end_date',
+    'status',
+  ];
+
+
+  
 }
