@@ -4,11 +4,25 @@ namespace App\Http\Controllers;
 
 use App\Models\OrderDetail;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\DB;
-use App\Models\Order;
+
 
 class OrderDetailController extends Controller
 {
+
+    public function list($order_id)
+    {
+        $query = OrderDetail::where('order_id', $order_id)
+            ->with('product');
+
+        // Nếu có tham số tìm kiếm
+        if (request()->has('search') && request('search')) {
+            $search = request('search');
+            $query->whereRelation('product', 'product_name', 'like', '%' . $search . '%');
+        }
+
+        $orderDetails = $query->paginate(5);
+        return view('crud-orderDetails.list', compact('orderDetails', 'order_id'));
+    }
     /**
      * Display a listing of the resource.
      */
@@ -20,11 +34,15 @@ class OrderDetailController extends Controller
         // Nếu có tham số tìm kiếm
         if (request()->has('search') && request('search')) {
             $search = request('search');
-            $query->whereRelation('product','product_name', 'like', '%' . $search . '%');
+            $query->whereRelation('product', 'product_name', 'like', '%' . $search . '%');
         }
 
         $orderDetails = $query->paginate(5);
-        return view('crud-orderDetails.list', compact('orderDetails', 'order_id'));
+        return response()->json([
+            'success' => true,
+            'message' => 'Danh sách chi tiết đơn hàng',
+            'data' => $orderDetails
+        ], 200);
     }
 
     /**
@@ -40,7 +58,18 @@ class OrderDetailController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $detail = new OrderDetail();
+        $detail->fill($request->all());
+        if ($detail->order) {
+            $detail->order->updateTotalPrice();
+        }
+        $detail->save();
+
+        return response()->json([
+            'success' => true,
+            'data' => $detail,
+            'message' => 'Thành công!'
+        ]);
     }
 
     /**
@@ -62,9 +91,23 @@ class OrderDetailController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, string $id)
+    public function update(Request $request, string $detail_id)
     {
-        //
+        $detail = OrderDetail::findOrFail($detail_id);
+
+        $detail->fill($request->all());
+
+        $detail->save();
+
+        if ($detail->order) {
+            $detail->order->updateTotalPrice();
+        }
+
+        return response()->json([
+            'success' => true,
+            'data' => $detail,
+            'message' => 'Cập nhật chi tiết đơn hàng thành công và đã cập nhật tổng tiền!'
+        ]);
     }
 
     /**
@@ -75,13 +118,5 @@ class OrderDetailController extends Controller
         //
     }
 
-    // cập nhật giá trị total_price
-    public function updateTotalPrice($order_id)
-    {
-        $total = OrderDetail::where('order_id', $order_id)
-            ->sum(DB::raw('quantity * unit_price'));
 
-        Order::where('order_id', $order_id)
-            ->update(['total_price' => $total]);
-    }
 }

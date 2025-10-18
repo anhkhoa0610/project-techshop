@@ -10,6 +10,29 @@ use Illuminate\Http\Request;
 
 class OrderController extends Controller
 {
+    public function list()
+    {
+        $query = Order::with(['user', 'voucher']);
+
+        // Nếu có tham số tìm kiếm
+        if (request()->has('search') && request('search')) {
+            $search = request('search');
+            $query->where('order_id', 'like', '%' . $search . '%')
+                ->orWhereRelation('user', 'full_name', 'like', '%' . $search . '%');
+        }
+        // nếu có lọc theo khoảng ngày tháng
+
+        if (request()->filled(['start_date', 'end_date'])) {
+            $query->whereBetween('order_date', [request('start_date'), request('end_date')]);
+        }
+
+        $orders = $query->paginate(5);
+        $users = User::all();
+        $vouchers = Voucher::all();
+
+        return view('crud-orders.list', compact('orders', 'users', 'vouchers'));
+    }
+
     /**
      * Display a listing of the resource.
      */
@@ -33,7 +56,15 @@ class OrderController extends Controller
         $users = User::all();
         $vouchers = Voucher::all();
 
-        return view('crud-orders.list', compact('orders', 'users', 'vouchers'));
+        return response()->json([
+            'success' => true,
+            'message' => 'Danh sách đơn hàng',
+            'data' => [
+                'orders' => $orders,
+                'users' => $users,
+                'vouchers' => $vouchers
+            ]
+        ], 200);
     }
 
     /**
@@ -63,9 +94,17 @@ class OrderController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, Order $order)
+    public function update(OrderRequest $request, $order_id)
     {
-        //
+        $order = Order::findOrFail($order_id);
+        $order->fill($request->all());
+        $order->save();
+        $order->updateTotalPrice();
+        return response()->json([
+            'success' => true,
+            'data' => $order,
+            'message' => 'Cập nhật đơn hàng thành công và đã tính lại tổng tiền!'
+        ]);
     }
 
     /**

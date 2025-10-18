@@ -7,6 +7,24 @@ use App\Models\Category;
 
 class CategoryController extends Controller
 {
+    public function list()
+    {
+        // Khởi tạo query gốc
+        $query = Category::query();
+
+        // Nếu có tham số tìm kiếm
+        if (request()->has('search') && request('search')) {
+            $search = request('search');
+            $query->where('category_name', 'like', '%' . $search . '%');
+        }
+
+        // Phân trang sau khi lọc
+        $categories = $query->paginate(5);
+
+        // Gửi dữ liệu sang view
+        return view('crud-category.list', compact('categories'));
+    }
+
     /**
      * Display a listing of the resource.
      */
@@ -25,7 +43,11 @@ class CategoryController extends Controller
         $categories = $query->paginate(5);
 
         // Gửi dữ liệu sang view
-        return view('crud-category.list', compact('categories'));
+        return response()->json([
+            'success' => true,
+            'message' => 'Danh sách danh mục',
+            'data' => $categories
+        ], 200);
     }
 
     /**

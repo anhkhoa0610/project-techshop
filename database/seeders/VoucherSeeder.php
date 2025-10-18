@@ -30,5 +30,13 @@ class VoucherSeeder extends Seeder
             'end_date' => '2025-06-30',
             'status' => 'inactive',
         ]);
+         Voucher::create([
+            'code' => 'DISCOUNT2000',
+            'discount_type' => 'amount',
+            'discount_value' => 10,
+            'start_date' => '2025-01-01',
+            'end_date' => '2025-12-31',
+            'status' => 'active',
+        ]);
     }
 }
