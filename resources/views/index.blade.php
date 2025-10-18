@@ -154,6 +154,26 @@
                         <button class="btn btn-primary full-width">🛒 Thêm vào giỏ</button>
                     </div>
                 </div>
+
+                <div class="product-card">
+                    <div class="product-image">
+                        <img src="https://www.apple.com/v/iphone-17-pro/a/images/overview/contrast/iphone_17_pro__dwccrdina7qu_large.jpg" alt="ROG Gaming Laptop">
+                        <div class="product-badge sale">Giảm sốc</div>
+                        <div class="product-discount">-13%</div>
+                    </div>
+                    <div class="product-info">
+                        <h3 class="product-name">ROG Gaming Laptop</h3>
+                        <div class="product-rating">
+                            <span class="stars">⭐ 4.8</span>
+                            <span class="reviews">(67 đánh giá)</span>
+                        </div>
+                        <div class="product-price">
+                            <span class="current-price">39,990,000₫</span>
+                            <span class="original-price">45,990,000₫</span>
+                        </div>
+                        <button class="btn btn-primary full-width">🛒 Thêm vào giỏ</button>
+                    </div>
+                </div>
             </div>
         </div>
     </section>
