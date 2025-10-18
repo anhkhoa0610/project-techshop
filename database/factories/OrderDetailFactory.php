@@ -19,12 +19,12 @@ class OrderDetailFactory extends Factory
     public function definition(): array
     {
         return [
-            'order_id' => Order::query()->inRandomOrder()->value('order_id'),
-            'product_id' => Product::query()->inRandomOrder()->value('product_id'),
+            'order_id' => Order::query()->inRandomOrder()->value('order_id')
+                ?? Order::factory(), // fallback nếu DB chưa có order nào
+            'product_id' => Product::query()->inRandomOrder()->value('product_id')
+                ?? Product::factory(), // fallback nếu DB chưa có product nào
             'quantity' => $this->faker->numberBetween(1, 5),
             'unit_price' => $this->faker->randomFloat(2, 50000, 500000),
-            'created_at' => now(),
-            'updated_at' => now(),
         ];
     }
 }

@@ -13,7 +13,7 @@
                                 </button>
                             </div>
                             <div class="col-sm-4">
-                                <h2 class="text-center"><b>Quản Lý chi tiết đơn hàng</b></h2>
+                                <h2 class="text-center"><b>Quản Lý chi tiết đơn hàng ID: <?php echo($order_id) ?></b></h2>
                             </div>
                             <div class="col-sm-4">
                                 <div class="search-box">
@@ -97,25 +97,25 @@
 
                             <div class="col-md-12">
                                 <div class="form-group">
-                                    <input type="hidden" id="add_product_id" name="product_id" value="{{ $order_id }}">
+                                    <input type="hidden" id="add_order_id" name="order_id" value="{{ $order_id }}">
                                 </div>
                                 <div class="form-group">
                                     <label for="add_description">product name</label>
                                     <select class="form-control" id="add_product_id" name="product_id">
                                         <option value="{{ null }}">-- chọn sản phẩm --</option>
-                                        @foreach ($orderDetails as $detail)
-                                            <option value="{{ $detail->product->product_id }}">
-                                                {{ $detail->product->product_name }}
+                                        @foreach ($products as $product)
+                                            <option value="{{ $product->product_id }}">
+                                                {{ $product->product_name }}
                                             </option>
                                         @endforeach
                                     </select>
-                                    <div class="text-danger error-message" id="error_add_description"></div>
+                                    <div class="text-danger error-message" id="error_add_product_id"></div>
                                 </div>
                                 <div class="form-group">
                                     <label for="add_quantity">quantity</label>
                                     <input type="number" class="form-control" id="add_quantity" name="quantity"
                                         placeholder="Nhập số lượng">
-                                    <div class="text-danger error-message" id="error_add_description"></div>
+                                    <div class="text-danger error-message" id="error_add_quantity"></div>
                                 </div>
 
                             </div>
@@ -131,12 +131,49 @@
     </div>
 
     <script>
-        // Hiển thị modal khi nhấn nút "Thêm Mới danh mục"
+        // Hiển thị modal khi nhấn nút "Thêm mới orderdetail"
         document.querySelector('.add-new').addEventListener('click', function () {
             // Reset form
             // Xóa lỗi cũ
             document.querySelectorAll('.error-message').forEach(el => el.textContent = '');
             $('#addOrderDetailModal').modal('show');
+        });
+
+        // Xử lý submit form thêm mới danh mục
+         document.getElementById('addOrderDetailForm').addEventListener('submit', async function (e) {
+            e.preventDefault();
+
+            const url = '/api/orderDetails';
+            const formData = new FormData(this);
+            // Xóa lỗi cũ
+            document.querySelectorAll('.error-message').forEach(el => el.textContent = '');
+
+            const response = await fetch(url, {
+                method: 'POST',
+                headers: {
+                    'Accept': 'application/json',
+                    'X-CSRF-TOKEN': '{{ csrf_token() }}'
+                },
+                body: formData
+            });
+
+            if (response.ok) {
+                alert('Thêm chi tiết đơn hàng thành công!');
+                $('#addOrderDetailModal').modal('hide');
+                location.reload();
+            } else {
+                const err = await response.json();
+                if (err.errors) {
+                    Object.keys(err.errors).forEach(field => {
+                        const errorDiv = document.getElementById(`error_add_${field}`);
+                        if (errorDiv) {
+                            errorDiv.textContent = err.errors[field][0];
+                        }
+                    });
+                } else {
+                    alert('Thêm chi tiết đơn hàng thất bại: ' + (err.message || 'Lỗi không xác định'));
+                }
+            }
         });
 
     </script>

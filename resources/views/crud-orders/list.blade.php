@@ -413,6 +413,8 @@
 
             const url = '/api/orders';
             const formData = new FormData(this);
+             // Xóa lỗi cũ
+            document.querySelectorAll('.error-message').forEach(el => el.textContent = '');
 
             const response = await fetch(url, {
                 method: 'POST',

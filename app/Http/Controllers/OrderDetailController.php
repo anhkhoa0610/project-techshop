@@ -2,8 +2,10 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\OrderDetailRequest;
 use App\Models\OrderDetail;
 use Illuminate\Http\Request;
+use App\Models\Product;
 
 
 class OrderDetailController extends Controller
@@ -13,6 +15,7 @@ class OrderDetailController extends Controller
     {
         $query = OrderDetail::where('order_id', $order_id)
             ->with('product');
+        $products = Product::all();
 
         // Nếu có tham số tìm kiếm
         if (request()->has('search') && request('search')) {
@@ -21,7 +24,7 @@ class OrderDetailController extends Controller
         }
 
         $orderDetails = $query->paginate(5);
-        return view('crud-orderDetails.list', compact('orderDetails', 'order_id'));
+        return view('crud-orderDetails.list', compact('orderDetails', 'order_id', 'products'));
     }
     /**
      * Display a listing of the resource.
@@ -56,20 +59,22 @@ class OrderDetailController extends Controller
     /**
      * Store a newly created resource in storage.
      */
-    public function store(Request $request)
+    public function store(OrderDetailRequest $request)
     {
         $detail = new OrderDetail();
         $detail->fill($request->all());
+
+        // Nếu không gửi unit_price từ form, thì tự lấy từ bảng Product
+        if (!$request->filled('unit_price')) {
+            $product = Product::find($request->product_id);
+            $detail->unit_price = $product->price ?? 0;
+        }
+
+        $detail->save();
+
         if ($detail->order) {
             $detail->order->updateTotalPrice();
         }
-        $detail->save();
-
-        return response()->json([
-            'success' => true,
-            'data' => $detail,
-            'message' => 'Thành công!'
-        ]);
     }
 
     /**
