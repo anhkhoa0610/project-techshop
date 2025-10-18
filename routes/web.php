@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\CartController;
 use App\Http\Controllers\CategoryController;
+use App\Http\Controllers\HoaDonController;
 use App\Http\Controllers\OrderController;
 use App\Http\Controllers\PayController;
 use Illuminate\Support\Facades\Route;
@@ -50,7 +51,7 @@ Route::prefix('orderDetails')->group(function () {
 
 Route::get('/cart', [CartController::class, 'index'])->name('cart.index');
 Route::get('/pay', [PayController::class, 'index'])->name('pay.index');
-
+Route::get('/hoadon', [HoaDonController::class, 'index'])->name('hoadon.index');
 
 
 
