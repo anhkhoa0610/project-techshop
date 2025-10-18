@@ -27,6 +27,17 @@
                                     </div>
                                 </form>
                             </div>
+                            <select name="sort_by" class="form-select"
+                                style="max-width: 160px; margin-left: 15px; margin-top: 15px;">
+                                <option value="">Sắp xếp theo...</option>
+                                <option value="name" {{ request('sort_by') == 'name' ? 'selected' : '' }}>Tên sản phẩm
+                                </option>
+                                <option value="price" {{ request('sort_by') == 'price' ? 'selected' : '' }}>Giá</option>
+                                <option value="stock_quantity" {{ request('sort_by') == 'stock_quantity' ? 'selected' : '' }}>
+                                    Số lượng tồn</option>
+                                <option value="release_date" {{ request('sort_by') == 'release_date' ? 'selected' : '' }}>Ngày
+                                    phát hành</option>
+                            </select>
                         </div>
                     </div>
                     <table class="table table-bordered">
@@ -58,7 +69,9 @@
                                     data-category-id="{{ $product->category_id }}"
                                     data-warranty-period="{{ $product->warranty_period }}"
                                     data-volume-sold="{{ $product->volume_sold }}"
-                                    data-release-date="{{ $product->release_date }}">
+                                    data-release-date="{{ $product->release_date }}"
+                                    data-category-name="{{ $product->category->category_name ?? '' }}"
+                                    data-supplier-name="{{ $product->supplier->name ?? '' }}">
                                     <td>{{ $product->product_id }}</td>
                                     <td>{{ $product->product_name }}</td>
                                     <td>
@@ -131,38 +144,48 @@
                             <div class="col-md-6">
                                 <div class="form-group">
                                     <label for="product_name">Tên sản phẩm</label>
-                                    <input type="text" class="form-control" id="product_name" name="product_name" required>
+                                    <input type="text" class="form-control" id="product_name" name="product_name">
+                                    <div class="text-danger error-message" id="error_edit_product_name"></div>
                                 </div>
+
                                 <div class="form-group">
                                     <label for="description">Mô tả</label>
                                     <textarea class="form-control" id="description" name="description"></textarea>
+                                    <div class="text-danger error-message" id="error_edit_product_description"></div>
                                 </div>
+
                                 <div class="form-group">
                                     <label for="stock_quantity">Số lượng tồn</label>
-                                    <input type="number" class="form-control" id="stock_quantity" name="stock_quantity"
-                                        required>
+                                    <input type="number" class="form-control" id="stock_quantity" name="stock_quantity">
+                                    <div class="text-danger error-message" id="error_edit_stock_quantity"></div>
                                 </div>
+
                                 <div class="form-group">
                                     <label for="release_date">Ngày phát hành</label>
-                                    <input type="date" class="form-control" id="release_date" name="release_date" required>
+                                    <input type="date" class="form-control" id="release_date" name="release_date">
+                                    <div class="text-danger error-message" id="error_edit_release_date"></div>
                                 </div>
+
                                 <div class="form-group">
                                     <label for="supplier_id">Nhà cung cấp</label>
-                                    <select class="form-control" id="supplier_id" name="supplier_id" required>
+                                    <select class="form-control" id="supplier_id" name="supplier_id">
                                         <option value="">-- Chọn nhà cung cấp --</option>
                                         @foreach ($suppliers as $supplier)
                                             <option value="{{ $supplier->supplier_id }}">{{ $supplier->name }}</option>
                                         @endforeach
                                     </select>
+                                    <div class="text-danger error-message" id="error_edit_supplier_id"></div>
                                 </div>
+
                                 <div class="form-group">
                                     <label for="category_id">Danh mục</label>
-                                    <select class="form-control" id="category_id" name="category_id" required>
+                                    <select class="form-control" id="category_id" name="category_id">
                                         <option value="">-- Chọn danh mục --</option>
                                         @foreach ($categories as $category)
                                             <option value="{{ $category->category_id }}">{{ $category->category_name }}</option>
                                         @endforeach
                                     </select>
+                                    <div class="text-danger error-message" id="error_edit_category_id"></div>
                                 </div>
                             </div>
 
@@ -176,19 +199,25 @@
                                     </div>
                                     <input type="file" class="form-control" id="cover_image" name="cover_image"
                                         accept="image/*">
+                                    <div class="text-danger error-message" id="error_edit_cover_image"></div>
                                 </div>
+
                                 <div class="form-group">
                                     <label for="price">Giá</label>
-                                    <input type="number" step="0.01" class="form-control" id="price" name="price" required>
+                                    <input type="number" step="0.01" class="form-control" id="price" name="price">
+                                    <div class="text-danger error-message" id="error_edit_price"></div>
                                 </div>
+
                                 <div class="form-group">
                                     <label for="volume_sold">Đã bán</label>
-                                    <input type="number" class="form-control" id="volume_sold" name="volume_sold" required>
+                                    <input type="number" class="form-control" id="volume_sold" name="volume_sold">
+                                    <div class="text-danger error-message" id="error_edit_volume_sold"></div>
                                 </div>
+
                                 <div class="form-group">
                                     <label for="warranty_period">Bảo hành</label>
-                                    <input type="number" class="form-control" id="warranty_period" name="warranty_period"
-                                        required>
+                                    <input type="number" class="form-control" id="warranty_period" name="warranty_period">
+                                    <div class="text-danger error-message" id="error_edit_warranty_period"></div>
                                 </div>
 
                             </div>
@@ -223,40 +252,48 @@
                             <div class="col-md-6">
                                 <div class="form-group">
                                     <label for="add_product_name">Tên sản phẩm</label>
-                                    <input type="text" class="form-control" id="add_product_name" name="product_name"
-                                        required>
+                                    <input type="text" class="form-control" id="add_product_name" name="product_name">
+                                    <div class="text-danger error-message" id="error_add_product_name"></div>
                                 </div>
+
                                 <div class="form-group">
                                     <label for="add_description">Mô tả</label>
                                     <textarea class="form-control" id="add_description" name="description"></textarea>
+                                    <div class="text-danger error-message" id="error_add_description"></div>
                                 </div>
+
                                 <div class="form-group">
                                     <label for="add_stock_quantity">Số lượng tồn</label>
-                                    <input type="number" class="form-control" id="add_stock_quantity" name="stock_quantity"
-                                        required>
+                                    <input type="number" class="form-control" id="add_stock_quantity" name="stock_quantity">
+                                    <div class="text-danger error-message" id="error_add_stock_quantity"></div>
                                 </div>
+
                                 <div class="form-group">
                                     <label for="add_release_date">Ngày phát hành</label>
-                                    <input type="date" class="form-control" id="add_release_date" name="release_date"
-                                        required>
+                                    <input type="date" class="form-control" id="add_release_date" name="release_date">
+                                    <div class="text-danger error-message" id="error_add_release_date"></div>
                                 </div>
+
                                 <div class="form-group">
                                     <label for="add_supplier_id">Nhà cung cấp</label>
-                                    <select class="form-control" id="add_supplier_id" name="supplier_id" required>
+                                    <select class="form-control" id="add_supplier_id" name="supplier_id">
                                         <option value="">-- Chọn nhà cung cấp --</option>
                                         @foreach ($suppliers as $supplier)
                                             <option value="{{ $supplier->supplier_id }}">{{ $supplier->name }}</option>
                                         @endforeach
                                     </select>
+                                    <div class="text-danger error-message" id="error_add_supplier_id"></div>
                                 </div>
+
                                 <div class="form-group">
                                     <label for="add_category_id">Danh mục</label>
-                                    <select class="form-control" id="add_category_id" name="category_id" required>
+                                    <select class="form-control" id="add_category_id" name="category_id">
                                         <option value="">-- Chọn danh mục --</option>
                                         @foreach ($categories as $category)
                                             <option value="{{ $category->category_id }}">{{ $category->category_name }}</option>
                                         @endforeach
                                     </select>
+                                    <div class="text-danger error-message" id="error_add_category_id"></div>
                                 </div>
                             </div>
                             <!-- Cột phải -->
@@ -269,21 +306,26 @@
                                     </div>
                                     <input type="file" class="form-control" id="add_cover_image" name="cover_image"
                                         accept="image/*">
+                                    <div class="text-danger error-message" id="error_add_cover_image"></div>
                                 </div>
+
                                 <div class="form-group">
                                     <label for="add_price">Giá</label>
-                                    <input type="number" step="0.01" class="form-control" id="add_price" name="price"
-                                        required>
+                                    <input type="number" step="0.01" class="form-control" id="add_price" name="price">
+                                    <div class="text-danger error-message" id="error_add_price"></div>
                                 </div>
+
                                 <div class="form-group">
                                     <label for="add_volume_sold">Đã bán</label>
-                                    <input type="number" class="form-control" id="add_volume_sold" name="volume_sold"
-                                        required>
+                                    <input type="number" class="form-control" id="add_volume_sold" name="volume_sold">
+                                    <div class="text-danger error-message" id="error_add_volume_sold"></div>
                                 </div>
+
                                 <div class="form-group">
                                     <label for="add_warranty_period">Bảo hành</label>
                                     <input type="number" class="form-control" id="add_warranty_period"
-                                        name="warranty_period" required>
+                                        name="warranty_period">
+                                    <div class="text-danger error-message" id="error_add_warranty_period"></div>
                                 </div>
                             </div>
                         </div>
@@ -297,161 +339,73 @@
         </div>
     </div>
 
+    <!-- Modal View Product -->
+    <div class="modal fade" id="viewProductModal" tabindex="-1" role="dialog" aria-labelledby="viewProductModalLabel"
+        aria-hidden="true">
+        <div class="modal-dialog modal-lg" role="document">
+            <div class="modal-content shadow-lg">
+                <div class="modal-header bg-secondary text-white">
+                    <h5 class="modal-title" id="viewProductModalLabel">
+                        Thông tin Sản Phẩm
+                    </h5>
+                </div>
+                <div class="modal-body bg-light">
+                    <div class="row">
+                        <div class="col-md-4 text-center">
+                            <div class="mb-3">
+                                <img id="view_product_image" src="" alt="Ảnh sản phẩm" class="img-thumbnail shadow"
+                                    style="max-height: 120px; background: #fff;">
+                            </div>
+                            <h4 id="view_product_name" class="font-weight-bold text-secondary mb-2"></h4>
+                            <div id="view_category"
+                                class="font-weight-bold mb-1 rounded px-2 py-1 bg-info text-dark d-inline-block"></div>
+                            <div id="view_supplier"
+                                class="font-weight-bold mb-1 rounded px-2 py-1 bg-info text-dark d-inline-block"></div>
+                        </div>
+                        <div class="col-md-8">
+                            <div class="card border-0 bg-white shadow-sm">
+                                <div class="card-body p-3">
+                                    <div class="row mb-2">
+                                        <div class="col-4 font-weight-bold text-secondary">Giá:</div>
+                                        <div class="col-8" id="view_price"></div>
+                                    </div>
+                                    <div class="row mb-2">
+                                        <div class="col-4 font-weight-bold text-secondary">Số lượng tồn:</div>
+                                        <div class="col-8" id="view_stock_quantity"></div>
+                                    </div>
+                                    <div class="row mb-2">
+                                        <div class="col-4 font-weight-bold text-secondary">Đã bán:</div>
+                                        <div class="col-8" id="view_volume_sold"></div>
+                                    </div>
+                                    <div class="row mb-2">
+                                        <div class="col-4 font-weight-bold text-secondary">Bảo hành:</div>
+                                        <div class="col-8" id="view_warranty_period"></div>
+                                    </div>
+                                    <div class="row mb-2">
+                                        <div class="col-4 font-weight-bold text-secondary">Ngày phát hành:</div>
+                                        <div class="col-8" id="view_release_date"></div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-4 font-weight-bold text-secondary">Mô tả:</div>
+                                        <div class="col-8" id="view_description"></div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer bg-white">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">
+                        <i class="material-icons align-middle">close</i> Đóng
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <script>
-        document.querySelectorAll('.edit').forEach(function (btn) {
-            btn.addEventListener('click', function (e) {
-                e.preventDefault();
-                var row = btn.closest('tr');
-
-                document.getElementById('product_name').value = row.getAttribute('data-product-name') || '';
-                document.getElementById('description').value = row.getAttribute('data-description') || '';
-                document.getElementById('price').value = row.getAttribute('data-price') || '';
-                document.getElementById('stock_quantity').value = row.getAttribute('data-stock-quantity') || '';
-                document.getElementById('supplier_id').value = row.getAttribute('data-supplier-id') || '';
-                document.getElementById('category_id').value = row.getAttribute('data-category-id') || '';
-                document.getElementById('warranty_period').value = row.getAttribute('data-warranty-period') || '';
-                document.getElementById('volume_sold').value = row.getAttribute('data-volume-sold') || '';
-                document.getElementById('release_date').value = row.getAttribute('data-release-date') || '';
-
-                const imageFile = row.getAttribute('data-cover-image');
-                const preview = document.getElementById('preview_image');
-                if (imageFile) {
-                    preview.src = `/uploads/${imageFile}`;
-                } else {
-                    preview.src = `/images/place-holder.jpg`;
-                }
-
-                // Reset input file
-                document.getElementById('cover_image').value = '';
-
-                document.getElementById('editProductForm').dataset.id = row.getAttribute('data-product-id');
-
-                $('#editProductModal').modal('show');
-            });
-        });
-
-        document.getElementById('cover_image').addEventListener('change', function (e) {
-            const file = e.target.files[0];
-            const preview = document.getElementById('preview_image');
-
-            if (file) {
-                const reader = new FileReader();
-                reader.onload = function (event) {
-                    preview.src = event.target.result;
-                };
-                reader.readAsDataURL(file);
-            }
-        });
-
-        // Xử lý submit form
-        document.getElementById('editProductForm').addEventListener('submit', async function (e) {
-            e.preventDefault();
-
-            const id = this.dataset.id;
-            const url = `/api/products/${id}`;
-
-            const formData = new FormData();
-            formData.append('_method', 'PUT');
-            formData.append('product_name', document.getElementById('product_name').value);
-            formData.append('description', document.getElementById('description').value);
-            formData.append('stock_quantity', document.getElementById('stock_quantity').value);
-            formData.append('price', document.getElementById('price').value);
-            formData.append('volume_sold', document.getElementById('volume_sold').value);
-            formData.append('category_id', document.getElementById('category_id').value);
-            formData.append('supplier_id', document.getElementById('supplier_id').value);
-            formData.append('warranty_period', document.getElementById('warranty_period').value);
-            formData.append('release_date', document.getElementById('release_date').value);
-            const fileInput = document.getElementById('cover_image');
-            if (fileInput.files.length > 0) {
-                formData.append('cover_image', fileInput.files[0]);
-            }
-
-            const response = await fetch(url, {
-                method: 'POST',
-                headers: {
-                    'Accept': 'application/json',
-                    'X-CSRF-TOKEN': '{{ csrf_token() }}'
-                },
-                body: formData
-            });
-
-            for (let [key, value] of formData.entries()) {
-                console.log(key, value);
-            }
-
-            if (response.ok) {
-                alert('Cập nhật sản phẩm thành công!');
-                $('#editProductModal').modal('hide');
-                location.reload();
-            } else {
-                const err = await response.json();
-
-                console.error(err);
-                alert('Cập nhật thất bại: ' + (err.message || 'Lỗi không xác định'));
-            }
-        });
-
-        // Hiển thị modal khi nhấn nút "Thêm Mới Sản Phẩm"
-        document.querySelector('.add-new').addEventListener('click', function () {
-            // Reset form
-            document.getElementById('addProductForm').reset();
-            document.getElementById('add_preview_image').src = "{{ asset('images/place-holder.jpg') }}";
-            $('#addProductModal').modal('show');
-        });
-
-        // Xem trước ảnh khi chọn file
-        document.getElementById('add_cover_image').addEventListener('change', function (e) {
-            const file = e.target.files[0];
-            const preview = document.getElementById('add_preview_image');
-            if (file) {
-                const reader = new FileReader();
-                reader.onload = function (event) {
-                    preview.src = event.target.result;
-                };
-                reader.readAsDataURL(file);
-            }
-        });
-
-        // Xử lý submit form thêm mới
-        document.getElementById('addProductForm').addEventListener('submit', async function (e) {
-            e.preventDefault();
-
-            const url = '/api/products';
-            const formData = new FormData(this);
-
-            const response = await fetch(url, {
-                method: 'POST',
-                headers: {
-                    'Accept': 'application/json',
-                    'X-CSRF-TOKEN': '{{ csrf_token() }}'
-                },
-                body: formData
-            });
-
-            if (response.ok) {
-                alert('Thêm sản phẩm thành công!');
-                $('#addProductModal').modal('hide');
-                location.reload();
-            } else {
-                const err = await response.json();
-                alert('Thêm thất bại: ' + (err.message || 'Lỗi không xác định'));
-            }
-        });
-
-        function confirmDelete(id) {
-            Swal.fire({
-                title: 'Xác nhận xóa',
-                text: 'Bạn có chắc chắn muốn xóa sản phẩm này không?',
-                icon: 'warning',
-                showCancelButton: true,
-                confirmButtonText: 'Xóa',
-                cancelButtonText: 'Hủy'
-            }).then((result) => {
-                if (result.isConfirmed) {
-                    document.getElementById('delete-form-' + id).submit();
-                }
-            });
-        }
+        window.csrfToken = "{{ csrf_token() }}";
     </script>
+    <script src="{{ asset('js/crud-product.js') }}"></script>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 @endsection
