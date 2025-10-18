@@ -27,7 +27,8 @@
                                     </div>
                                 </form>
                             </div>
-                            <select name="sort_by" class="form-select" style="max-width: 160px; margin-left: 15px; margin-top: 15px;">
+                            <select name="sort_by" class="form-select"
+                                style="max-width: 160px; margin-left: 15px; margin-top: 15px;">
                                 <option value="">Sắp xếp theo...</option>
                                 <option value="name" {{ request('sort_by') == 'name' ? 'selected' : '' }}>Tên sản phẩm
                                 </option>
@@ -143,38 +144,48 @@
                             <div class="col-md-6">
                                 <div class="form-group">
                                     <label for="product_name">Tên sản phẩm</label>
-                                    <input type="text" class="form-control" id="product_name" name="product_name" required>
+                                    <input type="text" class="form-control" id="product_name" name="product_name">
+                                    <div class="text-danger error-message" id="error_edit_product_name"></div>
                                 </div>
+
                                 <div class="form-group">
                                     <label for="description">Mô tả</label>
                                     <textarea class="form-control" id="description" name="description"></textarea>
+                                    <div class="text-danger error-message" id="error_edit_product_description"></div>
                                 </div>
+
                                 <div class="form-group">
                                     <label for="stock_quantity">Số lượng tồn</label>
-                                    <input type="number" class="form-control" id="stock_quantity" name="stock_quantity"
-                                        required>
+                                    <input type="number" class="form-control" id="stock_quantity" name="stock_quantity">
+                                    <div class="text-danger error-message" id="error_edit_stock_quantity"></div>
                                 </div>
+
                                 <div class="form-group">
                                     <label for="release_date">Ngày phát hành</label>
-                                    <input type="date" class="form-control" id="release_date" name="release_date" required>
+                                    <input type="date" class="form-control" id="release_date" name="release_date">
+                                    <div class="text-danger error-message" id="error_edit_release_date"></div>
                                 </div>
+
                                 <div class="form-group">
                                     <label for="supplier_id">Nhà cung cấp</label>
-                                    <select class="form-control" id="supplier_id" name="supplier_id" required>
+                                    <select class="form-control" id="supplier_id" name="supplier_id">
                                         <option value="">-- Chọn nhà cung cấp --</option>
                                         @foreach ($suppliers as $supplier)
                                             <option value="{{ $supplier->supplier_id }}">{{ $supplier->name }}</option>
                                         @endforeach
                                     </select>
+                                    <div class="text-danger error-message" id="error_edit_supplier_id"></div>
                                 </div>
+
                                 <div class="form-group">
                                     <label for="category_id">Danh mục</label>
-                                    <select class="form-control" id="category_id" name="category_id" required>
+                                    <select class="form-control" id="category_id" name="category_id">
                                         <option value="">-- Chọn danh mục --</option>
                                         @foreach ($categories as $category)
                                             <option value="{{ $category->category_id }}">{{ $category->category_name }}</option>
                                         @endforeach
                                     </select>
+                                    <div class="text-danger error-message" id="error_edit_category_id"></div>
                                 </div>
                             </div>
 
@@ -188,19 +199,25 @@
                                     </div>
                                     <input type="file" class="form-control" id="cover_image" name="cover_image"
                                         accept="image/*">
+                                    <div class="text-danger error-message" id="error_edit_cover_image"></div>
                                 </div>
+
                                 <div class="form-group">
                                     <label for="price">Giá</label>
-                                    <input type="number" step="0.01" class="form-control" id="price" name="price" required>
+                                    <input type="number" step="0.01" class="form-control" id="price" name="price">
+                                    <div class="text-danger error-message" id="error_edit_price"></div>
                                 </div>
+
                                 <div class="form-group">
                                     <label for="volume_sold">Đã bán</label>
-                                    <input type="number" class="form-control" id="volume_sold" name="volume_sold" required>
+                                    <input type="number" class="form-control" id="volume_sold" name="volume_sold">
+                                    <div class="text-danger error-message" id="error_edit_volume_sold"></div>
                                 </div>
+
                                 <div class="form-group">
                                     <label for="warranty_period">Bảo hành</label>
-                                    <input type="number" class="form-control" id="warranty_period" name="warranty_period"
-                                        required>
+                                    <input type="number" class="form-control" id="warranty_period" name="warranty_period">
+                                    <div class="text-danger error-message" id="error_edit_warranty_period"></div>
                                 </div>
 
                             </div>
@@ -235,40 +252,48 @@
                             <div class="col-md-6">
                                 <div class="form-group">
                                     <label for="add_product_name">Tên sản phẩm</label>
-                                    <input type="text" class="form-control" id="add_product_name" name="product_name"
-                                        required>
+                                    <input type="text" class="form-control" id="add_product_name" name="product_name">
+                                    <div class="text-danger error-message" id="error_add_product_name"></div>
                                 </div>
+
                                 <div class="form-group">
                                     <label for="add_description">Mô tả</label>
                                     <textarea class="form-control" id="add_description" name="description"></textarea>
+                                    <div class="text-danger error-message" id="error_add_description"></div>
                                 </div>
+
                                 <div class="form-group">
                                     <label for="add_stock_quantity">Số lượng tồn</label>
-                                    <input type="number" class="form-control" id="add_stock_quantity" name="stock_quantity"
-                                        required>
+                                    <input type="number" class="form-control" id="add_stock_quantity" name="stock_quantity">
+                                    <div class="text-danger error-message" id="error_add_stock_quantity"></div>
                                 </div>
+
                                 <div class="form-group">
                                     <label for="add_release_date">Ngày phát hành</label>
-                                    <input type="date" class="form-control" id="add_release_date" name="release_date"
-                                        required>
+                                    <input type="date" class="form-control" id="add_release_date" name="release_date">
+                                    <div class="text-danger error-message" id="error_add_release_date"></div>
                                 </div>
+
                                 <div class="form-group">
                                     <label for="add_supplier_id">Nhà cung cấp</label>
-                                    <select class="form-control" id="add_supplier_id" name="supplier_id" required>
+                                    <select class="form-control" id="add_supplier_id" name="supplier_id">
                                         <option value="">-- Chọn nhà cung cấp --</option>
                                         @foreach ($suppliers as $supplier)
                                             <option value="{{ $supplier->supplier_id }}">{{ $supplier->name }}</option>
                                         @endforeach
                                     </select>
+                                    <div class="text-danger error-message" id="error_add_supplier_id"></div>
                                 </div>
+
                                 <div class="form-group">
                                     <label for="add_category_id">Danh mục</label>
-                                    <select class="form-control" id="add_category_id" name="category_id" required>
+                                    <select class="form-control" id="add_category_id" name="category_id">
                                         <option value="">-- Chọn danh mục --</option>
                                         @foreach ($categories as $category)
                                             <option value="{{ $category->category_id }}">{{ $category->category_name }}</option>
                                         @endforeach
                                     </select>
+                                    <div class="text-danger error-message" id="error_add_category_id"></div>
                                 </div>
                             </div>
                             <!-- Cột phải -->
@@ -281,21 +306,26 @@
                                     </div>
                                     <input type="file" class="form-control" id="add_cover_image" name="cover_image"
                                         accept="image/*">
+                                    <div class="text-danger error-message" id="error_add_cover_image"></div>
                                 </div>
+
                                 <div class="form-group">
                                     <label for="add_price">Giá</label>
-                                    <input type="number" step="0.01" class="form-control" id="add_price" name="price"
-                                        required>
+                                    <input type="number" step="0.01" class="form-control" id="add_price" name="price">
+                                    <div class="text-danger error-message" id="error_add_price"></div>
                                 </div>
+
                                 <div class="form-group">
                                     <label for="add_volume_sold">Đã bán</label>
-                                    <input type="number" class="form-control" id="add_volume_sold" name="volume_sold"
-                                        required>
+                                    <input type="number" class="form-control" id="add_volume_sold" name="volume_sold">
+                                    <div class="text-danger error-message" id="error_add_volume_sold"></div>
                                 </div>
+
                                 <div class="form-group">
                                     <label for="add_warranty_period">Bảo hành</label>
                                     <input type="number" class="form-control" id="add_warranty_period"
-                                        name="warranty_period" required>
+                                        name="warranty_period">
+                                    <div class="text-danger error-message" id="error_add_warranty_period"></div>
                                 </div>
                             </div>
                         </div>

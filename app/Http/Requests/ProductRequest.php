@@ -38,10 +38,10 @@ class ProductRequest extends FormRequest
             'price' => 'required|numeric|min:0',
             'stock_quantity' => 'required|integer|min:0',
             'description' => 'nullable|string',
-            'volume_sold' => 'nullable|integer|min:0',
+            'volume_sold' => 'required|integer|min:0',
             'cover_image' => 'nullable',
-            'warranty_period' => 'nullable|integer|min:0',
-            'release_date' => 'nullable' // 2MB
+            'warranty_period' => 'required|integer|min:0',
+            'release_date' => 'required|date'
         ];
     }
 
