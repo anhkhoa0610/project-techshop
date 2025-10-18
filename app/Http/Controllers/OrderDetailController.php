@@ -64,11 +64,8 @@ class OrderDetailController extends Controller
         $detail = new OrderDetail();
         $detail->fill($request->all());
 
-        // Nếu không gửi unit_price từ form, thì tự lấy từ bảng Product
-        if (!$request->filled('unit_price')) {
-            $product = Product::find($request->product_id);
-            $detail->unit_price = $product->price ?? 0;
-        }
+        $product = Product::find($request->product_id);
+        $detail->unit_price = $product?->price ?? 0;
 
         $detail->save();
 
@@ -96,7 +93,7 @@ class OrderDetailController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, string $detail_id)
+    public function update(OrderDetailRequest $request, string $detail_id)
     {
         $detail = OrderDetail::findOrFail($detail_id);
 

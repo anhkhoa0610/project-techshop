@@ -103,7 +103,7 @@
                                     <td>{{ $order->shipping_address }}</td>
                                     <td>{{ $order->payment_method }}</td>
                                     <td>{{ $order->voucher->code ?? "không áp dụng"}}</td>
-                                    <td>{{ number_format($order->total_price, 2) }}</td>
+                                    <td>{{ number_format($order->total_price, 0,',','.') }}₫</td>
                                     <td>
                                         <a href="{{ route("orderDetails.list", [$order->order_id]) }}" class="view" title="View"
                                             data-toggle="tooltip"><i class="material-icons">&#xE417;</i></a>
