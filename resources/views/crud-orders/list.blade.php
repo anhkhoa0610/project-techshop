@@ -15,7 +15,7 @@
 
             </div>
             <div class="col-sm-4">
-                <form method="GET" action="{{ route('orders.index') }}" class="row g-3  align-items-end">
+                <form method="GET" action="{{ url()->current() }}" class="row g-3  align-items-end">
                     <div class="col-sm-4">
                         <label for="start_date" class="form-label">Từ ngày</label>
                         <input type="date" id="start_date" name="start_date" value="{{ request('start_date') }}"

@@ -26,6 +26,8 @@ class OrderDetailFactory extends Factory
             // Tạo dữ liệu ngẫu nhiên
             'quantity' => $this->faker->numberBetween(1, 5),
             'unit_price' => $this->faker->randomFloat(2, 50000, 500000),
+            'created_at' => now(),
+            'updated_at' => now(),
         ];
     }
 }

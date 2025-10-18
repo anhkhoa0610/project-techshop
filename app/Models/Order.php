@@ -36,11 +36,7 @@ class Order extends Model
     // Nếu có cột datetime tự động
     protected $dates = ['order_date', 'created_at', 'updated_at'];
 
-    /*
-    |--------------------------------------------------------------------------
-    | QUAN HỆ (Relationships)
-    |--------------------------------------------------------------------------
-    */
+
 
     // Mỗi đơn hàng thuộc về một người dùng
     public function user()
@@ -60,7 +56,7 @@ class Order extends Model
         return $this->hasMany(OrderDetail::class, 'order_id', 'order_id');
     }
 
-    // hàm caaph nhật giá, áp dụng mã giảm mỗi khi thay đổi,tạo mới chi tiết đơn hàng
+    // Hàm cập nhật giá, áp dụng mã giảm mỗi khi thay đổi,tạo mới chi tiết đơn hàng
     public function updateTotalPrice()
     {
         // 1. Tính tổng giá gốc
