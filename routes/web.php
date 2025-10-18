@@ -6,16 +6,14 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\ProductController;
 use App\Http\Controllers\SupplierController;
 use App\Http\Controllers\OrderDetailController;
+use App\Http\Controllers\IndexController;
 
 
 Route::get('/', function () {
     return view('layouts.dashboard');
 });
 
-Route::get('/index', function () {
-    return view('index');
-});
-
+Route::get('/index', [IndexController::class, 'index'])->name('index');
 
 Route::prefix('products')->group(function () {
     Route::get('/', [ProductController::class, 'list'])->name('products.list');

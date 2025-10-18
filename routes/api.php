@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\IndexController;
 use App\Http\Controllers\OrderController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
@@ -20,3 +21,6 @@ Route::apiResource('orderDetails', OrderDetailController::class);
 
 // supplier
 Route::apiResource('suppliers', SupplierController::class)->only(['update', 'destroy', 'store']);
+
+// Lấy sản phẩm theo danh mục
+Route::get('categories/{categoryId}/products', [IndexController::class, 'getProductsByCategory']);
