@@ -48,6 +48,9 @@ document.getElementById('cover_image').addEventListener('change', function (e) {
 document.getElementById('editProductForm').addEventListener('submit', async function (e) {
     e.preventDefault();
 
+    clearFormErrors(this);
+
+
     const id = this.dataset.id;
     const url = `/api/products/${id}`;
 
@@ -86,9 +89,16 @@ document.getElementById('editProductForm').addEventListener('submit', async func
         location.reload();
     } else {
         const err = await response.json();
-
-        console.error(err);
-        alert('Cập nhật thất bại: ' + (err.message || 'Lỗi không xác định'));
+        if (err.errors) {
+            Object.keys(err.errors).forEach(field => {
+                const errorDiv = document.getElementById(`error_edit_${field}`);
+                if (errorDiv) {
+                    errorDiv.textContent = err.errors[field][0];
+                }
+            });
+        } else {
+            alert('Sửa sản phẩm thất bại: ' + (err.message || 'Lỗi không xác định'));
+        }
     }
 });
 
@@ -117,6 +127,9 @@ document.getElementById('add_cover_image').addEventListener('change', function (
 document.getElementById('addProductForm').addEventListener('submit', async function (e) {
     e.preventDefault();
 
+    clearFormErrors(this);
+
+
     const url = '/api/products';
     const formData = new FormData(this);
 
@@ -135,7 +148,16 @@ document.getElementById('addProductForm').addEventListener('submit', async funct
         location.reload();
     } else {
         const err = await response.json();
-        alert('Thêm thất bại: ' + (err.message || 'Lỗi không xác định'));
+        if (err.errors) {
+            Object.keys(err.errors).forEach(field => {
+                const errorDiv = document.getElementById(`error_add_${field}`);
+                if (errorDiv) {
+                    errorDiv.textContent = err.errors[field][0];
+                }
+            });
+        } else {
+            alert('Thêm sản phẩm thất bại: ' + (err.message || 'Lỗi không xác định'));
+        }
     }
 });
 
@@ -172,3 +194,11 @@ document.querySelectorAll('.view').forEach(function (btn) {
         $('#viewProductModal').modal('show');
     });
 });
+
+function clearFormErrors(form) {
+    if (!form) return;
+    // clear elements with class 'error-message' inside the form
+    form.querySelectorAll('.error-message').forEach(function (el) {
+        el.textContent = '';
+    });
+}
