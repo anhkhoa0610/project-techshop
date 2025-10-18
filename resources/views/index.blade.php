@@ -3,6 +3,8 @@
 @section('title', 'TechStore - Trang chủ')
 
 @section('content')
+
+
     <!-- Hero Section -->
 
     <section class="hero">
@@ -15,7 +17,7 @@
                         <span class="hero-subtitle">Pro Series</span>
                     </h1>
                     <p class="hero-description">
-                        Trải nghiệm công nghệ đỉnh cao với camera chuyên nghiệp và hiệu suất vượt trội. 
+                        Trải nghiệm công nghệ đỉnh cao với camera chuyên nghiệp và hiệu suất vượt trội.
                         Giảm giá lên đến 30% cho đơn hàng đầu tiên.
                     </p>
                     <div class="hero-buttons">
@@ -38,7 +40,8 @@
                     </div>
                 </div>
                 <div class="hero-image">
-                    <img src="https://www.apple.com/v/iphone-17-pro/a/images/overview/contrast/iphone_17_pro__dwccrdina7qu_large.jpg" alt="Sony Xperia Pro" class="phone-image">
+                    <img src="https://www.apple.com/v/iphone-17-pro/a/images/overview/contrast/iphone_17_pro__dwccrdina7qu_large.jpg"
+                        alt="Sony Xperia Pro" class="phone-image">
                 </div>
             </div>
         </div>
@@ -95,85 +98,76 @@
                 <p class="section-subtitle">Những sản phẩm được yêu thích nhất</p>
             </div>
             <div class="products-grid">
+                <?php foreach ($topProducts as $product): ?>
                 <div class="product-card">
                     <div class="product-image">
-                        <img src="https://www.apple.com/v/iphone-17-pro/a/images/overview/contrast/iphone_17_pro__dwccrdina7qu_large.jpg" alt="iPhone 15 Pro">
+                        <img src="{{ $product->cover_image ? asset('uploads/'.$product->cover_image) : asset('images/place-holder.jpg') }}"
+                            alt="{{ $product->product_name }}">
                         <div class="product-badge">Bán chạy</div>
                         <div class="product-discount">-13%</div>
                     </div>
                     <div class="product-info">
-                        <h3 class="product-name">iPhone 15 Pro</h3>
+                        <h3 class="product-name"><?= $product->product_name; ?></h3>
                         <div class="product-rating">
                             <span class="stars">⭐ 4.9</span>
                             <span class="reviews">(156 đánh giá)</span>
                         </div>
                         <div class="product-price">
-                            <span class="current-price">25,990,000₫</span>
-                            <span class="original-price">29,990,000₫</span>
+                            <span class="current-price"><?= number_format($product->price, 0, ',', '.'); ?>₫</span>
+                            <span
+                                class="original-price"><?= number_format($product->original_price, 0, ',', '.'); ?>₫</span>
                         </div>
                         <button class="btn btn-primary full-width">🛒 Thêm vào giỏ</button>
                     </div>
                 </div>
+                <?php endforeach; ?>
+            </div>
+        </div>
+    </section>
 
+
+    <!-- Featured Products -->
+    <section class="products">
+        <div class="container">
+            <div class="section-header">
+                <h2 class="section-title">Sản phẩm mới nhất</h2>
+                <p class="section-subtitle">Những sản phẩm mới nhất</p>
+            </div>
+            <div class="products-grid">
+                <?php foreach ($newProducts as $product): ?>
                 <div class="product-card">
                     <div class="product-image">
-                        <img src="https://www.apple.com/v/iphone-17-pro/a/images/overview/contrast/iphone_17_pro__dwccrdina7qu_large.jpg" alt="Xiaomi 13 Ultra">
-                        <div class="product-badge new">Mới</div>
-                        <div class="product-discount">-16%</div>
-                    </div>
-                    <div class="product-info">
-                        <h3 class="product-name">Xiaomi 13 Ultra</h3>
-                        <div class="product-rating">
-                            <span class="stars">⭐ 4.7</span>
-                            <span class="reviews">(89 đánh giá)</span>
-                        </div>
-                        <div class="product-price">
-                            <span class="current-price">15,990,000₫</span>
-                            <span class="original-price">18,990,000₫</span>
-                        </div>
-                        <button class="btn btn-primary full-width">🛒 Thêm vào giỏ</button>
-                    </div>
-                </div>
-
-                <div class="product-card">
-                    <div class="product-image">
-                        <img src="https://www.apple.com/v/iphone-17-pro/a/images/overview/contrast/iphone_17_pro__dwccrdina7qu_large.jpg" alt="ROG Gaming Laptop">
-                        <div class="product-badge sale">Giảm sốc</div>
+                        <img src="{{ $product->cover_image ? asset('uploads/'.$product->cover_image) : asset('images/place-holder.jpg') }}"
+                            alt="{{ $product->product_name }}">
+                        <div class="product-badge">Bán chạy</div>
                         <div class="product-discount">-13%</div>
                     </div>
                     <div class="product-info">
-                        <h3 class="product-name">ROG Gaming Laptop</h3>
+                        <h3 class="product-name"><?= $product->product_name; ?></h3>
                         <div class="product-rating">
-                            <span class="stars">⭐ 4.8</span>
-                            <span class="reviews">(67 đánh giá)</span>
+                            <span class="stars">⭐ 4.9</span>
+                            <span class="reviews">(156 đánh giá)</span>
                         </div>
                         <div class="product-price">
-                            <span class="current-price">39,990,000₫</span>
-                            <span class="original-price">45,990,000₫</span>
+                            <span class="current-price"><?= number_format($product->price, 0, ',', '.'); ?>₫</span>
                         </div>
                         <button class="btn btn-primary full-width">🛒 Thêm vào giỏ</button>
                     </div>
                 </div>
+                <?php endforeach; ?>
+            </div>
+        </div>
+    </section>
 
-                <div class="product-card">
-                    <div class="product-image">
-                        <img src="https://www.apple.com/v/iphone-17-pro/a/images/overview/contrast/iphone_17_pro__dwccrdina7qu_large.jpg" alt="ROG Gaming Laptop">
-                        <div class="product-badge sale">Giảm sốc</div>
-                        <div class="product-discount">-13%</div>
-                    </div>
-                    <div class="product-info">
-                        <h3 class="product-name">ROG Gaming Laptop</h3>
-                        <div class="product-rating">
-                            <span class="stars">⭐ 4.8</span>
-                            <span class="reviews">(67 đánh giá)</span>
-                        </div>
-                        <div class="product-price">
-                            <span class="current-price">39,990,000₫</span>
-                            <span class="original-price">45,990,000₫</span>
-                        </div>
-                        <button class="btn btn-primary full-width">🛒 Thêm vào giỏ</button>
-                    </div>
-                </div>
+    <!-- Featured Products -->
+    <section class="products categories-products" style="display: none">
+        <div class="container">
+            <div class="section-header">
+                <h2 class="section-title">Sản phẩm theo danh mục</h2>
+                <p class="section-subtitle">Các sản phẩm là </p>
+            </div>
+            <div class="products-grid show-by-category">
+                
             </div>
         </div>
     </section>
@@ -187,7 +181,8 @@
             </div>
             <div class="deal-card">
                 <div class="deal-image">
-                    <img src="https://www.apple.com/v/iphone-17-pro/a/images/overview/contrast/iphone_17_pro__dwccrdina7qu_large.jpg" alt="Xiaomi Deal">
+                    <img src="https://www.apple.com/v/iphone-17-pro/a/images/overview/contrast/iphone_17_pro__dwccrdina7qu_large.jpg"
+                        alt="Xiaomi Deal">
                     <div class="flash-badge">FLASH SALE</div>
                 </div>
                 <div class="deal-content">
@@ -197,7 +192,7 @@
                         <span class="reviews">(234 đánh giá)</span>
                     </div>
                     <p class="deal-description">
-                        Camera Leica 50MP, chip Snapdragon 8 Gen 2, RAM 12GB, 
+                        Camera Leica 50MP, chip Snapdragon 8 Gen 2, RAM 12GB,
                         bộ nhớ 256GB. Trải nghiệm nhiếp ảnh chuyên nghiệp.
                     </p>
                     <div class="deal-pricing">
@@ -227,5 +222,5 @@
             </div>
         </div>
     </section>
-
+<script src="{{ asset('js/index.js') }}"></script>
 @endsection
