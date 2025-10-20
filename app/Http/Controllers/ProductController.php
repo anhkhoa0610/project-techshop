@@ -49,7 +49,24 @@ class ProductController extends Controller
     public function store(ProductRequest $request)
     {
         $product = new Product;
-        $product->fill($request->all());
+
+        $data = $request->all();
+
+        if ($request->hasFile('cover_image')) {
+            $file = $request->file('cover_image');
+
+            $filename = $file->getClientOriginalName();
+
+            $file->move(public_path('uploads'), $filename);
+
+            if ($product->cover_image && file_exists(public_path('uploads/' . $product->cover_image))) {
+                unlink(public_path('uploads/' . $product->cover_image));
+            }
+
+            $data['cover_image'] = $filename;
+        }
+
+        $product->fill($data);
         $product->save();
         return response()->json([
             'success' => true,
