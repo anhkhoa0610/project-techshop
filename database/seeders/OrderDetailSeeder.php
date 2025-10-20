@@ -16,7 +16,7 @@ class OrderDetailSeeder extends Seeder
     public function run(): void
     {
         // Tạo 50 chi tiết đơn hàng
-        OrderDetail::factory(200)->create();
+        OrderDetail::factory(100)->create();
          // Cập nhật lại tổng tiền cho các đơn hàng đã tạo
         $orders = Order::all();
         foreach ($orders as $order) {

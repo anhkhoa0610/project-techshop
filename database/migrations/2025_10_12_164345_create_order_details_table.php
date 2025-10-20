@@ -18,8 +18,14 @@ return new class extends Migration {
             $table->decimal('unit_price', 10, 2); // DECIMAL(10,2), Không cho phép null
             $table->timestamps();
             // Khóa ngoại
-            $table->foreign('order_id')->references('order_id')->on('orders')->onDelete('cascade');
-            $table->foreign('product_id')->references('product_id')->on('products')->onDelete('cascade');
+
+            $table->foreign('order_id')
+                ->references('order_id')->on('orders')
+                ->onDelete('cascade');
+
+            $table->foreign('product_id')
+                ->references('product_id')->on('products')
+                ->onDelete('cascade');
         });
     }
 

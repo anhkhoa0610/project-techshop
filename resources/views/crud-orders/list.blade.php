@@ -103,7 +103,7 @@
                                     <td>{{ $order->shipping_address }}</td>
                                     <td>{{ $order->payment_method }}</td>
                                     <td>{{ $order->voucher->code ?? "không áp dụng"}}</td>
-                                    <td>{{ number_format($order->total_price, 2) }}</td>
+                                    <td>{{ number_format($order->total_price, 0,',','.') }}₫</td>
                                     <td>
                                         <a href="{{ route("orderDetails.list", [$order->order_id]) }}" class="view" title="View"
                                             data-toggle="tooltip"><i class="material-icons">&#xE417;</i></a>
@@ -114,9 +114,9 @@
                                             style="display:inline;">
                                             @csrf
                                             @method('DELETE')
-                                            <button type="submit" class="btn btn-link p-0 m-0 align-baseline delete"
+                                            <button type="button" class="btn btn-link p-0 m-0 align-baseline delete"
                                                 title="Delete" data-toggle="tooltip"
-                                                onclick="return confirm('Bạn có chắc muốn xóa đơn hàng này không?')">
+                                                onclick="confirmDelete({{ $order->order_id }})">
                                                 <i class="material-icons text-danger">&#xE872;</i>
                                             </button>
                                         </form>
@@ -307,8 +307,6 @@
                                     </select>
                                     <div class="text-danger error-message" id="error_edit_voucher_id"></div>
                                 </div>
-
-
                             </div>
                         </div>
                     </div>
@@ -369,9 +367,16 @@
             });
 
             if (response.ok) {
-                alert('Cập nhật đơn hàng thành công!');
+                Swal.fire({
+                    icon: 'success',
+                    title: 'Cập nhật đơn hàng thành công!',
+                    confirmButtonText: 'OK',
+                    confirmButtonColor: '#3085d6'
+                }).then(() => {
+                    location.reload();
+                });
+
                 $('#editOrderModal').modal('hide');
-                location.reload();
             } else {
                 const err = await response.json();
                 if (err.errors) {
@@ -382,7 +387,13 @@
                         }
                     });
                 } else {
-                    alert('cập nhật đơn hàng thất bại ' + (err.message || 'Lỗi không xác định'));
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Cập nhật đơn hàng thất bại',
+                        text: 'Lỗi không xác định',
+                        confirmButtonText: 'Đóng',
+                        confirmButtonColor: '#d33'
+                    });
                 }
             }
         });
@@ -402,6 +413,8 @@
 
             const url = '/api/orders';
             const formData = new FormData(this);
+             // Xóa lỗi cũ
+            document.querySelectorAll('.error-message').forEach(el => el.textContent = '');
 
             const response = await fetch(url, {
                 method: 'POST',
@@ -413,9 +426,16 @@
             });
 
             if (response.ok) {
-                alert('Thêm đơn hàng thành công!');
+                Swal.fire({
+                    icon: 'success',
+                    title: 'Thêm đơn hàng thành công!',
+                    confirmButtonText: 'OK',
+                    confirmButtonColor: '#3085d6'
+                }).then(() => {
+                    location.reload();
+                });
+
                 $('#addOrderModal').modal('hide');
-                location.reload();
             } else {
                 const err = await response.json();
                 if (err.errors) {
@@ -426,11 +446,49 @@
                         }
                     });
                 } else {
-                    alert('Thêm đơn hàng thất bại: ' + (err.message || 'Lỗi không xác định'));
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Thêm đơn hàng thất bại',
+                        text: 'Lỗi không xác định',
+                        confirmButtonText: 'Đóng',
+                        confirmButtonColor: '#d33'
+                    });
                 }
             }
         });
+
+        // xử lý xóa đơn hàng
+        function confirmDelete(id) {
+            Swal.fire({
+                title: 'Xác nhận xóa',
+                text: 'Bạn có chắc chắn muốn xóa đơn hàng này không?',
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonText: 'Xóa',
+                cancelButtonText: 'Hủy'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    fetch(`/api/orders/${id}`, {
+                        method: 'DELETE',
+                        headers: {
+                            'Accept': 'application/json',
+                            'X-CSRF-TOKEN': '{{ csrf_token() }}'
+                        }
+                    })
+                        .then(res => res.json())
+                        .then(data => {
+                            if (data.success) {
+                                Swal.fire('Đã xóa!', data.message, 'success').then(() => location.reload());
+                            } else {
+                                Swal.fire('Lỗi', 'Không thể xóa đơn hàng.', 'error');
+                            }
+                        })
+                        .catch(() => Swal.fire('Lỗi', 'Không thể kết nối đến server.', 'error'));
+                }
+            });
+        }
     </script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
 
 @endsection
