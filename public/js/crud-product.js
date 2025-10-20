@@ -131,7 +131,20 @@ document.getElementById('addProductForm').addEventListener('submit', async funct
 
 
     const url = '/api/products';
-    const formData = new FormData(this);
+    const formData = new FormData();
+    formData.append('product_name', document.getElementById('add_product_name').value);
+    formData.append('description', document.getElementById('add_description').value);
+    formData.append('stock_quantity', document.getElementById('add_stock_quantity').value);
+    formData.append('price', document.getElementById('add_price').value);
+    formData.append('volume_sold', document.getElementById('add_volume_sold').value);
+    formData.append('category_id', document.getElementById('add_category_id').value);
+    formData.append('supplier_id', document.getElementById('add_supplier_id').value);
+    formData.append('warranty_period', document.getElementById('add_warranty_period').value);
+    formData.append('release_date', document.getElementById('add_release_date').value);
+    const fileInput = document.getElementById('add_cover_image');
+    if (fileInput.files.length > 0) {
+        formData.append('cover_image', fileInput.files[0]);
+    }
 
     const response = await fetch(url, {
         method: 'POST',
