@@ -50,12 +50,12 @@
                                 <tr data-detail-id="{{ $detail->order_detail_id }}" data-order-id="{{ $detail->order_id }}"
                                     data-product-id="{{ $detail->product_id }}"
                                     data-product-name="{{ $detail->product->product_name }}"
-                                    data-product-image="{{ $detail->product->product_image }}"
+                                    data-product-image="{{ $detail->product->cover_image }}"
                                     data-quantity="{{ $detail->quantity }}" data-unit-price="{{ $detail->unit_price }}"
                                     data-total-price="{{ number_format(($detail->unit_price) * ($detail->quantity), 2) }}">
                                     <td>{{ $detail->order_detail_id }}</td>
                                     <td>{{ $detail->product->product_name }}</td>
-                                    <td><img src="{{ asset('images/' . $detail->product->image) }}"
+                                    <td><img src="{{ asset('uploads/' . $detail->product->cover_image) }}"
                                             alt="{{ $detail->product->product_name }}" width="50"></td>
                                     <td>{{ $detail->quantity }}</td>
                                     <td>{{ number_format($detail->unit_price, 0, ',', '.') }} ₫</td>
@@ -202,7 +202,7 @@
                         <div class="col-md-4 text-center">
                             <div class="mb-3">
                                 <img id="view_product_image" src="" alt="Hình ảnh sản phẩm" class="img-thumbnail shadow"
-                                    style="max-height: 120px; background: #fff;">
+                                    style="max-height: 220px; background: #fff;">
                             </div>
                             <h4 id="view_name" class="font-weight-bold text-secondary mb-2"></h4>
                         </div>
@@ -400,7 +400,7 @@
                 e.preventDefault();
 
                 const row = btn.closest('tr');
-                document.getElementById('view_product_image').src = row.getAttribute('data-product-image') ? '/uploads/' + row.getAttribute('data-logo') : '/uploads/place-holder.jpg';
+                document.getElementById('view_product_image').src = row.getAttribute('data-product-image') ? '/uploads/' + row.getAttribute('data-product-image') : '/uploads/place-holder.jpg';
                 document.getElementById('view_stock_quantity').textContent = row.getAttribute('data-detail-id') || '';
                 document.getElementById('view_product_name').textContent = row.getAttribute('data-product-name') || '';
                 document.getElementById('view_quantity').textContent = row.getAttribute('data-quantity') || '';
