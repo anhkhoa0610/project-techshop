@@ -1,12 +1,16 @@
 <?php
 
+use App\Http\Controllers\CartController;
 use App\Http\Controllers\CategoryController;
+use App\Http\Controllers\HoaDonController;
 use App\Http\Controllers\OrderController;
+use App\Http\Controllers\PayController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\ProductController;
 use App\Http\Controllers\SupplierController;
 use App\Http\Controllers\OrderDetailController;
 use App\Http\Controllers\IndexController;
+
 
 
 Route::get('/', function () {
@@ -39,3 +43,15 @@ Route::prefix('orderDetails')->group(function () {
     Route::get('/{order_id}', [OrderDetailController::class, 'list'])->name('orderDetails.list');
    
 });
+
+
+
+
+
+
+Route::get('/cart', [CartController::class, 'index'])->name('cart.index');
+Route::get('/pay', [PayController::class, 'index'])->name('pay.index');
+Route::get('/hoadon', [HoaDonController::class, 'index'])->name('hoadon.index');
+
+
+

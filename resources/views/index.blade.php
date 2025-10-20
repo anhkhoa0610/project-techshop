@@ -4,7 +4,7 @@
 
 @section('content')
 
-
+<link rel="stylesheet" href="{{ asset('css/index.css') }}">
     <!-- Hero Section -->
 
     <section class="hero">
@@ -101,7 +101,7 @@
                 <?php foreach ($topProducts as $product): ?>
                 <div class="product-card">
                     <div class="product-image">
-                        <img src="{{ $product->cover_image ? asset('uploads/'.$product->cover_image) : asset('images/place-holder.jpg') }}"
+                        <img src="{{ $product->cover_image ? asset('uploads/' . $product->cover_image) : asset('images/place-holder.jpg') }}"
                             alt="{{ $product->product_name }}">
                         <div class="product-badge">Bán chạy</div>
                         <div class="product-discount">-13%</div>
@@ -137,7 +137,7 @@
                 <?php foreach ($newProducts as $product): ?>
                 <div class="product-card">
                     <div class="product-image">
-                        <img src="{{ $product->cover_image ? asset('uploads/'.$product->cover_image) : asset('images/place-holder.jpg') }}"
+                        <img src="{{ $product->cover_image ? asset('uploads/' . $product->cover_image) : asset('images/place-holder.jpg') }}"
                             alt="{{ $product->product_name }}">
                         <div class="product-badge">Bán chạy</div>
                         <div class="product-discount">-13%</div>
@@ -167,9 +167,14 @@
                 <p class="section-subtitle">Các sản phẩm là </p>
             </div>
             <div class="products-grid show-by-category">
-                
+
             </div>
+            <div class="pagination">
+                <!-- ... -->
+            </div>
+            
         </div>
+        
     </section>
 
     <!-- Deal of the Day -->
@@ -222,5 +227,5 @@
             </div>
         </div>
     </section>
-<script src="{{ asset('js/index.js') }}"></script>
+    <script src="{{ asset('js/index.js') }}"></script>
 @endsection

@@ -15,13 +15,17 @@ class IndexController extends Controller
     }
 
     public function getProductsByCategory($categoryId)
-    {
-        $products = Product::where('category_id', $categoryId)->limit(8)->get();
+{
+    $products = Product::where('category_id', $categoryId)->paginate(8);
 
-        return response()->json([
-            'success' => true,
-            'data' => $products
-        ]);
-    }
+    return response()->json([
+        'success' => true,
+        'data' => $products->items(), // dữ liệu sản phẩm trang hiện tại
+        'current_page' => $products->currentPage(),
+        'last_page' => $products->lastPage(),
+        'total' => $products->total(),
+        'per_page' => $products->perPage(),
+    ]);
+}
 
 }
