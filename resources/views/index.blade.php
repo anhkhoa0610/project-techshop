@@ -4,10 +4,19 @@
 
 @section('content')
 
-<link rel="stylesheet" href="{{ asset('css/index.css') }}">
+    <link rel="stylesheet" href="{{ asset('css/index.css') }}">
     <!-- Hero Section -->
 
     <section class="hero">
+        <!-- moved hero-image ra trước container để video có thể phủ toàn section -->
+        <div class="hero-image">
+            <video class="hero-video" autoplay muted loop playsinline preload="metadata"
+                poster="{{ asset('images/place-holder.jpg') }}">
+                <source src="{{ asset('videos/banner.mp4') }}" type="video/mp4">
+                <img src="{{ asset('images/place-holder.jpg') }}" alt="Banner">
+            </video>
+        </div>
+
         <div class="container">
             <div class="hero-content">
                 <div class="hero-text">
@@ -39,143 +48,142 @@
                         </div>
                     </div>
                 </div>
-                <div class="hero-image">
-                    <img src="https://www.apple.com/v/iphone-17-pro/a/images/overview/contrast/iphone_17_pro__dwccrdina7qu_large.jpg"
-                        alt="Sony Xperia Pro" class="phone-image">
-                </div>
+                <!-- hero-image removed from here -->
             </div>
         </div>
     </section>
 
     <!-- Categories Section -->
+    <div class="background-overlay">
 
-    <section class="categories">
-        <div class="container">
-            <div class="section-header">
-                <h2 class="section-title">Danh mục nổi bật</h2>
-                <p class="section-subtitle">Khám phá các sản phẩm công nghệ hàng đầu</p>
-            </div>
-            <div class="categories-grid">
-                <div class="category-card">
-                    <div class="category-icon primary">📱</div>
-                    <h3 class="category-title">The Best Smartphone</h3>
-                    <p class="category-subtitle">Điện thoại cao cấp</p>
+        <section class="categories">
+            <div class="container">
+                <div class="section-header">
+                    <h2 class="section-title">Danh mục nổi bật</h2>
+                    <p class="section-subtitle">Khám phá các sản phẩm công nghệ hàng đầu</p>
                 </div>
-                <div class="category-card">
-                    <div class="category-icon accent">💻</div>
-                    <h3 class="category-title">Gaming Laptop</h3>
-                    <p class="category-subtitle">Laptop chuyên game</p>
-                </div>
-                <div class="category-card">
-                    <div class="category-icon primary">🎧</div>
-                    <h3 class="category-title">Premium Headphone</h3>
-                    <p class="category-subtitle">Tai nghe chất lượng cao</p>
-                </div>
-                <div class="category-card">
-                    <div class="category-icon accent">📱</div>
-                    <h3 class="category-title">Tablet & iPad</h3>
-                    <p class="category-subtitle">Máy tính bảng</p>
-                </div>
-                <div class="category-card">
-                    <div class="category-icon primary">⌚</div>
-                    <h3 class="category-title">Smart Watch</h3>
-                    <p class="category-subtitle">Đồng hồ thông minh</p>
-                </div>
-                <div class="category-card">
-                    <div class="category-icon accent">📷</div>
-                    <h3 class="category-title">Camera & Photo</h3>
-                    <p class="category-subtitle">Máy ảnh chuyên nghiệp</p>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <!-- Featured Products -->
-    <section class="products">
-        <div class="container">
-            <div class="section-header">
-                <h2 class="section-title">Sản phẩm nổi bật</h2>
-                <p class="section-subtitle">Những sản phẩm được yêu thích nhất</p>
-            </div>
-            <div class="products-grid">
-                <?php foreach ($topProducts as $product): ?>
-                <div class="product-card">
-                    <div class="product-image">
-                        <img src="{{ $product->cover_image ? asset('uploads/' . $product->cover_image) : asset('images/place-holder.jpg') }}"
-                            alt="{{ $product->product_name }}">
-                        <div class="product-badge">Bán chạy</div>
-                        <div class="product-discount">-13%</div>
+                <div class="categories-grid">
+                    <div class="category-card">
+                        <div class="category-icon primary">📱</div>
+                        <h3 class="category-title">The Best Smartphone</h3>
+                        <p class="category-subtitle">Điện thoại cao cấp</p>
                     </div>
-                    <div class="product-info">
-                        <h3 class="product-name"><?= $product->product_name; ?></h3>
-                        <div class="product-rating">
-                            <span class="stars">⭐ 4.9</span>
-                            <span class="reviews">(156 đánh giá)</span>
-                        </div>
-                        <div class="product-price">
-                            <span class="current-price"><?= number_format($product->price, 0, ',', '.'); ?>₫</span>
-                            <span
-                                class="original-price"><?= number_format($product->original_price, 0, ',', '.'); ?>₫</span>
-                        </div>
-                        <button class="btn btn-primary full-width">🛒 Thêm vào giỏ</button>
+                    <div class="category-card">
+                        <div class="category-icon accent">💻</div>
+                        <h3 class="category-title">Gaming Laptop</h3>
+                        <p class="category-subtitle">Laptop chuyên game</p>
+                    </div>
+                    <div class="category-card">
+                        <div class="category-icon primary">🎧</div>
+                        <h3 class="category-title">Premium Headphone</h3>
+                        <p class="category-subtitle">Tai nghe chất lượng cao</p>
+                    </div>
+                    <div class="category-card">
+                        <div class="category-icon accent">📱</div>
+                        <h3 class="category-title">Tablet & iPad</h3>
+                        <p class="category-subtitle">Máy tính bảng</p>
+                    </div>
+                    <div class="category-card">
+                        <div class="category-icon primary">⌚</div>
+                        <h3 class="category-title">Smart Watch</h3>
+                        <p class="category-subtitle">Đồng hồ thông minh</p>
+                    </div>
+                    <div class="category-card">
+                        <div class="category-icon accent">📷</div>
+                        <h3 class="category-title">Camera & Photo</h3>
+                        <p class="category-subtitle">Máy ảnh chuyên nghiệp</p>
                     </div>
                 </div>
-                <?php endforeach; ?>
             </div>
-        </div>
-    </section>
+        </section>
 
-
-    <!-- Featured Products -->
-    <section class="products">
-        <div class="container">
-            <div class="section-header">
-                <h2 class="section-title">Sản phẩm mới nhất</h2>
-                <p class="section-subtitle">Những sản phẩm mới nhất</p>
-            </div>
-            <div class="products-grid">
-                <?php foreach ($newProducts as $product): ?>
-                <div class="product-card">
-                    <div class="product-image">
-                        <img src="{{ $product->cover_image ? asset('uploads/' . $product->cover_image) : asset('images/place-holder.jpg') }}"
-                            alt="{{ $product->product_name }}">
-                        <div class="product-badge">Bán chạy</div>
-                        <div class="product-discount">-13%</div>
-                    </div>
-                    <div class="product-info">
-                        <h3 class="product-name"><?= $product->product_name; ?></h3>
-                        <div class="product-rating">
-                            <span class="stars">⭐ 4.9</span>
-                            <span class="reviews">(156 đánh giá)</span>
-                        </div>
-                        <div class="product-price">
-                            <span class="current-price"><?= number_format($product->price, 0, ',', '.'); ?>₫</span>
-                        </div>
-                        <button class="btn btn-primary full-width">🛒 Thêm vào giỏ</button>
-                    </div>
+        <!-- Featured Products -->
+        <section class="products sale-products">
+            <div class="container">
+                <div class="section-header">
+                    <h2 class="section-title">Sản phẩm nổi bật</h2>
+                    <p class="section-subtitle">Những sản phẩm được yêu thích nhất</p>
                 </div>
-                <?php endforeach; ?>
+                <div class="products-grid">
+                    <?php foreach ($topProducts as $product): ?>
+                    <div class="product-card">
+                        <div class="product-image">
+                            <img src="{{ $product->cover_image ? asset('uploads/' . $product->cover_image) : asset('images/place-holder.jpg') }}"
+                                alt="{{ $product->product_name }}">
+                            <div class="product-badge">Bán chạy</div>
+                            <div class="product-discount">-13%</div>
+                        </div>
+                        <div class="product-info">
+                            <h3 class="product-name"><?= $product->product_name; ?></h3>
+                            <div class="product-rating">
+                                <span class="stars">⭐ 4.9</span>
+                                <span class="reviews">(156 đánh giá)</span>
+                            </div>
+                            <div class="product-price">
+                                <span class="current-price"><?= number_format($product->price, 0, ',', '.'); ?>₫</span>
+                                <span
+                                    class="original-price"><?= number_format($product->original_price, 0, ',', '.'); ?>₫</span>
+                            </div>
+                            <button class="btn btn-primary full-width">🛒 Thêm vào giỏ</button>
+                        </div>
+                    </div>
+                    <?php endforeach; ?>
+                </div>
             </div>
-        </div>
-    </section>
+        </section>
 
-    <!-- Featured Products -->
-    <section class="products categories-products" style="display: none">
-        <div class="container">
-            <div class="section-header">
-                <h2 class="section-title">Sản phẩm theo danh mục</h2>
-                <p class="section-subtitle">Các sản phẩm là </p>
+
+        <!-- Featured Products -->
+        <section class="products new-products">
+            <div class="container">
+                <div class="section-header">
+                    <h2 class="section-title">Sản phẩm mới nhất</h2>
+                    <p class="section-subtitle">Những sản phẩm mới nhất</p>
+                </div>
+                <div class="products-grid">
+                    <?php foreach ($newProducts as $product): ?>
+                    <div class="product-card">
+                        <div class="product-image">
+                            <img src="{{ $product->cover_image ? asset('uploads/' . $product->cover_image) : asset('images/place-holder.jpg') }}"
+                                alt="{{ $product->product_name }}">
+                            <div class="product-badge">Bán chạy</div>
+                            <div class="product-discount">-13%</div>
+                        </div>
+                        <div class="product-info">
+                            <h3 class="product-name"><?= $product->product_name; ?></h3>
+                            <div class="product-rating">
+                                <span class="stars">⭐ 4.9</span>
+                                <span class="reviews">(156 đánh giá)</span>
+                            </div>
+                            <div class="product-price">
+                                <span class="current-price"><?= number_format($product->price, 0, ',', '.'); ?>₫</span>
+                            </div>
+                            <button class="btn btn-primary full-width">🛒 Thêm vào giỏ</button>
+                        </div>
+                    </div>
+                    <?php endforeach; ?>
+                </div>
             </div>
-            <div class="products-grid show-by-category">
+        </section>
+
+        <!-- Featured Products -->
+        <section class="products categories-products" style="display: none">
+            <div class="container">
+                <div class="section-header">
+                    <h2 class="section-title">Sản phẩm theo danh mục</h2>
+                    <p class="section-subtitle">Các sản phẩm là </p>
+                </div>
+                <div class="products-grid show-by-category">
+
+                </div>
+                <div class="pagination mt-5">
+                    <!-- ... -->
+                </div>
 
             </div>
-            <div class="pagination">
-                <!-- ... -->
-            </div>
-            
-        </div>
-        
-    </section>
+
+        </section>
+    </div>
 
     <!-- Deal of the Day -->
     <section class="deal-section">

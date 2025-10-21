@@ -1,11 +1,218 @@
-
-.pagination .page-btn {
-    margin: 0 5px;
-    padding: 8px 12px;
-}
-
 .category-pagination {
     padding: 20px;
     width: fit-content !important;
     margin: auto !important;
+    margin-top: 15px !important;
+    border: 2px solid #888a8f;
+    margin: auto !important;
+    border-radius: 2rem !important;
+    background: transparent;
+    -webkit-backdrop-filter: blur(6px) saturate(120%);
+    backdrop-filter: blur(6px) saturate(120%);
+    transition: all 0.5s cubic-bezier(0.25, 0.8, 0.25, 1);
+
+    /* Màu xám nhạt */
+}
+
+.category-pagination:hover {
+    box-shadow:
+        0 0 15px 7px rgba(109, 142, 214, 0.8),
+        0 0 30px 15px rgba(67, 55, 136, 0.6),
+        0 15px 50px 0px rgba(3, 8, 22, 0.4),
+        0 30px 80px 0px rgba(3, 8, 22, 0.2);
+}
+
+#page-input {
+    width: 50px;
+    height: 40px;
+    text-align: center;
+    border: 2px solid #9CA3AF;
+    border-radius: 0.5rem;
+    margin: 0 8px;
+    font-weight: 600;
+    transition: border-color 0.15s, box-shadow 0.15s;
+    background: #f8fafc;
+    color: #333;
+}
+
+#page-input:focus {
+    border-color: #0d6efd;
+    box-shadow: 0 0 0 2px rgba(13, 110, 253, 0.15);
+    outline: none;
+    background: #fff;
+}
+
+#page-input:hover {
+    border-color: #0d6efd;
+}
+
+.page-btn {
+    border-radius: 0.5rem;
+    border: none;
+    background: #0d6efd;
+    color: #fff;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background 0.15s, box-shadow 0.15s;
+}
+
+.page-btn:hover,
+.page-btn:focus {
+    background: #0056b3;
+    box-shadow: 0 2px 8px rgba(13, 110, 253, 0.12);
+    outline: none;
+}
+
+#page-input::-webkit-outer-spin-button,
+#page-input::-webkit-inner-spin-button {
+    -webkit-appearance: none !important;
+    margin: 0 !important;
+}
+
+#page-input[type=number] {
+    -moz-appearance: textfield !important;
+}
+
+/* Đặt background và animation lên pseudo-element để transform không ảnh hưởng đến phần tử con */
+.background-overlay {
+    position: relative !important;
+    overflow: hidden !important;
+    /* bỏ background-image ở đây để tránh transform con */
+    background-image: none !important;
+}
+
+/* Hình nền và hiệu ứng Ken Burns chỉ áp dụng cho ::before */
+.background-overlay::before {
+    content: "" !important;
+    position: absolute !important;
+    inset: 0 !important;
+    /* top:0; right:0; bottom:0; left:0 */
+    background-image: url('/images/background.jpg') !important;
+    background-size: cover !important;
+    background-repeat: no-repeat !important;
+    background-position: center center !important;
+    z-index: 0 !important;
+    transform-origin: center center !important;
+    will-change: transform !important;
+    animation: kenburns 18s ease-in-out infinite alternate !important;
+}
+
+
+
+/* Đảm bảo các phần tử con hiển thị trên pseudo-elements */
+.background-overlay>* {
+    position: relative !important;
+    z-index: 2 !important;
+}
+
+/* Ken Burns animation (chỉ transform trên ::before) */
+@keyframes kenburns {
+    0% {
+        transform: scale(1) translate(0, 0);
+    }
+
+    50% {
+        transform: scale(1.12) translate(-2%, -2%);
+    }
+
+    100% {
+        transform: scale(1) translate(0, 0);
+    }
+}
+
+/* Hero: video cover toàn bộ section */
+.hero {
+    margin-left: -2px   !important;
+    position: relative !important;
+    overflow: hidden !important;
+    /* Chiều cao tối thiểu 900px, ưu tiên 90vh + một chút theo chiều rộng, tối đa 80vh */
+    min-height: clamp(900px, 90vh + 10vw, 100vh) !important;
+    height: auto !important;
+}
+
+/* video wrapper đặt tuyệt đối để phủ kín section */
+.hero-image {
+    position: absolute !important;
+    inset: 0 !important;
+    z-index: 0 !important;
+    pointer-events: none !important;
+}
+
+/* video phủ kín, giữ tỉ lệ */
+.hero-video {
+    position: absolute !important;
+    top: 50% !important;
+    left: 50% !important;
+    width: 100% !important;
+    height: 100% !important;
+    transform: translate(-50%, -50%) !important;
+    object-fit: cover !important;
+    object-position: center center !important;
+    min-width: 100% !important;
+    min-height: 100% !important;
+}
+
+
+/* đảm bảo nội dung nằm trên video */
+.hero .container,
+.hero-content {
+    position: relative !important;
+    z-index: 2 !important;
+}
+
+.category-card {
+    /* transparent blurred background */
+    background: transparent;
+    -webkit-backdrop-filter: blur(6px) saturate(120%);
+    backdrop-filter: blur(6px) saturate(120%);
+    padding: 1.25rem;
+    border-radius: 1rem;
+    text-align: center;
+    border: 1px solid rgba(255, 255, 255, 0.06);
+    transition: all 0.5s cubic-bezier(0.25, 0.8, 0.25, 1);
+    cursor: pointer;
+    /* keep content above pseudo-elements / background overlays */
+    position: relative;
+    z-index: 2;
+}
+
+.category-card:hover {
+    transform: translateY(-6px) scale(1.03) !important;
+    box-shadow:
+        0 0 15px 7px rgba(109, 142, 214, 0.8),
+        0 0 30px 15px rgba(67, 55, 136, 0.6),
+        0 15px 50px 0px rgba(3, 8, 22, 0.4),
+        0 30px 80px 0px rgba(3, 8, 22, 0.2);
+}
+
+.product-card {
+    background: transparent;
+    -webkit-backdrop-filter: blur(6px) saturate(120%);
+    backdrop-filter: blur(6px) saturate(120%);
+    border: 1px solid rgba(255, 255, 255, 0.06);
+    color: inherit;
+    border-radius: 1rem;
+    overflow: hidden;
+    box-shadow: 0 6px 18px rgba(3, 8, 22, 0.06);
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    position: relative;
+    transition: all 0.5s cubic-bezier(0.25, 0.8, 0.25, 1);
+}
+
+/* ensure card children render above the blurred background */
+.product-card>* {
+    position: relative;
+    z-index: 2;
+}
+
+.product-card:hover {
+    transform: translateY(-6px) scale(1.02) !important;
+
+    box-shadow:
+        0 0 15px 7px rgba(109, 142, 214, 0.8),
+        0 0 30px 15px rgba(67, 55, 136, 0.6),
+        0 15px 50px 0px rgba(3, 8, 22, 0.4),
+        0 30px 80px 0px rgba(3, 8, 22, 0.2);
 }
