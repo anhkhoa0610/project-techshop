@@ -43,12 +43,6 @@ Route::prefix('orders')->group(function () {
 Route::prefix('orderDetails')->group(function () {
     Route::get('/{order_id}', [OrderDetailController::class, 'list'])->name('orderDetails.list');
 
-});
-
-
-
-
-
 
 Route::get('/cart', [CartController::class, 'index'])->name('cart.index');
 Route::get('/pay', [PayController::class, 'index'])->name('pay.index');
@@ -56,6 +50,14 @@ Route::get('/hoadon', [HoaDonController::class, 'index'])->name('hoadon.index');
 
 
 Route::get('/{order_id}', [OrderDetailController::class, 'index'])->name('orderDetail.index');
+
+
+});
+
+
+
+
+
 
 
 Route::prefix('users')->group(function () {
