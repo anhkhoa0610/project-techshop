@@ -3,6 +3,7 @@
 namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
+use App\Rules\CheckStock;
 
 class OrderDetailRequest extends FormRequest
 {
@@ -24,7 +25,7 @@ class OrderDetailRequest extends FormRequest
         return [
             'order_id' => 'required|exists:orders,order_id',
             'product_id' => 'required|exists:products,product_id',
-            'quantity' => 'required|integer|min:1',
+            'quantity' => ['required', 'integer', 'min:1', new CheckStock],
         ];
     }
 
@@ -37,7 +38,6 @@ class OrderDetailRequest extends FormRequest
             'product_id.exists' => 'Sản phẩm không tồn tại.',
             'quantity.required' => 'Vui lòng nhập số lượng.',
             'quantity.integer' => 'Số lượng phải là số nguyên.',
-          
         ];
     }
 }

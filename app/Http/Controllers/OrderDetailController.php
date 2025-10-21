@@ -115,9 +115,15 @@ class OrderDetailController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(string $id)
+    public function destroy(string $detail_id)
     {
-        //
+        $order = OrderDetail::findOrFail($detail_id);
+
+        $order->delete();
+        return response()->json([
+            'success' => true,
+            'message' => 'Xóa chi tiết đơn hàng thành công!'
+        ]);
     }
 
 

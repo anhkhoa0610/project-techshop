@@ -59,15 +59,21 @@
                                             alt="{{ $detail->product->product_name }}" width="50"></td>
                                     <td>{{ $detail->quantity }}</td>
                                     <td>{{ number_format($detail->unit_price, 0, ',', '.') }} ₫</td>
-                                    <td>{{ number_format(($detail->unit_price) * ($detail->quantity), 0,',','.') }}₫</td>
+                                    <td>{{ number_format(($detail->unit_price) * ($detail->quantity), 0, ',', '.') }}₫</td>
 
                                     <td>
                                         <a href="#" class="view" title="View" data-toggle="tooltip"><i
                                                 class="material-icons">&#xE417;</i></a>
                                         <a href="#" class="edit" title="Edit" data-toggle="tooltip"><i
                                                 class="material-icons">&#xE254;</i></a>
-                                        <a href="#" class="delete" title="Delete" data-toggle="tooltip"><i
-                                                class="material-icons">&#xE872;</i></a>
+                                        <form action="{{ url('/api/orderDetails/' . $detail->order_detail_id) }}" method="POST"
+                                            style="display:inline;">
+                                            <button type="button" class="btn btn-link p-0 m-0 align-baseline delete"
+                                                title="Delete" data-toggle="tooltip"
+                                                onclick="confirmDelete({{ $detail->order_detail_id}})">
+                                                <i class="material-icons text-danger">&#xE872;</i>
+                                            </button>
+                                        </form>
                                     </td>
                                 </tr>
                             @endforeach
@@ -415,6 +421,37 @@
             const number = parseFloat(value);
             if (isNaN(number)) return '0 ₫';
             return number.toLocaleString('vi-VN', { style: 'currency', currency: 'VND' });
+        }
+
+        // Xử lý xóa chi tiết đơn hàng
+        function confirmDelete(id) {
+            Swal.fire({
+                title: 'Xác nhận xóa',
+                text: 'Bạn có chắc chắn muốn xóa chi tiết đơn hàng này không?',
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonText: 'Xóa',
+                cancelButtonText: 'Hủy'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    fetch(`/api/orders/${id}`, {
+                        method: 'DELETE',
+                        headers: {
+                            'Accept': 'application/json',
+                            'X-CSRF-TOKEN': '{{ csrf_token() }}'
+                        }
+                    })
+                        .then(res => res.json())
+                        .then(data => {
+                            if (data.success) {
+                                Swal.fire('Đã xóa!', data.message, 'success').then(() => location.reload());
+                            } else {
+                                Swal.fire('Lỗi', 'Không thể xóa chi tiết đơn hàng.', 'error');
+                            }
+                        })
+                        .catch(() => Swal.fire('Lỗi', 'Không thể kết nối đến server.', 'error'));
+                }
+            });
         }
 
 

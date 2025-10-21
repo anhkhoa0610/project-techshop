@@ -112,8 +112,6 @@
                                         </a>
                                         <form action="{{ url('/api/orders/' . $order->order_id) }}" method="POST"
                                             style="display:inline;">
-                                            @csrf
-                                            @method('DELETE')
                                             <button type="button" class="btn btn-link p-0 m-0 align-baseline delete"
                                                 title="Delete" data-toggle="tooltip"
                                                 onclick="confirmDelete({{ $order->order_id }})">
