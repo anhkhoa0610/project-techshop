@@ -22,7 +22,7 @@
             <img src="{{ asset('images/logo.jpg') }}" alt="Logo">
         </div>
         <ul style="margin-top: -50px;">
-            <li><a href="#"><i class="fa fa-users"></i> Quản Lý Khách Hàng</a></li>
+            <li><a href="{{  route('users.index') }}"><i class="fa fa-users"></i> Quản Lý Khách Hàng</a></li>
             <li><a href="{{ route('products.list') }}"><i class="fa fa-archive"></i> Quản Lý Sản Phẩm</a></li>
             <li><a href="{{ route('categories.list') }}"><i class="fa fa-list"></i> Quản Lý Danh Mục</a></li>
             <li><a href="{{ route('orders.list')}}"><i class="fa fa-shopping-bag"></i> Quản Lý Đơn Hàng</a></li>
