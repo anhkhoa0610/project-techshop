@@ -16,13 +16,19 @@
                             <div class="col-sm-4">
                                 <h2 class="text-center"><b>Quản Lý Người Dùng</b></h2>
                             </div>
+
                             <div class="col-sm-4">
                                 <div class="search-box">
-                                    <div class="input-group">
-                                        <span class="input-group-addon"><i class="material-icons">&#xE8B6;</i></span>
-                                        <input type="text" class="form-control" id="searchInput"
-                                            placeholder="Tìm kiếm người dùng...">
-                                    </div>
+                                    <form class="search-box" method="GET" action="{{ url()->current() }}">
+                                        <div class="input-group">
+                                            <span class="input-group-addon"><i class="material-icons">&#xE8B6;</i></span>
+                                            <input type="text" class="form-control" name="search" placeholder="Tìm kiếm..."
+                                                value="{{ request('search') }}">
+                                            <div class="input-group-append">
+                                                <button class="btn btn-primary" type="submit">Search</button>
+                                            </div>
+                                        </div>
+                                    </form>
                                 </div>
                             </div>
                         </div>
@@ -34,6 +40,7 @@
                                 <th>ID</th>
                                 <th>Họ Tên</th>
                                 <th>Email</th>
+                                <th>Địa chỉ</th>
                                 <th>SĐT</th>
                                 <th>Vai trò</th>
                                 <th>Ngày sinh</th>
@@ -51,6 +58,7 @@
                                     <td>{{ $user->user_id }}</td>
                                     <td>{{ $user->full_name }}</td>
                                     <td>{{ $user->email }}</td>
+                                    <td>{{ $user->address }}</td>
                                     <td>{{ $user->phone ?? '—' }}</td>
                                     <td>
                                         <span class="badge {{ $user->role === 'Admin' ? 'badge-success' : 'badge-primary' }}">
@@ -89,7 +97,7 @@
                         </tbody>
                     </table>
 
-                   <div class="clearfix">
+                    <div class="clearfix">
                         <div class="clearfix mt-3">
                             <nav>
                                 {{ $users->withQueryString()->links('pagination::bootstrap-5') }}
@@ -107,35 +115,35 @@
 @push('scripts')
     <script>
         // Trong sự kiện click nút chỉnh sửa
-$(document).on('click', '.edit', function() {
-    const row = $(this).closest('tr');
-    const userId = row.data('user-id');
-    const form = $('#editUserForm');
-    const email = row.data('email');
-    
-    // Kiểm tra đuôi email
-    const isTDCEmail = email.endsWith('@mail.tdc.edu.vn');
-    
-    form.attr('action', '/users/' + userId);
-    form.find('#edit_full_name').val(row.data('full_name'));
-    form.find('#edit_email').val(email);
-    form.find('#edit_phone').val(row.data('phone') || '');
-    form.find('#edit_address').val(row.data('address') || '');
-    form.find('#edit_role').val(row.data('role') || 'User');
-    form.find('#edit_birth').val(row.data('birth') || '');
-    
-     form.find('#edit_is_tdc_student').prop('checked', isTDCEmail || row.data('is_tdc_student') === 'true');
-});
+        $(document).on('click', '.edit', function () {
+            const row = $(this).closest('tr');
+            const userId = row.data('user-id');
+            const form = $('#editUserForm');
+            const email = row.data('email');
 
-// Thêm sự kiện thay đổi email để tự động cập nhật toggle
-$(document).on('change', '#edit_email', function() {
-    const email = $(this).val();
-    const isTDCEmail = email.endsWith('@mail.tdc.edu.vn');
-    if (isTDCEmail) {
-        $('#edit_is_tdc_student').prop('checked', true);
-    }
-});
-// End Edit User
+            // Kiểm tra đuôi email
+            const isTDCEmail = email.endsWith('@mail.tdc.edu.vn');
+
+            form.attr('action', '/users/' + userId);
+            form.find('#edit_full_name').val(row.data('full_name'));
+            form.find('#edit_email').val(email);
+            form.find('#edit_phone').val(row.data('phone') || '');
+            form.find('#edit_address').val(row.data('address') || '');
+            form.find('#edit_role').val(row.data('role') || 'User');
+            form.find('#edit_birth').val(row.data('birth') || '');
+
+            form.find('#edit_is_tdc_student').prop('checked', isTDCEmail || row.data('is_tdc_student') === 'true');
+        });
+
+        // Thêm sự kiện thay đổi email để tự động cập nhật toggle
+        $(document).on('change', '#edit_email', function () {
+            const email = $(this).val();
+            const isTDCEmail = email.endsWith('@mail.tdc.edu.vn');
+            if (isTDCEmail) {
+                $('#edit_is_tdc_student').prop('checked', true);
+            }
+        });
+        // End Edit User
         $(document).ready(function () {
             // View user details
             $(document).on('click', '.view', function () {
