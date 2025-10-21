@@ -6,6 +6,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\ProductController;
 use App\Http\Controllers\SupplierController;
 use App\Http\Controllers\OrderDetailController;
+use App\Http\Controllers\UserController;
 
 
 Route::get('/', function () {
@@ -34,5 +35,16 @@ Route::prefix('orders')->group(function () {
 
 Route::prefix('orderDetails')->group(function () {
     Route::get('/{order_id}', [OrderDetailController::class, 'index'])->name('orderDetail.index');
-   
 });
+
+
+Route::prefix('users')->group(function () {
+    Route::get('/', [UserController::class, 'index'])->name('users.index');
+    Route::get('/create', [UserController::class, 'create'])->name('users.create');
+    Route::post('/', [UserController::class, 'store'])->name('users.store');
+    Route::get('/{user}/edit', [UserController::class, 'edit'])->name('users.edit');
+    Route::put('/{user}', [UserController::class, 'update'])->name('users.update');
+    Route::delete('/{user}', [UserController::class, 'destroy'])->name('users.destroy');
+    Route::get('/search/autocomplete', [UserController::class, 'search'])->name('users.search');
+});
+
