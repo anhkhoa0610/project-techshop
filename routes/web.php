@@ -49,7 +49,6 @@ Route::get('/pay', [PayController::class, 'index'])->name('pay.index');
 Route::get('/hoadon', [HoaDonController::class, 'index'])->name('hoadon.index');
 
 
-Route::get('/{order_id}', [OrderDetailController::class, 'index'])->name('orderDetail.index');
 
 
 });
