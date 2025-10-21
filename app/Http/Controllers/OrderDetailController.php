@@ -117,9 +117,12 @@ class OrderDetailController extends Controller
      */
     public function destroy(string $detail_id)
     {
-        $order = OrderDetail::findOrFail($detail_id);
+        $detail = OrderDetail::findOrFail($detail_id);
 
-        $order->delete();
+        $detail->delete();
+        if ($detail->order) {
+            $detail->order->updateTotalPrice();
+        }
         return response()->json([
             'success' => true,
             'message' => 'Xóa chi tiết đơn hàng thành công!'

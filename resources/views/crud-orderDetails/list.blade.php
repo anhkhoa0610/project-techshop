@@ -11,6 +11,7 @@
                             <div class="col-sm-4">
                                 <button class="btn btn-info add-new">Thêm chi tiết đơn hàng mới
                                 </button>
+
                             </div>
                             <div class="col-sm-4">
                                 <h2 class="text-center"><b>Quản Lý chi tiết đơn hàng Order ID: <?php echo ($order_id) ?></b>
@@ -31,6 +32,12 @@
                                 </div>
                             </div>
                         </div>
+                    </div>
+                    <div class=" d-flex justify-content-start mb-1">
+                        <a href="{{ session('orders_list_url', route('orders.list')) }}" class="btn btn-primary">
+                            <i class="fa fa-arrow-left"></i>
+                            <span>Back</span>
+                        </a>
                     </div>
                     <table class="table table-bordered">
                         <thead>
@@ -324,7 +331,7 @@
                     } else {
                         Swal.fire({
                             icon: 'error',
-                            title: 'Cập nhật thất bại',
+                            title: 'Cập nhật chi tiết đơn hàng thất bại',
                             text: 'Đã xảy ra lỗi không xác định',
                             confirmButtonText: 'Đóng',
                             confirmButtonColor: '#d33'
@@ -434,7 +441,7 @@
                 cancelButtonText: 'Hủy'
             }).then((result) => {
                 if (result.isConfirmed) {
-                    fetch(`/api/orders/${id}`, {
+                    fetch(`/api/orderDetails/${id}`, {
                         method: 'DELETE',
                         headers: {
                             'Accept': 'application/json',
@@ -446,7 +453,7 @@
                             if (data.success) {
                                 Swal.fire('Đã xóa!', data.message, 'success').then(() => location.reload());
                             } else {
-                                Swal.fire('Lỗi', 'Không thể xóa chi tiết đơn hàng.', 'error');
+                                Swal.fire('Lỗi', 'Không thể xóa chi tiết đơn hàng.'.data.message, 'error');
                             }
                         })
                         .catch(() => Swal.fire('Lỗi', 'Không thể kết nối đến server.', 'error'));

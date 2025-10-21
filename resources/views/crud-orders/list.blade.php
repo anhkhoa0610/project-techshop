@@ -103,7 +103,7 @@
                                     <td>{{ $order->shipping_address }}</td>
                                     <td>{{ $order->payment_method }}</td>
                                     <td>{{ $order->voucher->code ?? "không áp dụng"}}</td>
-                                    <td>{{ number_format($order->total_price, 0,',','.') }}₫</td>
+                                    <td>{{ number_format($order->total_price, 0, ',', '.') }}₫</td>
                                     <td>
                                         <a href="{{ route("orderDetails.list", [$order->order_id]) }}" class="view" title="View"
                                             data-toggle="tooltip"><i class="material-icons">&#xE417;</i></a>
@@ -411,7 +411,7 @@
 
             const url = '/api/orders';
             const formData = new FormData(this);
-             // Xóa lỗi cũ
+            // Xóa lỗi cũ
             document.querySelectorAll('.error-message').forEach(el => el.textContent = '');
 
             const response = await fetch(url, {
@@ -485,6 +485,7 @@
                 }
             });
         }
+
     </script>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 

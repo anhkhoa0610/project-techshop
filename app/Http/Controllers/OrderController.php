@@ -11,20 +11,23 @@ use Str;
 
 class OrderController extends Controller
 {
-    public function list()
+    public function list(Request $request)
     {
+        session(['orders_list_url' => $request->fullUrl()]);
+
         $query = Order::with(['user', 'voucher']);
 
-        // Nếu có tham số tìm kiếm
-        if (request()->has('search') && request('search')) {
-            $search = request('search');
-            $query->where('order_id', 'like', '%' . $search . '%')
-                ->orWhereRelation('user', 'full_name', 'like', '%' . $search . '%');
+        //  Nếu có tham số tìm kiếm
+        if ($request->has('search') && $request->search) {
+            $search = $request->search;
+            $query->where('order_id', 'like', "%{$search}%")
+                ->orWhere('status', 'like', "%{$search}%")
+                ->orWhereRelation('user', 'full_name', 'like', "%{$search}%");
         }
-        // nếu có lọc theo khoảng ngày tháng
 
-        if (request()->filled(['start_date', 'end_date'])) {
-            $query->whereBetween('order_date', [request('start_date'), request('end_date')]);
+        // Nếu có lọc theo khoảng ngày tháng
+        if ($request->filled(['start_date', 'end_date'])) {
+            $query->whereBetween('order_date', [$request->start_date, $request->end_date]);
         }
 
         $orders = $query->paginate(5);

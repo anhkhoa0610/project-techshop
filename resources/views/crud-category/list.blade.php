@@ -249,9 +249,13 @@
 
 
             if (response.ok) {
-                alert('Cập nhật danh mục thành công!');
+                Swal.fire({
+                    icon: 'success',
+                    title: 'Cập nhật danh mục thành công!',
+                    confirmButtonText: 'OK',
+                    confirmButtonColor: '#3085d6'
+                }).then(() => location.reload());
                 $('#editCategoryModal').modal('hide');
-                location.reload();
             } else {
                 const err = await response.json();
 
@@ -263,7 +267,13 @@
                         }
                     });
                 } else {
-                    alert('Cập nhật danh mục thất bại: ' + (err.message || 'Lỗi không xác định'));
+                     Swal.fire({
+                            icon: 'error',
+                            title: 'Cập nhật danh mục thất bại',
+                            text: 'Đã xảy ra lỗi không xác định',
+                            confirmButtonText: 'Đóng',
+                            confirmButtonColor: '#d33'
+                        });
                 }
             }
         });
@@ -296,9 +306,15 @@
             });
 
             if (response.ok) {
-                alert('Thêm danh mục thành công!');
+                Swal.fire({
+                    icon: 'success',
+                    title: 'Thêm danh mục thành công!',
+                    confirmButtonText: 'OK',
+                    confirmButtonColor: '#3085d6'
+                }).then(() => {
+                    location.reload();
+                });
                 $('#addCategoryModal').modal('hide');
-                location.reload();
             } else {
                 const err = await response.json();
                 if (err.errors) {
@@ -309,7 +325,13 @@
                         }
                     });
                 } else {
-                    alert('Thêm danh mục thất bại: ' + (err.message || 'Lỗi không xác định'));
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Thêm danh mục thất bại',
+                        text: 'Lỗi không xác định',
+                        confirmButtonText: 'Đóng',
+                        confirmButtonColor: '#d33'
+                    });
                 }
             }
         });
