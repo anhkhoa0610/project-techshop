@@ -116,24 +116,18 @@ class ProductController extends Controller
         $product = Product::find($id);
 
         if (!$product) {
-            if (request()->wantsJson()) {
-                return response()->json([
-                    'success' => false,
-                    'message' => 'Product not found',
-                ], 404);
-            }
-            return redirect()->back()->with('error', 'Product not found');
+            return response()->json([
+                'success' => false,
+                'message' => 'Sản phẩm không tồn tại',
+            ], 404);
         }
+        
 
         $product->delete();
 
-        if (request()->wantsJson()) {
-            return response()->json([
-                'success' => true,
-                'message' => 'Product deleted successfully',
-            ]);
-        }
-
-        return redirect()->route('products.list')->with('success', 'Product deleted successfully');
+        return response()->json([
+            'success' => true,
+            'message' => 'Sản phẩm đã xóa thành công!',
+        ]);
     }
 }

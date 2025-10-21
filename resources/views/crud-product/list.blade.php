@@ -98,16 +98,10 @@
                                             data-target="#editProductModal">
                                             <i class="material-icons">&#xE254;</i>
                                         </a>
-                                        <form action="{{ url('/api/products/' . $product->product_id) }}" method="POST"
-                                            style="display:inline;" id="delete-form-{{ $product->product_id }}">
-                                            @csrf
-                                            @method('DELETE')
-                                            <button type="button" class="btn btn-link p-0 m-0 align-baseline delete"
-                                                title="Delete" data-toggle="tooltip"
-                                                onclick="confirmDelete({{ $product->product_id }})">
-                                                <i class="material-icons text-danger">&#xE872;</i>
-                                            </button>
-                                        </form>
+                                        <button type="button" class="btn btn-link p-0 m-0 align-baseline delete" title="Delete"
+                                            data-toggle="tooltip" onclick="confirmDelete({{ $product->product_id }})">
+                                            <i class="material-icons text-danger">&#xE872;</i>
+                                        </button>
                                     </td>
                                 </tr>
                             @endforeach
