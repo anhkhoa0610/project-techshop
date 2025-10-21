@@ -55,8 +55,14 @@
                                                 class="material-icons">&#xE417;</i></a>
                                         <a href="#" class="edit" title="Edit" data-toggle="tooltip"><i
                                                 class="material-icons">&#xE254;</i></a>
-                                        <a href="#" class="delete" title="Delete" data-toggle="tooltip"><i
-                                                class="material-icons">&#xE872;</i></a>
+                                        <form action="{{ url('/api/categories/' . $category->category_id) }}" method="POST"
+                                            style="display:inline;">
+                                            <button type="button" class="btn btn-link p-0 m-0 align-baseline delete"
+                                                title="Delete" data-toggle="tooltip"
+                                                onclick="confirmDelete({{ $category->category_id}})">
+                                                <i class="material-icons text-danger">&#xE872;</i>
+                                            </button>
+                                        </form>
                                     </td>
                                 </tr>
                             @endforeach
@@ -157,6 +163,49 @@
         </div>
     </div>
 
+    <!-- Modal View category -->
+    <div class="modal fade" id="viewCategoryModal" tabindex="-1" role="dialog" aria-labelledby="viewCategoryLabel"
+        aria-hidden="true">
+        <div class="modal-dialog modal-lg" role="document">
+            <div class="modal-content shadow-lg">
+                <div class="modal-header bg-info text-white">
+                    <h5 class="modal-title" id="viewSupplierModalLabel">
+                        Thông tin danh mục
+                    </h5>
+                </div>
+                <div class="modal-body bg-light">
+                    <div class="row">
+
+                        <div class="col-md-12">
+                            <div class="card border-0 bg-white shadow-sm">
+                                <div class="card-body p-3">
+                                    <div class="row mb-2">
+                                        <div class="col-4 font-weight-bold text-secondary">ID</div>
+                                        <div class="col-8" id="view_category_id"></div>
+                                    </div>
+                                    <div class="row mb-2">
+                                        <div class="col-4 font-weight-bold text-secondary">Category name:</div>
+                                        <div class="col-8" id="view_category_name"></div>
+                                    </div>
+                                    <div class="row mb-2">
+                                        <div class="col-4 font-weight-bold text-secondary">Description:</div>
+                                        <div class="col-8" id="view_description"></div>
+                                    </div>
+
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer bg-white">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">
+                        <i class="material-icons align-middle">close</i> Đóng
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <script>
         // Xử lý khi click nút Edit
         document.querySelectorAll('.edit').forEach(function (btn) {
@@ -200,9 +249,13 @@
 
 
             if (response.ok) {
-                alert('Cập nhật danh mục thành công!');
+                Swal.fire({
+                    icon: 'success',
+                    title: 'Cập nhật danh mục thành công!',
+                    confirmButtonText: 'OK',
+                    confirmButtonColor: '#3085d6'
+                }).then(() => location.reload());
                 $('#editCategoryModal').modal('hide');
-                location.reload();
             } else {
                 const err = await response.json();
 
@@ -214,7 +267,13 @@
                         }
                     });
                 } else {
-                    alert('Cập nhật danh mục thất bại: ' + (err.message || 'Lỗi không xác định'));
+                     Swal.fire({
+                            icon: 'error',
+                            title: 'Cập nhật danh mục thất bại',
+                            text: 'Đã xảy ra lỗi không xác định',
+                            confirmButtonText: 'Đóng',
+                            confirmButtonColor: '#d33'
+                        });
                 }
             }
         });
@@ -247,9 +306,15 @@
             });
 
             if (response.ok) {
-                alert('Thêm danh mục thành công!');
+                Swal.fire({
+                    icon: 'success',
+                    title: 'Thêm danh mục thành công!',
+                    confirmButtonText: 'OK',
+                    confirmButtonColor: '#3085d6'
+                }).then(() => {
+                    location.reload();
+                });
                 $('#addCategoryModal').modal('hide');
-                location.reload();
             } else {
                 const err = await response.json();
                 if (err.errors) {
@@ -260,9 +325,67 @@
                         }
                     });
                 } else {
-                    alert('Thêm danh mục thất bại: ' + (err.message || 'Lỗi không xác định'));
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Thêm danh mục thất bại',
+                        text: 'Lỗi không xác định',
+                        confirmButtonText: 'Đóng',
+                        confirmButtonColor: '#d33'
+                    });
                 }
             }
         });
+
+        // Xử lý xóa danh mục
+        function confirmDelete(id) {
+            Swal.fire({
+                title: 'Xác nhận xóa',
+                text: 'Bạn có chắc chắn muốn xóa danh mục này không?',
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonText: 'Xóa',
+                cancelButtonText: 'Hủy'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    fetch(`/api/categories/${id}`, {
+                        method: 'DELETE',
+                        headers: {
+                            'Accept': 'application/json',
+                            'X-CSRF-TOKEN': '{{ csrf_token() }}'
+                        }
+                    })
+                        .then(res => res.json())
+                        .then(data => {
+                            if (data.success) {
+                                Swal.fire('Đã xóa!', data.message, 'success').then(() => location.reload());
+                            } else {
+                                Swal.fire('Lỗi', 'Không thể xóa danh mục.', 'error');
+                            }
+                        })
+                        .catch(() => Swal.fire('Lỗi', 'Không thể kết nối đến server.', 'error'));
+                }
+            });
+        }
+
+        // Hiển thị modal khi nhấn nút "Xem" chi tiết đơn hàng
+        document.querySelectorAll('.view').forEach(btn => {
+            btn.addEventListener('click', e => {
+                e.preventDefault();
+
+                const row = btn.closest('tr');
+                document.getElementById('view_category_id').textContent = row.getAttribute('data-category-id') || '';
+                document.getElementById('view_category_name').textContent = row.getAttribute('data-category-name') || '';
+                document.getElementById('view_description').textContent = row.getAttribute('data-category-description') || '';
+                // Hiển thị modal
+                $('#viewCategoryModal').modal('show');
+            });
+        });
+        function formatCurrency(value) {
+            const number = parseFloat(value);
+            if (isNaN(number)) return '0 ₫';
+            return number.toLocaleString('vi-VN', { style: 'currency', currency: 'VND' });
+        }
+
     </script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 @endsection

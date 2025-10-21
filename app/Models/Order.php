@@ -8,6 +8,7 @@ use App\Models\User;
 use App\Models\Voucher;
 use App\Models\OrderDetail;
 use Illuminate\Support\Facades\DB;
+use Carbon\Carbon;
 
 
 
@@ -84,11 +85,19 @@ class Order extends Model
             }
         }
 
-        // 3. Cập nhật lại order
+
+        // 3. Giảm thêm 20% cho sinh viên TDC
+        if ($this->user && $this->user->is_tdc_student) {
+            $finalPrice *= 0.8; // giảm 20%
+        }
+
+        // 4. Cập nhật lại order
         $this->total_price = $finalPrice;
         $this->save();
     }
 
-
-
+    public function getOrderDateAttribute($value)
+    {
+        return Carbon::parse($value)->format('d/m/Y H:i');
+    }
 }

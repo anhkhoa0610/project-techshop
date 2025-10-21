@@ -11,6 +11,7 @@
                             <div class="col-sm-4">
                                 <button class="btn btn-info add-new">Thêm chi tiết đơn hàng mới
                                 </button>
+
                             </div>
                             <div class="col-sm-4">
                                 <h2 class="text-center"><b>Quản Lý chi tiết đơn hàng Order ID: <?php echo ($order_id) ?></b>
@@ -32,6 +33,12 @@
                             </div>
                         </div>
                     </div>
+                    <div class=" d-flex justify-content-start mb-1">
+                        <a href="{{ session('orders_list_url', route('orders.list')) }}" class="btn btn-primary">
+                            <i class="fa fa-arrow-left"></i>
+                            <span>Back</span>
+                        </a>
+                    </div>
                     <table class="table table-bordered">
                         <thead>
                             <tr>
@@ -50,24 +57,30 @@
                                 <tr data-detail-id="{{ $detail->order_detail_id }}" data-order-id="{{ $detail->order_id }}"
                                     data-product-id="{{ $detail->product_id }}"
                                     data-product-name="{{ $detail->product->product_name }}"
-                                    data-product-image="{{ $detail->product->product_image }}"
+                                    data-product-image="{{ $detail->product->cover_image }}"
                                     data-quantity="{{ $detail->quantity }}" data-unit-price="{{ $detail->unit_price }}"
                                     data-total-price="{{ number_format(($detail->unit_price) * ($detail->quantity), 2) }}">
                                     <td>{{ $detail->order_detail_id }}</td>
                                     <td>{{ $detail->product->product_name }}</td>
-                                    <td><img src="{{ asset('images/' . $detail->product->image) }}"
+                                    <td><img src="{{ asset('uploads/' . $detail->product->cover_image) }}"
                                             alt="{{ $detail->product->product_name }}" width="50"></td>
                                     <td>{{ $detail->quantity }}</td>
                                     <td>{{ number_format($detail->unit_price, 0, ',', '.') }} ₫</td>
-                                    <td>{{ number_format(($detail->unit_price) * ($detail->quantity), 0,',','.') }}₫</td>
+                                    <td>{{ number_format(($detail->unit_price) * ($detail->quantity), 0, ',', '.') }}₫</td>
 
                                     <td>
                                         <a href="#" class="view" title="View" data-toggle="tooltip"><i
                                                 class="material-icons">&#xE417;</i></a>
                                         <a href="#" class="edit" title="Edit" data-toggle="tooltip"><i
                                                 class="material-icons">&#xE254;</i></a>
-                                        <a href="#" class="delete" title="Delete" data-toggle="tooltip"><i
-                                                class="material-icons">&#xE872;</i></a>
+                                        <form action="{{ url('/api/orderDetails/' . $detail->order_detail_id) }}" method="POST"
+                                            style="display:inline;">
+                                            <button type="button" class="btn btn-link p-0 m-0 align-baseline delete"
+                                                title="Delete" data-toggle="tooltip"
+                                                onclick="confirmDelete({{ $detail->order_detail_id}})">
+                                                <i class="material-icons text-danger">&#xE872;</i>
+                                            </button>
+                                        </form>
                                     </td>
                                 </tr>
                             @endforeach
@@ -202,7 +215,7 @@
                         <div class="col-md-4 text-center">
                             <div class="mb-3">
                                 <img id="view_product_image" src="" alt="Hình ảnh sản phẩm" class="img-thumbnail shadow"
-                                    style="max-height: 120px; background: #fff;">
+                                    style="max-height: 220px; background: #fff;">
                             </div>
                             <h4 id="view_name" class="font-weight-bold text-secondary mb-2"></h4>
                         </div>
@@ -318,7 +331,7 @@
                     } else {
                         Swal.fire({
                             icon: 'error',
-                            title: 'Cập nhật thất bại',
+                            title: 'Cập nhật chi tiết đơn hàng thất bại',
                             text: 'Đã xảy ra lỗi không xác định',
                             confirmButtonText: 'Đóng',
                             confirmButtonColor: '#d33'
@@ -400,7 +413,7 @@
                 e.preventDefault();
 
                 const row = btn.closest('tr');
-                document.getElementById('view_product_image').src = row.getAttribute('data-product-image') ? '/uploads/' + row.getAttribute('data-logo') : '/uploads/place-holder.jpg';
+                document.getElementById('view_product_image').src = row.getAttribute('data-product-image') ? '/uploads/' + row.getAttribute('data-product-image') : '/uploads/place-holder.jpg';
                 document.getElementById('view_stock_quantity').textContent = row.getAttribute('data-detail-id') || '';
                 document.getElementById('view_product_name').textContent = row.getAttribute('data-product-name') || '';
                 document.getElementById('view_quantity').textContent = row.getAttribute('data-quantity') || '';
@@ -415,6 +428,37 @@
             const number = parseFloat(value);
             if (isNaN(number)) return '0 ₫';
             return number.toLocaleString('vi-VN', { style: 'currency', currency: 'VND' });
+        }
+
+        // Xử lý xóa chi tiết đơn hàng
+        function confirmDelete(id) {
+            Swal.fire({
+                title: 'Xác nhận xóa',
+                text: 'Bạn có chắc chắn muốn xóa chi tiết đơn hàng này không?',
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonText: 'Xóa',
+                cancelButtonText: 'Hủy'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    fetch(`/api/orderDetails/${id}`, {
+                        method: 'DELETE',
+                        headers: {
+                            'Accept': 'application/json',
+                            'X-CSRF-TOKEN': '{{ csrf_token() }}'
+                        }
+                    })
+                        .then(res => res.json())
+                        .then(data => {
+                            if (data.success) {
+                                Swal.fire('Đã xóa!', data.message, 'success').then(() => location.reload());
+                            } else {
+                                Swal.fire('Lỗi', 'Không thể xóa chi tiết đơn hàng.'.data.message, 'error');
+                            }
+                        })
+                        .catch(() => Swal.fire('Lỗi', 'Không thể kết nối đến server.', 'error'));
+                }
+            });
         }
 
 

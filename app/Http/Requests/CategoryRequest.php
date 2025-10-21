@@ -3,6 +3,7 @@
 namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Validation\Rule;
 
 class CategoryRequest extends FormRequest
 {
@@ -16,14 +17,16 @@ class CategoryRequest extends FormRequest
 
     public function rules(): array
     {
+        $id = $this->route('category') ?? $this->route('id');
         return [
             'category_name' => [
                 'required',
                 'string',
                 'min:2',
                 'max:255',
-                'regex:/^[A-Za-zÀ-ỹ0-9\s\-_]+$/u', // Cho phép chữ, số, khoảng trắng, gạch ngang, gạch dưới
-                'unique:categories,category_name', // Tránh trùng tên
+                'regex:/^[A-Za-zÀ-ỹ0-9\s\-_]+$/u',
+                Rule::unique('categories', 'category_name')->ignore($id, 'category_id'),
+
             ],
             'description' => [
                 'required',
