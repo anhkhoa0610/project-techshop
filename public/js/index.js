@@ -27,7 +27,7 @@ function renderProductsAndPagination(data, categoryId) {
     let pagination = '';
     if (data.last_page && data.last_page > 1) {
         // Sử dụng flex để căn giữa các nút và số trang
-        pagination += `<nav class="category-pagination flex items-center justify-center space-x-4">`; 
+        pagination += `<nav class="category-pagination flex items-center justify-center space-x-4">`;
 
         // 1. Nút "Trước" (Prev)
         if (data.current_page > 1) {
@@ -41,7 +41,9 @@ function renderProductsAndPagination(data, categoryId) {
         // 2. Hiển thị Trang Hiện Tại / Tổng Số Trang (dưới dạng ô input)
         pagination += `
             <span class="page-indicator">
-                Pages:               
+            <span style="color: white">
+                Pages:
+                </span>               
                 <input 
                     type="number" 
                     id="page-input"
@@ -72,8 +74,8 @@ function renderProductsAndPagination(data, categoryId) {
     document.querySelectorAll('.category-pagination .page-btn').forEach(btn => {
         btn.onclick = function () {
             // Đảm bảo chỉ gọi hàm khi nút không bị vô hiệu hóa
-            if (!this.disabled) { 
-                 loadProductsByCategory(categoryId, parseInt(this.dataset.page));
+            if (!this.disabled) {
+                loadProductsByCategory(categoryId, parseInt(this.dataset.page));
             }
         };
     });
@@ -86,14 +88,14 @@ function renderProductsAndPagination(data, categoryId) {
             if (event.key === 'Enter') {
                 let page = parseInt(this.value);
                 const lastPage = data.last_page;
-                
+
                 // Kiểm tra tính hợp lệ của số trang nhập vào
                 if (isNaN(page) || page < 1) {
                     page = 1;
                 } else if (page > lastPage) {
                     page = lastPage;
                 }
-                
+
                 // Cập nhật giá trị input sau khi kiểm tra (trường hợp người dùng nhập ngoài giới hạn)
                 this.value = page;
 
@@ -125,3 +127,31 @@ document.querySelectorAll('.category-card').forEach(function (card, idx) {
         loadProductsByCategory(categoryId, 1);
     });
 });
+
+
+//chatbot + sidebar
+
+document.getElementById('openSidebar').onclick = function () {
+    document.getElementById('sidebar').classList.add('open');
+};
+document.getElementById('closeSidebar').onclick = function () {
+    document.getElementById('sidebar').classList.remove('open');
+};
+// Đóng sidebar khi click ra ngoài
+document.addEventListener('click', function (e) {
+    const sidebar = document.getElementById('sidebar');
+    if (sidebar.classList.contains('open')) {
+        if (!sidebar.contains(e.target) && !document.getElementById('openSidebar').contains(e.target)) {
+            sidebar.classList.remove('open');
+        }
+    }
+});
+
+
+
+document.getElementById('chatbot-btn').onclick = function () {
+    document.getElementById('chatbot-dialog').classList.add('open');
+};
+document.getElementById('chatbot-close').onclick = function () {
+    document.getElementById('chatbot-dialog').classList.remove('open');
+};
