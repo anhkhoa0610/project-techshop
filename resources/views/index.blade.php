@@ -5,6 +5,65 @@
 @section('content')
 
     <link rel="stylesheet" href="{{ asset('css/index.css') }}">
+    <style>
+
+    </style>
+
+    <!-- Sidebar -->
+    <div id="sidebar" class="sidebar">
+        <div class="sidebar-header">
+            <span class="sidebar-title">Lọc sản phẩm</span>
+            <button id="closeSidebar" class="sidebar-close">&times;</button>
+        </div>
+        <form id="filterForm" class="mt-4">
+            <!-- Giá tiền -->
+            <div class="mb-4">
+                <label class="form-label fw-semibold">Giá tiền (VNĐ)</label>
+                <div class="d-flex align-items-center gap-2">
+                    <input type="number" class="form-control number-input" name="price_min" placeholder="0" min="0"
+                        step="1000" style="max-width: 120px;">
+                    <span class="fw-bold">–</span>
+                    <input type="number" class="form-control number-input" name="price_max" placeholder="5000000" min="0"
+                        step="1000" style="max-width: 120px;">
+                </div>
+            </div>
+
+
+            <!-- Danh mục -->
+            <div class="mb-4">
+                <label for="category" class="form-label fw-semibold">Danh mục</label>
+                <select class="form-select" id="category" name="category">
+                    <option value="all">Tất cả</option>
+                    <option value="laptop">Laptop</option>
+                    <option value="smartphone">Điện thoại</option>
+                    <option value="accessory">Phụ kiện</option>
+                    <option value="tablet">Máy tính bảng</option>
+                </select>
+            </div>
+
+            <!-- Nhà phân phối -->
+            <div class="mb-4">
+                <label for="supplier" class="form-label fw-semibold">Nhà phân phối</label>
+                <select class="form-select" id="supplier" name="supplier">
+                    <option value="all">Tất cả</option>
+                    <option value="apple">Apple</option>
+                    <option value="samsung">Samsung</option>
+                    <option value="asus">ASUS</option>
+                    <option value="dell">Dell</option>
+                </select>
+            </div>
+
+            <!-- Nút áp dụng -->
+            <button type="submit" class="btn btn-primary w-100">Áp dụng bộ lọc</button>
+        </form>
+    </div>
+    </div>
+    <!-- Nút mở sidebar -->
+    <button id="openSidebar" class="sidebar-toggle">
+        <span> <i class="bi bi-funnel me-1"></i> Lọc</span>
+    </button>
+
+
     <!-- Hero Section -->
 
     <section class="hero">
@@ -235,5 +294,35 @@
             </div>
         </div>
     </section>
+
+    <!-- Chatbot Bubble -->
+    <div id="chatbot-bubble">
+        <button id="chatbot-btn">
+            <svg width="32" height="32" viewBox="0 0 24 24" fill="none">
+                <circle cx="12" cy="12" r="12" fill="#0d6efd" />
+                <path d="M8 10h8M8 14h5" stroke="#fff" stroke-width="2" stroke-linecap="round" />
+                <circle cx="17" cy="14" r="1.5" fill="#fff" />
+            </svg>
+        </button>
+    </div>
+
+    <!-- Chatbot Dialog -->
+    <div id="chatbot-dialog">
+        <div class="chatbot-header">
+            <span>Chatbot hỗ trợ</span>
+            <button id="chatbot-close">&times;</button>
+        </div>
+        <div class="chatbot-body">
+            <div class="chatbot-message">Xin chào! Tôi có thể giúp gì cho bạn?</div>
+            <!-- Thêm nội dung chat ở đây -->
+        </div>
+        <div class="chatbot-footer">
+            <input type="text" class="chatbot-input" placeholder="Nhập câu hỏi...">
+            <button class="chatbot-send">Gửi</button>
+        </div>
+    </div>
+
+
+
     <script src="{{ asset('js/index.js') }}"></script>
 @endsection
