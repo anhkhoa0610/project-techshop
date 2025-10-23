@@ -1,5 +1,5 @@
 <header class="header">
-    <div class="container">
+    <div class="header-container">
         <div class="header-content">
             <div class="header-left">
                 <button class="menu-btn mobile-only">
