@@ -53,6 +53,19 @@
                 </select>
             </div>
 
+            <!-- Rating -->
+
+            <div class="mb-4">
+                <label for="rating" class="form-label fw-semibold">Đánh giá</label>
+                <select class="form-select" id="rating" name="rating">
+                    <option value="all">Tất cả</option>
+                    <option value="5">⭐️⭐️⭐️⭐️⭐️</option>
+                    <option value="4">⭐️⭐️⭐️⭐️</option>
+                    <option value="3">⭐️⭐️⭐️</option>
+                    <option value="2">⭐️⭐️</option>
+                    <option value="1">⭐️</option>
+                </select>
+            </div>
             <!-- Nút áp dụng -->
             <button type="submit" class="btn btn-primary w-100">Áp dụng bộ lọc</button>
         </form>
