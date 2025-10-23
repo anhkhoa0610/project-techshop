@@ -46,9 +46,20 @@ Route::prefix('orderDetails')->group(function () {
 });
 
 
+// Xem giỏ hàng
 Route::get('/cart', [CartController::class, 'index'])->name('cart.index');
-Route::get('/pay', [PayController::class, 'index'])->name('pay.index');
+
+// Thanh toán (gửi dữ liệu POST từ giỏ hàng)
+Route::post('/pay', [PayController::class, 'index'])->name('pay.index');
+
+// Trang hóa đơn
 Route::get('/hoadon', [HoaDonController::class, 'index'])->name('hoadon.index');
+
+// Xóa 1 hoặc nhiều sản phẩm trong giỏ
+Route::delete('/cart/{cart_id}', [CartController::class, 'destroy']);
+Route::delete('/cart-items', [CartController::class, 'destroyMany'])->name('cart.destroyMany');
+
+
 
 
 
