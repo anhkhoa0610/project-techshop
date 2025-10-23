@@ -91,6 +91,13 @@
                             @endforeach
                         </tbody>
                     </table>
+                    <div class="clearfix">
+                        <div class="clearfix">
+                            <nav>
+                                {{ $suppliers->withQueryString()->links('pagination::bootstrap-5') }}
+                            </nav>
+                        </div>
+                    </div>
                     <!-- Modal Edit Supplier -->
                     <div class="modal fade" id="editSupplierModal" tabindex="-1" role="dialog" aria-labelledby="editSupplierModalLabel"
                         aria-hidden="true">
