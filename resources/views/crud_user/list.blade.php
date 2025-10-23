@@ -31,6 +31,28 @@
                                     </form>
                                 </div>
                             </div>
+                            <div class="col-sm-4">
+                                <form method="GET" action="{{ url()->current() }}" class="d-inline">
+                                    <div class="input-group">
+                                        <select name="role" class="form-control" onchange="this.form.submit()">
+                                            <option value="">Tất cả vai trò</option>
+                                            <option value="Admin" {{ request('role') == 'Admin' ? 'selected' : '' }}>Admin</option>
+                                            <option value="User" {{ request('role') == 'User' ? 'selected' : '' }}>User</option>
+
+                                        </select>
+                                        @if(request('role'))
+                                            <div class="input-group-append">
+                                                <a href="{{ url()->current() }}" class="btn btn-secondary">Xóa lọc</a>
+                                            </div>
+                                        @endif
+                                    </div>
+
+                                    <!-- Giữ lại tham số search khi lọc role -->
+                                    @if(request('search'))
+                                        <input type="hidden" name="search" value="{{ request('search') }}">
+                                    @endif
+                                </form>
+                            </div>
                         </div>
                     </div>
 
@@ -188,7 +210,8 @@
                         url: '{{ route("users.index") }}',
                         type: 'GET',
                         data: {
-                            search: searchValue
+                            search: searchValue,
+                            role: $('select[name="role"]').val()
                         },
                         success: function (data) {
                             $('#user-table-container').html(data);
