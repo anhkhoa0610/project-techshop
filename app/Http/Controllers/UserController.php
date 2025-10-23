@@ -15,19 +15,22 @@ class UserController extends Controller
     public function index(Request $request)
     {
         $search = $request->input('search');
-        
+        $roleFilter = $request->input('role');
+
         $users = User::when($search, function($query) use ($search) {
             return $query->where('full_name', 'like', "%$search%")
                         ->orWhere('email', 'like', "%$search%")
                         ->orWhere('phone', 'like', "%$search%")
                         ->orWhere('address', 'like', "%$search%");
         })
+        ->when($roleFilter, function($query) use ($roleFilter) {
+            return $query->where('role', $roleFilter);
+        })
+     
         ->latest()
         ->paginate(10);
 
-        if ($request->ajax()) {
-            return view('crud_user.partials.user_table', compact('users'));
-        }
+       
 
         return view('crud_user.list', compact('users'));
     }
