@@ -84,10 +84,10 @@
                                         @endif
                                     </td>
                                     <td>{{ $product->description }}</td>
-                                    <td>{{ number_format($product->price, 2) }}</td>
+                                    <td>{{ number_format($product->price, 0) }}</td>
                                     <td>{{ $product->stock_quantity }}</td>
-                                    <td>{{ $product->category->category_name ?? '—' }}</td>
                                     <td>{{ $product->supplier->name ?? '—' }}</td>
+                                    <td>{{ $product->category->category_name ?? '—' }}</td>
                                     <td>{{ $product->warranty_period }}</td>
                                     <td>{{ $product->volume_sold }}</td>
                                     <td>{{ $product->release_date }}</td>

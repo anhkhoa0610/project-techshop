@@ -6,26 +6,25 @@ use App\Http\Requests\ProductRequest;
 use App\Models\Product;
 use App\Models\Category;
 use App\Models\Supplier;
+use Illuminate\Http\Request;
 
 class ProductController extends Controller
 {
     // Hiển thị danh sách sản phẩm
     public function list()
     {
-        $query = Product::with(['category', 'supplier']);
+        $search = request('search');
 
-        // Nếu có tham số tìm kiếm
-        if (request()->has('search') && request('search')) {
-            $search = request('search');
-            $query->where('product_name', 'like', '%' . $search . '%');
-        }
+        $products = Product::with(['category', 'supplier'])
+            ->search($search)
+            ->paginate(5);
 
-        $products = $query->paginate(5);
         $suppliers = Supplier::all();
         $categories = Category::all();
 
         return view('crud-product.list', compact('products', 'suppliers', 'categories'));
     }
+
 
     public function index()
     {
@@ -121,13 +120,32 @@ class ProductController extends Controller
                 'message' => 'Sản phẩm không tồn tại',
             ], 404);
         }
-        
+
 
         $product->delete();
 
         return response()->json([
             'success' => true,
             'message' => 'Sản phẩm đã xóa thành công!',
+        ]);
+    }
+
+    public function filter(Request $request)
+    {
+        $min = $request->input('min_price');
+        $max = $request->input('max_price');
+        $category = $request->input('category_id', 0);
+        $supplier = $request->input('supplier_id', 0);
+
+        $products = Product::filter($min, $max, $category, $supplier)->paginate(8);
+
+        return response()->json([
+            'success' => true,
+            'data' => $products->items(),
+            'current_page' => $products->currentPage(),
+            'last_page' => $products->lastPage(),
+            'total' => $products->total(),
+            'per_page' => $products->perPage(),
         ]);
     }
 }
