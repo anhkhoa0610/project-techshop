@@ -163,7 +163,7 @@ input[type=number]::-webkit-outer-spin-button {
     padding: 1.25rem;
     border-radius: 1rem;
     text-align: center;
-    border: 1px solid rgba(255, 255, 255, 0.06);
+    border: 1px solid rgb(21, 117, 155);
     transition: all 0.5s cubic-bezier(0.25, 0.8, 0.25, 1);
     cursor: pointer;
     /* keep content above pseudo-elements / background overlays */
@@ -184,7 +184,7 @@ input[type=number]::-webkit-outer-spin-button {
     background: transparent;
     -webkit-backdrop-filter: blur(6px) saturate(120%);
     backdrop-filter: blur(6px) saturate(120%);
-    border: 1px solid rgba(255, 255, 255, 0.06);
+    border: 1px solid rgb(21, 117, 155);
     color: inherit;
     border-radius: 1rem;
     overflow: hidden;
