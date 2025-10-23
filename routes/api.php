@@ -20,7 +20,7 @@ Route::apiResource('orderDetails', OrderDetailController::class);
 
 
 // supplier
-Route::apiResource('suppliers', SupplierController::class)->only(['update', 'destroy', 'store']);
+Route::apiResource('suppliers', SupplierController::class);
 
 // Lấy sản phẩm theo danh mục
 Route::get('categories/{categoryId}/products', [IndexController::class, 'getProductsByCategory']);
