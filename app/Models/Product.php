@@ -42,4 +42,50 @@ class Product extends Model
     {
         return $this->hasMany(OrderDetail::class, 'product_id', 'product_id');
     }
+
+    public function scopePriceRange($query, $min_price = null, $max_price = null)
+    {
+        return $query
+            ->when($min_price !== null && $max_price !== null, function ($q) use ($min_price, $max_price) {
+                $q->whereBetween('price', [$min_price, $max_price]);
+            })
+            ->when($min_price !== null && $max_price === null, function ($q) use ($min_price) {
+                $q->where('price', '>=', $min_price);
+            })
+            ->when($max_price !== null && $min_price === null, function ($q) use ($max_price) {
+                $q->where('price', '<=', $max_price);
+            });
+    }
+
+    public function scopeFilterByCategory($query, $category_id = 0)
+    {
+        return $query->when($category_id && $category_id != 0, function ($q) use ($category_id) {
+            $q->where('category_id', $category_id);
+        });
+    }
+
+    public function scopeFilterBySupplier($query, $supplier_id = 0)
+    {
+        return $query->when($supplier_id && $supplier_id != 0, function ($q) use ($supplier_id) {
+            $q->where('supplier_id', $supplier_id);
+        });
+    }
+
+    public function scopeFilter($query, $min_price = null, $max_price = null, $category_id = 0, $supplier_id = 0)
+    {
+        return $query
+            ->priceRange($min_price, $max_price)
+            ->filterByCategory($category_id)
+            ->filterBySupplier($supplier_id);
+    }
+
+    public function scopeSearch($query, $search = null)
+    {
+        if (!empty($search)) {
+            $query->where('product_name', 'like', '%' . $search . '%');
+        }
+
+        return $query;
+    }
+
 }

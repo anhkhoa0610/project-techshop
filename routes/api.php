@@ -24,3 +24,7 @@ Route::apiResource('suppliers', SupplierController::class)->only(['update', 'des
 
 // Lấy sản phẩm theo danh mục
 Route::get('categories/{categoryId}/products', [IndexController::class, 'getProductsByCategory']);
+
+//product filter cho trang index
+Route::get('/index/filter', [ProductController::class, 'filter']);
+

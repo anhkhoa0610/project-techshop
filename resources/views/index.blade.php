@@ -5,6 +5,7 @@
 @section('content')
 
     <link rel="stylesheet" href="{{ asset('css/index.css') }}">
+    <link rel="stylesheet" href="{{ asset('css/index-filter.css') }}">
     <style>
 
     </style>
@@ -20,10 +21,10 @@
             <div class="mb-4">
                 <label class="form-label fw-semibold">Giá tiền (VNĐ)</label>
                 <div class="d-flex align-items-center gap-2">
-                    <input type="number" class="form-control number-input" name="price_min" placeholder="0" min="0"
+                    <input type="number" class="form-control number-input" name="price_min" placeholder="" min="0"
                         step="1000" style="max-width: 120px;">
                     <span class="fw-bold">–</span>
-                    <input type="number" class="form-control number-input" name="price_max" placeholder="5000000" min="0"
+                    <input type="number" class="form-control number-input" name="price_max" placeholder="" min="0"
                         step="1000" style="max-width: 120px;">
                 </div>
             </div>
@@ -32,24 +33,24 @@
             <!-- Danh mục -->
             <div class="mb-4">
                 <label for="category" class="form-label fw-semibold">Danh mục</label>
-                <select class="form-select" id="category" name="category">
-                    <option value="all">Tất cả</option>
-                    <option value="laptop">Laptop</option>
-                    <option value="smartphone">Điện thoại</option>
-                    <option value="accessory">Phụ kiện</option>
-                    <option value="tablet">Máy tính bảng</option>
+                <select class="form-select" id="category" name="category_filter">
+                    <option value="0">Tất cả</option>
+                    <option value="1">Laptop</option>
+                    <option value="2">Điện thoại</option>
+                    <option value="3">Phụ kiện</option>
+                    <option value="4">Máy tính bảng</option>
                 </select>
             </div>
 
             <!-- Nhà phân phối -->
             <div class="mb-4">
                 <label for="supplier" class="form-label fw-semibold">Nhà phân phối</label>
-                <select class="form-select" id="supplier" name="supplier">
-                    <option value="all">Tất cả</option>
-                    <option value="apple">Apple</option>
-                    <option value="samsung">Samsung</option>
-                    <option value="asus">ASUS</option>
-                    <option value="dell">Dell</option>
+                <select class="form-select" id="supplier" name="supplier_filter">
+                    <option value="0">Tất cả</option>
+                    <option value="1">Apple</option>
+                    <option value="2">Samsung</option>
+                    <option value="3">ASUS</option>
+                    <option value="4">Dell</option>
                 </select>
             </div>
 
@@ -70,7 +71,7 @@
             <button type="submit" class="btn btn-primary w-100">Áp dụng bộ lọc</button>
         </form>
     </div>
-    </div>
+
     <!-- Nút mở sidebar -->
     <button id="openSidebar" class="sidebar-toggle">
         <span> <i class="bi bi-funnel me-1"></i> Lọc</span>
@@ -336,6 +337,6 @@
     </div>
 
 
-
+    <script src="{{ asset('js/index-filter.js') }}"></script>
     <script src="{{ asset('js/index.js') }}"></script>
 @endsection
