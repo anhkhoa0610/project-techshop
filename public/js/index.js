@@ -129,29 +129,3 @@ document.querySelectorAll('.category-card').forEach(function (card, idx) {
 });
 
 
-//chatbot + sidebar
-
-document.getElementById('openSidebar').onclick = function () {
-    document.getElementById('sidebar').classList.add('open');
-};
-document.getElementById('closeSidebar').onclick = function () {
-    document.getElementById('sidebar').classList.remove('open');
-};
-// Đóng sidebar khi click ra ngoài
-document.addEventListener('click', function (e) {
-    const sidebar = document.getElementById('sidebar');
-    if (sidebar.classList.contains('open')) {
-        if (!sidebar.contains(e.target) && !document.getElementById('openSidebar').contains(e.target)) {
-            sidebar.classList.remove('open');
-        }
-    }
-});
-
-
-
-document.getElementById('chatbot-btn').onclick = function () {
-    document.getElementById('chatbot-dialog').classList.add('open');
-};
-document.getElementById('chatbot-close').onclick = function () {
-    document.getElementById('chatbot-dialog').classList.remove('open');
-};
