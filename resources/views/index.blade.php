@@ -6,76 +6,14 @@
 
     <link rel="stylesheet" href="{{ asset('css/index.css') }}">
     <link rel="stylesheet" href="{{ asset('css/index-filter.css') }}">
-    <style>
-
-    </style>
 
     <!-- Sidebar -->
-    <div id="sidebar" class="sidebar">
-        <div class="sidebar-header">
-            <span class="sidebar-title">Lọc sản phẩm</span>
-            <button id="closeSidebar" class="sidebar-close">&times;</button>
-        </div>
-        <form id="filterForm" class="mt-4">
-            <!-- Giá tiền -->
-            <div class="mb-4">
-                <label class="form-label fw-semibold">Giá tiền (VNĐ)</label>
-                <div class="d-flex align-items-center gap-2">
-                    <input type="number" class="form-control number-input" name="price_min" placeholder="" min="0"
-                        step="1000" style="max-width: 120px;">
-                    <span class="fw-bold">–</span>
-                    <input type="number" class="form-control number-input" name="price_max" placeholder="" min="0"
-                        step="1000" style="max-width: 120px;">
-                </div>
-            </div>
 
-
-            <!-- Danh mục -->
-            <div class="mb-4">
-                <label for="category" class="form-label fw-semibold">Danh mục</label>
-                <select class="form-select" id="category" name="category_filter">
-                    <option value="0">Tất cả</option>
-                    <option value="1">Laptop</option>
-                    <option value="2">Điện thoại</option>
-                    <option value="3">Phụ kiện</option>
-                    <option value="4">Máy tính bảng</option>
-                </select>
-            </div>
-
-            <!-- Nhà phân phối -->
-            <div class="mb-4">
-                <label for="supplier" class="form-label fw-semibold">Nhà phân phối</label>
-                <select class="form-select" id="supplier" name="supplier_filter">
-                    <option value="0">Tất cả</option>
-                    <option value="1">Apple</option>
-                    <option value="2">Samsung</option>
-                    <option value="3">ASUS</option>
-                    <option value="4">Dell</option>
-                </select>
-            </div>
-
-            <!-- Rating -->
-
-            <div class="mb-4">
-                <label for="rating" class="form-label fw-semibold">Đánh giá</label>
-                <select class="form-select" id="rating" name="rating">
-                    <option value="all">Tất cả</option>
-                    <option value="5">⭐️⭐️⭐️⭐️⭐️</option>
-                    <option value="4">⭐️⭐️⭐️⭐️</option>
-                    <option value="3">⭐️⭐️⭐️</option>
-                    <option value="2">⭐️⭐️</option>
-                    <option value="1">⭐️</option>
-                </select>
-            </div>
-            <!-- Nút áp dụng -->
-            <button type="submit" class="btn btn-primary w-100">Áp dụng bộ lọc</button>
-        </form>
-    </div>
 
     <!-- Nút mở sidebar -->
-    <button id="openSidebar" class="sidebar-toggle">
-        <span> <i class="bi bi-funnel me-1"></i> Lọc</span>
-    </button>
+    <!-- <button id="openSidebar" class="sidebar-toggle">
+                <span> <i class="bi bi-funnel me-1"></i> Lọc</span>
+            </button> -->
 
 
     <!-- Hero Section -->
@@ -241,20 +179,114 @@
 
         <!-- Featured Products -->
         <section class="products categories-products" style="display: none">
-            <div class="container">
+            <div class="container-fluid">
                 <div class="section-header">
                     <h2 class="section-title">Sản phẩm theo danh mục</h2>
-                    <p class="section-subtitle">Các sản phẩm là </p>
+                    <p class="section-subtitle">Tất cả sản phẩm</p>
                 </div>
-                <div class="products-grid show-by-category">
+                <div class="row">
+                    <div class="col-md-3" style="color: white">
+                        <div class="sidebar">
+                            <div class="sidebar-header">
+                                <span class="sidebar-title">Lọc sản phẩm</span>
+                            </div>
+                            <form id="filterForm" class="mt-4">
+                                <!-- Giá tiền -->
+                                <div class="mb-4">
+                                    <label class="form-label fw-semibold">Giá tiền (VNĐ)</label>
+                                    <div class="d-flex align-items-center gap-2">
+                                        <input type="number" class="form-control number-input" name="price_min"
+                                            placeholder="" min="0" step="1000" style="max-width: 16rem;">
+                                        <span class="fw-bold">–</span>
+                                        <input type="number" class="form-control number-input" name="price_max"
+                                            placeholder="" min="0" step="1000" style="max-width: 16rem;">
+                                    </div>
+                                </div>
 
+
+                                <!-- Danh mục -->
+                                <div class="mb-4">
+                                    <label for="category" class="form-label fw-semibold">Danh mục</label>
+                                    <select class="form-select" id="category" name="category_filter">
+                                        <option value="0">Tất cả</option>
+                                        <option value="1">Laptop</option>
+                                        <option value="2">Điện thoại</option>
+                                        <option value="3">Phụ kiện</option>
+                                        <option value="4">Máy tính bảng</option>
+                                    </select>
+                                </div>
+
+                                <!-- Nhà phân phối -->
+                                <div class="mb-4">
+                                    <label for="supplier" class="form-label fw-semibold">Nhà phân phối</label>
+                                    <select class="form-select" id="supplier" name="supplier_filter">
+                                        <option value="0">Tất cả</option>
+                                        <option value="1">Apple</option>
+                                        <option value="2">Samsung</option>
+                                        <option value="3">ASUS</option>
+                                        <option value="4">Dell</option>
+                                    </select>
+                                </div>
+
+                                <!-- Rating -->
+
+                                <div class="mb-4">
+                                    <label for="rating" class="form-label fw-semibold">Đánh giá</label>
+                                    <select class="form-select" id="rating" name="rating">
+                                        <option value="all">Tất cả</option>
+                                        <option value="5">⭐️⭐️⭐️⭐️⭐️</option>
+                                        <option value="4">⭐️⭐️⭐️⭐️</option>
+                                        <option value="3">⭐️⭐️⭐️</option>
+                                        <option value="2">⭐️⭐️</option>
+                                        <option value="1">⭐️</option>
+                                    </select>
+                                </div>
+
+                                <!-- Tình trạng hàng -->
+                                <div class="mb-4">
+                                    <label for="stock_status" class="form-label fw-semibold">Tình trạng hàng</label>
+                                    <select class="form-select" id="stock_status" name="stock_status">
+                                        <option value="all">Tất cả</option>
+                                        <option value="in_stock">Còn hàng</option>
+                                        <option value="out_of_stock">Hết hàng</option>
+                                    </select>
+                                </div>
+
+                                <!-- Thời gian ra mắt -->
+                                <div class="mb-4">
+                                    <label for="release_date" class="form-label fw-semibold">Thời gian ra mắt</label>
+                                    <select class="form-select" id="release_date" name="release_date">
+                                        <option value="all">Tất cả</option>
+                                        <option value="last_30_days">30 ngày qua</option>
+                                        <option value="last_90_days">90 ngày qua</option>
+                                        <option value="last_6_months">6 tháng qua</option>
+                                        <option value="last_1_year">1 năm qua</option>
+                                    </select>
+                                </div>
+
+                                <!-- Đang giảm giá -->
+                                <div class="mb-4 form-check">
+                                    <input type="checkbox" class="form-check-input" id="on_sale" name="on_sale">
+                                    <label class="form-check-label fw-semibold" for="on_sale">Chỉ hiển thị sản phẩm đang
+                                        giảm giá</label>
+                                </div>
+
+                                <!-- Nút áp dụng -->
+                                <button type="submit" class="btn btn-primary w-100">Áp dụng bộ lọc</button>
+                            </form>
+                        </div>
+                    </div>
+                    <div class="col-md-9">
+                        <div class="products-grid show-by-category">
+
+                        </div>
+                    </div>
                 </div>
+
                 <div class="pagination mt-5">
                     <!-- ... -->
                 </div>
-
             </div>
-
         </section>
     </div>
 
@@ -310,33 +342,28 @@
     </section>
 
     <!-- Chatbot Bubble -->
-    <div id="chatbot-bubble">
-        <button id="chatbot-btn">
-            <svg width="32" height="32" viewBox="0 0 24 24" fill="none">
-                <circle cx="12" cy="12" r="12" fill="#0d6efd" />
-                <path d="M8 10h8M8 14h5" stroke="#fff" stroke-width="2" stroke-linecap="round" />
-                <circle cx="17" cy="14" r="1.5" fill="#fff" />
-            </svg>
-        </button>
-    </div>
+    <div class="chatbot-container">
+        <div id="chatbot-button">💬</div>
 
-    <!-- Chatbot Dialog -->
-    <div id="chatbot-dialog">
-        <div class="chatbot-header">
-            <span>Chatbot hỗ trợ</span>
-            <button id="chatbot-close">&times;</button>
-        </div>
-        <div class="chatbot-body">
-            <div class="chatbot-message">Xin chào! Tôi có thể giúp gì cho bạn?</div>
-            <!-- Thêm nội dung chat ở đây -->
-        </div>
-        <div class="chatbot-footer">
-            <input type="text" class="chatbot-input" placeholder="Nhập câu hỏi...">
-            <button class="chatbot-send">Gửi</button>
+        <div id="chatbot-window">
+            <div class="chatbot-header">
+                <span>Chatbot hỗ trợ</span>
+                <button id="chatbot-close">&times;</button>
+            </div>
+            <div class="chatbot-body">
+                <div class="bot-message">Xin chào 👋! Tôi có thể giúp gì cho bạn?</div>
+            </div>
+            <div class="chatbot-footer">
+                <input type="text" id="chatbot-input" placeholder="Nhập tin nhắn..." />
+                <button id="chatbot-send">Gửi</button>
+            </div>
         </div>
     </div>
 
 
+
+
+    <script src="{{ asset('js/chatbot.js') }}"></script>
     <script src="{{ asset('js/index-filter.js') }}"></script>
     <script src="{{ asset('js/index.js') }}"></script>
 @endsection
