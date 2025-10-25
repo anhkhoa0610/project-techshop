@@ -42,7 +42,7 @@
                     <table class="table table-bordered">
                         <thead>
                             <tr>
-                                <th>ID</th>
+                                <th>Order detai ID</th>
                                 <th>Product name</th>
                                 <th>Product image</th>
                                 <th>Quantity</th>

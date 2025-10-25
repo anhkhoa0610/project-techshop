@@ -20,7 +20,7 @@ class IndexController extends Controller
 
     return response()->json([
         'success' => true,
-        'data' => $products->items(), // dữ liệu sản phẩm trang hiện tại
+        'data' => $products->items(),
         'current_page' => $products->currentPage(),
         'last_page' => $products->lastPage(),
         'total' => $products->total(),

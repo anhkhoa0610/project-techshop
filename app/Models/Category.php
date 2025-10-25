@@ -22,4 +22,17 @@ class Category extends Model
     {
         return $this->hasMany(Product::class, 'category_id', 'category_id');
     }
+
+    // Tìm kiếm danh mục theo tên hoặc mã danh mục
+    public function scopeSearch($query, $search)
+    {
+        if (!empty($search)) {
+            $query->where(function ($q) use ($search) {
+                $q->where('category_name', 'like', '%' . $search . '%')
+                    ->orWhere('category_id', 'like', '%' . $search . '%');
+            });
+        }
+
+        return $query;
+    }
 }

@@ -9,19 +9,12 @@ class CategoryController extends Controller
 {
     public function list()
     {
-        // Khởi tạo query gốc
-        $query = Category::query();
+        $search = request('search');
 
-        // Nếu có tham số tìm kiếm
-        if (request()->has('search') && request('search')) {
-            $search = request('search');
-            $query->where('category_name', 'like', '%' . $search . '%');
-        }
+        $categories = Category::query()
+            ->search($search)
+            ->paginate(5);
 
-        // Phân trang sau khi lọc
-        $categories = $query->paginate(5);
-
-        // Gửi dữ liệu sang view
         return view('crud-category.list', compact('categories'));
     }
 
@@ -30,19 +23,7 @@ class CategoryController extends Controller
      */
     public function index()
     {
-        // Khởi tạo query gốc
-        $query = Category::query();
-
-        // Nếu có tham số tìm kiếm
-        if (request()->has('search') && request('search')) {
-            $search = request('search');
-            $query->where('category_name', 'like', '%' . $search . '%');
-        }
-
-        // Phân trang sau khi lọc
-        $categories = $query->paginate(5);
-
-        // Gửi dữ liệu sang view
+        $categories = Category::all();
         return response()->json([
             'success' => true,
             'message' => 'Danh sách danh mục',
@@ -124,7 +105,7 @@ class CategoryController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(String $category_id)
+    public function destroy(string $category_id)
     {
         $category = Category::findOrFail($category_id);
         $category->delete();

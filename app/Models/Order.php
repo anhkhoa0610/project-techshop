@@ -28,11 +28,13 @@ class Order extends Model
     protected $fillable = [
         'user_id',
         'order_date',
-        'status',
         'shipping_address',
         'payment_method',
         'voucher_id',
+        'status',
     ];
+
+
 
     // Nếu có cột datetime tự động
     protected $dates = ['order_date', 'created_at', 'updated_at'];
@@ -100,4 +102,46 @@ class Order extends Model
     {
         return Carbon::parse($value)->format('d/m/Y H:i');
     }
+
+    public function scopeSearch($query, $search)
+    {
+        if (!empty($search)) {
+            $query->where('order_id', 'like', "%{$search}%")
+                ->orWhere('status', 'like', "%{$search}%")
+                ->orWhereRelation('user', 'full_name', 'like', "%{$search}%");
+        }
+    }
+
+    public function scopeDateRange($query, $start, $end)
+    {
+        if (!empty($start) && !empty($end)) {
+            $query->whereBetween('order_date', [$start, $end]);
+        }
+    }
+
+    public function decreaseStock()
+    {
+        foreach ($this->orderDetails as $detail) {
+            $product = $detail->product;
+
+            if ($product) {
+                $product->stock_quantity -= $detail->quantity;
+                $product->save();
+            }
+        }
+    }
+
+    public function restoreStock()
+    {
+        foreach ($this->orderDetails as $detail) {
+            $product = $detail->product;
+
+            if ($product) {
+                $product->stock_quantity += $detail->quantity;
+                $product->save();
+            }
+        }
+    }
+
+
 }

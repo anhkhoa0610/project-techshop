@@ -12,7 +12,7 @@ return new class extends Migration {
             $table->string('product_name', 255);
             $table->text('description');
             $table->integer('stock_quantity')->default(0);
-            $table->decimal('price', 10, 2);
+            $table->decimal('price', 10, 0);
             $table->string('cover_image', 255)->nullable();
             $table->integer('volume_sold')->default(0);
             $table->unsignedBigInteger('category_id');

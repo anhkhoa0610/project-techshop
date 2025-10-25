@@ -7,7 +7,7 @@ use App\Models\Order;
 use App\Models\User;
 use App\Models\Voucher;
 use Illuminate\Http\Request;
-use Str;
+use App\Http\Requests\UpdateOrderRequest;
 
 class OrderController extends Controller
 {
@@ -15,22 +15,11 @@ class OrderController extends Controller
     {
         session(['orders_list_url' => $request->fullUrl()]);
 
-        $query = Order::with(['user', 'voucher']);
+        $orders = Order::with(['user', 'voucher'])
+            ->search($request->search)
+            ->dateRange($request->start_date, $request->end_date)
+            ->paginate(5);
 
-        //  Nếu có tham số tìm kiếm
-        if ($request->has('search') && $request->search) {
-            $search = $request->search;
-            $query->where('order_id', 'like', "%{$search}%")
-                ->orWhere('status', 'like', "%{$search}%")
-                ->orWhereRelation('user', 'full_name', 'like', "%{$search}%");
-        }
-
-        // Nếu có lọc theo khoảng ngày tháng
-        if ($request->filled(['start_date', 'end_date'])) {
-            $query->whereBetween('order_date', [$request->start_date, $request->end_date]);
-        }
-
-        $orders = $query->paginate(5);
         $users = User::all();
         $vouchers = Voucher::all();
 
@@ -43,31 +32,10 @@ class OrderController extends Controller
     public function index()
     {
         $query = Order::with(['user', 'voucher']);
-
-        // Nếu có tham số tìm kiếm
-        if (request()->has('search') && request('search')) {
-            $search = request('search');
-            $query->where('order_id', 'like', '%' . $search . '%')
-                ->orWhereRelation('user', 'full_name', 'like', '%' . $search . '%');
-        }
-        // nếu có lọc theo khoảng ngày tháng
-
-        if (request()->filled(['start_date', 'end_date'])) {
-            $query->whereBetween('order_date', [request('start_date'), request('end_date')]);
-        }
-
-        $orders = $query->paginate(5);
-        $users = User::all();
-        $vouchers = Voucher::all();
-
         return response()->json([
             'success' => true,
             'message' => 'Danh sách đơn hàng',
-            'data' => [
-                'orders' => $orders,
-                'users' => $users,
-                'vouchers' => $vouchers
-            ]
+            'data' => $query->get()
         ], 200);
     }
 
@@ -87,27 +55,37 @@ class OrderController extends Controller
         ]);
     }
 
-    /**
-     * Display the specified resource.
-     */
-    public function show(Order $order)
-    {
-        //
-    }
 
     /**
      * Update the specified resource in storage.
      */
-    public function update(OrderRequest $request, $order_id)
+    public function update(UpdateOrderRequest $request, $order_id)
     {
         $order = Order::findOrFail($order_id);
-        $order->fill($request->all());
+
+        // Lưu lại trạng thái cũ để so sánh
+        $oldStatus = $order->status;
+        $newStatus = $request->input('status');
+
+        // Cập nhật các thông tin khác (trừ user_id)
+        $order->fill($request->except('user_id'));
+        $order->status = $newStatus;
         $order->save();
+
+        if ($oldStatus === 'pending' && $newStatus === 'processing'|| $newStatus === 'completed') {
+            $order->decreaseStock();
+        }
+
+        if ($oldStatus === 'processing' || $oldStatus === 'completed' && $newStatus === 'cancelled') {
+            $order->restoreStock();
+        }
+
         $order->updateTotalPrice();
+
         return response()->json([
             'success' => true,
             'data' => $order,
-            'message' => 'Cập nhật đơn hàng thành công và đã tính lại tổng tiền!'
+            'message' => 'Cập nhật đơn hàng thành công, trạng thái và tồn kho đã được xử lý!',
         ]);
     }
 

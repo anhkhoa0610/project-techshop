@@ -56,11 +56,11 @@
                                     <td>{{ $supplier->supplier_id }}</td>
                                     <td>
                                         @if ($supplier->logo)
-                                            <img src="{{ asset('uploads/' . $supplier->logo) }}" alt=""
-                                                class="img-fluid rounded shadow" style="max-height: 50px;">
+                                            <img src="{{ asset('uploads/' . $supplier->logo) }}" alt="{{ $supplier->name }}"
+                                                 style="max-width: 50px;">
                                         @else
-                                            <img src="{{ asset('uploads/place-holder.jpg') }}" alt=""
-                                                class="img-fluid rounded shadow" style="max-height: 50px;">
+                                            <img src="{{ asset('images/place-holder.jpg') }}" alt="place-holder"
+                                                 style="max-width: 50px;">
                                         @endif
                                     </td>
                                     <td>{{ $supplier->name }}</td>
@@ -91,6 +91,13 @@
                             @endforeach
                         </tbody>
                     </table>
+                    <div class="clearfix">
+                        <div class="clearfix">
+                            <nav>
+                                {{ $suppliers->withQueryString()->links('pagination::bootstrap-5') }}
+                            </nav>
+                        </div>
+                    </div>
                     <!-- Modal Edit Supplier -->
                     <div class="modal fade" id="editSupplierModal" tabindex="-1" role="dialog" aria-labelledby="editSupplierModalLabel"
                         aria-hidden="true">
