@@ -7,18 +7,7 @@ use App\Http\Requests\SupplierRequest;
 
 class SupplierController extends Controller
 {
-    // Hiển thị danh sách nhà cung cấp
-    public function index()
-    {
-        $suppliers = Supplier::all();
-        return response()->json([
-            'success' => true,
-            'data' => $suppliers,
-            'message' => 'Suppliers retrieved successfully',
-        ]);
-    }
 
-    // Hiển thị form tạo mới nhà cung cấp
     // Hiển thị danh sách nhà cung cấp
 
     public function list()
@@ -33,6 +22,16 @@ class SupplierController extends Controller
         $suppliers = $query->paginate(5);
 
         return view('crud_suppliers.list', compact('suppliers'));
+    }
+
+    public function index()
+    {
+        $suppliers = Supplier::all();
+        return response()->json([
+            'success' => true,
+            'data' => $suppliers,
+            'message' => 'Suppliers retrieved successfully',
+        ]);
     }
 
     // Lưu nhà cung cấp mới
@@ -60,13 +59,20 @@ class SupplierController extends Controller
         ]);
     }
 
-    public function destroy(string $id)
+    public function destroy($id)
     {
-        Supplier::deleteSupplier($id);
+        try {
+            Supplier::deleteSupplier($id);
+            return response()->json([
+                'success' => true,
+                'message' => 'Supplier deleted successfully',
+            ]);
 
-        return response()->json([
-            'success' => true,
-            'message' => 'Supplier deleted successfully',
-        ]);
+        } catch (\Exception $e) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Error deleting supplier: ' . $e->getMessage(),
+            ], 500);
+        }
     }
 }
