@@ -13,18 +13,17 @@ class OrderDetailController extends Controller
 
     public function list($order_id)
     {
+        $search = request('search');
+
         $query = OrderDetail::where('order_id', $order_id)
-            ->with('product');
+            ->with('product')
+            ->search($search); 
+
         $products = Product::all();
 
-        // Nếu có tham số tìm kiếm
-        if (request()->has('search') && request('search')) {
-            $search = request('search');
-            $query->whereRelation('product', 'product_name', 'like', '%' . $search . '%');
-        }
+        $orderDetails = $query->paginate(5)->appends(['search' => $search]);
 
-        $orderDetails = $query->paginate(5);
-        return view('crud-orderDetails.list', compact('orderDetails', 'order_id', 'products'));
+        return view('crud-orderDetails.list', compact('orderDetails', 'order_id', 'products', 'search'));
     }
     /**
      * Display a listing of the resource.
@@ -49,14 +48,6 @@ class OrderDetailController extends Controller
     }
 
     /**
-     * Show the form for creating a new resource.
-     */
-    public function create()
-    {
-        //
-    }
-
-    /**
      * Store a newly created resource in storage.
      */
     public function store(OrderDetailRequest $request)
@@ -72,22 +63,6 @@ class OrderDetailController extends Controller
         if ($detail->order) {
             $detail->order->updateTotalPrice();
         }
-    }
-
-    /**
-     * Display the specified resource.
-     */
-    public function show(string $id)
-    {
-        //
-    }
-
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit(string $id)
-    {
-        //
     }
 
     /**
