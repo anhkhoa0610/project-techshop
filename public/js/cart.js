@@ -1,7 +1,7 @@
 
 // Add to cart functionality
 
- window.csrfToken = "{{ csrf_token() }}";
+window.csrfToken = "{{ csrf_token() }}";
 // --- 1. HÀM TÍNH TỔNG CỘNG ---
 function cartpUpdateTotal() {
     const items = document.querySelectorAll('.cartp-item');
@@ -113,7 +113,8 @@ document.addEventListener('DOMContentLoaded', () => {
         document.body.appendChild(form);
         form.submit();
     });
-
+    
+   
     // Tính toán tổng tiền khi trang vừa load
     cartpUpdateTotal();
 });
