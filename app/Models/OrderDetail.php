@@ -7,7 +7,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 
 class OrderDetail extends Model
 {
-     use HasFactory;
+    use HasFactory;
 
     // Tên bảng trong database
     protected $table = 'order_details';
@@ -43,4 +43,21 @@ class OrderDetail extends Model
     {
         return $this->belongsTo(Product::class, 'product_id', 'product_id');
     }
+
+    // tìm kiếm sản phẩm theo tên
+    public function scopeSearch($query, $search)
+    {
+        if (!empty($search)) {
+            $query->whereRelation('product', 'product_name', 'like', '%' . $search . '%')
+            ->orWhere('order_detail_id', 'like', '%' . $search . '%');
+        }
+
+        return $query;
+    }
+
+    public function scopeOfOrder($query, $orderId)
+    {
+        return $query->where('order_id', $orderId);
+    }
+
 }

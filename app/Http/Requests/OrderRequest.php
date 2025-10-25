@@ -23,7 +23,6 @@ class OrderRequest extends FormRequest
     {
         return [
             'user_id' => 'required|integer|exists:users,user_id',
-            'status' => 'required|in:pending,processing,completed,cancelled',
             'shipping_address' => 'required|string|max:255|min:10',
             'payment_method' => 'required|in:cash,card,transfer',
             'voucher_id' => 'nullable|integer|exists:vouchers,voucher_id',
@@ -39,8 +38,6 @@ class OrderRequest extends FormRequest
             'shipping_address.min' => 'Địa chỉ giao hàng phải có ít nhất 10 ký tự.',
             'payment_method.in' => 'Phương thức thanh toán không hợp lệ.',
             'payment_method.required' => 'Vui lòng chọn phương thức thanh toán.',
-            'status.in' => 'Trạng thái đơn hàng không hợp lệ.',
-            'status.required' => 'Vui lòng chọn trạng thái đơn hàng.',
             'voucher_id.exists' => 'Voucher không tồn tại.',
 
         ];
