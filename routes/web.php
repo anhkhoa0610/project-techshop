@@ -10,6 +10,7 @@ use App\Http\Controllers\ProductController;
 use App\Http\Controllers\SupplierController;
 use App\Http\Controllers\OrderDetailController;
 use App\Http\Controllers\IndexController;
+use App\Http\Controllers\VoucherController;
 
 use App\Http\Controllers\UserController;
 
@@ -59,12 +60,9 @@ Route::get('/hoadon', [HoaDonController::class, 'index'])->name('hoadon.index');
 Route::delete('/cart/{cart_id}', [CartController::class, 'destroy']);
 Route::delete('/cart-items', [CartController::class, 'destroyMany'])->name('cart.destroyMany');
 
-
-
-
-
-
-
+Route::prefix('voucher')->group(function () {
+    Route::get('/', [VoucherController::class, 'list'])->name('voucher.list');
+});
 
 
 Route::prefix('users')->group(function () {

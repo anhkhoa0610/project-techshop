@@ -1,0 +1,61 @@
+<?php
+
+namespace App\Http\Controllers;
+
+use App\Http\Controllers\Controller;
+use App\Models\Voucher;
+use Illuminate\Http\Request;
+use App\Http\Requests\VoucherRequest;
+
+class VoucherController extends Controller
+{
+    /**
+     * Display the specified resource.
+     */
+    public function list()
+    {
+        //
+        $query = Voucher::query();
+
+        // Nếu có tham số tìm kiếm
+        if (request()->has('search') && request('search')) {
+            $query = Voucher::search(request('search'));
+        }
+
+        $vouchers = $query->paginate(5);
+
+        return view('crud_voucher.list', compact('vouchers'));
+    }
+    /**
+     * Display a listing of the resource.
+     */
+    public function index()
+    {
+        //
+    }
+
+    /**
+     * Store a newly created resource in storage.
+     */
+    public function store(Request $request)
+    {
+        //
+    }
+
+
+    /**
+     * Update the specified resource in storage.
+     */
+    public function update(Request $request, Voucher $voucher)
+    {
+        //
+    }
+
+    /**
+     * Remove the specified resource from storage.
+     */
+    public function destroy(Voucher $voucher)
+    {
+        //
+    }
+}

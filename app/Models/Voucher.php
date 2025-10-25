@@ -23,6 +23,8 @@ class Voucher extends Model
     'status',
   ];
 
-
-  
+  public static function search($search)
+  {
+    return self::where('code', 'like', '%' . $search . '%');
+  }
 }
