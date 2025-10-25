@@ -11,7 +11,7 @@
             </div>
 
             <nav class="nav desktop-only">
-                <a href="#" class="nav-link">Trang chủ</a>
+                <a href="{{ asset('/index') }}" class="nav-link">Trang chủ</a>
                 <a href="#" class="nav-link">Điện thoại</a>
                 <a href="#" class="nav-link">Laptop</a>
                 <a href="#" class="nav-link">Phụ kiện</a>

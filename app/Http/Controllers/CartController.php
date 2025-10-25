@@ -17,7 +17,8 @@ class CartController extends Controller
             ->where('user_id', $user_Id)
             ->get();
 
-        return view('ui-giohang.cart', compact('cartItems'));
+        return view('ui-giohang.cart', ['cartItems' => $cartItems 
+        ]);
     }
 
     public function destroy($cart_id)
@@ -28,15 +29,6 @@ class CartController extends Controller
             'success' => true,
             'message' => 'Xóa danh mục thành công!'
         ]);
-    }
-
-    public function destroyMany(Request $request)
-    {
-        $ids = $request->input('ids');
-        if (!empty($ids)) {
-            CartItem::whereIn('id', $ids)->delete();
-        }
-        return response()->json(['success' => true]);
     }
 
 }

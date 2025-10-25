@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\CartController;
 use App\Http\Controllers\CategoryController;
+use App\Http\Controllers\CheckoutController;
 use App\Http\Controllers\HoaDonController;
 use App\Http\Controllers\OrderController;
 use App\Http\Controllers\PayController;
@@ -50,14 +51,14 @@ Route::prefix('orderDetails')->group(function () {
 Route::get('/cart', [CartController::class, 'index'])->name('cart.index');
 
 // Thanh toán (gửi dữ liệu POST từ giỏ hàng)
-Route::post('/pay', [PayController::class, 'index'])->name('pay.index');
+Route::post('/pay', [CheckoutController::class, 'handleCheckout'])->name('pay.checkout');
 
 // Trang hóa đơn
 Route::get('/hoadon', [HoaDonController::class, 'index'])->name('hoadon.index');
 
 // Xóa 1 hoặc nhiều sản phẩm trong giỏ
 Route::delete('/cart/{cart_id}', [CartController::class, 'destroy']);
-Route::delete('/cart-items', [CartController::class, 'destroyMany'])->name('cart.destroyMany');
+
 
 Route::prefix('voucher')->group(function () {
     Route::get('/', [VoucherController::class, 'list'])->name('voucher.list');
