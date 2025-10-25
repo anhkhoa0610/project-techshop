@@ -152,35 +152,38 @@
                         </div>
                     </div>
                     <!-- Modal Add Voucher -->
-                    <div class="modal fade" id="addVoucherModal" tabindex="-1" role="dialog" aria-labelledby="addVoucherModalLabel"
-                        aria-hidden="true">
+
+                    <div class="modal fade" id="addVoucherModal" tabindex="-1" role="dialog" aria-labelledby="addVoucherModalLabel" aria-hidden="true">
                         <div class="modal-dialog" role="document">
                             <form id="addVoucherForm" method="POST" enctype="multipart/form-data">
                                 @csrf
                                 <div class="modal-content">
                                     <div class="modal-header">
-                                        <h5 class="modal-title" id="editVoucherModalLabel">Thêm Voucher</h5>
+                                        <h5 class="modal-title" id="addVoucherModalLabel">Thêm Voucher</h5>
                                         <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                                             <span aria-hidden="true">&times;</span>
                                         </button>
                                     </div>
+
                                     <div class="modal-body">
                                         <div class="row">
                                             <!-- Cột trái -->
                                             <div class="col-md-6">
                                                 <div class="form-group">
-                                                    <label for="code">Code</label><br>
+                                                    <label for="add_code">Code</label>
                                                     <input type="text" class="form-control" id="add_code" name="code" required>
                                                 </div>
+
                                                 <div class="form-group">
-                                                    <label for="discount_type">Discount Type</label>
+                                                    <label for="add_discount_type">Discount Type</label>
                                                     <select class="form-control" id="add_discount_type" name="discount_type" required>
                                                         <option value="percent">percent</option>
                                                         <option value="amount">amount</option>
                                                     </select>
                                                 </div>
+
                                                 <div class="form-group">
-                                                    <label for="discount_value">Discount Value</label>
+                                                    <label for="add_discount_value">Discount Value</label>
                                                     <input type="number" step="0.01" min="0" class="form-control" id="add_discount_value" name="discount_value" required>
                                                 </div>
                                             </div>
@@ -188,18 +191,20 @@
                                             <!-- Cột phải -->
                                             <div class="col-md-6">
                                                 <div class="form-group">
-                                                    <label for="start_date">Start Date</label>
-                                                    <input type="date" class="form-control" id="add_start_date" name="start_date">
+                                                    <label for="add_start_date">Start Date</label>
+                                                    <input type="date" class="form-control" id="add_start_date" name="start_date" required>
                                                 </div>
+
                                                 <div class="form-group">
-                                                    <label for="end_date">End Date</label>
-                                                    <input type="date" class="form-control" id="add_end_date" name="end_date">
+                                                    <label for="add_end_date">End Date</label>
+                                                    <input type="date" class="form-control" id="add_end_date" name="end_date" required>
                                                 </div>
+
                                                 <div class="form-group">
-                                                    <label for="status">Status</label>
+                                                    <label for="add_status">Status</label>
                                                     <select class="form-control" id="add_status" name="status" required>
                                                         <option value="active">active</option>
-                                                        <option value="amount">inactive</option>
+                                                        <option value="inactive">inactive</option>
                                                     </select>
                                                 </div>
                                             </div>
@@ -207,13 +212,14 @@
                                     </div>
 
                                     <div class="modal-footer">
-                                        <button id = "close" type="button" class="btn btn-secondary" data-dismiss="modal">Đóng</button>
+                                        <button id="close" type="button" class="btn btn-secondary" data-dismiss="modal">Đóng</button>
                                         <button type="submit" class="btn btn-primary">Lưu</button>
                                     </div>
                                 </div>
                             </form>
                         </div>
                     </div>
+
                     <!-- Modal View Voucher -->
                     <div class="modal fade" id="viewVoucherModal" tabindex="-1" role="dialog" aria-labelledby="viewVoucherModalLabel" aria-hidden="true">
                         <div class="modal-dialog modal-lg" role="document">

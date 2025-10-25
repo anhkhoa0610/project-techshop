@@ -10,6 +10,7 @@ class Voucher extends Model
 {
   use HasFactory;
 
+  protected $table = 'vouchers';
   protected $primaryKey = 'voucher_id';
   public $incrementing = true;
   protected $keyType = 'int';
@@ -25,6 +26,14 @@ class Voucher extends Model
 
   public static function search($search)
   {
+    if (empty($term)) {
+      return $query;
+    }
     return self::where('code', 'like', '%' . $search . '%');
+  }
+
+  public static function createVoucher(array $validated)
+  {
+    return self::create($validated);
   }
 }

@@ -32,14 +32,28 @@ class VoucherController extends Controller
     public function index()
     {
         //
+        $vouchers = Voucher::all();
+        return response()->json([
+            'success' => true,
+            'data' => $vouchers,
+            'message' => 'Suppliers retrieved successfully',
+        ]);
     }
 
     /**
      * Store a newly created resource in storage.
      */
-    public function store(Request $request)
+    public function store(VoucherRequest $request)
     {
         //
+        $validated = $request->validated();
+        $voucher = Voucher::createVoucher($validated);
+
+        return response()->json([
+            'success' => true,
+            'data' => $voucher,
+            'message' => 'Supplier created successfully',
+        ],201);
     }
 
 
