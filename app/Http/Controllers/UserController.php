@@ -2,10 +2,12 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Controllers\Controller;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Validation\ValidationException;
+
 
 class UserController extends Controller
 {
@@ -26,11 +28,11 @@ class UserController extends Controller
         ->when($roleFilter, function($query) use ($roleFilter) {
             return $query->where('role', $roleFilter);
         })
-     
+
         ->latest()
         ->paginate(10);
 
-       
+
 
         return view('crud_user.list', compact('users'));
     }
@@ -50,9 +52,9 @@ class UserController extends Controller
     {
         try {
             $validated = $request->validate([
-                'full_name' => 'required|string|max:255',
+                'full_name' => 'required|string|max:100',
                 'email' => 'required|string|email|max:100|unique:users',
-                'phone' => 'nullable|string|max:20',
+                'phone' => 'nullable|string|max:10',
                 'password' => 'required|string|min:6|confirmed',
                 'address' => 'nullable|string|max:255',
                 'role' => 'required|in:User,Admin',
@@ -98,7 +100,7 @@ class UserController extends Controller
             $validated = $request->validate([
                 'full_name' => 'required|string|max:255',
                 'email' => 'required|string|email|max:100|unique:users,email,' . $user->user_id . ',user_id',
-                'phone' => 'nullable|string|max:20',
+                'phone' => 'nullable|string|max:10',
                 'password' => 'nullable|string|min:6|confirmed',
                 'address' => 'nullable|string|max:255',
                 'role' => 'required|in:User,Admin',
