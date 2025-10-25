@@ -4,7 +4,6 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\OrderDetailRequest;
 use App\Models\OrderDetail;
-use Illuminate\Http\Request;
 use App\Models\Product;
 
 
@@ -15,9 +14,9 @@ class OrderDetailController extends Controller
     {
         $search = request('search');
 
-        $query = OrderDetail::where('order_id', $order_id)
+        $query = OrderDetail::ofOrder($order_id)
             ->with('product')
-            ->search($search); 
+            ->search($search);
 
         $products = Product::all();
 
@@ -30,16 +29,9 @@ class OrderDetailController extends Controller
      */
     public function index($order_id)
     {
-        $query = OrderDetail::where('order_id', $order_id)
+        $orderDetails = OrderDetail::ofOrder($order_id)
             ->with('product');
-
-        // Nếu có tham số tìm kiếm
-        if (request()->has('search') && request('search')) {
-            $search = request('search');
-            $query->whereRelation('product', 'product_name', 'like', '%' . $search . '%');
-        }
-
-        $orderDetails = $query->paginate(5);
+            
         return response()->json([
             'success' => true,
             'message' => 'Danh sách chi tiết đơn hàng',
