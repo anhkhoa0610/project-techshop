@@ -28,3 +28,6 @@ Route::get('categories/{categoryId}/products', [IndexController::class, 'getProd
 //product filter cho trang index
 Route::get('/index/filter', [ProductController::class, 'filter']);
 
+// Tìm kiếm sản phẩm qua API
+Route::get('/index/search', [IndexController::class, 'searchProductsAPI']);
+

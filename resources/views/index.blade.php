@@ -363,7 +363,7 @@
 
 
 
-    <script src="{{ asset('js/chatbot.js') }}"></script>
+    <script src="{{ asset('js/index-chatbot.js') }}"></script>
     <script src="{{ asset('js/index-filter.js') }}"></script>
     <script src="{{ asset('js/index.js') }}"></script>
 @endsection

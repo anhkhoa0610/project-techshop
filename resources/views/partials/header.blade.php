@@ -20,8 +20,10 @@
 
             <div class="header-actions">
                 <div class="search-box desktop-only">
-                    <input type="search" placeholder="Tìm kiếm sản phẩm..." class="search-input">
-                    <button class="search-btn">🔍</button>
+                    <input type="search" id="header-search-input" placeholder="Tìm kiếm sản phẩm..." class="search-input">
+                    <button class="search-btn" id="header-search-btn">🔍</button>
+                    <div id="search-results" class="search-results"></div>
+
                 </div>
                 <button class="cart-btn" onclick="window.location.href='{{ route('cart.index') }}'">
                     🛒

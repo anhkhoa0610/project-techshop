@@ -79,13 +79,16 @@ class Product extends Model
             ->filterBySupplier($supplier_id);
     }
 
-    public function scopeSearch($query, $search = null)
-    {
-        if (!empty($search)) {
-            $query->where('product_name', 'like', '%' . $search . '%');
-        }
-
-        return $query;
+    public function scopeSearch($query, $keyword)
+{
+    if (!empty($keyword)) {
+        $query->where(function ($q) use ($keyword) {
+            $q->where('product_name', 'like', "%{$keyword}%")
+              ->orWhere('description', 'like', "%{$keyword}%");
+        });
     }
+    return $query;
+}
+
 
 }
