@@ -142,8 +142,17 @@ document.addEventListener('DOMContentLoaded', function () {
     });
 
     // ==================== Delete Supplier ====================
-    window.confirmDelete = function (id) {
-        console.log('ID to delete:', id); // Kiểm tra ID
+   
+
+   
+
+    // ==================== Tooltip ====================
+    const tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-toggle="tooltip"]'));
+    tooltipTriggerList.map(el => new bootstrap.Tooltip(el));
+
+});
+
+ function confirmDelete(id) {
         Swal.fire({
             title: 'Xác nhận xóa',
             text: 'Bạn có chắc chắn muốn xóa nhà cung cấp này không?',
@@ -153,13 +162,22 @@ document.addEventListener('DOMContentLoaded', function () {
             cancelButtonText: 'Hủy'
         }).then((result) => {
             if (result.isConfirmed) {
-                document.getElementById('delete-form-' + id).submit();
+                fetch(`/api/suppliers/${id}`, {
+                    method: 'DELETE',
+                    headers: {
+                        'Accept': 'application/json',
+                        'X-CSRF-TOKEN': window.csrfToken
+                    }
+                })
+                    .then(res => res.json())
+                    .then(data => {
+                        if (data.success) {
+                            Swal.fire('Đã xóa!', data.message, 'success').then(() => location.reload());
+                        } else {
+                            Swal.fire('Lỗi', 'Không thể xóa nhà phân phối.', 'error');
+                        }
+                    })
+                    .catch(() => Swal.fire('Lỗi', 'Không thể kết nối đến server.', 'error'));
             }
         });
     }
-
-    // ==================== Tooltip ====================
-    const tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-toggle="tooltip"]'));
-    tooltipTriggerList.map(el => new bootstrap.Tooltip(el));
-
-});
