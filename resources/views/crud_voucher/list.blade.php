@@ -234,13 +234,8 @@
                                             <h4 id="view_name" class="h5 font-weight-bold text-secondary mb-1"></h4>
 
                                             <div class="mb-2">
-                                                @if ($voucher->status === 'active')
-                                                    <span id="view_status" class="badge badge-success">Active</span>
-                                                @else
-                                                    <span id="view_status" class="badge badge-secondary">Inactive</span>
-                                                @endif
+                                                <span id="view_status" class="badge"></span>
                                             </div>
-
                                             <div class="text-muted small" id="view_dates">
                                                 <div>Start: <span id="view_start_date">—</span></div>
                                                 <div>End: <span id="view_end_date">—</span></div>
@@ -261,7 +256,7 @@
                                                         <dd class="col-sm-8" id="view_discount_value"></dd>
 
                                                     </dl>
-
+                                                    <hr>
                                                     <h6 class="mb-1 text-muted">Created At</h6>
                                                     <p id="view_created_at" class="mb-0 text-secondary" style="white-space:pre-wrap;"></p>
 

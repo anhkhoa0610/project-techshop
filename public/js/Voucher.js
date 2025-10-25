@@ -94,15 +94,26 @@ document.addEventListener('DOMContentLoaded', function () {
 
             document.getElementById('view_logo').src = row.getAttribute('data-logo')
                 ? '/uploads/' + row.getAttribute('data-logo')
-                : '/uploads/place-holder.jpg';
+                : '/uploads/voucher.jpg';
             document.getElementById('view_code').textContent = row.getAttribute('data-Code') || '';
             document.getElementById('view_discount_type').textContent = row.getAttribute('data-discount_type') || '';
             document.getElementById('view_discount_value').textContent = row.getAttribute('data-discount_value') || '';
             document.getElementById('view_start_date').textContent = row.getAttribute('data-start_date') || '';
             document.getElementById('view_end_date').textContent = row.getAttribute('data-end_date') || '';
-            document.getElementById('view_status').textContent = row.getAttribute('data-status') || '';
             document.getElementById('view_created_at').textContent = row.getAttribute('data-created_at') || '';
             document.getElementById('view_updated_at').textContent = row.getAttribute('data-updated_at') || '';
+            // Xử lý trạng thái
+            const status = row.getAttribute('data-status');
+            const $status = $('#view_status');
+            if (status === 'active') {
+                $status.text('Active')
+                    .removeClass()
+                    .addClass('badge badge-success');
+            } else {
+                $status.text('Inactive')
+                    .removeClass()
+                    .addClass('badge badge-secondary');
+            }
 
             $('#viewVoucherModal').modal('show');
         });
