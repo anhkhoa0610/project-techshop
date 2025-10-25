@@ -7,6 +7,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\OrderDetailController;
 use App\Http\Controllers\SupplierController;
+use App\Http\Controllers\VoucherController;
 
 
 Route::apiResource('categories', CategoryController::class);
@@ -21,6 +22,8 @@ Route::apiResource('orderDetails', OrderDetailController::class);
 
 // supplier
 Route::apiResource('suppliers', SupplierController::class);
+
+Route::apiResource('vouchers', VoucherController::class);
 
 // Lấy sản phẩm theo danh mục
 Route::get('categories/{categoryId}/products', [IndexController::class, 'getProductsByCategory']);

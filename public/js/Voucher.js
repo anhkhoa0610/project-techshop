@@ -8,7 +8,7 @@ document.addEventListener('DOMContentLoaded', function () {
         editForm.addEventListener('submit', async function (e) {
             e.preventDefault();
             const id = this.dataset.id;
-            const url = `/api/Vouchers/${id}`;
+            const url = `/api/vouchers/${id}`;
             const formData = new FormData();
             formData.append('_method', 'PUT');
             formData.append('name', document.getElementById('edit_name').value);
@@ -55,7 +55,7 @@ document.addEventListener('DOMContentLoaded', function () {
     if (addForm) {
         addForm.addEventListener('submit', async function (e) {
             e.preventDefault();
-            const url = '/api/Vouchers';
+            const url = '/api/vouchers';
             const formData = new FormData(this);
 
             try {
@@ -67,7 +67,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
                 const data = await response.json();
                 if (response.ok && data.success) {
-                    Swal.fire('Thành công!', 'Thêm Nhà Phân Phối thành công.', 'success')
+                    Swal.fire('Thành công!', 'Thêm Voucher thành công.', 'success')
                         .then(() => location.reload());
                 } else {
                     Swal.fire('Lỗi', data.message || 'Thêm thất bại.', 'error');
