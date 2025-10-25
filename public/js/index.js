@@ -52,7 +52,7 @@ function renderProductsAndPagination(data, categoryId) {
                     max="${data.last_page}" 
                     aria-label="Nhập số trang để chuyển đến"
                 /> 
-                / ${data.last_page}
+                <span style="color: white">/ ${data.last_page}</span>
             </span>
         `;
 
@@ -127,5 +127,6 @@ document.querySelectorAll('.category-card').forEach(function (card, idx) {
         loadProductsByCategory(categoryId, 1);
     });
 });
+
 
 

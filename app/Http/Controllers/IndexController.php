@@ -15,17 +15,28 @@ class IndexController extends Controller
     }
 
     public function getProductsByCategory($categoryId)
-{
-    $products = Product::where('category_id', $categoryId)->paginate(8);
+    {
+        $products = Product::where('category_id', $categoryId)->paginate(8);
 
-    return response()->json([
-        'success' => true,
-        'data' => $products->items(),
-        'current_page' => $products->currentPage(),
-        'last_page' => $products->lastPage(),
-        'total' => $products->total(),
-        'per_page' => $products->perPage(),
-    ]);
-}
+        return response()->json([
+            'success' => true,
+            'data' => $products->items(),
+            'current_page' => $products->currentPage(),
+            'last_page' => $products->lastPage(),
+            'total' => $products->total(),
+            'per_page' => $products->perPage(),
+        ]);
+    }
+
+    public function searchProductsAPI(Request $request)
+    {
+        $keyword = $request->input('keyword'); 
+        $products = Product::search($keyword)->get();
+
+        return response()->json([
+            'status' => 'success',
+            'data' => $products
+        ]);
+    }
 
 }

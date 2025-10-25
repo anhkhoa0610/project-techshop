@@ -49,7 +49,7 @@ function renderProductsAndPaginationFilter(data, min_price, max_price, category_
                     max="${data.last_page}" 
                     aria-label="Nhập số trang để chuyển đến"
                 /> 
-                / ${data.last_page}
+                <span style="color: white">/ ${data.last_page}</span>
             </span>
         `;
 
