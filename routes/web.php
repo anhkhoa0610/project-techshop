@@ -6,6 +6,7 @@ use App\Http\Controllers\CheckoutController;
 use App\Http\Controllers\HoaDonController;
 use App\Http\Controllers\OrderController;
 use App\Http\Controllers\PayController;
+use App\Http\Controllers\UIProductDetailsController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\ProductController;
 use App\Http\Controllers\SupplierController;
@@ -58,6 +59,14 @@ Route::get('/hoadon', [HoaDonController::class, 'index'])->name('hoadon.index');
 
 // Xóa 1 hoặc nhiều sản phẩm trong giỏ
 Route::delete('/cart/{cart_id}', [CartController::class, 'destroy']);
+Route::delete('/cart-items', [CartController::class, 'destroyMany'])->name('cart.destroyMany');
+
+Route::get('/product-details/{id}', [UIProductDetailsController::class, 'show'])->name('product.details');
+
+
+
+
+
 
 
 Route::prefix('voucher')->group(function () {
