@@ -6,14 +6,15 @@
 
     <link rel="stylesheet" href="{{ asset('css/index.css') }}">
     <link rel="stylesheet" href="{{ asset('css/index-filter.css') }}">
+    <link rel="stylesheet" href="{{ asset('css/index-chatbot.css') }}">
 
     <!-- Sidebar -->
 
 
     <!-- Nút mở sidebar -->
     <!-- <button id="openSidebar" class="sidebar-toggle">
-                <span> <i class="bi bi-funnel me-1"></i> Lọc</span>
-            </button> -->
+                        <span> <i class="bi bi-funnel me-1"></i> Lọc</span>
+                    </button> -->
 
 
     <!-- Hero Section -->
@@ -347,8 +348,12 @@
 
         <div id="chatbot-window">
             <div class="chatbot-header">
-                <span>Chatbot hỗ trợ</span>
-                <button id="chatbot-close">&times;</button>
+                <div class="chat-avatar">F</div>
+                <div class="chat-info">
+                    <strong>Chatbot hỗ trợ</strong>
+                    <span>October 15, 2024</span>
+                </div>
+                <button class="chat-close" id="chatbot-close">&times;</button>
             </div>
             <div class="chatbot-body">
                 <div class="bot-message">Xin chào 👋! Tôi có thể giúp gì cho bạn?</div>
