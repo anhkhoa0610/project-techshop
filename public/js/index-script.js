@@ -3,11 +3,11 @@ function updateCountdown() {
     const hoursElement = document.getElementById('hours');
     const minutesElement = document.getElementById('minutes');
     const secondsElement = document.getElementById('seconds');
-    
+
     let hours = parseInt(hoursElement.textContent);
     let minutes = parseInt(minutesElement.textContent);
     let seconds = parseInt(secondsElement.textContent);
-    
+
     // Decrease seconds
     if (seconds > 0) {
         seconds--;
@@ -27,7 +27,7 @@ function updateCountdown() {
             }
         }
     }
-    
+
     // Update display with leading zeros
     hoursElement.textContent = hours.toString().padStart(2, '0');
     minutesElement.textContent = minutes.toString().padStart(2, '0');
@@ -35,24 +35,24 @@ function updateCountdown() {
 }
 
 // Start countdown when page loads
-document.addEventListener('DOMContentLoaded', function() {
+document.addEventListener('DOMContentLoaded', function () {
     // Update countdown every second
     setInterval(updateCountdown, 1000);
-    
+
     // Mobile menu toggle (if needed)
     const menuBtn = document.querySelector('.menu-btn');
     const nav = document.querySelector('.nav');
-    
+
     if (menuBtn && nav) {
-        menuBtn.addEventListener('click', function() {
+        menuBtn.addEventListener('click', function () {
             nav.style.display = nav.style.display === 'flex' ? 'none' : 'flex';
         });
     }
-    
+
     // Search functionality
     const searchInput = document.querySelector('.search-input');
     if (searchInput) {
-        searchInput.addEventListener('keypress', function(e) {
+        searchInput.addEventListener('keypress', function (e) {
             if (e.key === 'Enter') {
                 const searchTerm = this.value.trim();
                 if (searchTerm) {
@@ -62,24 +62,24 @@ document.addEventListener('DOMContentLoaded', function() {
             }
         });
     }
-    
+
     // Add to cart functionality
     const addToCartButtons = document.querySelectorAll('.btn-primary');
     addToCartButtons.forEach(button => {
         if (button.textContent.includes('Thêm vào giỏ') || button.textContent.includes('Mua ngay')) {
-            button.addEventListener('click', function(e) {
+            button.addEventListener('click', function (e) {
                 e.preventDefault();
-                
+
                 // Simple animation
                 const originalText = this.textContent;
                 this.textContent = '✓ Đã thêm!';
                 this.style.background = '#10b981';
-                
+
                 setTimeout(() => {
                     this.textContent = originalText;
                     this.style.background = '';
                 }, 2000);
-                
+
                 // Update cart count
                 const cartCount = document.querySelector('.cart-count');
                 if (cartCount) {
@@ -89,13 +89,13 @@ document.addEventListener('DOMContentLoaded', function() {
             });
         }
     });
-    
+
     // Newsletter subscription
     const newsletterBtn = document.querySelector('.newsletter-btn');
     const newsletterInput = document.querySelector('.newsletter-input');
-    
+
     if (newsletterBtn && newsletterInput) {
-        newsletterBtn.addEventListener('click', function() {
+        newsletterBtn.addEventListener('click', function () {
             const email = newsletterInput.value.trim();
             if (email && email.includes('@')) {
                 alert('Cảm ơn bạn đã đăng ký nhận tin! Email: ' + email);
@@ -104,18 +104,18 @@ document.addEventListener('DOMContentLoaded', function() {
                 alert('Vui lòng nhập email hợp lệ');
             }
         });
-        
-        newsletterInput.addEventListener('keypress', function(e) {
+
+        newsletterInput.addEventListener('keypress', function (e) {
             if (e.key === 'Enter') {
                 newsletterBtn.click();
             }
         });
     }
-    
+
     // Smooth scroll for anchor links
     const anchorLinks = document.querySelectorAll('a[href^="#"]');
     anchorLinks.forEach(link => {
-        link.addEventListener('click', function(e) {
+        link.addEventListener('click', function (e) {
             e.preventDefault();
             const target = document.querySelector(this.getAttribute('href'));
             if (target) {
@@ -125,14 +125,14 @@ document.addEventListener('DOMContentLoaded', function() {
             }
         });
     });
-    
+
     // Simple animation on scroll
     const observerOptions = {
         threshold: 0.1,
         rootMargin: '0px 0px -50px 0px'
     };
-    
-    const observer = new IntersectionObserver(function(entries) {
+
+    const observer = new IntersectionObserver(function (entries) {
         entries.forEach(entry => {
             if (entry.isIntersecting) {
                 entry.target.style.opacity = '1';
@@ -140,7 +140,7 @@ document.addEventListener('DOMContentLoaded', function() {
             }
         });
     }, observerOptions);
-    
+
     // Observe elements for animation
     const animatedElements = document.querySelectorAll('.category-card, .product-card, .deal-card');
     animatedElements.forEach(el => {
@@ -151,6 +151,8 @@ document.addEventListener('DOMContentLoaded', function() {
     });
 });
 
+
+
 // Format price function (if needed for dynamic content)
 function formatPrice(price) {
     return new Intl.NumberFormat('vi-VN', {
@@ -158,3 +160,70 @@ function formatPrice(price) {
         currency: 'VND',
     }).format(price);
 }
+
+// Debounce function
+function debounce(fn, delay) {
+    let timer = null;
+    return function (...args) {
+        clearTimeout(timer);
+        timer = setTimeout(() => fn.apply(this, args), delay);
+    };
+}
+
+// Search
+const searchInput = document.getElementById('header-search-input');
+const searchResults = document.getElementById('search-results');
+
+const handleSearch = function () {
+    const query = this.value.trim();
+    if (query.length < 2) {
+        searchResults.style.display = 'none';
+        searchResults.innerHTML = '';
+        return;
+    }
+    fetch(`/api/index/search?keyword=${encodeURIComponent(query)}`)
+        .then(res => res.json())
+        .then(data => {
+            let html = '';
+            if (data.status === 'success' && data.data.length) {
+                data.data.forEach(product => {
+                    html += `
+                    <div class="result-item" onclick="window.location.href='/products/${product.product_id}'">
+                        <div class="result-thumb">
+                            <img src="${product.cover_image ? '/uploads/' + product.cover_image : '/images/place-holder.png'}" alt="${product.product_name}">
+                        </div>
+                        <div class="result-info">
+                            <div class="result-title">${product.product_name}</div>
+                            <div class="result-price">${Number(product.price).toLocaleString('vi-VN')}₫</div>
+                        </div>
+                    </div>
+                    `;
+                });
+            } else {
+                html = `<div class="no-result">Không tìm thấy sản phẩm phù hợp.</div>`;
+            }
+            searchResults.innerHTML = html;
+            searchResults.style.display = 'block';
+            searchResults.classList.add('active');
+        });
+};
+
+// Sử dụng debounce cho sự kiện input
+searchInput.addEventListener('input', debounce(handleSearch, 400));
+
+// Ẩn kết quả khi blur
+searchInput.addEventListener('blur', function () {
+    setTimeout(() => { searchResults.style.display = 'none'; }, 200);
+});
+
+// Hiện lại khi focus nếu có kết quả
+searchInput.addEventListener('focus', function () {
+    if (searchResults.innerHTML.trim()) searchResults.style.display = 'block';
+});
+
+
+document.addEventListener('click', (e) => {
+    if (!e.target.closest('.search-box')) {
+        searchResults.classList.remove('active');
+    }
+});

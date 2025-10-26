@@ -94,9 +94,9 @@ class ProductController extends Controller
 
             $file->move(public_path('uploads'), $filename);
 
-            if ($product->cover_image && file_exists(public_path('uploads/' . $product->cover_image))) {
-                unlink(public_path('uploads/' . $product->cover_image));
-            }
+            // if ($product->cover_image && file_exists(public_path('uploads/' . $product->cover_image))) {
+            //     unlink(public_path('uploads/' . $product->cover_image));
+            // }
 
             $data['cover_image'] = $filename;
         }

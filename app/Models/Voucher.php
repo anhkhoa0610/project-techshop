@@ -10,6 +10,7 @@ class Voucher extends Model
 {
   use HasFactory;
 
+  protected $table = 'vouchers';
   protected $primaryKey = 'voucher_id';
   public $incrementing = true;
   protected $keyType = 'int';
@@ -23,6 +24,31 @@ class Voucher extends Model
     'status',
   ];
 
+  public static function search($search)
+  {
+    return self::where('code', 'like', '%' . $search . '%');
+  }
 
-  
+  public static function createVoucher(array $validated)
+  {
+    return self::create($validated);
+  }
+
+  public static function updateVoucher($id, array $validated)
+  {
+    $voucher = self::findOrFail($id);
+    $voucher->update($validated);
+    return $voucher;
+  }
+
+  public static function deleteVoucher($id)
+  {
+    $voucher = self::findOrFail($id);
+    $voucher->delete();
+  }
+
+  public static function paginate($perPage)
+  {
+    return self::query()->paginate($perPage);
+  }
 }

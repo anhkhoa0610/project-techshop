@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\CartController;
 use App\Http\Controllers\CategoryController;
+use App\Http\Controllers\CheckoutController;
 use App\Http\Controllers\HoaDonController;
 use App\Http\Controllers\OrderController;
 use App\Http\Controllers\PayController;
@@ -11,9 +12,9 @@ use App\Http\Controllers\ProductController;
 use App\Http\Controllers\SupplierController;
 use App\Http\Controllers\OrderDetailController;
 use App\Http\Controllers\IndexController;
-
+use App\Http\Controllers\VoucherController;
 use App\Http\Controllers\UserController;
-
+use App\Http\Controllers\LoginController;
 
 Route::get('/', function () {
     return view('layouts.dashboard');
@@ -51,7 +52,7 @@ Route::prefix('orderDetails')->group(function () {
 Route::get('/cart', [CartController::class, 'index'])->name('cart.index');
 
 // Thanh toán (gửi dữ liệu POST từ giỏ hàng)
-Route::post('/pay', [PayController::class, 'index'])->name('pay.index');
+Route::post('/pay', [CheckoutController::class, 'handleCheckout'])->name('pay.checkout');
 
 // Trang hóa đơn
 Route::get('/hoadon', [HoaDonController::class, 'index'])->name('hoadon.index');
@@ -68,6 +69,9 @@ Route::get('/product-details/{id}', [UIProductDetailsController::class, 'show'])
 
 
 
+Route::prefix('voucher')->group(function () {
+    Route::get('/', [VoucherController::class, 'list'])->name('voucher.list');
+});
 
 
 Route::prefix('users')->group(function () {
@@ -79,4 +83,43 @@ Route::prefix('users')->group(function () {
     Route::delete('/{user}', [UserController::class, 'destroy'])->name('users.destroy');
     Route::get('/search/autocomplete', [UserController::class, 'search'])->name('users.search');
 });
+
+// login routes //
+Route::get('login', [LoginController::class, 'showLoginForm'])->name('login');
+Route::post('login', [LoginController::class, 'login'])->name('user.authUser');
+
+Route::get('register', [LoginController::class, 'showRegisterForm'])->name('register');
+Route::post('register', [LoginController::class, 'postUser'])->name('register.postUser');
+
+Route::post('logout', [LoginController::class, 'logout'])->name('logout');
+
+Route::get('/reset', [LoginController::class, 'showResetForm'])->name('reset.form');
+Route::post('/reset', [LoginController::class, 'reset'])->name('reset');
+
+Route::get('/forgot', [LoginController::class, 'showForgotForm'])->name('forgot.form');
+Route::post('/forgot', [LoginController::class, 'forgot'])->name('forgot');
+
+Route::get('reset-password/{token}', function ($token) {
+    return view('login.reset-password', ['token' => $token]);
+})->name('password.reset');
+
+Route::post('reset-password', function (Illuminate\Http\Request $request) {
+    $request->validate([
+        'token' => 'required',
+        'email' => 'required|email',
+        'password' => 'required|min:6|confirmed',
+    ]);
+
+    $status = Password::reset(
+        $request->only('email', 'password', 'password_confirmation', 'token'),
+        function ($user, $password) {
+            $user->password = \Hash::make($password);
+            $user->save();
+        }
+    );
+
+    return $status === Password::PASSWORD_RESET
+        ? redirect()->route('login')->with('success', 'Password reset successfully.')
+        : back()->withErrors(['email' => [__($status)]]);
+})->name('password.update');
 

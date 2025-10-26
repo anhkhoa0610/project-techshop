@@ -1,30 +1,62 @@
 @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap');
 
-* {
-  margin: 0;
-  padding: 0;
-  box-sizing: border-box;
-  font-family: "Poppins", sans-serif;
+
+.background-layout::before {
+  content: "" !important;
+  position: absolute !important;
+  inset: 0 !important;
+  /* top:0; right:0; bottom:0; left:0 */
+  background-image: url('/images/background.jpg') !important;
+  background-size: cover !important;
+  background-repeat: no-repeat !important;
+  background-position: center center !important;
+  z-index: -1 !important;
+  transform-origin: center center !important;
+  will-change: transform !important;
+  animation: kenburns 18s ease-in-out infinite alternate !important;
+}
+
+.background-layout>* {
+  position: relative !important;
+  z-index: 2 !important;
+}
+
+@keyframes kenburns {
+  0% {
+    transform: scale(1) translate(0, 0);
+  }
+
+  50% {
+    transform: scale(1.12) translate(-2%, -2%);
+  }
+
+  100% {
+    transform: scale(1) translate(0, 0);
+  }
 }
 
 .cartp-container {
-  background: #fff;
+
+  background: transparent !important;
+  -webkit-backdrop-filter: blur(6px) saturate(120%) !important;
+  backdrop-filter: blur(6px) saturate(120%) !important;
+  color: white;
+  border: 1px solid rgb(21, 117, 155);
   width: 100%;
   max-width: 900px;
   border-radius: 20px;
-  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.08);
+
   overflow: hidden;
-  animation: cartpFadeIn 0.6s ease;
   margin: 80px auto;
+  height: fit-content;
 }
 
-@keyframes cartpFadeIn {
-  from { opacity: 0; transform: translateY(10px); }
-  to { opacity: 1; transform: translateY(0); }
-}
+
 
 .cartp-header {
-  background: linear-gradient(90deg, #007bff, #00b4d8);
+   background: transparent !important;
+  -webkit-backdrop-filter: blur(6px) saturate(120%) !important;
+  backdrop-filter: blur(6px) saturate(120%) !important;
   color: #fff;
   padding: 20px;
   font-size: 26px;
@@ -49,8 +81,9 @@
 }
 
 .cartp-item:hover {
-  background: #f8fbff;
+  background: #bdbdbd;
   border-radius: 12px;
+  opacity: 1.2;
 }
 
 .cartp-select {
@@ -90,7 +123,10 @@
   outline: none;
   transition: 0.2s;
 }
-.cartp-quantity input:focus { border-color: #007bff; }
+
+.cartp-quantity input:focus {
+  border-color: #007bff;
+}
 
 .cartp-price {
   color: #007bff;
@@ -106,13 +142,16 @@
   cursor: pointer;
   transition: 0.3s;
 }
+
 .cartp-remove:hover {
   transform: scale(1.3);
   color: #ff1f3a;
 }
 
 .cartp-footer {
-  background: #f8fbff;
+   background: transparent !important;
+  -webkit-backdrop-filter: blur(6px) saturate(120%) !important;
+  backdrop-filter: blur(6px) saturate(120%) !important;
   padding: 25px 30px;
   text-align: right;
   border-top: 1px solid #eee;
@@ -122,7 +161,7 @@
   font-size: 20px;
   font-weight: 600;
   margin-bottom: 12px;
-  color: #222;
+  color: #ffffff;
 }
 
 .cartp-checkout {
@@ -137,6 +176,7 @@
   box-shadow: 0 4px 12px rgba(0, 123, 255, 0.3);
   transition: 0.3s;
 }
+
 .cartp-checkout:hover {
   transform: translateY(-2px);
   box-shadow: 0 6px 18px rgba(0, 123, 255, 0.4);
@@ -149,13 +189,33 @@
       "checkbox img name remove"
       "checkbox img quantity price";
   }
-  .cartp-select { grid-area: checkbox; }
-  .cartp-item img { grid-area: img; }
-  .cartp-info { grid-area: name; }
-  .cartp-quantity { grid-area: quantity; }
-  .cartp-price { grid-area: price; }
-  .cartp-remove { grid-area: remove; text-align: right; }
+
+  .cartp-select {
+    grid-area: checkbox;
+  }
+
+  .cartp-item img {
+    grid-area: img;
+  }
+
+  .cartp-info {
+    grid-area: name;
+  }
+
+  .cartp-quantity {
+    grid-area: quantity;
+  }
+
+  .cartp-price {
+    grid-area: price;
+  }
+
+  .cartp-remove {
+    grid-area: remove;
+    text-align: right;
+  }
 }
+
 .cartp-footer-buttons {
   display: flex;
   justify-content: flex-end;
@@ -179,4 +239,11 @@
   transform: translateY(-2px);
   box-shadow: 0 6px 18px rgba(255, 75, 92, 0.4);
 }
+.input-error {
+  animation: flashRed 0.4s ease;
+}
 
+@keyframes flashRed {
+  0% { background-color: #ffdede; }
+  100% { background-color: white; }
+}
