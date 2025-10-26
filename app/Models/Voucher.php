@@ -36,4 +36,11 @@ class Voucher extends Model
   {
     return self::create($validated);
   }
+
+  public static function updateVoucher($id, array $validated)
+  {
+    $voucher = self::findOrFail($id);
+    $voucher->update($validated);
+    return $voucher;
+  }
 }

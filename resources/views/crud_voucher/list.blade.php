@@ -40,7 +40,7 @@
                                 <th>Discount Value</th>
                                 <th>Start Date</th>
                                 <th>End Date</th>
-                                <th>status</th>
+                                <th>Status</th>
                                 <th>Actions</th>
                             </tr>
                         </thead>
@@ -61,7 +61,17 @@
                                     <td>{{ $voucher->discount_value ?? '—' }}</td>
                                     <td>{{ $voucher->start_date ?? '—' }}</td>
                                     <td>{{ $voucher->end_date ?? '—' }}</td>
-                                    <td>{{ $voucher->status ?? '—' }}</td>
+                                    <td>
+                                        <?php
+                                            $statusClass = '';
+                                            if ($voucher->status === 'active') {
+                                                $statusClass = 'badge-success';
+                                            } elseif ($voucher->status === 'inactive') {
+                                                $statusClass = 'badge-secondary';
+                                            }
+                                        ?>
+                                        <span class="badge {{ $statusClass }}">{{ $voucher->status }}</span>
+                                    </td>
                                     <td>
                                     <a href="#" class="view" title="View" data-toggle="modal" 
                                             data-target="#viewVoucherModal">
@@ -110,34 +120,41 @@
                                             <!-- Cột trái -->
                                             <div class="col-md-6">
                                                 <div class="form-group">
-                                                    <label for="logo">Hình ảnh</label><br>
-                                                    <img id="edit_logo_preview" src="" alt="Logo hiện tại" style="max-height: 50px; margin-bottom: 2px;">
-                                                    <input type="file" class="form-control" id="edit_logo" name="logo"
-                                                        accept="image/*">
+                                                    <label for="edit_code">Code</label>
+                                                    <input type="text" class="form-control" id="edit_code" name="code" required>
                                                 </div>
                                                 <div class="form-group">
-                                                    <label for="name">Tên Nhà Phân Phối</label>
-                                                    <input type="text" class="form-control" id="edit_name" name="name" required>
+                                                    <label for="edit_discount_type">Discount Type</label>
+                                                    <select class="form-control" id="edit_discount_type" name="discount_type" required>
+                                                        <option value="percent">percent</option>
+                                                        <option value="amount">amount</option>
+                                                    </select>
                                                 </div>
+
                                                 <div class="form-group">
-                                                    <label for="email">Email</label>
-                                                    <input type="text" class="form-control" id="edit_email" name="email">
+                                                    <label for="edit_discount_value">Discount Value</label>
+                                                    <input type="number" step="0.01" min="0" class="form-control" id="edit_discount_value" name="discount_value" required>
                                                 </div>
                                             </div>
 
                                             <!-- Cột phải -->
                                             <div class="col-md-6">
                                                 <div class="form-group">
-                                                    <label for="phone">Số điện thoại</label>
-                                                    <input type="text" class="form-control" id="edit_phone" name="phone">
+                                                    <label for="edit_start_date">Start Date</label>
+                                                    <input type="date" class="form-control" id="edit_start_date" name="start_date" required>
                                                 </div>
+
                                                 <div class="form-group">
-                                                    <label for="address">Địa chỉ</label>
-                                                    <input type="text" class="form-control" id="edit_address" name="address">
+                                                    <label for="edit_end_date">End Date</label>
+                                                    <input type="date" class="form-control" id="edit_end_date" name="end_date" required>
                                                 </div>
+
                                                 <div class="form-group">
-                                                    <label for="description">Mô tả</label>
-                                                    <textarea class="form-control" id="edit_description" name="description"></textarea>
+                                                    <label for="edit_status">Status</label>
+                                                    <select class="form-control" id="edit_status" name="status" required>
+                                                        <option value="active">active</option>
+                                                        <option value="inactive">inactive</option>
+                                                    </select>
                                                 </div>
                                             </div>
                                         </div>

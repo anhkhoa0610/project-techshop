@@ -60,9 +60,16 @@ class VoucherController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, Voucher $voucher)
+    public function update(VoucherRequest $request, $id)
     {
         //
+        $validated = $request->validated();
+        $voucher = Voucher::updateVoucher($id, $validated);
+        return response()->json([
+            'success' => true,
+            'data' => $voucher,
+            'message' => 'Voucher updated successfully',
+        ]);
     }
 
     /**
