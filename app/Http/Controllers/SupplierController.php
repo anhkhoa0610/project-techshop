@@ -19,9 +19,20 @@ class SupplierController extends Controller
             $query = Supplier::searchByName(request('search'));
         }
 
+        // Lọc theo địa chỉ nếu có
+        if (request()->has('address_filter') && request('address_filter')) {
+            $query->where('address', request('address_filter'));
+        }
+
+        // Lấy danh sách địa chỉ duy nhất để hiển thị trong dropdown
+        $allAddresses = Supplier::select('address')
+            ->whereNotNull('address')
+            ->distinct()
+            ->pluck('address');
+
         $suppliers = $query->paginate(5);
 
-        return view('crud_suppliers.list', compact('suppliers'));
+        return view('crud_suppliers.list', compact('suppliers', 'allAddresses'));
     }
 
     public function index()
