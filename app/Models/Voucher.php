@@ -43,4 +43,10 @@ class Voucher extends Model
     $voucher->update($validated);
     return $voucher;
   }
+
+  public static function deleteVoucher($id)
+  {
+    $voucher = self::findOrFail($id);
+    $voucher->delete();
+  }
 }

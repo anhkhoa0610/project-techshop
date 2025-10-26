@@ -141,17 +141,12 @@ document.addEventListener('DOMContentLoaded', function () {
         });
     });
 
-    // ==================== Delete Supplier ====================
-   
-
-   
-
     // ==================== Tooltip ====================
     const tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-toggle="tooltip"]'));
     tooltipTriggerList.map(el => new bootstrap.Tooltip(el));
 
 });
-
+// ==================== Delete Supplier ====================
  function confirmDelete(id) {
         Swal.fire({
             title: 'Xác nhận xóa',

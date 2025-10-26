@@ -128,25 +128,40 @@ document.addEventListener('DOMContentLoaded', function () {
         });
     });
 
-    // ==================== Delete Voucher ====================
-    window.confirmDelete = function (id) {
-        console.log('ID to delete:', id); // Kiểm tra ID
-        Swal.fire({
-            title: 'Xác nhận xóa',
-            text: 'Bạn có chắc chắn muốn xóa nhà cung cấp này không?',
-            icon: 'warning',
-            showCancelButton: true,
-            confirmButtonText: 'Xóa',
-            cancelButtonText: 'Hủy'
-        }).then((result) => {
-            if (result.isConfirmed) {
-                document.getElementById('delete-form-' + id).submit();
-            }
-        });
-    }
 
     // ==================== Tooltip ====================
     const tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-toggle="tooltip"]'));
     tooltipTriggerList.map(el => new bootstrap.Tooltip(el));
 
 });
+
+    // ==================== Delete Voucher ====================
+    function confirmDelete(id) {
+        Swal.fire({
+            title: 'Xác nhận xóa',
+            text: 'Bạn có chắc chắn muốn xóa Voucher này không?',
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonText: 'Xóa',
+            cancelButtonText: 'Hủy'
+        }).then((result) => {
+            if (result.isConfirmed) {
+                fetch(`/api/vouchers/${id}`, {
+                    method: 'DELETE',
+                    headers: {
+                        'Accept': 'application/json',
+                        'X-CSRF-TOKEN': window.csrfToken
+                    }
+                })
+                    .then(res => res.json())
+                    .then(data => {
+                        if (data.success) {
+                            Swal.fire('Đã xóa!', data.message, 'success').then(() => location.reload());
+                        } else {
+                            Swal.fire('Lỗi', 'Không thể xóa Voucher.', 'error');
+                        }
+                    })
+                    .catch(() => Swal.fire('Lỗi', 'Không thể kết nối đến server.', 'error'));
+            }
+        });
+    }

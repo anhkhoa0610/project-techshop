@@ -53,7 +53,7 @@ class VoucherController extends Controller
             'success' => true,
             'data' => $voucher,
             'message' => 'Supplier created successfully',
-        ],201);
+        ], 201);
     }
 
 
@@ -75,8 +75,21 @@ class VoucherController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(Voucher $voucher)
+    public function destroy($id)
     {
         //
+        try {
+            Voucher::deleteVoucher($id);
+            return response()->json([
+                'success' => true,
+                'message' => 'Voucher deleted successfully',
+            ]);
+
+        } catch (\Exception $e) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Error deleting voucher: ' . $e->getMessage(),
+            ], 500);
+        }
     }
 }
