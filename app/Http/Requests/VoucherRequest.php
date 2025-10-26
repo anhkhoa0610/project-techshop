@@ -28,7 +28,9 @@ class VoucherRequest extends FormRequest
                 'string',
                 'max:20',
                 // duy nhất trong bảng vouchers, nhưng bỏ qua id hiện tại khi update
-                Rule::unique('vouchers', 'code')->ignore($this->voucher)
+                Rule::unique('vouchers', 'code')->ignore($this->route('voucher'), 'voucher_id'),
+
+
             ],
             'discount_type' => 'required|in:percent,amount',
             'discount_value' => 'required|numeric|min:0.01',

@@ -2,7 +2,6 @@ document.addEventListener('DOMContentLoaded', function () {
 
     // ==================== Edit Voucher ====================
     const editForm = document.getElementById('editVoucherForm');
-    const editLogo = document.getElementById('edit_logo');
     if (editForm) {
         // submit edit
         editForm.addEventListener('submit', async function (e) {
@@ -11,14 +10,12 @@ document.addEventListener('DOMContentLoaded', function () {
             const url = `/api/vouchers/${id}`;
             const formData = new FormData();
             formData.append('_method', 'PUT');
-            formData.append('name', document.getElementById('edit_name').value);
-            formData.append('description', document.getElementById('edit_description').value);
-            formData.append('email', document.getElementById('edit_email').value);
-            formData.append('phone', document.getElementById('edit_phone').value);
-            formData.append('address', document.getElementById('edit_address').value);
-            if (editLogo && editLogo.files.length > 0) {
-                formData.append('logo', editLogo.files[0]);
-            }
+            formData.append('code', document.getElementById('edit_code').value);
+            formData.append('discount_type', document.getElementById('edit_discount_type').value);
+            formData.append('discount_value', document.getElementById('edit_discount_value').value);
+            formData.append('start_date', document.getElementById('edit_start_date').value);
+            formData.append('end_date', document.getElementById('edit_end_date').value);
+            formData.append('status', document.getElementById('edit_status').value);
 
             try {
                 const response = await fetch(url, {
@@ -29,7 +26,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
                 const data = await response.json();
                 if (response.ok && data.success) {
-                    Swal.fire('Thành công!', 'Cập nhật Nhà Phân Phối thành công.', 'success')
+                    Swal.fire('Thành công!', 'Cập nhật Voucher thành công.', 'success')
                         .then(() => location.reload());
                 } else {
                     Swal.fire('Lỗi', data.message || 'Cập nhật thất bại.', 'error');
@@ -39,13 +36,6 @@ document.addEventListener('DOMContentLoaded', function () {
             }
         });
 
-        // preview logo edit
-        if (editLogo) {
-            editLogo.addEventListener('change', function (e) {
-                const [file] = this.files;
-                if (file) document.getElementById('edit_logo_preview').src = URL.createObjectURL(file);
-            });
-        }
     }
 
     // ==================== Add Voucher ====================
@@ -126,15 +116,12 @@ document.addEventListener('DOMContentLoaded', function () {
             const row = btn.closest('tr');
             if (!row) return;
 
-            document.getElementById('edit_logo').value = '';
-            const logo = row.getAttribute('data-logo');
-            document.getElementById('edit_logo_preview').src = logo ? '/uploads/' + logo : '/uploads/place-holder.jpg';
-
-            document.getElementById('edit_name').value = row.getAttribute('data-name') || '';
-            document.getElementById('edit_email').value = row.getAttribute('data-email') || '';
-            document.getElementById('edit_phone').value = row.getAttribute('data-phone') || '';
-            document.getElementById('edit_address').value = row.getAttribute('data-address') || '';
-            document.getElementById('edit_description').value = row.getAttribute('data-description') || '';
+            document.getElementById('edit_code').value = row.getAttribute('data-Code') || '';
+            document.getElementById('edit_discount_type').value = row.getAttribute('data-discount_type') || '';
+            document.getElementById('edit_discount_value').value = row.getAttribute('data-discount_value') || '';
+            document.getElementById('edit_start_date').value = row.getAttribute('data-start_date') || '';
+            document.getElementById('edit_end_date').value = row.getAttribute('data-end_date') || '';
+            document.getElementById('edit_status').value = row.getAttribute('data-status') || '';
 
             editForm?.setAttribute('data-id', row.getAttribute('data-Voucher-id'));
             $('#editVoucherModal').modal('show');
