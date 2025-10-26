@@ -1,0 +1,64 @@
+.background-details {
+    background-image: url('/images/background.jpg');
+    background-size: cover;
+    background-position: center;
+}
+
+.container-details {
+    padding: 20px;
+    border-radius: 10px;
+    margin-top: 70px;
+    position: relative;
+}
+
+.prodcut-image {
+    width: 628px;
+    height: 628px;
+    object-fit: cover;
+
+}
+
+.swiper-slide-img {
+    width: 82px;
+    height: 82px;
+    padding: 5px;
+    box-sizing: content-box;
+    border: 1px solid #ddd;
+
+}
+
+.swiper-wrapper {
+    display: flex;
+    overflow-x: hidden;
+
+}
+
+.swiper-button-next img,
+.swiper-button-prev img {
+    width: 50px;
+    height: 50px;
+    background-color:  rgba(0, 0, 0, 0.5); ;
+}
+
+.swiper-button-next {
+    position: absolute;
+    transform: translate(578px, -66px);
+
+}
+
+.swiper-button-prev {
+    position: absolute;
+    transform: translateY(-66px);
+}
+
+.quantity-button {
+    width: 30px;
+    height: 30px;
+    cursor: pointer;
+    margin: 0;
+}
+.input-quantity {
+    width: 100px;
+    text-align: center;
+    margin: 0 ;
+}
