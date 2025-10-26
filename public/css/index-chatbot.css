@@ -1,0 +1,145 @@
+/*chatbot styles*/
+.chatbot-container {
+    position: fixed;
+    bottom: 24px;
+    right: 24px;
+    z-index: 9999;
+}
+
+/* Nút tròn (bubble) */
+#chatbot-button {
+    width: 80px;
+    height: 80px;
+    background-color: #15759b;
+    color: white;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+    font-size: 26px;
+    transition: all 0.3s ease;
+}
+
+#chatbot-button:hover {
+    background-color: #0f5e7d;
+    transform: scale(1.05);
+}
+
+/* Cửa sổ chat */
+#chatbot-window {
+    width: 380px;
+    border-radius: 16px 0px 0px 16px;
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.1);
+    background: #fff;
+    font-family: "Inter", sans-serif;
+    display: none;
+    flex-direction: column;
+    overflow-y: scroll;
+    border: 1px solid #e5e7eb;
+    height: 60vh;
+}
+
+/* Header */
+.chatbot-header {
+    display: flex;
+    align-items: center;
+    padding: 12px 16px;
+    border-bottom: 1px solid #f0f0f0;
+    background: #fff;
+}
+
+.chat-avatar {
+  background: #7c3aed;
+  color: white;
+  font-weight: bold;
+  border-radius: 50%;
+  width: 36px;
+  height: 36px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-right: 10px;
+}
+
+.chat-info strong {
+  display: block;
+  font-size: 14px;
+  color: #111827;
+}
+
+.chat-info span {
+  font-size: 12px;
+  color: #6b7280;
+}
+
+
+/* Body */
+.chatbot-body {
+    flex: 1;
+    padding: 10px;
+    overflow-y: auto;
+    background-color: #f8f8f8;
+}
+
+.bot-message,
+.user-message {
+    padding: 8px 12px;
+    margin-bottom: 8px;
+    border-radius: 8px;
+    max-width: 80%;
+}
+
+.bot-message {
+    background-color: #e6f4fa;
+    align-self: flex-start;
+}
+
+.user-message {
+    background-color: #d1f7c4;
+    margin-left: auto !important;
+}
+
+/* Footer */
+.chatbot-footer {
+    display: flex;
+    border-top: 1px solid #ccc;
+}
+
+#chatbot-input {
+    flex: 1;
+    padding: 8px;
+    border: none;
+    outline: none;
+}
+
+#chatbot-send {
+    background-color: #15759b;
+    color: white;
+    border: none;
+    padding: 8px 12px;
+    cursor: pointer;
+    transition: 0.3s;
+}
+
+#chatbot-send:hover {
+    background-color: #0f5e7d;
+}
+
+/* Nút X đóng */
+.chat-close {
+  background: transparent;
+  border: none;
+  font-size: 30px;
+  color: #6b7280;
+  cursor: pointer;
+  line-height: 1;
+  transition: color 0.2s ease;
+  margin-left: auto !important;
+  
+}
+
+.chat-close:hover {
+  color: #111827;
+}
