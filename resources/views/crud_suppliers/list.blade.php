@@ -41,12 +41,12 @@
                                 <th>Phone</th>
                                 <th>
                                     <div class="d-flex align-items-center justify-content-center">
-                                        <span class="fw-bold mx-2">Address</span>
+                                        <span class="fw-bold mx-1">Address</span>
                                         <form method="GET" action="{{ url()->current() }}" id="filterForm" class="m-0">
                                             <input type="hidden" name="search" value="{{ request('search') }}">
                                             <select name="address_filter"
                                                     class="form-control form-control-sm"
-                                                    style="width: 15px;"
+                                                    style="width: 80px;"
                                                     onchange="document.getElementById('filterForm').submit()">
                                                 <option value="">All</option>
                                                 @foreach($allAddresses as $address)
