@@ -79,6 +79,16 @@ body {
     margin-top: 7px;
 }
 
+.table thead th {
+    white-space: nowrap;
+    vertical-align: middle !important;
+}
+
+.table td,
+.table th {
+    text-align: center;
+}
+
 .search-box {
     position: relative;
     float: right;
