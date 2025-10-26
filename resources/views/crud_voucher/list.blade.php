@@ -10,7 +10,8 @@
                         <div class="row">
                             <div class="col-sm-4">
                                 <a href="#" title="Add" data-toggle="modal" id = "addNewVoucherBtn"
-                                            data-target="#addVoucherModal" class="btn btn-info add-new">Thêm Voucher</a>
+                                            data-target="#addVoucherModal" class="btn btn-info add-new">Thêm mã khuyến mãi</a>
+                                
                             </div>
                             <div class="col-sm-4">
                                 <h2 class="text-center"><b>Quản Lý Voucher</b></h2>
@@ -28,73 +29,159 @@
                                         </div>
                                     </form>
                                 </div>
+                                
+                            </div>
+                            <div class="col-sm-12 d-flex justify-content-end">
+                                <a href="{{ url()->current() }}" 
+                                    class="btn btn-outline-secondary d-flex align-items-center justify-content-center ms-1 mt-1" 
+                                    style="height:36px; padding:0 10px; line-height:1; width:70px;">
+                                    <i class="material-icons me-1" style="font-size:18px;">refresh</i>
+                                    <span style="font-size:14px;">Reset</span>
+                                </a>
                             </div>
                         </div>
                     </div>
-                    <table class="table table-bordered">
+                    <table class="table table-bordered text-center align-middle">
                         <thead>
                             <tr>
                                 <th>ID</th>
                                 <th>Code</th>
-                                <th>Discount Type</th>
+
+                                {{-- Cột Discount Type --}}
+                                <th>
+                                    <div class="d-flex align-items-center justify-content-center">
+                                        <span class="fw-bold mx-1">Discount Type</span>
+                                        <form method="GET" action="{{ url()->current() }}" class="m-0" id="discountTypeFilterForm">
+                                            {{-- Giữ lại các tham số khác --}}
+                                            <input type="hidden" name="search" value="{{ request('search') }}">
+                                            <input type="hidden" name="status_filter" value="{{ request('status_filter') }}">
+
+                                            <select name="discount_type_filter"
+                                                    class="form-select form-select-sm"
+                                                    style="min-width: 50px; max-width: 100px;"
+                                                    onchange="document.getElementById('discountTypeFilterForm').submit()">
+                                                <option value="">All</option>
+                                                @foreach($allDiscountType as $discount_type)
+                                                    <option value="{{ $discount_type }}" {{ request('discount_type_filter') == $discount_type ? 'selected' : '' }}>
+                                                        {{ $discount_type }}
+                                                    </option>
+                                                @endforeach
+                                            </select>
+                                        </form>
+                                    </div>
+                                </th>
+
                                 <th>Discount Value</th>
-                                <th>Start Date</th>
-                                <th>End Date</th>
-                                <th>Status</th>
+                                {{-- Start Date --}}
+                                <th>
+                                    <div class="d-flex align-items-center justify-content-center">
+                                        <span class="fw-bold mx-1">Start</span>
+                                        <form method="GET" action="{{ url()->current() }}" id="startDateFilterForm" class="m-0">
+                                            <input type="hidden" name="search" value="{{ request('search') }}">
+                                            <input type="hidden" name="discount_type_filter" value="{{ request('discount_type_filter') }}">
+                                            <input type="hidden" name="status_filter" value="{{ request('status_filter') }}">
+                                            <input type="hidden" name="end_date_filter" value="{{ request('end_date_filter') }}">
+                                            <input type="date" name="start_date_filter"
+                                                class="form-control form-control-sm text-center"
+                                                style="width: 130px;"
+                                                value="{{ request('start_date_filter') }}"
+                                                onchange="document.getElementById('startDateFilterForm').submit()">
+                                        </form>
+                                    </div>
+                                </th>
+                                {{-- End Date --}}
+                                <th>
+                                    <div class="d-flex align-items-center justify-content-center">
+                                        <span class="fw-bold mx-1">End</span>
+                                        <form method="GET" action="{{ url()->current() }}" id="endDateFilterForm" class="m-0">
+                                            <input type="hidden" name="search" value="{{ request('search') }}">
+                                            <input type="hidden" name="discount_type_filter" value="{{ request('discount_type_filter') }}">
+                                            <input type="hidden" name="status_filter" value="{{ request('status_filter') }}">
+                                            <input type="hidden" name="start_date_filter" value="{{ request('start_date_filter') }}">
+                                            <input type="date" name="end_date_filter"
+                                                class="form-control form-control-sm text-center"
+                                                style="width: 130px;"
+                                                value="{{ request('end_date_filter') }}"
+                                                onchange="document.getElementById('endDateFilterForm').submit()">
+                                        </form>
+                                    </div>
+                                </th>
+
+                                {{-- Cột Status --}}
+                                <th>
+                                    <div class="d-flex align-items-center justify-content-center">
+                                        <span class="fw-bold mx-1">Status</span>
+                                        <form method="GET" action="{{ url()->current() }}" class="m-0" id="statusFilterForm">
+                                            {{-- Giữ lại các tham số khác --}}
+                                            <input type="hidden" name="search" value="{{ request('search') }}">
+                                            <input type="hidden" name="discount_type_filter" value="{{ request('discount_type_filter') }}">
+
+                                            <select name="status_filter"
+                                                    class="form-select form-select-sm"
+                                                    style="min-width: 50px; max-width: 100px;"
+                                                    onchange="document.getElementById('statusFilterForm').submit()">
+                                                <option value="">All</option>
+                                                @foreach($allStatus as $status)
+                                                    <option value="{{ $status }}" {{ request('status_filter') == $status ? 'selected' : '' }}>
+                                                        {{ ucfirst($status) }}
+                                                    </option>
+                                                @endforeach
+                                            </select>
+                                        </form>
+                                    </div>
+                                </th>
+
                                 <th>Actions</th>
                             </tr>
                         </thead>
+
                         <tbody>
                             @foreach ($vouchers as $voucher)
-                                <tr data-voucher-id="{{ $voucher->voucher_id }}"
-                                    data-code="{{ $voucher->code }}"
-                                    data-discount_type="{{ $voucher->discount_type }}"
-                                    data-discount_value="{{ $voucher->discount_value }}"
-                                    data-start_date="{{ $voucher->start_date }}"
-                                    data-end_date="{{ $voucher->end_date }}"
-                                    data-status="{{ $voucher->status }}"
-                                    data-created_at="{{ $voucher->created_at }}"
-                                    data-updated_at="{{ $voucher->updated_at }}">
+                                <tr data-voucher-id="{{ $voucher->voucher_id }}" 
+                                data-code="{{ $voucher->code }}" 
+                                data-discount_type="{{ $voucher->discount_type }}" 
+                                data-discount_value="{{ $voucher->discount_value }}" 
+                                data-start_date="{{ $voucher->start_date }}" 
+                                data-end_date="{{ $voucher->end_date }}" 
+                                data-status="{{ $voucher->status }}" 
+                                data-created_at="{{ $voucher->created_at }}" 
+                                data-updated_at="{{ $voucher->updated_at }}">
                                     <td>{{ $voucher->voucher_id }}</td>
-                                    <td> {{ $voucher->code }} </td>
+                                    <td>{{ $voucher->code }}</td>
                                     <td>{{ $voucher->discount_type }}</td>
                                     <td>{{ $voucher->discount_value ?? '—' }}</td>
                                     <td>{{ $voucher->start_date ?? '—' }}</td>
                                     <td>{{ $voucher->end_date ?? '—' }}</td>
                                     <td>
-                                        <?php
-                                            $statusClass = '';
-                                            if ($voucher->status === 'active') {
-                                                $statusClass = 'badge-success';
-                                            } elseif ($voucher->status === 'inactive') {
-                                                $statusClass = 'badge-secondary';
-                                            }
-                                        ?>
+                                        @php
+                                            $statusClass = $voucher->status === 'active' ? 'badge-success' : 'badge-secondary';
+                                        @endphp
                                         <span class="badge {{ $statusClass }}">{{ $voucher->status }}</span>
                                     </td>
                                     <td>
-                                    <a href="#" class="view" title="View" data-toggle="modal" 
-                                            data-target="#viewVoucherModal">
+                                        <a href="#" class="view" title="View" data-toggle="modal" data-target="#viewVoucherModal">
                                             <i class="material-icons">&#xE417;</i>
                                         </a>
-                                    <a href="#" class="edit" title="Edit" data-toggle="modal"
-                                            data-target="#editVoucherModal">
+                                        <a href="#" class="edit" title="Edit" data-toggle="modal" data-target="#editVoucherModal">
                                             <i class="material-icons">&#xE254;</i>
                                         </a>
-                                    <form id="delete-form-{{ $voucher->voucher_id }}"
-                                        action="{{ url('/api/vouchers/' . $voucher->voucher_id) }}" method="POST"
-                                        style="display:inline;">
-                                        @csrf
-                                        @method('DELETE')
-                                        <button type="button" class="btn btn-link p-0 m-0 align-baseline delete"
-                                                title="Delete" data-toggle="tooltip"
-                                            onclick="confirmDelete({{ $voucher->voucher_id }})"><i class="material-icons text-danger">&#xE872;</i></button>
-                                    </form>
-                                </td>
+                                        <form id="delete-form-{{ $voucher->voucher_id }}"
+                                            action="{{ url('/api/vouchers/' . $voucher->voucher_id) }}"
+                                            method="POST" style="display:inline;">
+                                            @csrf
+                                            @method('DELETE')
+                                            <button type="button" class="btn btn-link p-0 m-0 align-baseline delete"
+                                                    title="Delete" data-toggle="tooltip"
+                                                    onclick="confirmDelete({{ $voucher->voucher_id }})">
+                                                <i class="material-icons text-danger">&#xE872;</i>
+                                            </button>
+                                        </form>
+                                    </td>
                                 </tr>
                             @endforeach
                         </tbody>
                     </table>
+
                     <div class="clearfix">
                         <div class="clearfix">
                             <nav>
