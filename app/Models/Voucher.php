@@ -26,9 +26,6 @@ class Voucher extends Model
 
   public static function search($search)
   {
-    if (empty($term)) {
-      return $query;
-    }
     return self::where('code', 'like', '%' . $search . '%');
   }
 
@@ -48,5 +45,10 @@ class Voucher extends Model
   {
     $voucher = self::findOrFail($id);
     $voucher->delete();
+  }
+
+  public static function paginate($perPage)
+  {
+    return self::query()->paginate($perPage);
   }
 }
