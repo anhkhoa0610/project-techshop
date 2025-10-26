@@ -15,6 +15,7 @@ class UIProductDetailsController extends Controller
         //     'message' => 'Danh sách danh mục',
         //     'data' => $product
         // ], 200);
+     
         return view('ui-product-details.product', compact('product'));
     }
 }
