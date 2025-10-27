@@ -1,28 +1,26 @@
 <!DOCTYPE html>
-<html lang="vi">
+<html lang="en">
 
 <head>
-    <meta charset="UTF-8">
-    {{-- Đảm bảo CSRF token được đặt trong thẻ meta --}}
-    <meta name="csrf-token" content="{{ csrf_token() }}">
+   <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>@yield('title', 'TechStore - Cửa hàng công nghệ')</title>
+   <meta name="csrf-token" content="{{ csrf_token() }}">
+    <title>@yield('title', 'TechStore - Cửa hàng công nghệ hàng đầu Việt Nam')</title>
+    <meta name="description"
+        content="@yield('description', 'TechStore - Chuyên bán điện thoại, laptop, tai nghe chính hãng với giá tốt nhất. Bảo hành uy tín, giao hàng nhanh toàn quốc.')">
 
     <link rel="stylesheet" href="{{ asset('css/index-style.css') }}">
     <link rel="stylesheet" href="{{ asset('css/cart.css') }}">
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap" rel="stylesheet">
-    <style>
-        .header {
-            color: black !important;
-        }
-    </style>
+
+
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap"
+        rel="stylesheet">
 </head>
 
 <body>
     {{-- Header --}}
     @include('partials.header')
 
-    {{-- Nội dung trang --}}
     <div class="background-layout">
         <div class="cartp-container">
             <div class="cartp-header">🛍️ Giỏ hàng của bạn</div>
@@ -33,13 +31,15 @@
                     <div class="cartp-item" data-id="{{ $item->cart_id }}">
                         <input type="checkbox" class="cartp-select">
                         {{-- FIX LỖI 500: Dùng Toán tử Nullsafe (?->) để kiểm tra $item->product --}}
-                        <img src="{{ $item->product->image ?? 'https://via.placeholder.com/80' }}">
+                        <img src="/uploads/{{ $item->product->cover_image}}">
+                     
                         <div>
                             {{-- FIX LỖI 500: Dùng Toán tử Nullsafe (?->) --}}
                             <h3>{{ $item->product?->product_name ?? 'Sản phẩm không tìm thấy' }}</h3>
                         </div>
                         <div class="cartp-quantity">
-                            <input type="number" value="{{ $item->quantity }}" min="1" max="{{ $item->product->stock_quantity }}" class="cartp-qty-input" >
+                            <input type="number" value="{{ $item->quantity }}" min="1"
+                                max="{{ $item->product->stock_quantity }}" class="cartp-qty-input">
                         </div>
                         <div class="cartp-price" data-price="{{ $item->product?->price ?? 0 }}">
                             {{-- FIX LỖI 500: Dùng Toán tử Nullsafe (?->) --}}
@@ -68,10 +68,11 @@
     </div>
 
 
+
+
     {{-- Footer --}}
     @include('partials.footer')
-    <script src="{{ asset('js/cart.js') }}"></script>
-
 </body>
 
 </html>
+    <script src="{{ asset('js/cart.js') }}"></script>

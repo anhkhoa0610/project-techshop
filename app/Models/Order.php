@@ -142,6 +142,10 @@ class Order extends Model
             }
         }
     }
+    public function momo()
+{
+    return $this->hasOne(Momo::class, 'order_id', 'id');
+}
 
 
 }

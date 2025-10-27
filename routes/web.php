@@ -56,8 +56,16 @@ Route::post('/pay', [CheckoutController::class, 'handleCheckout'])->name('pay.ch
 // Trang hóa đơn
 Route::get('/hoadon', [HoaDonController::class, 'index'])->name('hoadon.index');
 
-// Xóa 1 hoặc nhiều sản phẩm trong giỏ
-Route::delete('/cart/{cart_id}', [CartController::class, 'destroy']);
+use App\Http\Controllers\MomoController;
+
+Route::post('/momo/payment', [MomoController::class, 'momo_payment'])->name('momo.payment');
+
+// 🟢 Khi thanh toán xong, MoMo redirect người dùng về link này
+Route::get('/momo/return', [MomoController::class, 'momo_return'])->name('momo.return');
+
+// 🟣 MoMo gọi ngầm (server-to-server) để thông báo trạng thái thanh toán
+Route::post('/momo/ipn', [MomoController::class, 'momo_ipn'])->name('momo.ipn');
+
 
 
 Route::prefix('voucher')->group(function () {
