@@ -39,25 +39,7 @@
                                 <th>Name</th>
                                 <th>Email</th>
                                 <th>Phone</th>
-                                <th>
-                                    <div class="d-flex align-items-center justify-content-center">
-                                        <span class="fw-bold mx-1">Address</span>
-                                        <form method="GET" action="{{ url()->current() }}" id="filterForm" class="m-0">
-                                            <input type="hidden" name="search" value="{{ request('search') }}">
-                                            <select name="address_filter"
-                                                    class="form-control form-control-sm"
-                                                    style="width: 80px;"
-                                                    onchange="document.getElementById('filterForm').submit()">
-                                                <option value="">All</option>
-                                                @foreach($allAddresses as $address)
-                                                    <option value="{{ $address }}" {{ request('address_filter') == $address ? 'selected' : '' }}>
-                                                        {{ $address }}
-                                                    </option>
-                                                @endforeach
-                                            </select>
-                                        </form>
-                                    </div>
-                                </th>
+                                <th>Address</th>
                                 <th>Description</th>
                                 <th>Actions</th>
                             </tr>
