@@ -22,13 +22,13 @@
             <img src="{{ asset('images/logo.jpg') }}" alt="Logo">
         </div>
         <ul style="margin-top: -50px;">
-            <li><a href="{{  route('users.index') }}"><i class="fa fa-users"></i> Quản Lý Khách Hàng</a></li>
+            <li><a href="{{ route('users.index') }}"><i class="fa fa-users"></i> Quản Lý Khách Hàng</a></li>
             <li><a href="{{ route('products.list') }}"><i class="fa fa-archive"></i> Quản Lý Sản Phẩm</a></li>
             <li><a href="{{ route('categories.list') }}"><i class="fa fa-list"></i> Quản Lý Danh Mục</a></li>
             <li><a href="{{ route('orders.list')}}"><i class="fa fa-shopping-bag"></i> Quản Lý Đơn Hàng</a></li>
             <li><a href="{{ route('supplier.list') }}"><i class="fa fa-truck"></i> Quản Lý Nhà Phân Phối</a></li>
             <li><a href="#"><i class="fa fa-ticket"></i> Quản Lý Voucher</a></li>
-            <li><a href="#"><i class="fa fa-star"></i> Quản Lý Review</a></li>
+            <li><a href="{{ route('reviews.index') }}"><i class="fa fa-star"></i> Quản Lý Review</a></li>
             <li><a href="#"><i class="fa fa-sign-out"></i> Đăng Xuất</a></li>
         </ul>
     </div>

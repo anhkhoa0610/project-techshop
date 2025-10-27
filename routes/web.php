@@ -10,6 +10,7 @@ use App\Http\Controllers\ProductController;
 use App\Http\Controllers\SupplierController;
 use App\Http\Controllers\OrderDetailController;
 use App\Http\Controllers\IndexController;
+use App\Http\Controllers\ReviewController;
 
 use App\Http\Controllers\UserController;
 
@@ -64,5 +65,15 @@ Route::prefix('users')->group(function () {
     Route::put('/{user}', [UserController::class, 'update'])->name('users.update');
     Route::delete('/{user}', [UserController::class, 'destroy'])->name('users.destroy');
     Route::get('/search/autocomplete', [UserController::class, 'search'])->name('users.search');
+});
+
+
+Route::prefix('reviews')->group(function () {
+    Route::get('/', [ReviewController::class, 'index'])->name('reviews.index');
+    Route::get('/create', [ReviewController::class, 'create'])->name('reviews.create');
+    Route::post('/', [ReviewController::class, 'store'])->name('reviews.store');
+    Route::get('/{reviewId}/edit', [ReviewController::class, 'edit'])->name('reviews.edit');
+    Route::put('/{reviewId}', [ReviewController::class, 'update'])->name('reviews.update');
+    Route::delete('/{reviewId}', [ReviewController::class, 'destroy'])->name('reviews.destroy');
 });
 
