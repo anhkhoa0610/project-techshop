@@ -208,12 +208,13 @@
                                             <div class="col-md-6">
                                                 <div class="form-group">
                                                     <label for="edit_code">Code</label>
-                                                    <input type="text" class="form-control" id="edit_code" name="code" required>
+                                                    <input type="text" class="form-control" id="edit_code" name="code" >
                                                     <div class="text-danger error-message" id="error_edit_code"></div>
                                                 </div>
                                                 <div class="form-group">
                                                     <label for="edit_discount_type">Discount Type</label>
-                                                    <select class="form-control" id="edit_discount_type" name="discount_type" required>
+                                                    <select class="form-control" id="edit_discount_type" name="discount_type" >
+                                                        <option value="">-- Chọn loại giảm giá --</option>
                                                         <option value="percent">percent</option>
                                                         <option value="amount">amount</option>
                                                     </select>
@@ -222,7 +223,7 @@
 
                                                 <div class="form-group">
                                                     <label for="edit_discount_value">Discount Value</label>
-                                                    <input type="number" step="0.01" min="0" class="form-control" id="edit_discount_value" name="discount_value" required>
+                                                    <input type="number" step="0.01" min="0" class="form-control" id="edit_discount_value" name="discount_value" >
                                                     <div class="text-danger error-message" id="error_edit_discount_value"></div>
                                                 </div>
                                             </div>
@@ -231,19 +232,20 @@
                                             <div class="col-md-6">
                                                 <div class="form-group">
                                                     <label for="edit_start_date">Start Date</label>
-                                                    <input type="date" class="form-control" id="edit_start_date" name="start_date" required>
+                                                    <input type="date" class="form-control" id="edit_start_date" name="start_date" >
                                                     <div class="text-danger error-message" id="error_edit_start_date"></div>
                                                 </div>
 
                                                 <div class="form-group">
                                                     <label for="edit_end_date">End Date</label>
-                                                    <input type="date" class="form-control" id="edit_end_date" name="end_date" required>
+                                                    <input type="date" class="form-control" id="edit_end_date" name="end_date" >
                                                     <div class="text-danger error-message" id="error_edit_end_date"></div>
                                                 </div>
 
                                                 <div class="form-group">
                                                     <label for="edit_status">Status</label>
-                                                    <select class="form-control" id="edit_status" name="status" required>
+                                                    <select class="form-control" id="edit_status" name="status" >
+                                                        <option value="">-- Chọn trạng thái --</option>
                                                         <option value="active">active</option>
                                                         <option value="inactive">inactive</option>
                                                     </select>
@@ -254,7 +256,7 @@
                                     </div>
 
                                     <div class="modal-footer">
-                                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Đóng</button>
+                                        <button type="button" class="btn btn-secondary" data-dismiss="modal" id="closeEdit">Đóng</button>
                                         <button type="submit" class="btn btn-primary">Lưu thay đổi</button>
                                     </div>
                                 </div>
@@ -281,13 +283,14 @@
                                             <div class="col-md-6">
                                                 <div class="form-group">
                                                     <label for="add_code">Code</label>
-                                                    <input type="text" class="form-control" id="add_code" name="code" required>
+                                                    <input type="text" class="form-control" id="add_code" name="code">
                                                     <div class="text-danger error-message" id="error_add_code"></div>
                                                 </div>
 
                                                 <div class="form-group">
                                                     <label for="add_discount_type">Discount Type</label>
-                                                    <select class="form-control" id="add_discount_type" name="discount_type" required>
+                                                    <select class="form-control" id="add_discount_type" name="discount_type">
+                                                        <option value="">-- Chọn loại giảm giá --</option>
                                                         <option value="percent">percent</option>
                                                         <option value="amount">amount</option>
                                                     </select>
@@ -296,7 +299,7 @@
 
                                                 <div class="form-group">
                                                     <label for="add_discount_value">Discount Value</label>
-                                                    <input type="number" step="0.01" min="0" class="form-control" id="add_discount_value" name="discount_value" required>
+                                                    <input type="number" step="0.01" min="0" class="form-control" id="add_discount_value" name="discount_value">
                                                     <div class="text-danger error-message" id="error_add_discount_value"></div>
                                                 </div>
                                             </div>
@@ -305,19 +308,20 @@
                                             <div class="col-md-6">
                                                 <div class="form-group">
                                                     <label for="add_start_date">Start Date</label>
-                                                    <input type="date" class="form-control" id="add_start_date" name="start_date" required>
+                                                    <input type="date" class="form-control" id="add_start_date" name="start_date">
                                                     <div class="text-danger error-message" id="error_add_start_date"></div>
                                                 </div>
 
                                                 <div class="form-group">
                                                     <label for="add_end_date">End Date</label>
-                                                    <input type="date" class="form-control" id="add_end_date" name="end_date" required>
+                                                    <input type="date" class="form-control" id="add_end_date" name="end_date">
                                                     <div class="text-danger error-message" id="error_add_end_date"></div>
                                                 </div>
 
                                                 <div class="form-group">
                                                     <label for="add_status">Status</label>
-                                                    <select class="form-control" id="add_status" name="status" required>
+                                                    <select class="form-control" id="add_status" name="status">
+                                                        <option value="">-- Chọn trạng thái --</option>
                                                         <option value="active">active</option>
                                                         <option value="inactive">inactive</option>
                                                     </select>
@@ -328,7 +332,7 @@
                                     </div>
 
                                     <div class="modal-footer">
-                                        <button id="close" type="button" class="btn btn-secondary" data-dismiss="modal">Đóng</button>
+                                        <button id="close" type="button" class="btn btn-secondary" data-dismiss="modal" id="closeAdd">Đóng</button>
                                         <button type="submit" class="btn btn-primary">Lưu</button>
                                     </div>
                                 </div>
