@@ -63,6 +63,10 @@ Route::delete('/cart/{cart_id}', [CartController::class, 'destroy']);
 Route::delete('/cart-items', [CartController::class, 'destroyMany'])->name('cart.destroyMany');
 
 Route::get('/product-details/{id}', [UIProductDetailsController::class, 'show'])->name('product.details');
+// Redirect nếu không có id
+Route::get('/product-details', function () {
+    return redirect()->route('index'); 
+});
 
 Route::post('/momo/payment', [MomoController::class, 'momo_payment'])->name('momo.payment');
 
