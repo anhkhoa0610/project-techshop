@@ -7,7 +7,7 @@
     <link rel="stylesheet" href="{{ asset('css/product-details.css') }}">
 
 
-    <div class="background-details w-100 vh-100 bg-light">
+    <div class="content-container w-100 bg-light">
         <div class="header-back-ground w-100"></div>
         <div class="container-details container">
             <div class="row">
@@ -60,13 +60,13 @@
                     </h4>
 
                     <p class="mt-3"><strong>Nhà phân phối: </strong>
-                        {{ isset($product->supplier->name)? $product->supplier->name: "Không có nhà phân phối"}}</p>
+                        {{ isset($product->supplier->name) ? $product->supplier->name : "Không có nhà phân phối"}}</p>
 
                     <p class="mt-3"><strong>Bảo hành: </strong>
                         {{ isset($product->warranty_period) ? $product->warranty_period . ' tháng' : 'Không bảo hành' }}</p>
                     <p class="mt-3"><strong>Danh mục: </strong>
-                        {{ isset($product->category) ? $product->category->category_name  : 'Không có danh mục' }}</p>
-                    
+                        {{ isset($product->category) ? $product->category->category_name : 'Không có danh mục' }}</p>
+
 
                     <div class="mt-4 d-flex align-items-center">
                         <strong class="me-2">Số lượng:</strong>
@@ -90,10 +90,28 @@
 
         <div class="desc-product bg-light container">
             <h2>Mô tả sản phẩm</h2>
-            <p>{{ isset($product->description )?$product->description :"Sản phẩm không có mô tả!!"}}</p>
+            <p>{{ isset($product->description) ? $product->description : "Sản phẩm không có mô tả!!"}}</p>
         </div>
 
+        <div class="review-product bg-light container">
+            <h2>Đánh giá sản phẩm</h2>
+            <div class="review-title bg-succces">
+                <div class="col-md-3 rating-star">
+                    <div class="rating">
+                        <span class="rating-left" >4.9 </span>
+                        <span class="rating-right"> trên 5</span>
+                    </div>
+                    <div class="rating-star-display">⭐⭐⭐⭐⭐</div>
+                </div>
+                <div class="col-md-9 star-filter">
+
+                </div>
+
+            </div>
+            <p>{{ isset($product->description) ? $product->description : "Sản phẩm không có mô tả!!"}}</p>
+        </div>
     </div>
+
 
     <script>
         const images = document.querySelectorAll('.swiper-slide-img');
@@ -160,7 +178,7 @@
 
         minusButton.addEventListener('click', () => {
             let currentValue = parseInt(inputQuantity.value);
-            const min =1;
+            const min = 1;
             if (currentValue > min) {
                 inputQuantity.value = currentValue - 1;
             }
