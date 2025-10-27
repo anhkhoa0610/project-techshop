@@ -28,6 +28,15 @@ document.addEventListener('DOMContentLoaded', function () {
                 if (response.ok && data.success) {
                     Swal.fire('Thành công!', 'Cập nhật Voucher thành công.', 'success')
                         .then(() => location.reload());
+                }
+                else if (data.errors) {
+                    // Hiển thị lỗi chi tiết
+                    for (const [key, messages] of Object.entries(data.errors)) {
+                        const errorElement = document.getElementById(`error_edit_${key}`);
+                        if (errorElement) {
+                            errorElement.textContent = messages[0];
+                        }
+                    }
                 } else {
                     Swal.fire('Lỗi', data.message || 'Cập nhật thất bại.', 'error');
                 }
@@ -37,6 +46,11 @@ document.addEventListener('DOMContentLoaded', function () {
         });
 
     }
+    // reset edit form
+    document.getElementById('closeEdit')?.addEventListener('click', function () {
+        editForm.reset();
+        document.querySelectorAll('.error-message').forEach(el => el.textContent = '');
+    });
 
     // ==================== Add Voucher ====================
     const addForm = document.getElementById('addVoucherForm');
@@ -59,6 +73,14 @@ document.addEventListener('DOMContentLoaded', function () {
                 if (response.ok && data.success) {
                     Swal.fire('Thành công!', 'Thêm Voucher thành công.', 'success')
                         .then(() => location.reload());
+                } else if (data.errors) {
+                    // Hiển thị lỗi chi tiết
+                    for (const [key, messages] of Object.entries(data.errors)) {
+                        const errorElement = document.getElementById(`error_add_${key}`);
+                        if (errorElement) {
+                            errorElement.textContent = messages[0];
+                        }
+                    }
                 } else {
                     Swal.fire('Lỗi', data.message || 'Thêm thất bại.', 'error');
                 }
@@ -72,6 +94,7 @@ document.addEventListener('DOMContentLoaded', function () {
     if (closeBtn) {
         closeBtn.addEventListener('click', function () {
             if (addForm) addForm.reset();
+            document.querySelectorAll('.error-message').forEach(el => el.textContent = '');
         });
     }
 
@@ -135,33 +158,33 @@ document.addEventListener('DOMContentLoaded', function () {
 
 });
 
-    // ==================== Delete Voucher ====================
-    function confirmDelete(id) {
-        Swal.fire({
-            title: 'Xác nhận xóa',
-            text: 'Bạn có chắc chắn muốn xóa Voucher này không?',
-            icon: 'warning',
-            showCancelButton: true,
-            confirmButtonText: 'Xóa',
-            cancelButtonText: 'Hủy'
-        }).then((result) => {
-            if (result.isConfirmed) {
-                fetch(`/api/vouchers/${id}`, {
-                    method: 'DELETE',
-                    headers: {
-                        'Accept': 'application/json',
-                        'X-CSRF-TOKEN': window.csrfToken
+// ==================== Delete Voucher ====================
+function confirmDelete(id) {
+    Swal.fire({
+        title: 'Xác nhận xóa',
+        text: 'Bạn có chắc chắn muốn xóa Voucher này không?',
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonText: 'Xóa',
+        cancelButtonText: 'Hủy'
+    }).then((result) => {
+        if (result.isConfirmed) {
+            fetch(`/api/vouchers/${id}`, {
+                method: 'DELETE',
+                headers: {
+                    'Accept': 'application/json',
+                    'X-CSRF-TOKEN': window.csrfToken
+                }
+            })
+                .then(res => res.json())
+                .then(data => {
+                    if (data.success) {
+                        Swal.fire('Đã xóa!', data.message, 'success').then(() => location.reload());
+                    } else {
+                        Swal.fire('Lỗi', 'Không thể xóa Voucher.', 'error');
                     }
                 })
-                    .then(res => res.json())
-                    .then(data => {
-                        if (data.success) {
-                            Swal.fire('Đã xóa!', data.message, 'success').then(() => location.reload());
-                        } else {
-                            Swal.fire('Lỗi', 'Không thể xóa Voucher.', 'error');
-                        }
-                    })
-                    .catch(() => Swal.fire('Lỗi', 'Không thể kết nối đến server.', 'error'));
-            }
-        });
-    }
+                .catch(() => Swal.fire('Lỗi', 'Không thể kết nối đến server.', 'error'));
+        }
+    });
+}

@@ -3,6 +3,7 @@ document.addEventListener('DOMContentLoaded', function () {
     // ==================== Edit Supplier ====================
     const editForm = document.getElementById('editSupplierForm');
     const editLogo = document.getElementById('edit_logo');
+
     if (editForm) {
         // submit edit
         editForm.addEventListener('submit', async function (e) {
@@ -23,15 +24,29 @@ document.addEventListener('DOMContentLoaded', function () {
             try {
                 const response = await fetch(url, {
                     method: 'POST',
-                    headers: { 'Accept': 'application/json', 'X-CSRF-TOKEN': window.csrfToken || '' },
+                    headers: {
+                        'Accept': 'application/json',
+                        'X-CSRF-TOKEN': window.csrfToken || ''
+                    },
                     body: formData
                 });
 
                 const data = await response.json();
+
                 if (response.ok && data.success) {
-                    Swal.fire('Thành công!', 'Cập nhật Nhà Phân Phối thành công.', 'success')
+                    Swal.fire('Thành công!', 'Cập nhật Nhà Cung Cấp thành công.', 'success')
                         .then(() => location.reload());
-                } else {
+                }
+                else if (data.errors) {
+                    // Hiển thị lỗi dưới mỗi input
+                    for (const [key, messages] of Object.entries(data.errors)) {
+                        const errorElement = document.getElementById(`error_edit_${key}`);
+                        if (errorElement) {
+                            errorElement.textContent = messages[0];
+                        }
+                    }
+                }
+                else {
                     Swal.fire('Lỗi', data.message || 'Cập nhật thất bại.', 'error');
                 }
             } catch (err) {
@@ -41,41 +56,64 @@ document.addEventListener('DOMContentLoaded', function () {
 
         // preview logo edit
         if (editLogo) {
-            editLogo.addEventListener('change', function (e) {
+            editLogo.addEventListener('change', function () {
                 const [file] = this.files;
                 if (file) document.getElementById('edit_logo_preview').src = URL.createObjectURL(file);
             });
         }
+        // reset edit form
+        document.getElementById('closeEdit')?.addEventListener('click', function () {
+            editForm.reset();
+            document.getElementById('edit_logo_preview').src = '/uploads/place-holder.jpg';
+            document.querySelectorAll('.error-message').forEach(el => el.textContent = '');
+        });
     }
 
     // ==================== Add Supplier ====================
     const addForm = document.getElementById('addSupplierForm');
     const addLogo = document.getElementById('add_logo');
     const addLogoPreview = document.getElementById('add_logo_preview');
-    const closeBtn = document.getElementById('close');
+    const closeBtn = document.getElementById('closeAddSupplier');
+    const placeholder = '/uploads/place-holder.jpg';
 
+    // Xử lý submit thêm nhà cung cấp
     if (addForm) {
         addForm.addEventListener('submit', async function (e) {
             e.preventDefault();
             const url = '/api/suppliers';
             const formData = new FormData(this);
 
+            // Xóa lỗi cũ trước khi submit
+            document.querySelectorAll('.error-message').forEach(el => el.textContent = '');
+
             try {
                 const response = await fetch(url, {
                     method: 'POST',
-                    headers: { 'Accept': 'application/json', 'X-CSRF-TOKEN': window.csrfToken || '' },
+                    headers: {
+                        'Accept': 'application/json',
+                        'X-CSRF-TOKEN': window.csrfToken || ''
+                    },
                     body: formData
                 });
 
                 const data = await response.json();
+
                 if (response.ok && data.success) {
                     Swal.fire('Thành công!', 'Thêm Nhà Phân Phối thành công.', 'success')
                         .then(() => location.reload());
+                } else if (data.errors) {
+                    // Hiển thị lỗi chi tiết
+                    for (const [key, messages] of Object.entries(data.errors)) {
+                        const errorElement = document.getElementById(`error_add_${key}`);
+                        if (errorElement) {
+                            errorElement.textContent = messages[0];
+                        }
+                    }
                 } else {
                     Swal.fire('Lỗi', data.message || 'Thêm thất bại.', 'error');
                 }
             } catch (err) {
-                Swal.fire('Lỗi', 'Không thể kết nối server.', 'error');
+                Swal.fire('Lỗi', 'Không thể kết nối đến server.', 'error');
             }
         });
     }
@@ -83,11 +121,13 @@ document.addEventListener('DOMContentLoaded', function () {
     // reset add form
     if (closeBtn) {
         closeBtn.addEventListener('click', function () {
-            if (addForm) addForm.reset();
-            if (addLogoPreview) addLogoPreview.src = '/uploads/place-holder.jpg';
+            addForm?.reset();
+            if (addLogoPreview) addLogoPreview.src = placeholder;
+            document.querySelectorAll('.error-message').forEach(el => el.textContent = '');
         });
     }
 
+    // Hiển thị preview ảnh khi chọn
     if (addLogo) {
         addLogo.addEventListener('change', function () {
             const [file] = this.files;
@@ -95,8 +135,11 @@ document.addEventListener('DOMContentLoaded', function () {
         });
     }
 
+    // Khi bấm nút mở modal thêm mới
     document.getElementById('addNewSupplierBtn')?.addEventListener('click', function () {
-        if (addLogoPreview) addLogoPreview.src = '/uploads/place-holder.jpg';
+        addForm?.reset();
+        if (addLogoPreview) addLogoPreview.src = placeholder;
+        document.querySelectorAll('.error-message').forEach(el => el.textContent = '');
     });
 
     // ==================== View Supplier ====================
@@ -147,32 +190,32 @@ document.addEventListener('DOMContentLoaded', function () {
 
 });
 // ==================== Delete Supplier ====================
- function confirmDelete(id) {
-        Swal.fire({
-            title: 'Xác nhận xóa',
-            text: 'Bạn có chắc chắn muốn xóa nhà cung cấp này không?',
-            icon: 'warning',
-            showCancelButton: true,
-            confirmButtonText: 'Xóa',
-            cancelButtonText: 'Hủy'
-        }).then((result) => {
-            if (result.isConfirmed) {
-                fetch(`/api/suppliers/${id}`, {
-                    method: 'DELETE',
-                    headers: {
-                        'Accept': 'application/json',
-                        'X-CSRF-TOKEN': window.csrfToken
+function confirmDelete(id) {
+    Swal.fire({
+        title: 'Xác nhận xóa',
+        text: 'Bạn có chắc chắn muốn xóa nhà cung cấp này không?',
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonText: 'Xóa',
+        cancelButtonText: 'Hủy'
+    }).then((result) => {
+        if (result.isConfirmed) {
+            fetch(`/api/suppliers/${id}`, {
+                method: 'DELETE',
+                headers: {
+                    'Accept': 'application/json',
+                    'X-CSRF-TOKEN': window.csrfToken
+                }
+            })
+                .then(res => res.json())
+                .then(data => {
+                    if (data.success) {
+                        Swal.fire('Đã xóa!', data.message, 'success').then(() => location.reload());
+                    } else {
+                        Swal.fire('Lỗi', 'Không thể xóa nhà phân phối.', 'error');
                     }
                 })
-                    .then(res => res.json())
-                    .then(data => {
-                        if (data.success) {
-                            Swal.fire('Đã xóa!', data.message, 'success').then(() => location.reload());
-                        } else {
-                            Swal.fire('Lỗi', 'Không thể xóa nhà phân phối.', 'error');
-                        }
-                    })
-                    .catch(() => Swal.fire('Lỗi', 'Không thể kết nối đến server.', 'error'));
-            }
-        });
-    }
+                .catch(() => Swal.fire('Lỗi', 'Không thể kết nối đến server.', 'error'));
+        }
+    });
+}

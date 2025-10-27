@@ -43,6 +43,11 @@ class Product extends Model
         return $this->hasMany(OrderDetail::class, 'product_id', 'product_id');
     }
 
+    public function images()
+    {
+        return $this->hasMany(ProductImage::class);
+    }
+
     public function scopePriceRange($query, $min_price = null, $max_price = null)
     {
         return $query
@@ -80,15 +85,17 @@ class Product extends Model
     }
 
     public function scopeSearch($query, $keyword)
-{
-    if (!empty($keyword)) {
-        $query->where(function ($q) use ($keyword) {
-            $q->where('product_name', 'like', "%{$keyword}%")
-              ->orWhere('description', 'like', "%{$keyword}%");
-        });
+    {
+        if (!empty($keyword)) {
+            $query->where(function ($q) use ($keyword) {
+                $q->where('product_name', 'like', "%{$keyword}%")
+                    ->orWhere('description', 'like', "%{$keyword}%");
+            });
+        }
+        return $query;
     }
-    return $query;
-}
+
+
 
 
 }
