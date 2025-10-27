@@ -1,3 +1,4 @@
+@include('components.login-modal')
 <header class="header">
     <div class="header-container">
         <div class="header-content">
@@ -30,7 +31,7 @@
                     <span class="cart-count">2</span>
                 </button>
                 <button class="user-btn">👤</button>
-                <button class="login-btn desktop-only">Đăng nhập</button>
+                <button class="login-btn desktop-only" data-bs-toggle="modal" data-bs-target="#loginModal">Đăng nhập</button>
             </div>
         </div>
     </div>
