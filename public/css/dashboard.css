@@ -223,3 +223,7 @@ table td {
 .search-box button.btn-primary:hover {
     background-color: #0056b3;
 }
+
+.error-message {
+    text-align: left !important;
+}
