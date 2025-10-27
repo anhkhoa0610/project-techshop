@@ -15,6 +15,7 @@ use App\Http\Controllers\IndexController;
 use App\Http\Controllers\VoucherController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\LoginController;
+use App\Http\Controllers\MomoController;
 
 Route::get('/', function () {
     return view('layouts.dashboard');
@@ -63,9 +64,13 @@ Route::delete('/cart-items', [CartController::class, 'destroyMany'])->name('cart
 
 Route::get('/product-details/{id}', [UIProductDetailsController::class, 'show'])->name('product.details');
 
+Route::post('/momo/payment', [MomoController::class, 'momo_payment'])->name('momo.payment');
 
+// 🟢 Khi thanh toán xong, MoMo redirect người dùng về link này
+Route::get('/momo/return', [MomoController::class, 'momo_return'])->name('momo.return');
 
-
+// 🟣 MoMo gọi ngầm (server-to-server) để thông báo trạng thái thanh toán
+Route::post('/momo/ipn', [MomoController::class, 'momo_ipn'])->name('momo.ipn');
 
 
 

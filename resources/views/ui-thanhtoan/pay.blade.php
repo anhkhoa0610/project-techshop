@@ -81,14 +81,15 @@
                             <div class="radio-group">
 
                                 <label class="radio">
-                                    <input type="radio" name="pay" checked>
+                                    <input type="radio" name="pay" value="vnpay" checked>
                                     <div>
                                         <div class="label">VNPay</div>
-                                        <div class="meta">Cổng thanh toán nhanh</div>
+                                        <div class="meta">Thanh Toán VNPAY</div>
                                     </div>
                                 </label>
+
                                 <label class="radio">
-                                    <input type="radio" name="pay">
+                                    <input type="radio" name="pay" value="momo">
                                     <div>
                                         <div class="label">MoMo</div>
                                         <div class="meta">Ví điện tử MoMo</div>
@@ -149,11 +150,11 @@
                             $price = $product->price ?? 0;
                             $itemTotal = $price * $quantity;
                             $subtotal += $itemTotal;
-                            $discountAmount = $subtotal * 0.2; // Giảm giá 10%
+                            $discountAmount = $subtotal * 0.2; // Giảm giá 20%
                             $finalSubtotal = $subtotal - $discountAmount;
                         @endphp
                         <div class="item">
-                            <div class="thumb"><img src="{{ $product->image }}"></div>
+                            <div class="thumb"><img src="/uploads/{{ $item->product->cover_image}}"></div>
                             <div>
                                 <div class="title">{{ $product->product_name }}</div>
                                 <div class="meta">Số lượng: {{ $quantity }}</div>
@@ -173,13 +174,13 @@
                     </div>
                     <div class="row total">
                         <div style="color: white;">Tổng phải trả</div>
-                        <div  style="color: white;">{{ number_format($finalSubtotal, 0, ',', '.') }}₫</div>
+                        <div style="color: white;">{{ number_format($finalSubtotal, 0, ',', '.') }}₫</div>
                     </div>
                     <button class="pay-btn" type="button" id="payBtn">Thanh toán & Đặt hàng</button>
                 </aside>
             </div>
         </div>
-        <script src="{{ asset('js/pay.js') }}"></script>
+
     </body>
 
 
@@ -191,3 +192,10 @@
 </body>
 
 </html>
+<script>
+    const momoUrl = "{{ route('momo.payment') }}";
+
+    const csrfToken = "{{ csrf_token() }}";
+    const totalAmount = "{{ $finalSubtotal ?? 0 }}";
+</script>
+<script src="{{ asset('js/pay.js') }}"></script>
