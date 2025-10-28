@@ -44,20 +44,20 @@ class Review extends Model
     }
 
     // Boot method để thêm các event
-    protected static function boot()
-    {
-        parent::boot();
+    // protected static function boot()
+    // {
+    //     parent::boot();
 
-        // Trước khi tạo review mới
-        static::creating(function ($review) {
-            // Kiểm tra user đã review sản phẩm này chưa
-            $exists = self::where('product_id', $review->product_id)
-                ->where('user_id', $review->user_id)
-                ->exists();
+    //     // Trước khi tạo review mới
+    //     static::creating(function ($review) {
+    //         // Kiểm tra user đã review sản phẩm này chưa
+    //         $exists = self::where('product_id', $review->product_id)
+    //             ->where('user_id', $review->user_id)
+    //             ->exists();
 
-            if ($exists) {
-                throw new \Exception('Người dùng này đã đánh giá sản phẩm này rồi.');
-            }
-        });
-    }
+    //         if ($exists) {
+    //             throw new \Exception('Người dùng này đã đánh giá sản phẩm này rồi.');
+    //         }
+    //     });
+    // }
 }
