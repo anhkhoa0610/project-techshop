@@ -120,7 +120,7 @@
                     </table>
 
                     <div class="clearfix">
-                        <div class="clearfix mt-3">
+                        <div class="clearfix mt-5">
                             <nav>
                                 {{ $users->withQueryString()->links('pagination::bootstrap-5') }}
                             </nav>
