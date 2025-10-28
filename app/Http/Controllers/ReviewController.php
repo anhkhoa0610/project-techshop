@@ -17,21 +17,32 @@ class ReviewController extends Controller
     public function index(Request $request)
     {
         $query = Review::with(['user', 'product']);
+        $search = $request->input('search');
 
-        // Tìm kiếm
-        if ($request->has('search') && $request->search != '') {
-            $search = $request->input('search');
+       if ($request->has('search')) {
+            $search = $request->search;
             $query->where(function ($q) use ($search) {
                 $q->whereHas('user', function ($q) use ($search) {
-                    $q->where('name', 'like', "%{$search}%");
+                    $q->where('full_name', 'LIKE', "%{$search}%");
                 })
-                ->orWhereHas('product', function ($q) use ($search) {
-                    $q->where('name', 'like', "%{$search}%");
-                })
-                ->orWhere('comment', 'like', "%{$search}%")
-                ->orWhere('rating', 'like', "%{$search}%");
+                    ->orWhereHas('product', function ($q) use ($search) {
+                        $q->where('product_name', 'LIKE', "%{$search}%");
+                    });
             });
         }
+        // Tìm kiếm
+        // if ($request->has('search') && $request->search != '') {
+            // $query->where(function ($q) use ($search) {
+            //     $q->whereHas('user', function ($q) use ($search) {
+            //         $q->where('name', 'like', "%{$search}%");
+            //     })
+            //     ->orWhereHas('product', function ($q) use ($search) {
+            //         $q->where('name', 'like', "%{$search}%");
+            //     })
+            //     ->orWhere('comment', 'like', "%{$search}%")
+            //     ->orWhere('rating', 'like', "%{$search}%");
+            // });
+        // }
 
         $reviews = $query->orderBy('review_date', 'desc')->paginate(10);
 
