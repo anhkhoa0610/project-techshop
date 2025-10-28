@@ -32,17 +32,33 @@
                     <p class="lead">Điền thông tin giao hàng và chọn phương thức thanh toán</p>
                     <form id="checkoutForm">
                         <div class="section">
-                            <div class="subtitle"><label>Thông tin người nhận</label><small class="muted">Thông tin bắt
-                                    buộc</small></div>
-                            <div class="two-col">
-                                <div><label for="fname">Họ và tên</label><input id="fname" type="text"
-                                        placeholder="Nguyễn Văn A" required>
-                                </div>
-                                <div><label for="phone">Số điện thoại</label><input id="phone" type="tel"
-                                        placeholder="09x xxx xxxx" required></div>
+                            <div class="subtitle">
+                                <label>Thông tin người nhận</label>
+                                <small class="muted">Thông tin bắt buộc</small>
                             </div>
-                            <div style="margin-top:12px"><label for="email">Email</label><input id="email" type="email"
-                                    placeholder="you@example.com" required></div>
+
+                            <div class="two-col">
+                                <div>
+                                    <label for="fname">Họ và tên</label>
+                                    <input id="fname" name="fullname" type="text"
+                                        value="{{ old('fullname', $user->full_name ?? '') }}" placeholder="Nguyễn Văn A"
+                                        required>
+                                </div>
+
+                                <div>
+                                    <label for="phone">Số điện thoại</label>
+                                    <input id="phone" name="phone" type="tel"
+                                        value="{{ old('phone', $user->phone ?? '') }}" placeholder="09x xxx xxxx"
+                                        required>
+                                </div>
+                            </div>
+
+                            <div style="margin-top:12px">
+                                <label for="email">Email</label>
+                                <input id="email" name="email" type="email"
+                                    value="{{ old('email', $user->email ?? '') }}" placeholder="you@example.com"
+                                    required>
+                            </div>
                         </div>
 
                         <div class="section">
