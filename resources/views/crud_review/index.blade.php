@@ -56,7 +56,7 @@
                                 <th>ID</th>
                                 <th>Sản Phẩm</th>
                                 <th>Người Đánh Giá</th>
-                                <th>Số Sao</th>
+                                <th>Đánh giá</th>
                                 <th>Bình Luận</th>
                                 <th>Ngày Đánh Giá</th>
                                 <th>Hành Động</th>
@@ -82,7 +82,7 @@
                                             @endfor
                                         </div>
                                     </td>
-                                    <td>{{ $review->comment ? Str::limit($review->comment, 50) : 'N/A' }}</td>
+                                    <td>{{ $review->comment ? Str::limit($review->comment, 1000) : 'N/A' }}</td>
                                     <td>{{ $review->review_date ? $review->review_date->format('d/m/Y') : '—' }}</td>
                                     <td class="text-nowrap">
                                         <a href="#" class="view" title="Xem" data-toggle="modal" data-target="#viewReviewModal">
