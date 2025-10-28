@@ -18,16 +18,16 @@
                                 <h2 class="text-center"><b>Quản Lý Đánh Giá</b></h2>
                             </div>
                             <div class="col-sm-4">
-                                <form class="search-box" method="GET" action="{{ route('reviews.index') }}">
-                                    <div class="input-group">
-                                        <span class="input-group-addon"><i class="material-icons">&#xE8B6;</i></span>
-                                        <input type="text" class="form-control" name="search" placeholder="Tìm kiếm..."
-                                            id="searchInput" value="{{ request('search') }}">
-                                        <div class="input-group-append">
-                                            <button class="btn btn-primary" type="submit">Search</button>
+                                <form class="search-box" method="GET" action="{{ url()->current() }}">
+                                        <div class="input-group">
+                                            <span class="input-group-addon"><i class="material-icons">&#xE8B6;</i></span>
+                                            <input type="text" class="form-control" name="search" placeholder="Tìm kiếm..."
+                                                value="{{ request('search') }}">
+                                            <div class="input-group-append">
+                                                <button class="btn btn-primary" type="submit">Search</button>
+                                            </div>
                                         </div>
-                                    </div>
-                                </form>
+                                    </form>
                             </div>
                         </div>
                     </div>
@@ -133,7 +133,7 @@
                 <div class="modal-body">
                     <p><strong>Sản phẩm:</strong> <span id="view_product"></span></p>
                     <p><strong>Người đánh giá:</strong> <span id="view_user"></span></p>
-                    <p><strong>Số sao:</strong> <span id="view_rating"></span></p>
+                    <p><strong>Đánh giá:</strong> <span id="view_rating"></span></p>
                     <p><strong>Bình luận:</strong> <span id="view_comment"></span></p>
                     <p><strong>Ngày đánh giá:</strong> <span id="view_date"></span></p>
                 </div>
