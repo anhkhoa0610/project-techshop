@@ -30,19 +30,6 @@ class ReviewController extends Controller
                     });
             });
         }
-        // Tìm kiếm
-        // if ($request->has('search') && $request->search != '') {
-            // $query->where(function ($q) use ($search) {
-            //     $q->whereHas('user', function ($q) use ($search) {
-            //         $q->where('name', 'like', "%{$search}%");
-            //     })
-            //     ->orWhereHas('product', function ($q) use ($search) {
-            //         $q->where('name', 'like', "%{$search}%");
-            //     })
-            //     ->orWhere('comment', 'like', "%{$search}%")
-            //     ->orWhere('rating', 'like', "%{$search}%");
-            // });
-        // }
 
         $reviews = $query->orderBy('review_date', 'desc')->paginate(10);
 
@@ -121,7 +108,7 @@ class ReviewController extends Controller
         ]);
 
         return redirect()
-            ->route('crud_review.index')
+            ->route('reviews.index')
             ->with('success', 'Đánh giá đã được thêm thành công.');
     }
 
