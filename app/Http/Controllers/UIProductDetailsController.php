@@ -13,7 +13,7 @@ class UIProductDetailsController extends Controller
         // return response()->json([
         //     'success' => true,
         //     'message' => 'Danh sách danh mục',
-        //     'data' => $product
+        //     'data' => $product->images
         // ], 200);
      
         return view('ui-product-details.product', compact('product'));

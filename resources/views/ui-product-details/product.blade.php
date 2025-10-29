@@ -7,7 +7,7 @@
     <link rel="stylesheet" href="{{ asset('css/product-details.css') }}">
 
 
-    <div class="content-container w-100 bg-light">
+    <div class="content-container w-100">
         <div class="header-back-ground w-100"></div>
         <div class="container-details container">
             <div class="row">
@@ -18,26 +18,16 @@
                             class="prodcut-image" alt="Ảnh sản phẩm chính" id="mainImage">
                         <div class="swiper">
                             <div class="swiper-wrapper">
-                                <div class="swiper-slide"><img class="swiper-slide-img" src="{{ asset('images/test.png') }}"
-                                        alt=""></div>
-                                <div class="swiper-slide"><img class="swiper-slide-img" src="{{ asset('images/test.jpg') }}"
-                                        alt=""></div>
-                                <div class="swiper-slide"><img class="swiper-slide-img" src="{{ asset('images/test.png') }}"
-                                        alt=""></div>
-                                <div class="swiper-slide"><img class="swiper-slide-img" src="{{ asset('images/test.jpg') }}"
-                                        alt=""></div>
-                                <div class="swiper-slide"><img class="swiper-slide-img" src="{{ asset('images/test.png') }}"
-                                        alt=""></div>
-                                <div class="swiper-slide"><img class="swiper-slide-img" src="{{ asset('images/test.jpg') }}"
-                                        alt=""></div>
-                                <div class="swiper-slide"><img class="swiper-slide-img" src="{{ asset('images/test.png') }}"
-                                        alt=""></div>
-                                <div class="swiper-slide"><img class="swiper-slide-img" src="{{ asset('images/test.jpg') }}"
-                                        alt=""></div>
-                                <div class="swiper-slide"><img class="swiper-slide-img" src="{{ asset('images/logo.jpg') }}"
-                                        alt=""></div>
-                                <div class="swiper-slide"><img class="swiper-slide-img" src="{{ asset('images/logo.jpg') }}"
-                                        alt=""></div>
+                                @if(isset($product->images) && $product->images->count() > 0)
+                                    @foreach($product->images as $image)
+                                        <div class="swiper-slide">
+                                            <img src="{{ asset('uploads/' . $image->image_name) }}" alt="Ảnh phụ"
+                                                class="swiper-slide-img">
+                                        </div>
+                                    @endforeach
+
+                                @endif
+
                             </div>
 
                             <!-- Nút điều hướng -->
@@ -50,7 +40,7 @@
                 <!-- Cột phải: Thông tin sản phẩm -->
                 <div class="col-md-6">
                     <h3 class="fw-bold text-center">{{ $product->product_name ?? "Sản phẩm không tồn tại!!!"}}</h3>
-                    <p class="text-warning mb-1">
+                    <p class="text-warning mb-1 fs-3 text-center">
                         ⭐ {{ $product->rating ?? 4.7 }} | {{ $product->review_count ?? '3k' }} đánh giá | Đã bán
                         {{ $product->sold_count ?? '10k+' }}
                     </p>
@@ -88,22 +78,28 @@
             </div>
         </div>
 
-        <div class="desc-product bg-light container">
+        <div class="desc-product container">
             <h2>Mô tả sản phẩm</h2>
             <p>{{ isset($product->description) ? $product->description : "Sản phẩm không có mô tả!!"}}</p>
         </div>
 
-        <div class="review-product bg-light container">
+        <div class="review-product container">
             <h2>Đánh giá sản phẩm</h2>
-            <div class="review-title bg-succces">
-                <div class="col-md-3 rating-star">
+            <div class="review-title">
+                <div class="col-md-3 star-rating">
                     <div class="rating">
-                        <span class="rating-left" >4.9 </span>
+                        <span class="rating-left">4.9 </span>
                         <span class="rating-right"> trên 5</span>
                     </div>
-                    <div class="rating-star-display">⭐⭐⭐⭐⭐</div>
+                    <div class="star-rating-display">⭐⭐⭐⭐⭐</div>
                 </div>
-                <div class="col-md-9 star-filter">
+                <div class="col-md-9 filter-by-star">
+                    <button class="button-filter-star active">Tất cả</button>
+                    <button class="button-filter-star">1 sao</button>
+                    <button class="button-filter-star">2 sao</button>
+                    <button class="button-filter-star">3 sao</button>
+                    <button class="button-filter-star">4 sao</button>
+                    <button class="button-filter-star">5 sao</button>
 
                 </div>
 
@@ -190,6 +186,16 @@
             if (currentValue < max) {
                 inputQuantity.value = currentValue + 1;
             }
+        });
+
+        // xử lý trạng thái nút lọc đánh giá sao
+        document.querySelectorAll('.button-filter-star').forEach(btn => {
+            btn.addEventListener('click', function () {
+                // Xóa active ở tất cả các nút
+                document.querySelectorAll('.button-filter-star').forEach(b => b.classList.remove('active'));
+                // Gán active cho nút được click
+                this.classList.add('active');
+            });
         });
     </script>
 
