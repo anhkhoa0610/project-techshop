@@ -1,46 +1,130 @@
-document.addEventListener('DOMContentLoaded', () => {
-    const loginModalEl = document.getElementById('loginModal');
+// public/js/login.js
 
-    // Khi có lỗi đăng nhập từ server (flag global từ backend)
-    if (loginModalEl && window.loginHasErrors) {
-        const loginModal = new bootstrap.Modal(loginModalEl);
-        loginModal.show();
+// Toggle mật khẩu
+function togglePassword() {
+    const password = document.getElementById('password');
+    const icon = document.querySelector('.toggle-password');
+    if (password.type === 'password') {
+        password.type = 'text';
+        icon.classList.replace('bi-eye-slash', 'bi-eye');
+    } else {
+        password.type = 'password';
+        icon.classList.replace('bi-eye', 'bi-eye-slash');
     }
+}
 
-    // Khi modal bị đóng, reset form & trạng thái lỗi
-    if (loginModalEl) {
-        loginModalEl.addEventListener('hidden.bs.modal', function () {
-            // Reset toàn bộ form trong modal
-            this.querySelectorAll('form').forEach(form => form.reset());
+document.addEventListener('DOMContentLoaded', () => {
+    const form = document.getElementById('loginForm');
+    if (!form) return;
 
-            // Xóa class lỗi và thông báo lỗi
-            this.querySelectorAll('.is-invalid').forEach(el => el.classList.remove('is-invalid'));
-            this.querySelectorAll('.text-danger').forEach(el => el.textContent = '');
+    form.addEventListener('submit', async (e) => {
+        e.preventDefault();
 
-            // Xóa alert lỗi đăng nhập (nếu có)
-            this.querySelectorAll('.alert.alert-danger').forEach(alert => alert.remove());
+        const email = document.getElementById('email').value.trim();
+        const password = document.getElementById('password').value;
+        const btn = document.getElementById('loginBtn');
+        const spinner = btn.querySelector('.spinner-border');
+        const errorDiv = document.getElementById('loginError');
 
-            // Đặt lại icon hiển thị mật khẩu
-            this.querySelectorAll('.toggle-password').forEach(icon => {
-                icon.classList.remove('bi-eye');
-                icon.classList.add('bi-eye-slash');
-            });
-        });
+        btn.disabled = true;
+        spinner.classList.remove('d-none');
+        clearLoginErrors();
+
+        try {
+            const response = await axios.post('/api/login', { email, password });
+
+            localStorage.setItem('api_token', response.data.token);
+            localStorage.setItem('user', JSON.stringify(response.data.user));
+
+            const modal = bootstrap.Modal.getInstance(document.getElementById('loginModal'));
+            modal.hide();
+
+            showToast('Đăng nhập thành công!', 'success');
+            setTimeout(() => window.location.reload(), 800);
+
+        } catch (error) {
+            const errors = error.response?.data?.errors;
+            if (errors) {
+                if (errors.email) {
+                    const emailInput = document.getElementById('email');
+                    document.getElementById('email-error').textContent = errors.email[0];
+                    emailInput.classList.add('is-invalid');
+                }
+                if (errors.password) {
+                    const passwordInput = document.getElementById('password');
+                    document.getElementById('password-error').textContent = errors.password[0];
+                    passwordInput.classList.add('is-invalid');
+                }
+            } else {
+                const message = error.response?.data?.message || 'Đăng nhập thất bại. Vui lòng thử lại.';
+                errorDiv.textContent = message;
+                errorDiv.classList.remove('d-none');
+            }
+        } finally {
+            btn.disabled = false;
+            spinner.classList.add('d-none');
+        }
+    });
+
+    const loginModal = document.getElementById('loginModal');
+    if (loginModal) {
+        loginModal.addEventListener('hidden.bs.modal', clearLoginErrors);
     }
 });
 
-/**
- * Hàm toggle mật khẩu
- * @param {string} id - ID của input password
- * @param {Event} event - Sự kiện click
- */
-function togglePassword(id, event) {
-    const input = document.getElementById(id);
-    const icon = event?.target;
-    if (!input || !icon) return;
-
-    const showing = input.type === 'text';
-    input.type = showing ? 'password' : 'text';
-    icon.classList.toggle('bi-eye', !showing);
-    icon.classList.toggle('bi-eye-slash', showing);
+function showToast(message, type = 'success') {
+    const toast = document.createElement('div');
+    toast.className = `alert alert-${type === 'success' ? 'success' : 'danger'} position-fixed`;
+    toast.style.cssText = 'top: 20px; right: 20px; z-index: 9999; min-width: 300px;';
+    toast.textContent = message;
+    document.body.appendChild(toast);
+    setTimeout(() => {
+        toast.style.transition = 'opacity 0.5s';
+        toast.style.opacity = '0';
+        setTimeout(() => toast.remove(), 500);
+    }, 2500);
 }
+
+function clearLoginErrors() {
+    //xóa lỗi chung
+    const errorDiv = document.getElementById('loginError');
+    if (errorDiv) {
+        errorDiv.textContent = '';
+        errorDiv.classList.add('d-none');
+    }
+    //xóa lỗi từng trường
+    document.querySelectorAll('#loginModal .invalid-feedback').forEach(e => e.textContent = '');
+    document.querySelectorAll('#loginModal .is-invalid').forEach(e => e.classList.remove('is-invalid'));
+
+    //Xóa luôn nội dung trong các input
+    document.getElementById('password').value = '';
+    document.getElementById('email').value = '';
+}
+
+
+// Thêm vào cuối file login.js hoặc file JS chung
+
+axios.interceptors.request.use(config => {
+    const token = localStorage.getItem('api_token');
+    if (token) {
+        config.headers.Authorization = `Bearer ${token}`;
+    }
+    return config;
+});
+
+// Xử lý lỗi 401 → tự động logout
+// axios.interceptors.response.use(
+//     response => response,
+//     error => {
+//         if (error.response?.status === 401) {
+//             localStorage.removeItem('api_token');
+//             localStorage.removeItem('user');
+//             showToast('Phiên đăng nhập hết hạn. Vui lòng đăng nhập lại.', 'danger');
+//             setTimeout(() => {
+//                 const modal = new bootstrap.Modal(document.getElementById('loginModal'));
+//                 modal.show();
+//             }, 1000);
+//         }
+//         return Promise.reject(error);
+//     }
+// );  
