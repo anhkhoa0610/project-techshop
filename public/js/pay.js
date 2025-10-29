@@ -16,14 +16,14 @@
 //         div.style.cssText = 'position: fixed; top: 20px; right: 20px; z-index: 1000;';
 //         document.body.appendChild(div);
 //     }
-    
+
 //     const noti = document.createElement('div');
 //     noti.textContent = message;
 //     // Sử dụng CSS để thông báo nổi bật và thân thiện hơn
 //     noti.style.cssText = 'background-color: #ffe0b2; color: #e65100; padding: 10px 20px; margin-bottom: 10px; border-radius: 8px; box-shadow: 0 4px 6px rgba(0,0,0,0.1); font-family: Inter, sans-serif; opacity: 0; transition: opacity 0.5s ease-in-out; max-width: 300px; border: 1px solid #ffcc80;';
-    
+
 //     document.getElementById('notification-container').appendChild(noti);
-    
+
 //     // Fade in
 //     setTimeout(() => { noti.style.opacity = '1'; }, 10);
 
@@ -122,7 +122,7 @@
 
 //         // 1. Validation cơ bản & Địa chỉ
 //         const inputsToValidate = [nameInput, phoneInput, emailInput, addressInput, citySelect, districtSelect, wardSelect];
-        
+
 //         for (const input of inputsToValidate) {
 //             if (!input || !input.value || !input.value.trim()) {
 //                 if(input) input.classList.add("error");
@@ -190,7 +190,7 @@
 //             shipping_address: fullShippingAddress, 
 //             // voucher_id: ... (nếu có)
 //         };
-        
+
 //         // 5. Gửi request POST dưới dạng JSON (phù hợp với Controller đã sửa)
 //         payBtn.disabled = true;
 //         showNotification("Đang xử lý thanh toán, vui lòng chờ...");
@@ -227,40 +227,27 @@
 //         }
 //     });
 // }
-// === Load API địa chỉ Việt Nam ===
+
 const host = "https://provinces.open-api.vn/api/";
 const citySelect = document.getElementById("city");
 const districtSelect = document.getElementById("district");
 const wardSelect = document.getElementById("ward");
-
 async function loadCities() {
     const res = await fetch(host + "?depth=1");
-    const data = await res.json();
-    citySelect.innerHTML = '<option value="">Chọn tỉnh/thành</option>';
-    data.forEach(city => {
-        citySelect.innerHTML += <option value="${city.code}">${city.name}</option>;
-    });
+    const data = await res.json(); citySelect.innerHTML = '<option value="">Chọn tỉnh/thành</option>';
+    data.forEach(city => { citySelect.innerHTML += <option value="${city.code}">${city.name}</option>; });
 }
-
 async function loadDistricts(cityCode) {
     const res = await fetch(host + "p/" + cityCode + "?depth=2");
-    const data = await res.json();
-    districtSelect.innerHTML = '<option value="">Chọn quận/huyện</option>';
+    const data = await res.json(); districtSelect.innerHTML = '<option value="">Chọn quận/huyện</option>';
     wardSelect.innerHTML = '<option value="">Chọn phường/xã</option>';
-    data.districts.forEach(d => {
-        districtSelect.innerHTML += <option value="${d.code}">${d.name}</option>;
-    });
+    data.districts.forEach(d => { districtSelect.innerHTML += <option value="${d.code}">${d.name}</option>; });
 }
-
 async function loadWards(districtCode) {
     const res = await fetch(host + "d/" + districtCode + "?depth=2");
-    const data = await res.json();
-    wardSelect.innerHTML = '<option value="">Chọn phường/xã</option>';
-    data.wards.forEach(w => {
-        wardSelect.innerHTML += <option value="${w.code}">${w.name}</option>;
-    });
+    const data = await res.json(); wardSelect.innerHTML = '<option value="">Chọn phường/xã</option>';
+    data.wards.forEach(w => { wardSelect.innerHTML += <option value="${w.code}">${w.name}</option>; });
 }
-
 citySelect.addEventListener("change", () => {
     const cityCode = citySelect.value;
     if (cityCode) loadDistricts(cityCode);
@@ -269,92 +256,67 @@ districtSelect.addEventListener("change", () => {
     const districtCode = districtSelect.value;
     if (districtCode) loadWards(districtCode);
 });
-
 loadCities();
-
-// === Sự kiện thanh toán ===
+// === Sự kiện thanh toán === //
 document.getElementById("payBtn").addEventListener("click", () => {
     const name = document.getElementById("fname");
     const phone = document.getElementById("phone");
     const email = document.getElementById("email");
     const address = document.getElementById("address");
-
-    // Xoá lỗi cũ
+    // Xoá lỗi cũ//
     [name, phone, email, address].forEach(i => i.classList.remove("error"));
-
-    // Regex kiểm tra
+    // Regex kiểm tra//
     const phoneRegex = /^(0|\+84)[0-9]{9}$/;
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-
     if (!name.value.trim() || !phone.value.trim() || !email.value.trim() || !address.value.trim()) {
         alert("⚠️ Vui lòng nhập đầy đủ thông tin bắt buộc!");
         [name, phone, email, address].forEach(i => {
             if (!i.value.trim()) i.classList.add("error");
-        });
-        return;
+        }); return;
     }
-
     if (!phoneRegex.test(phone.value)) {
         alert("⚠️ Số điện thoại không hợp lệ!");
-        phone.classList.add("error");
-        return;
-    }
-
-    if (!emailRegex.test(email.value)) {
-        alert("⚠️ Email không hợp lệ!");
-        email.classList.add("error");
-        return;
+        phone.classList.add("error"); return;
+    } if (!emailRegex.test(email.value)) {
+        alert("⚠️ Email không hợp lệ!"); email.classList.add("error"); return;
     }
 });
-
 document.getElementById("payBtn").addEventListener("click", () => {
     const name = document.getElementById("fname");
     const phone = document.getElementById("phone");
     const email = document.getElementById("email");
     const address = document.getElementById("address");
-
-    // Xóa lỗi cũ
+    // Xóa lỗi cũ//
     [name, phone, email, address].forEach(i => i.classList.remove("error"));
-
-    // Regex kiểm tra
+    // Regex kiểm tra//
     const phoneRegex = /^(0|\+84)[0-9]{9}$/;
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-
     if (!name.value.trim() || !phone.value.trim() || !email.value.trim() || !address.value.trim()) {
         alert("⚠️ Vui lòng nhập đầy đủ thông tin bắt buộc!");
         [name, phone, email, address].forEach(i => {
             if (!i.value.trim()) i.classList.add("error");
-        });
-        return;
+        }); return;
     }
-
     if (!phoneRegex.test(phone.value)) {
         alert("⚠️ Số điện thoại không hợp lệ!");
         phone.classList.add("error");
         return;
     }
-
     if (!emailRegex.test(email.value)) {
         alert("⚠️ Email không hợp lệ!");
         email.classList.add("error");
         return;
     }
-
-    // === Xử lý thanh toán ===
     document.getElementById("payBtn").addEventListener("click", () => {
         const nameInput = document.getElementById("fname");
         const phoneInput = document.getElementById("phone");
         const emailInput = document.getElementById("email");
         const addressInput = document.getElementById("address");
 
-        // Xóa lỗi cũ
         [nameInput, phoneInput, emailInput, addressInput].forEach(i => i.classList.remove("error"));
 
-        // Regex kiểm tra
         const phoneRegex = /^(0|\+84)[0-9]{9}$/;
-        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-
-        // Kiểm tra bắt buộc
+        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/; // Kiểm tra bắt buộc// 
         if (!nameInput.value.trim() || !phoneInput.value.trim() || !emailInput.value.trim() || !addressInput.value.trim()) {
             alert("⚠️ Vui lòng nhập đầy đủ thông tin!");
             [nameInput, phoneInput, emailInput, addressInput].forEach(i => {
@@ -362,73 +324,55 @@ document.getElementById("payBtn").addEventListener("click", () => {
             });
             return;
         }
-
         if (!phoneRegex.test(phoneInput.value)) {
             alert("⚠️ Số điện thoại không hợp lệ!");
             phoneInput.classList.add("error");
             return;
         }
-
         if (!emailRegex.test(emailInput.value)) {
             alert("⚠️ Email không hợp lệ!");
             emailInput.classList.add("error");
             return;
         }
 
-        // ✅ Lấy vị trí (Tỉnh / Huyện / Xã)
         const cityText = citySelect.options[citySelect.selectedIndex]?.textContent || "";
         const districtText = districtSelect.options[districtSelect.selectedIndex]?.textContent || "";
         const wardText = wardSelect.options[wardSelect.selectedIndex]?.textContent || "";
+        const fullShippingAddress = ${ addressInput.value.trim()
+    }, ${ wardText }, ${ districtText }, ${ cityText };
+    console.log("🏠 Địa chỉ giao hàng:", fullShippingAddress);
 
-        // ✅ Gộp thành địa chỉ chi tiết
-        const fullShippingAddress = ${addressInput.value.trim()}, ${wardText}, ${districtText}, ${cityText};
-        console.log("🏠 Địa chỉ giao hàng:", fullShippingAddress);
+    const selectedMethod = document.querySelector('input[name="pay"]:checked');
+     if (!selectedMethod) {
+        alert("Vui lòng chọn phương thức thanh toán!");
+        return;
+    } 
+    const payMethod = selectedMethod.nextElementSibling.querySelector('.label').innerText.trim(); 
+    let actionUrl = payMethod === "MoMo" ? momoUrl : vnpayUrl;
+    const form = document.createElement('form');
+    form.method = 'POST';
+    form.action = actionUrl;
+    const csrf = document.createElement('input');
+    csrf.type = 'hidden'; 
+    csrf.name = '_token';
+    csrf.value = csrfToken;
+    form.appendChild(csrf);
 
-        // ✅ Kiểm tra phương thức thanh toán
-        const selectedMethod = document.querySelector('input[name="pay"]:checked');
-        if (!selectedMethod) {
-            alert("Vui lòng chọn phương thức thanh toán!");
-            return;
-        }
+    const totalInput = document.createElement('input');
+    totalInput.type = 'hidden';
+    totalInput.name = 'total';
+    totalInput.value = totalAmount;
+    form.appendChild(totalInput);
 
-        const payMethod = selectedMethod.nextElementSibling.querySelector('.label').innerText.trim();
-        let actionUrl = payMethod === "MoMo" ? momoUrl : vnpayUrl;
+    const cartInput = document.createElement('input');
+    cartInput.type = 'hidden'; cartInput.name = 'cart';
+    cartInput.value = JSON.stringify(cartItems);
+    form.appendChild(cartInput);
 
-        // ✅ Gửi form POST động
-        const form = document.createElement('form');
-        form.method = 'POST';
-        form.action = actionUrl;
-
-        // Thêm token CSRF
-        const csrf = document.createElement('input');
-        csrf.type = 'hidden';
-        csrf.name = '_token';
-        csrf.value = csrfToken;
-        form.appendChild(csrf);
-
-        // Tổng tiền
-        const totalInput = document.createElement('input');
-        totalInput.type = 'hidden';
-        totalInput.name = 'total';
-        totalInput.value = totalAmount;
-        form.appendChild(totalInput);
-
-        // giỏ hàng
-        const cartInput = document.createElement('input');
-        cartInput.type = 'hidden';
-        cartInput.name = 'cart';
-        cartInput.value = JSON.stringify(cartItems); // 👈 gửi JSON giỏ hàng
-        form.appendChild(cartInput);
-
-        // Thêm địa chỉ đầy đủ
-        const addrInput = document.createElement('input');
-        addrInput.type = 'hidden';
-        addrInput.name = 'shipping_address';
-        addrInput.value = fullShippingAddress;
-        form.appendChild(addrInput);
-
-        // gửi hết tất cả cần thiết user_id, produtc_id, order_id trước khi qua api momo
-        document.body.appendChild(form);
-        form.submit();
-    });
+    const addrInput = document.createElement('input');
+    addrInput.type = 'hidden';
+    addrInput.name = 'shipping_address';
+    addrInput.value = fullShippingAddress;
+    form.appendChild(addrInput);
+    document.body.appendChild(form); form.submit();
 });
