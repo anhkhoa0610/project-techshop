@@ -106,6 +106,14 @@ document.getElementById("payBtn").addEventListener("click", () => {
         email.classList.add("error");
         return;
     }
+    const cityText = citySelect.options[citySelect.selectedIndex].textContent;
+    const districtText = districtSelect.options[districtSelect.selectedIndex].textContent;
+    const wardText = wardSelect.options[wardSelect.selectedIndex].textContent;
+
+    // Chuỗi địa chỉ chi tiết để lưu vào cột shipping_address (Controller đã sẵn sàng nhận)
+    const fullShippingAddress =
+        `${nameInput.value.trim()} ${phoneInput.value.trim()} ${emailInput.value.trim()}` +
+        ` ${addressInput.value.trim()}, ${wardText}, ${districtText}, ${cityText}`;
 
     // ✅ Xác định phương thức thanh toán được chọn
 

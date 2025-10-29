@@ -72,7 +72,7 @@ class MoMoController extends Controller
             'user_id' => 1,
             'order_date' => now(),
             'status' => 'pending',
-            'shipping_address' => 'chưa có địa chỉ',
+            'shipping_address' => $data['shipping_address']??'chưa có địa chỉ',
             'payment_method' => 'momo',
             'voucher_id' => null,
         ]);
