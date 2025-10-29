@@ -21,6 +21,7 @@ class DatabaseSeeder extends Seeder
         VoucherSeeder::class,
         OrdersTableSeeder::class,
         OrderDetailSeeder::class,
+        ReviewSeeder::class,
     ]);
 }
 
