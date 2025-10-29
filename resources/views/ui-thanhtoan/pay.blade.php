@@ -210,7 +210,6 @@
 </html>
 <script>
     const momoUrl = "{{ route('momo.payment') }}";
-
     const csrfToken = "{{ csrf_token() }}";
     const totalAmount = "{{ $finalSubtotal ?? 0 }}";
 </script>
