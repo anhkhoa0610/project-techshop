@@ -4,8 +4,8 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Models\Order;
 use App\Models\Momo;
-use Illuminate\Support\Str; 
-use Illuminate\Support\Facades\DB; 
+use Illuminate\Support\Str;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 
 class MoMoController extends Controller
@@ -16,12 +16,12 @@ class MoMoController extends Controller
         $data = $request->all();
 
         // Lấy User ID: Ưu tiên người dùng đăng nhập, nếu không có, dùng ID 1.
-        $userId = auth()->id() ?? 1; 
+        $userId = auth()->id() ?? 1;
         $amount = $data['total'] ?? 0;
 
         // FIX LỖI ROUTE KHÔNG TỒN TẠI (Gây lỗi trả về HTML)
         if (!\Route::has('momo.return') || !\Route::has('momo.ipn')) {
-             return response()->json(['error' => 'Lỗi cấu hình Route: Vui lòng định nghĩa route "momo.return" và "momo.ipn".'], 500);
+            return response()->json(['error' => 'Lỗi cấu hình Route: Vui lòng định nghĩa route "momo.return" và "momo.ipn".'], 500);
         }
 
         DB::beginTransaction();
@@ -33,38 +33,35 @@ class MoMoController extends Controller
                 DB::rollBack();
                 return response()->json(['error' => 'Lỗi: User ID 1 (mặc định) không tồn tại. Vui lòng đăng nhập.'], 400);
             }
-            
+
             // 💾 1.1. Tạo Order (Trạng thái ban đầu là pending)
             $order = Order::create([
                 'user_id' => $userId,
-                // LƯU Ý: Thêm 'total_price' vào $fillable của Order.php
-                'total_price' => $amount, 
-                // LƯU Ý: Đảm bảo cột shipping_address trong DB là TEXT hoặc VARCHAR đủ lớn (vd: 500)
-                'shipping_address' => $data['shipping_address'] ?? 'Địa chỉ không cung cấp', 
-                'payment_method' => 'momo', 
-                'status' => 'pending', 
+                'order_date' => now(),
+                'status' => 'pending',
+                'shipping_address' => $data['shipping_address'] ?? 'Địa chỉ không cung cấp',
+                'payment_method' => 'momo',
                 'voucher_id' => $data['voucher_id'] ?? null,
-                // THÊM: Nếu 'order_date' là NOT NULL và không có giá trị mặc định trong DB
-                'order_date' => now(), 
+                'total_price' => $amount,
             ]);
 
             // Dùng ID của Order làm mã định danh duy nhất cho MoMo
-            $localOrderId = $order->id; 
-            
+            $localOrderId = $order->id;
+
             // 🚨 BẮT LỖI GỐC: Nếu Order không tạo được (ID rỗng), dừng lại và báo lỗi chi tiết.
             if (empty($localOrderId)) {
                 // Lỗi này xảy ra khi Order::create thất bại do lỗi NOT NULL hoặc Mass Assignment chưa được giải quyết
                 throw new \Exception("Lỗi nghiêm trọng: Không thể tạo đơn hàng. Vui lòng kiểm tra Model Order.php (thiếu \$fillable) hoặc cấu trúc bảng 'orders' (thiếu giá trị cho cột NOT NULL).");
             }
-            
+
             // 💾 1.2. Tạo bản ghi Momo tạm thời để log, sử dụng ID của Order
             Momo::create([
                 'order_id' => $localOrderId, // Truyền giá trị số nguyên vào Eloquent
-                'trans_id' => null, 
-                'result_code' => 999, 
+                'trans_id' => null,
+                'result_code' => 999,
                 'message' => 'Created pending order for MoMo payment.',
                 'status' => 'pending',
-                'amount' => $amount, 
+                'amount' => $amount,
             ]);
 
             DB::commit();
@@ -72,12 +69,12 @@ class MoMoController extends Controller
         } catch (\Exception $e) {
             DB::rollBack();
             Log::error('FATAL DATABASE ERROR (MoMo Payment): ' . $e->getMessage(), ['trace' => $e->getTraceAsString()]);
-            
+
             // 🚨 Trả về lỗi chi tiết hơn nếu đang ở môi trường dev
-            $errorMsg = app()->environment('local', 'staging') 
-                        ? 'Lỗi DB: ' . $e->getMessage() . '. Kiểm tra logs!'
-                        : 'Lỗi server khi tạo đơn hàng. Vui lòng thử lại.';
-                        
+            $errorMsg = app()->environment('local', 'staging')
+                ? 'Lỗi DB: ' . $e->getMessage() . '. Kiểm tra logs!'
+                : 'Lỗi server khi tạo đơn hàng. Vui lòng thử lại.';
+
             return response()->json(['error' => $errorMsg], 500);
         }
 
@@ -89,7 +86,7 @@ class MoMoController extends Controller
 
         $orderInfo = "Thanh toán cho đơn hàng: " . $localOrderId;
         $orderId = $localOrderId; // PHP sẽ tự động ép kiểu thành chuỗi khi cần thiết cho API
-        $amount = $data['total'] ?? 0; 
+        $amount = $data['total'] ?? 0;
         $redirectUrl = route('momo.return');
         $ipnUrl = route('momo.ipn');
         $extraData = "";
@@ -127,13 +124,13 @@ class MoMoController extends Controller
         if (!empty($jsonResult['payUrl'])) {
             return response()->json(['redirect_url' => $jsonResult['payUrl']]);
         }
-        
+
         // Cập nhật trạng thái lỗi nếu MoMo không trả về payUrl (sau khi Order đã tạo thành công)
         // Dùng fresh() để đảm bảo Order model có trạng thái mới nhất sau commit
         $order->fresh()->update(['status' => 'failed', 'payment_method' => 'momo_failed']);
         return response()->json(['error' => $jsonResult['message'] ?? 'MoMo API lỗi: Không thể tạo URL thanh toán.'], 400);
     }
-    
+
     private function execPostRequest($url, $data)
     {
         $ch = curl_init($url);
@@ -153,10 +150,10 @@ class MoMoController extends Controller
     public function momo_return(Request $request)
     {
         $data = $request->all();
-        $orderId = $data['orderId'] ?? ''; 
+        $orderId = $data['orderId'] ?? '';
 
         $order = Order::find($orderId);
-        $momo = Momo::where('order_id', $orderId)->first(); 
+        $momo = Momo::where('order_id', $orderId)->first();
 
         if ($momo) {
             $momo->update([
@@ -176,14 +173,14 @@ class MoMoController extends Controller
                 return redirect()->route('cart.index')->with('error', 'Thanh toán MoMo thất bại. Vui lòng kiểm tra lại giỏ hàng.');
             }
         }
-        
+
         return redirect()->route('cart.index')->with('error', 'Không tìm thấy đơn hàng tương ứng.');
     }
 
     public function momo_ipn(Request $request)
     {
         $data = $request->all();
-        $orderId = $data['orderId'] ?? ''; 
+        $orderId = $data['orderId'] ?? '';
 
         $order = Order::find($orderId);
         $momo = Momo::where('order_id', $orderId)->first();
@@ -204,7 +201,7 @@ class MoMoController extends Controller
                 $order->update(['status' => 'failed']);
             }
         }
-        
+
         return response()->json([
             'resultCode' => 0,
             'message' => 'Confirm success'

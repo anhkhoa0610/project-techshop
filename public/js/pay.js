@@ -164,8 +164,7 @@ if (payBtn) {
         const wardText = wardSelect.options[wardSelect.selectedIndex].textContent;
 
         // Chuỗi địa chỉ chi tiết để lưu vào cột shipping_address (Controller đã sẵn sàng nhận)
-        const fullShippingAddress = 
-            `${nameInput.value.trim()} ${phoneInput.value.trim()} ${emailInput.value.trim()}` +
+        const fullShippingAddress =
             ` ${addressInput.value.trim()}, ${wardText}, ${districtText}, ${cityText}`;
 
 
