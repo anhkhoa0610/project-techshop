@@ -165,7 +165,7 @@ if (payBtn) {
 
         // Chuỗi địa chỉ chi tiết để lưu vào cột shipping_address (Controller đã sẵn sàng nhận)
         const fullShippingAddress = 
-            `${nameInput.value.trim()} ${phoneInput.value.trim()} ${emailInput.value.trim()} | ` +
+            `${nameInput.value.trim()} ${phoneInput.value.trim()} ${emailInput.value.trim()}` +
             ` ${addressInput.value.trim()}, ${wardText}, ${districtText}, ${cityText}`;
 
 
