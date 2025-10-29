@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Models\Momo;
 use App\Models\Order;
+use App\Models\OrderDetail;
 
 class MoMoController extends Controller
 {
@@ -12,7 +13,7 @@ class MoMoController extends Controller
     public function momo_payment(Request $request)
     {
         $data = $request->all();
-     
+        // $cartItems = json_decode($data['cart'], true) ?? [];
 
         // 🔐 Thông tin cấu hình MoMo test
         $endpoint = "https://test-payment.momo.vn/v2/gateway/api/create";
@@ -72,10 +73,21 @@ class MoMoController extends Controller
             'user_id' => 1,
             'order_date' => now(),
             'status' => 'pending',
-            'shipping_address' => $data['shipping_address']??'chưa có địa chỉ',
+            'shipping_address' => $data['shipping_address'] ?? 'chưa có địa chỉ',
             'payment_method' => 'momo',
             'voucher_id' => null,
+            'total_price' => $data['total'],
         ]);
+
+
+        // foreach ($cartItems as $item) {
+        //     OrderDetail::create([
+        //         'order_id' => $order->order_id,
+        //         'product_id' => $item['product_id'],
+        //         'quantity' => $item['quantity'],
+        //         'unit_price' => $item['price'],
+        //     ]);
+        // }
 
         // 🔁 Chuyển hướng người dùng sang trang thanh toán
         if (!empty($jsonResult['payUrl'])) {

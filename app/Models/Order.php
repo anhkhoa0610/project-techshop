@@ -32,6 +32,7 @@ class Order extends Model
         'payment_method',
         'voucher_id',
         'status',
+        'total_price',
     ];
 
 
