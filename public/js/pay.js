@@ -1,93 +1,266 @@
-// === Biến toàn cục từ Blade (Giả định) ===
-// CẦN ĐẢM BẢO CÁC BIẾN NÀY ĐƯỢC IN TRONG BLADE TRƯỚC KHI TẢI FILE JS NÀY
-// const momoUrl = "{{ route('momo.payment') }}";
-// const vnpayUrl = "{{ route('vnpay.payment') }}";
-// const csrfToken = "{{ csrf_token() }}";
-// const totalAmount = "{{ $finalSubtotal ?? 0 }}";
+// // === Biến toàn cục từ Blade (Giả định) ===
+// // CẦN ĐẢM BẢO CÁC BIẾN NÀY ĐƯỢC IN TRONG BLADE TRƯỚC KHI TẢI FILE JS NÀY
+// // const momoUrl = "{{ route('momo.payment') }}";
+// // const vnpayUrl = "{{ route('vnpay.payment') }}";
+// // const csrfToken = "{{ csrf_token() }}";
+// // const totalAmount = "{{ $finalSubtotal ?? 0 }}";
 
-// --- Custom Notification System (Thay thế alert) ---
-function showNotification(message) {
-    const notificationContainer = document.getElementById('notification-container');
-    if (!notificationContainer) {
-        // Tạo container nếu chưa có
-        const div = document.createElement('div');
-        div.id = 'notification-container';
-        // Định vị ở góc trên bên phải, z-index cao để luôn hiển thị
-        div.style.cssText = 'position: fixed; top: 20px; right: 20px; z-index: 1000;';
-        document.body.appendChild(div);
-    }
+// // --- Custom Notification System (Thay thế alert) ---
+// function showNotification(message) {
+//     const notificationContainer = document.getElementById('notification-container');
+//     if (!notificationContainer) {
+//         // Tạo container nếu chưa có
+//         const div = document.createElement('div');
+//         div.id = 'notification-container';
+//         // Định vị ở góc trên bên phải, z-index cao để luôn hiển thị
+//         div.style.cssText = 'position: fixed; top: 20px; right: 20px; z-index: 1000;';
+//         document.body.appendChild(div);
+//     }
     
-    const noti = document.createElement('div');
-    noti.textContent = message;
-    // Sử dụng CSS để thông báo nổi bật và thân thiện hơn
-    noti.style.cssText = 'background-color: #ffe0b2; color: #e65100; padding: 10px 20px; margin-bottom: 10px; border-radius: 8px; box-shadow: 0 4px 6px rgba(0,0,0,0.1); font-family: Inter, sans-serif; opacity: 0; transition: opacity 0.5s ease-in-out; max-width: 300px; border: 1px solid #ffcc80;';
+//     const noti = document.createElement('div');
+//     noti.textContent = message;
+//     // Sử dụng CSS để thông báo nổi bật và thân thiện hơn
+//     noti.style.cssText = 'background-color: #ffe0b2; color: #e65100; padding: 10px 20px; margin-bottom: 10px; border-radius: 8px; box-shadow: 0 4px 6px rgba(0,0,0,0.1); font-family: Inter, sans-serif; opacity: 0; transition: opacity 0.5s ease-in-out; max-width: 300px; border: 1px solid #ffcc80;';
     
-    document.getElementById('notification-container').appendChild(noti);
+//     document.getElementById('notification-container').appendChild(noti);
     
-    // Fade in
-    setTimeout(() => { noti.style.opacity = '1'; }, 10);
+//     // Fade in
+//     setTimeout(() => { noti.style.opacity = '1'; }, 10);
 
-    // Fade out and remove
-    setTimeout(() => {
-        noti.style.opacity = '0';
-        noti.addEventListener('transitionend', () => noti.remove());
-    }, 5000);
-}
+//     // Fade out and remove
+//     setTimeout(() => {
+//         noti.style.opacity = '0';
+//         noti.addEventListener('transitionend', () => noti.remove());
+//     }, 5000);
+// }
 
 
-// === 1. Load API địa chỉ Việt Nam ===
+// // === 1. Load API địa chỉ Việt Nam ===
+// const host = "https://provinces.open-api.vn/api/";
+// const citySelect = document.getElementById("city");
+// const districtSelect = document.getElementById("district");
+// const wardSelect = document.getElementById("ward");
+// const payBtn = document.getElementById("payBtn");
+
+// async function loadCities() {
+//     try {
+//         const res = await fetch(host + "?depth=1");
+//         const data = await res.json();
+//         citySelect.innerHTML = '<option value="">Chọn tỉnh/thành</option>';
+//         data.forEach(city => {
+//             citySelect.innerHTML += `<option value="${city.code}">${city.name}</option>`;
+//         });
+//     } catch (e) {
+//         console.error("Lỗi khi tải Tỉnh/Thành phố:", e);
+//         showNotification("Không thể tải danh sách tỉnh/thành. Vui lòng kiểm tra kết nối.");
+//     }
+// }
+
+// async function loadDistricts(cityCode) {
+//     districtSelect.innerHTML = '<option value="">Chọn quận/huyện</option>';
+//     wardSelect.innerHTML = '<option value="">Chọn phường/xã</option>';
+//     if (!cityCode) return;
+
+//     try {
+//         const res = await fetch(host + "p/" + cityCode + "?depth=2");
+//         const data = await res.json();
+//         data.districts.forEach(d => {
+//             districtSelect.innerHTML += `<option value="${d.code}">${d.name}</option>`;
+//         });
+//     } catch (e) {
+//         console.error("Lỗi khi tải Quận/Huyện:", e);
+//     }
+// }
+
+// async function loadWards(districtCode) {
+//     wardSelect.innerHTML = '<option value="">Chọn phường/xã</option>';
+//     if (!districtCode) return;
+
+//     try {
+//         const res = await fetch(host + "d/" + districtCode + "?depth=2");
+//         const data = await res.json();
+//         data.wards.forEach(w => {
+//             wardSelect.innerHTML += `<option value="${w.code}">${w.name}</option>`;
+//         });
+//     } catch (e) {
+//         console.error("Lỗi khi tải Phường/Xã:", e);
+//     }
+// }
+
+// // Event Listeners cho các dropdown
+// citySelect.addEventListener("change", () => {
+//     const cityCode = citySelect.value;
+//     if (cityCode) loadDistricts(cityCode);
+// });
+// districtSelect.addEventListener("change", () => {
+//     const districtCode = districtSelect.value;
+//     if (districtCode) loadWards(districtCode);
+// });
+
+// // Chạy hàm tải thành phố khi script được tải
+// if (citySelect && districtSelect && wardSelect) {
+//     loadCities();
+// }
+
+
+// // === 2. Xử lý Thanh Toán và Gửi Dữ liệu AJAX ===
+// if (payBtn) {
+//     payBtn.addEventListener("click", async () => {
+//         const nameInput = document.getElementById("fname");
+//         const phoneInput = document.getElementById("phone");
+//         const emailInput = document.getElementById("email");
+//         const addressInput = document.getElementById("address");
+
+//         // Xóa lỗi cũ
+//         [nameInput, phoneInput, emailInput, addressInput, citySelect, districtSelect, wardSelect].forEach(i => i.classList.remove("error"));
+
+//         // Regex kiểm tra (chấp nhận 9 hoặc 10 số sau 0 hoặc +84)
+//         const phoneRegex = /^(0|\+84)[0-9]{9,10}$/; 
+//         const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+//         let isValid = true;
+//         let errorTarget = null; // Dùng để focus vào trường lỗi đầu tiên
+
+//         // 1. Validation cơ bản & Địa chỉ
+//         const inputsToValidate = [nameInput, phoneInput, emailInput, addressInput, citySelect, districtSelect, wardSelect];
+        
+//         for (const input of inputsToValidate) {
+//             if (!input || !input.value || !input.value.trim()) {
+//                 if(input) input.classList.add("error");
+//                 isValid = false;
+//                 if (!errorTarget && input) errorTarget = input;
+//             }
+//         }
+
+//         // 2. Validation Regex
+//         if (isValid && phoneInput && phoneInput.value.trim() && !phoneRegex.test(phoneInput.value)) {
+//             phoneInput.classList.add("error");
+//             isValid = false;
+//             showNotification("⚠️ Số điện thoại không hợp lệ!");
+//             if (!errorTarget) errorTarget = phoneInput;
+//         }
+//         if (isValid && emailInput && emailInput.value.trim() && !emailRegex.test(emailInput.value)) {
+//             emailInput.classList.add("error");
+//             isValid = false;
+//             showNotification("⚠️ Email không hợp lệ!");
+//             if (!errorTarget) errorTarget = emailInput;
+//         }
+
+//         if (!isValid) {
+//             showNotification("⚠️ Vui lòng nhập đầy đủ và đúng định dạng các thông tin bắt buộc!");
+//             if (errorTarget) errorTarget.focus();
+//             return;
+//         }
+
+//         // 3. Lấy dữ liệu thanh toán và địa chỉ chi tiết
+//         const selectedMethod = document.querySelector('input[name="pay"]:checked');
+//         if (!selectedMethod) {
+//             showNotification("Vui lòng chọn phương thức thanh toán!");
+//             return;
+//         }
+
+//         // Lấy Tên của địa danh (Text content), không phải Mã (Value)
+//         const cityText = citySelect.options[citySelect.selectedIndex].textContent;
+//         const districtText = districtSelect.options[districtSelect.selectedIndex].textContent;
+//         const wardText = wardSelect.options[wardSelect.selectedIndex].textContent;
+
+//         // Chuỗi địa chỉ chi tiết để lưu vào cột shipping_address (Controller đã sẵn sàng nhận)
+//         const fullShippingAddress =
+//             ` ${addressInput.value.trim()}, ${wardText}, ${districtText}, ${cityText}`;
+
+
+//         const paymentMethod = selectedMethod.value; // 'momo' hoặc 'vnpay' (giả định)
+//         let actionUrl = '';
+
+//         if (paymentMethod === "momo") {
+//             if (typeof momoUrl === 'undefined') { showNotification('Lỗi cấu hình: momoUrl chưa được định nghĩa.'); return; }
+//             actionUrl = momoUrl;
+//         } else if (paymentMethod === "vnpay") {
+//             if (typeof vnpayUrl === 'undefined') { showNotification('Lỗi cấu hình: vnpayUrl chưa được định nghĩa.'); return; }
+//             actionUrl = vnpayUrl;
+//         } else {
+//             showNotification("Phương thức thanh toán không hợp lệ.");
+//             return;
+//         }
+
+//         // 4. Tạo Payload dữ liệu
+//         const payload = {
+//             _token: (typeof csrfToken !== 'undefined') ? csrfToken : '',
+//             total: (typeof totalAmount !== 'undefined') ? totalAmount : 0, 
+//             payment_method: paymentMethod, 
+//             shipping_address: fullShippingAddress, 
+//             // voucher_id: ... (nếu có)
+//         };
+        
+//         // 5. Gửi request POST dưới dạng JSON (phù hợp với Controller đã sửa)
+//         payBtn.disabled = true;
+//         showNotification("Đang xử lý thanh toán, vui lòng chờ...");
+
+//         try {
+//             const response = await fetch(actionUrl, {
+//                 method: 'POST',
+//                 headers: {
+//                     'Content-Type': 'application/json',
+//                     'X-CSRF-TOKEN': payload._token, 
+//                 },
+//                 body: JSON.stringify(payload)
+//             });
+
+//             const data = await response.json();
+//             payBtn.disabled = false; // Bật lại nút
+
+//             if (response.ok && data.redirect_url) {
+//                 // Chuyển hướng người dùng sang cổng thanh toán
+//                 window.location.href = data.redirect_url; 
+//             } else {
+//                 // Xử lý lỗi từ Server (MoMo API lỗi hoặc Database lỗi)
+//                 const errorMsg = data.error || 'Đã xảy ra lỗi hệ thống (Server). Vui lòng thử lại.';
+//                 console.error("Lỗi Server: ", data);
+//                 showNotification(errorMsg); 
+//             }
+//         } catch (error) {
+//             payBtn.disabled = false; // Bật lại nút
+//             const detailedError = (error instanceof TypeError && error.message.includes('Failed to fetch')) 
+//                                 ? 'Kiểm tra đường dẫn URL hoặc kết nối mạng.'
+//                                 : `Lỗi không xác định: ${error.message}`;
+//             console.error('Lỗi Fetch/Mạng:', error);
+//             showNotification(`Đã xảy ra lỗi mạng. Chi tiết: ${detailedError}`);
+//         }
+//     });
+// }
+// === Load API địa chỉ Việt Nam ===
 const host = "https://provinces.open-api.vn/api/";
 const citySelect = document.getElementById("city");
 const districtSelect = document.getElementById("district");
 const wardSelect = document.getElementById("ward");
-const payBtn = document.getElementById("payBtn");
 
 async function loadCities() {
-    try {
-        const res = await fetch(host + "?depth=1");
-        const data = await res.json();
-        citySelect.innerHTML = '<option value="">Chọn tỉnh/thành</option>';
-        data.forEach(city => {
-            citySelect.innerHTML += `<option value="${city.code}">${city.name}</option>`;
-        });
-    } catch (e) {
-        console.error("Lỗi khi tải Tỉnh/Thành phố:", e);
-        showNotification("Không thể tải danh sách tỉnh/thành. Vui lòng kiểm tra kết nối.");
-    }
+    const res = await fetch(host + "?depth=1");
+    const data = await res.json();
+    citySelect.innerHTML = '<option value="">Chọn tỉnh/thành</option>';
+    data.forEach(city => {
+        citySelect.innerHTML += <option value="${city.code}">${city.name}</option>;
+    });
 }
 
 async function loadDistricts(cityCode) {
+    const res = await fetch(host + "p/" + cityCode + "?depth=2");
+    const data = await res.json();
     districtSelect.innerHTML = '<option value="">Chọn quận/huyện</option>';
     wardSelect.innerHTML = '<option value="">Chọn phường/xã</option>';
-    if (!cityCode) return;
-
-    try {
-        const res = await fetch(host + "p/" + cityCode + "?depth=2");
-        const data = await res.json();
-        data.districts.forEach(d => {
-            districtSelect.innerHTML += `<option value="${d.code}">${d.name}</option>`;
-        });
-    } catch (e) {
-        console.error("Lỗi khi tải Quận/Huyện:", e);
-    }
+    data.districts.forEach(d => {
+        districtSelect.innerHTML += <option value="${d.code}">${d.name}</option>;
+    });
 }
 
 async function loadWards(districtCode) {
+    const res = await fetch(host + "d/" + districtCode + "?depth=2");
+    const data = await res.json();
     wardSelect.innerHTML = '<option value="">Chọn phường/xã</option>';
-    if (!districtCode) return;
-
-    try {
-        const res = await fetch(host + "d/" + districtCode + "?depth=2");
-        const data = await res.json();
-        data.wards.forEach(w => {
-            wardSelect.innerHTML += `<option value="${w.code}">${w.name}</option>`;
-        });
-    } catch (e) {
-        console.error("Lỗi khi tải Phường/Xã:", e);
-    }
+    data.wards.forEach(w => {
+        wardSelect.innerHTML += <option value="${w.code}">${w.name}</option>;
+    });
 }
 
-// Event Listeners cho các dropdown
 citySelect.addEventListener("change", () => {
     const cityCode = citySelect.value;
     if (cityCode) loadDistricts(cityCode);
@@ -97,133 +270,165 @@ districtSelect.addEventListener("change", () => {
     if (districtCode) loadWards(districtCode);
 });
 
-// Chạy hàm tải thành phố khi script được tải
-if (citySelect && districtSelect && wardSelect) {
-    loadCities();
-}
+loadCities();
 
+// === Sự kiện thanh toán ===
+document.getElementById("payBtn").addEventListener("click", () => {
+    const name = document.getElementById("fname");
+    const phone = document.getElementById("phone");
+    const email = document.getElementById("email");
+    const address = document.getElementById("address");
 
-// === 2. Xử lý Thanh Toán và Gửi Dữ liệu AJAX ===
-if (payBtn) {
-    payBtn.addEventListener("click", async () => {
+    // Xoá lỗi cũ
+    [name, phone, email, address].forEach(i => i.classList.remove("error"));
+
+    // Regex kiểm tra
+    const phoneRegex = /^(0|\+84)[0-9]{9}$/;
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+    if (!name.value.trim() || !phone.value.trim() || !email.value.trim() || !address.value.trim()) {
+        alert("⚠️ Vui lòng nhập đầy đủ thông tin bắt buộc!");
+        [name, phone, email, address].forEach(i => {
+            if (!i.value.trim()) i.classList.add("error");
+        });
+        return;
+    }
+
+    if (!phoneRegex.test(phone.value)) {
+        alert("⚠️ Số điện thoại không hợp lệ!");
+        phone.classList.add("error");
+        return;
+    }
+
+    if (!emailRegex.test(email.value)) {
+        alert("⚠️ Email không hợp lệ!");
+        email.classList.add("error");
+        return;
+    }
+});
+
+document.getElementById("payBtn").addEventListener("click", () => {
+    const name = document.getElementById("fname");
+    const phone = document.getElementById("phone");
+    const email = document.getElementById("email");
+    const address = document.getElementById("address");
+
+    // Xóa lỗi cũ
+    [name, phone, email, address].forEach(i => i.classList.remove("error"));
+
+    // Regex kiểm tra
+    const phoneRegex = /^(0|\+84)[0-9]{9}$/;
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+    if (!name.value.trim() || !phone.value.trim() || !email.value.trim() || !address.value.trim()) {
+        alert("⚠️ Vui lòng nhập đầy đủ thông tin bắt buộc!");
+        [name, phone, email, address].forEach(i => {
+            if (!i.value.trim()) i.classList.add("error");
+        });
+        return;
+    }
+
+    if (!phoneRegex.test(phone.value)) {
+        alert("⚠️ Số điện thoại không hợp lệ!");
+        phone.classList.add("error");
+        return;
+    }
+
+    if (!emailRegex.test(email.value)) {
+        alert("⚠️ Email không hợp lệ!");
+        email.classList.add("error");
+        return;
+    }
+
+    // === Xử lý thanh toán ===
+    document.getElementById("payBtn").addEventListener("click", () => {
         const nameInput = document.getElementById("fname");
         const phoneInput = document.getElementById("phone");
         const emailInput = document.getElementById("email");
         const addressInput = document.getElementById("address");
 
         // Xóa lỗi cũ
-        [nameInput, phoneInput, emailInput, addressInput, citySelect, districtSelect, wardSelect].forEach(i => i.classList.remove("error"));
+        [nameInput, phoneInput, emailInput, addressInput].forEach(i => i.classList.remove("error"));
 
-        // Regex kiểm tra (chấp nhận 9 hoặc 10 số sau 0 hoặc +84)
-        const phoneRegex = /^(0|\+84)[0-9]{9,10}$/; 
+        // Regex kiểm tra
+        const phoneRegex = /^(0|\+84)[0-9]{9}$/;
         const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-        let isValid = true;
-        let errorTarget = null; // Dùng để focus vào trường lỗi đầu tiên
 
-        // 1. Validation cơ bản & Địa chỉ
-        const inputsToValidate = [nameInput, phoneInput, emailInput, addressInput, citySelect, districtSelect, wardSelect];
-        
-        for (const input of inputsToValidate) {
-            if (!input || !input.value || !input.value.trim()) {
-                if(input) input.classList.add("error");
-                isValid = false;
-                if (!errorTarget && input) errorTarget = input;
-            }
-        }
-
-        // 2. Validation Regex
-        if (isValid && phoneInput && phoneInput.value.trim() && !phoneRegex.test(phoneInput.value)) {
-            phoneInput.classList.add("error");
-            isValid = false;
-            showNotification("⚠️ Số điện thoại không hợp lệ!");
-            if (!errorTarget) errorTarget = phoneInput;
-        }
-        if (isValid && emailInput && emailInput.value.trim() && !emailRegex.test(emailInput.value)) {
-            emailInput.classList.add("error");
-            isValid = false;
-            showNotification("⚠️ Email không hợp lệ!");
-            if (!errorTarget) errorTarget = emailInput;
-        }
-
-        if (!isValid) {
-            showNotification("⚠️ Vui lòng nhập đầy đủ và đúng định dạng các thông tin bắt buộc!");
-            if (errorTarget) errorTarget.focus();
+        // Kiểm tra bắt buộc
+        if (!nameInput.value.trim() || !phoneInput.value.trim() || !emailInput.value.trim() || !addressInput.value.trim()) {
+            alert("⚠️ Vui lòng nhập đầy đủ thông tin!");
+            [nameInput, phoneInput, emailInput, addressInput].forEach(i => {
+                if (!i.value.trim()) i.classList.add("error");
+            });
             return;
         }
 
-        // 3. Lấy dữ liệu thanh toán và địa chỉ chi tiết
+        if (!phoneRegex.test(phoneInput.value)) {
+            alert("⚠️ Số điện thoại không hợp lệ!");
+            phoneInput.classList.add("error");
+            return;
+        }
+
+        if (!emailRegex.test(emailInput.value)) {
+            alert("⚠️ Email không hợp lệ!");
+            emailInput.classList.add("error");
+            return;
+        }
+
+        // ✅ Lấy vị trí (Tỉnh / Huyện / Xã)
+        const cityText = citySelect.options[citySelect.selectedIndex]?.textContent || "";
+        const districtText = districtSelect.options[districtSelect.selectedIndex]?.textContent || "";
+        const wardText = wardSelect.options[wardSelect.selectedIndex]?.textContent || "";
+
+        // ✅ Gộp thành địa chỉ chi tiết
+        const fullShippingAddress = ${addressInput.value.trim()}, ${wardText}, ${districtText}, ${cityText};
+        console.log("🏠 Địa chỉ giao hàng:", fullShippingAddress);
+
+        // ✅ Kiểm tra phương thức thanh toán
         const selectedMethod = document.querySelector('input[name="pay"]:checked');
         if (!selectedMethod) {
-            showNotification("Vui lòng chọn phương thức thanh toán!");
+            alert("Vui lòng chọn phương thức thanh toán!");
             return;
         }
 
-        // Lấy Tên của địa danh (Text content), không phải Mã (Value)
-        const cityText = citySelect.options[citySelect.selectedIndex].textContent;
-        const districtText = districtSelect.options[districtSelect.selectedIndex].textContent;
-        const wardText = wardSelect.options[wardSelect.selectedIndex].textContent;
+        const payMethod = selectedMethod.nextElementSibling.querySelector('.label').innerText.trim();
+        let actionUrl = payMethod === "MoMo" ? momoUrl : vnpayUrl;
 
-        // Chuỗi địa chỉ chi tiết để lưu vào cột shipping_address (Controller đã sẵn sàng nhận)
-        const fullShippingAddress =
-            ` ${addressInput.value.trim()}, ${wardText}, ${districtText}, ${cityText}`;
+        // ✅ Gửi form POST động
+        const form = document.createElement('form');
+        form.method = 'POST';
+        form.action = actionUrl;
 
+        // Thêm token CSRF
+        const csrf = document.createElement('input');
+        csrf.type = 'hidden';
+        csrf.name = '_token';
+        csrf.value = csrfToken;
+        form.appendChild(csrf);
 
-        const paymentMethod = selectedMethod.value; // 'momo' hoặc 'vnpay' (giả định)
-        let actionUrl = '';
+        // Tổng tiền
+        const totalInput = document.createElement('input');
+        totalInput.type = 'hidden';
+        totalInput.name = 'total';
+        totalInput.value = totalAmount;
+        form.appendChild(totalInput);
 
-        if (paymentMethod === "momo") {
-            if (typeof momoUrl === 'undefined') { showNotification('Lỗi cấu hình: momoUrl chưa được định nghĩa.'); return; }
-            actionUrl = momoUrl;
-        } else if (paymentMethod === "vnpay") {
-            if (typeof vnpayUrl === 'undefined') { showNotification('Lỗi cấu hình: vnpayUrl chưa được định nghĩa.'); return; }
-            actionUrl = vnpayUrl;
-        } else {
-            showNotification("Phương thức thanh toán không hợp lệ.");
-            return;
-        }
+        // giỏ hàng
+        const cartInput = document.createElement('input');
+        cartInput.type = 'hidden';
+        cartInput.name = 'cart';
+        cartInput.value = JSON.stringify(cartItems); // 👈 gửi JSON giỏ hàng
+        form.appendChild(cartInput);
 
-        // 4. Tạo Payload dữ liệu
-        const payload = {
-            _token: (typeof csrfToken !== 'undefined') ? csrfToken : '',
-            total: (typeof totalAmount !== 'undefined') ? totalAmount : 0, 
-            payment_method: paymentMethod, 
-            shipping_address: fullShippingAddress, 
-            // voucher_id: ... (nếu có)
-        };
-        
-        // 5. Gửi request POST dưới dạng JSON (phù hợp với Controller đã sửa)
-        payBtn.disabled = true;
-        showNotification("Đang xử lý thanh toán, vui lòng chờ...");
+        // Thêm địa chỉ đầy đủ
+        const addrInput = document.createElement('input');
+        addrInput.type = 'hidden';
+        addrInput.name = 'shipping_address';
+        addrInput.value = fullShippingAddress;
+        form.appendChild(addrInput);
 
-        try {
-            const response = await fetch(actionUrl, {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'X-CSRF-TOKEN': payload._token, 
-                },
-                body: JSON.stringify(payload)
-            });
-
-            const data = await response.json();
-            payBtn.disabled = false; // Bật lại nút
-
-            if (response.ok && data.redirect_url) {
-                // Chuyển hướng người dùng sang cổng thanh toán
-                window.location.href = data.redirect_url; 
-            } else {
-                // Xử lý lỗi từ Server (MoMo API lỗi hoặc Database lỗi)
-                const errorMsg = data.error || 'Đã xảy ra lỗi hệ thống (Server). Vui lòng thử lại.';
-                console.error("Lỗi Server: ", data);
-                showNotification(errorMsg); 
-            }
-        } catch (error) {
-            payBtn.disabled = false; // Bật lại nút
-            const detailedError = (error instanceof TypeError && error.message.includes('Failed to fetch')) 
-                                ? 'Kiểm tra đường dẫn URL hoặc kết nối mạng.'
-                                : `Lỗi không xác định: ${error.message}`;
-            console.error('Lỗi Fetch/Mạng:', error);
-            showNotification(`Đã xảy ra lỗi mạng. Chi tiết: ${detailedError}`);
-        }
+        // gửi hết tất cả cần thiết user_id, produtc_id, order_id trước khi qua api momo
+        document.body.appendChild(form);
+        form.submit();
     });
-}
+});
