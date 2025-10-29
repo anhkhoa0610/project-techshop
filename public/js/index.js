@@ -13,8 +13,8 @@ function renderProductsAndPagination(data, categoryId) {
                 <div class="product-price">
                     <span class="current-price">${Number(product.price).toLocaleString('vi-VN')}₫</span>
                 </div>
-                <button class="btn btn-primary full-width">🛒 Thêm vào giỏ</button>
             </div>
+            <button class="btn-add-cart btn btn-primary full-width">🛒 Thêm vào giỏ</button>
         </div>
         `;
     });
@@ -128,5 +128,18 @@ document.querySelectorAll('.category-card').forEach(function (card, idx) {
     });
 });
 
+function playVideo(container) {
+    const iframe = container.querySelector('iframe');
+    let src = iframe.getAttribute('src');
 
+    // Nếu chưa có autoplay thì thêm vào
+    if (!src.includes('autoplay=1')) {
+        src += (src.includes('?') ? '&' : '?') + 'autoplay=1';
+        iframe.setAttribute('src', src);
+    }
+
+    // Ẩn overlay sau khi phát
+    const overlay = container.querySelector('.overlay');
+    overlay.style.display = 'none';
+}
 

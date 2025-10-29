@@ -11,7 +11,12 @@ class IndexController extends Controller
         $topProducts = Product::orderByDesc('volume_sold')->limit(4)->get();
         $newProducts = Product::orderByDesc('release_date')->limit(4)->get();
         $allProducts = Product::all();
-        return view('index', compact('topProducts', 'newProducts', 'allProducts'));
+
+        $videoProducts = Product::withVideo()
+            ->inRandomOrder()
+            ->limit(4)
+            ->get();
+        return view('index', compact('topProducts', 'newProducts', 'allProducts', 'videoProducts'));
     }
 
     public function getProductsByCategory($categoryId)
@@ -30,7 +35,7 @@ class IndexController extends Controller
 
     public function searchProductsAPI(Request $request)
     {
-        $keyword = $request->input('keyword'); 
+        $keyword = $request->input('keyword');
         $products = Product::search($keyword)->get();
 
         return response()->json([

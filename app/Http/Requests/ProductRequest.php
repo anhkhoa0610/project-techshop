@@ -25,11 +25,11 @@ class ProductRequest extends FormRequest
     {
         $id = $this->route()->product;
         $nameRule = [
-        'required',
-        'string',
-        'max:255',
-        Rule::unique('products', 'product_name')->ignore($id, 'product_id'),
-    ];
+            'required',
+            'string',
+            'max:255',
+            Rule::unique('products', 'product_name')->ignore($id, 'product_id'),
+        ];
 
         return [
             'product_name' => $nameRule,
@@ -41,11 +41,18 @@ class ProductRequest extends FormRequest
             'volume_sold' => 'required|integer|min:0',
             'cover_image' => 'nullable',
             'warranty_period' => 'required|integer|min:0',
-            'release_date' => 'required|date'
+            'release_date' => 'required|date',
+            'embed_url_review' => [
+                'nullable',
+                'url',
+                'regex:/^(https?:\/\/)?(www\.)?(youtube\.com|youtu\.be)\/.+$/i',
+                'max:500',
+            ],
         ];
     }
 
-    public function messages() {
+    public function messages()
+    {
         return [
             'exists' => ':attribute không tồn tai',
             'required' => ':attribute không được để trống',
@@ -57,10 +64,13 @@ class ProductRequest extends FormRequest
             'image' => ':attribute phải là định dạng ảnh (jpeg, png, bmp, gif, svg, hoặc webp)',
             'mimes' => ':attribute phải là định dạng: :values',
             'max.file' => ':attribute không được vượt quá :max kilobytes',
+            'url' => ':attribute phải là link youtube hợp lệ',
+            'regex' => ':attribute phải là link youtube hợp lệ',
         ];
     }
 
-    public function attributes() {
+    public function attributes()
+    {
         return [
             'product_name' => 'Tên',
             'category_id' => 'Danh mục',
@@ -71,7 +81,8 @@ class ProductRequest extends FormRequest
             'volume_sold' => 'Số lượng đã bán',
             'cover_image' => 'Ảnh bìa',
             'warranty_period' => 'Thời gian bảo hành',
-            'release_date' => 'Ngày phát hành'
+            'release_date' => 'Ngày phát hành',
+            'embed_url_review' => 'Link review sản phẩm',
         ];
     }
 }

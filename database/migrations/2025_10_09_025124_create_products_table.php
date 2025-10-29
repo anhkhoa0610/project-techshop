@@ -19,6 +19,7 @@ return new class extends Migration {
             $table->unsignedBigInteger('supplier_id');
             $table->integer('warranty_period');
             $table->date('release_date');
+            $table->string('embed_url_review', 255)->nullable();
             $table->timestamps();
 
             // Khóa ngoại
