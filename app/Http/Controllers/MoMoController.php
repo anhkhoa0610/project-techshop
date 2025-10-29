@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\Momo;
+use App\Models\Order;
 
 class MoMoController extends Controller
 {
@@ -67,13 +68,13 @@ class MoMoController extends Controller
         $jsonResult = json_decode($result, true);
 
         // 💾 Lưu vào database
-        Momo::create([
-            'order_id' => $orderId,
-            'amount' => $amount,
-            'request_id' => $requestId,
-            'order_info' => $orderInfo,
-            'pay_url' => $jsonResult['payUrl'] ?? null,
+        Order::create([
+            'user_id' => 1,
+            'order_date' => now(),
             'status' => 'pending',
+            'shipping_address' => 'chưa có địa chỉ',
+            'payment_method' => 'momo',
+            'voucher_id' => null,
         ]);
 
         // 🔁 Chuyển hướng người dùng sang trang thanh toán
