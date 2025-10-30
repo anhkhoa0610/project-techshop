@@ -40,9 +40,10 @@ class UserSeeder extends Seeder
                 'birth' => $faker->date('Y-m-d', '2005-01-01'),
                 'is_tdc_student' => $isTDC,
 
-
             ]);
         }
+
+        $this->command->info('  Đã tạo user thành công!');
     }
 }
 

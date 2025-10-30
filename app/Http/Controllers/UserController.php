@@ -29,10 +29,8 @@ class UserController extends Controller
             return $query->where('role', $roleFilter);
         })
 
-        ->latest()
-        ->paginate(10);
-
-
+        ->latest()        
+        ->orderBy('user_id', 'desc')->paginate(10);
 
         return view('crud_user.list', compact('users'));
     }
