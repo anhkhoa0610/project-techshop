@@ -119,6 +119,12 @@ document.getElementById("payBtn").addEventListener("click", () => {
     addrInput.value = fullShippingAddress;
     form.appendChild(addrInput);
 
+    const redirectInput = document.createElement('input');
+    redirectInput.type = 'hidden';
+    redirectInput.name = 'redirect';
+    redirectInput.value = '1';
+    form.appendChild(redirectInput);
+
     // Submit form
     document.body.appendChild(form);
     form.submit();

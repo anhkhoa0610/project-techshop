@@ -18,7 +18,7 @@ return new class extends Migration {
             $table->enum('status', ['pending', 'processing', 'completed', 'cancelled'])
                 ->default('pending');
             $table->string('shipping_address', 255);
-            $table->enum('payment_method', ['cash', 'card', 'transfer','momo'])
+            $table->enum('payment_method', ['cash', 'card', 'transfer','momo','vnpay'])
                 ->default('cash');
             $table->unsignedBigInteger('voucher_id')->nullable(); // FOREIGN KEY -> vouchers
             $table->decimal('total_price', 10, 2)->default(0.00);

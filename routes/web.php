@@ -7,6 +7,7 @@ use App\Http\Controllers\HoaDonController;
 use App\Http\Controllers\OrderController;
 use App\Http\Controllers\PayController;
 use App\Http\Controllers\UIProductDetailsController;
+use App\Http\Controllers\VnpayController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\ProductController;
 use App\Http\Controllers\SupplierController;
@@ -52,6 +53,9 @@ Route::prefix('orderDetails')->group(function () {
 // Xem giỏ hàng
 Route::get('/cart', [CartController::class, 'index'])->name('cart.index');
 
+// thêm vào giỏ hàng
+Route::post('/cart/add', [CartController::class, 'addToCart'])->name('cart.add');
+
 // Thanh toán (gửi dữ liệu POST từ giỏ hàng)
 Route::post('/pay', [CheckoutController::class, 'handleCheckout'])->name('pay.checkout');
 
@@ -65,6 +69,7 @@ Route::delete('/cart-items', [CartController::class, 'destroyMany'])->name('cart
 Route::get('/product-details/{id}', [UIProductDetailsController::class, 'show'])->name('product.details');
 
 Route::post('/momo/payment', [MomoController::class, 'momo_payment'])->name('momo.payment');
+Route::post('/vnpay/payment', [VnpayController::class, 'vnpay_payment'])->name('vnpay.payment');
 
 // 🟢 Khi thanh toán xong, MoMo redirect người dùng về link này
 Route::get('/momo/return', [MomoController::class, 'momo_return'])->name('momo.return');
@@ -127,4 +132,6 @@ Route::post('reset-password', function (Illuminate\Http\Request $request) {
         ? redirect()->route('login')->with('success', 'Password reset successfully.')
         : back()->withErrors(['email' => [__($status)]]);
 })->name('password.update');
+
+
 
