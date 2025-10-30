@@ -44,7 +44,7 @@
                                         value="{{ old('fullname', $user->full_name ?? '') }}" placeholder="Nguyễn Văn A"
                                         required>
                                 </div>
-                            
+
                                 <div>
                                     <label for="phone">Số điện thoại</label>
                                     <input id="phone" name="phone" type="tel"
@@ -65,7 +65,7 @@
 
                             <div style="margin-bottom:12px">
                                 <label for="address">Địa chỉ</label>
-                                <input id="address" type="text"  placeholder="Số nhà, tên đường" required>
+                                <input id="address" type="text" placeholder="Số nhà, tên đường" required>
                             </div>
                             <div class="two-col">
                                 <div>
