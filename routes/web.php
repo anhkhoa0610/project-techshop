@@ -7,7 +7,6 @@ use App\Http\Controllers\HoaDonController;
 use App\Http\Controllers\OrderController;
 use App\Http\Controllers\PayController;
 use App\Http\Controllers\UIProductDetailsController;
-use App\Http\Controllers\VnpayController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\ProductController;
 use App\Http\Controllers\SupplierController;
@@ -17,6 +16,7 @@ use App\Http\Controllers\VoucherController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\LoginController;
 use App\Http\Controllers\MomoController;
+use App\Http\Controllers\VnpayController;
 
 Route::get('/', function () {
     return view('layouts.dashboard');
