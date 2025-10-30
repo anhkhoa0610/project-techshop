@@ -40,112 +40,92 @@ districtSelect.addEventListener("change", () => {
     const districtCode = districtSelect.value;
     if (districtCode) loadWards(districtCode);
 });
-
 loadCities();
 
 
-// === Sự kiện thanh toán ===
+// === THANH TOÁN ===
 document.getElementById("payBtn").addEventListener("click", () => {
-    const name = document.getElementById("fname");
-    const phone = document.getElementById("phone");
-    const email = document.getElementById("email");
-    const address = document.getElementById("address");
-
-    // Xoá lỗi cũ
-    [name, phone, email, address].forEach(i => i.classList.remove("error"));
-
-    // Regex kiểm tra
-    const phoneRegex = /^(0|\+84)[0-9]{9}$/;
-    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-
-    if (!name.value.trim() || !phone.value.trim() || !email.value.trim() || !address.value.trim()) {
-        alert("⚠️ Vui lòng nhập đầy đủ thông tin bắt buộc!");
-        [name, phone, email, address].forEach(i => { if (!i.value.trim()) i.classList.add("error"); });
-        return;
-    }
-
-    if (!phoneRegex.test(phone.value)) {
-        alert("⚠️ Số điện thoại không hợp lệ!");
-        phone.classList.add("error");
-        return;
-    }
-
-    if (!emailRegex.test(email.value)) {
-        alert("⚠️ Email không hợp lệ!");
-        email.classList.add("error");
-        return;
-    }
-});
-document.getElementById("payBtn").addEventListener("click", () => {
-    const name = document.getElementById("fname");
-    const phone = document.getElementById("phone");
-    const email = document.getElementById("email");
-    const address = document.getElementById("address");
+    const nameInput = document.getElementById("fname");
+    const phoneInput = document.getElementById("phone");
+    const emailInput = document.getElementById("email");
+    const addressInput = document.getElementById("address");
 
     // Xóa lỗi cũ
-    [name, phone, email, address].forEach(i => i.classList.remove("error"));
+    [nameInput, phoneInput, emailInput, addressInput].forEach(i => i.classList.remove("error"));
 
     // Regex kiểm tra
     const phoneRegex = /^(0|\+84)[0-9]{9}$/;
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
-    if (!name.value.trim() || !phone.value.trim() || !email.value.trim() || !address.value.trim()) {
-        alert("⚠️ Vui lòng nhập đầy đủ thông tin bắt buộc!");
-        [name, phone, email, address].forEach(i => { if (!i.value.trim()) i.classList.add("error"); });
+    // ✅ Kiểm tra nhập liệu
+    if (!nameInput.value.trim() || !phoneInput.value.trim() || !emailInput.value.trim() || !addressInput.value.trim()) {
+        alert("⚠️ Vui lòng nhập đầy đủ thông tin!");
+        [nameInput, phoneInput, emailInput, addressInput].forEach(i => {
+            if (!i.value.trim()) i.classList.add("error");
+        });
         return;
     }
-
-    if (!phoneRegex.test(phone.value)) {
+    if (!phoneRegex.test(phoneInput.value)) {
         alert("⚠️ Số điện thoại không hợp lệ!");
-        phone.classList.add("error");
+        phoneInput.classList.add("error");
         return;
     }
-
-    if (!emailRegex.test(email.value)) {
+    if (!emailRegex.test(emailInput.value)) {
         alert("⚠️ Email không hợp lệ!");
-        email.classList.add("error");
+        emailInput.classList.add("error");
         return;
     }
 
-    // ✅ Xác định phương thức thanh toán được chọn
+    // ✅ Lấy vị trí (Tỉnh / Huyện / Xã)
+    const cityText = citySelect.options[citySelect.selectedIndex]?.textContent || "";
+    const districtText = districtSelect.options[districtSelect.selectedIndex]?.textContent || "";
+    const wardText = wardSelect.options[wardSelect.selectedIndex]?.textContent || "";
 
-    document.getElementById("payBtn").addEventListener("click", () => {
-        const selectedMethod = document.querySelector('input[name="pay"]:checked');
-        if (!selectedMethod) {
-            alert("Vui lòng chọn phương thức thanh toán!");
-            return;
-        }
+    // ✅ Gộp địa chỉ đầy đủ
+    const fullShippingAddress = `${addressInput.value.trim()}, ${wardText}, ${districtText}, ${cityText}`;
 
-        const payMethod = selectedMethod.nextElementSibling.querySelector('.label').innerText.trim();
-        let actionUrl = "";
+    // ✅ Phương thức thanh toán
+    const selectedMethod = document.querySelector('input[name="pay"]:checked');
+    if (!selectedMethod) {
+        alert("Vui lòng chọn phương thức thanh toán!");
+        return;
+    }
 
-        if (payMethod === "MoMo") {
-            actionUrl = momoUrl;
-        } else {
-            actionUrl = vnpayUrl;
-        }
+    const payMethod = selectedMethod.value; // "momo" | "vnpay"
 
-        // ✅ Tạo form POST động
-        const form = document.createElement('form');
-        form.method = 'POST';
-        form.action = actionUrl;
+    // ✅ Gửi form POST sang controller
+    const form = document.createElement('form');
+    form.method = 'POST';
+    form.action = payMethod === "momo" ? momoUrl : vnpayUrl;
 
-        // Thêm token CSRF
-        const csrf = document.createElement('input');
-        csrf.type = 'hidden';
-        csrf.name = '_token';
-        csrf.value = csrfToken;
-        form.appendChild(csrf);
+    // CSRF token
+    const csrf = document.createElement('input');
+    csrf.type = 'hidden';
+    csrf.name = '_token';
+    csrf.value = csrfToken;
+    form.appendChild(csrf);
 
-        // Tổng tiền
-        const totalInput = document.createElement('input');
-        totalInput.type = 'hidden';
-        totalInput.name = 'total';
-        totalInput.value = totalAmount;
-        form.appendChild(totalInput);
+    // Tổng tiền
+    const totalInput = document.createElement('input');
+    totalInput.type = 'hidden';
+    totalInput.name = 'total';
+    totalInput.value = totalAmount;
+    form.appendChild(totalInput);
 
-        document.body.appendChild(form);
-        form.submit();
-    });
+    // Địa chỉ
+    const addrInput = document.createElement('input');
+    addrInput.type = 'hidden';
+    addrInput.name = 'shipping_address';
+    addrInput.value = fullShippingAddress;
+    form.appendChild(addrInput);
 
+    const redirectInput = document.createElement('input');
+    redirectInput.type = 'hidden';
+    redirectInput.name = 'redirect';
+    redirectInput.value = '1';
+    form.appendChild(redirectInput);
+
+    // Submit form
+    document.body.appendChild(form);
+    form.submit();
 });

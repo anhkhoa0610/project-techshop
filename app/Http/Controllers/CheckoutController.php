@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 use App\Models\CartItem;
 use App\Models\Product;
 use Illuminate\Http\Request;
+use App\Models\User;
 use Illuminate\Support\Facades\Auth;
 
 class CheckoutController extends Controller
@@ -30,7 +31,8 @@ class CheckoutController extends Controller
         }
 
         return view('ui-thanhtoan.pay', [
-            'cartItems' => $selectedCartItems
+            'cartItems' => $selectedCartItems,
+            'user' => User::find(1)
         ]);
     }
 

@@ -49,7 +49,7 @@
                         <button type="button" class="cartp-remove" data-cart-id="{{ $item->cart_id }}">&times;</button>
                     </div>
                 @empty
-                    <p>🛒 Giỏ hàng của bạn đang trống.</p>
+                     <p>🛒 Giỏ hàng của bạn đang trống.</p>
                 @endforelse
             </div>
 

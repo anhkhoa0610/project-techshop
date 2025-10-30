@@ -18,6 +18,7 @@ use App\Http\Controllers\IndexController;
  use App\Http\Controllers\UserController;
 use App\Http\Controllers\LoginController;
 use App\Http\Controllers\MomoController;
+use App\Http\Controllers\VnpayController;
 
 Route::get('/', function () {
     return view('layouts.dashboard');
@@ -54,6 +55,9 @@ Route::prefix('orderDetails')->group(function () {
 // Xem giỏ hàng
 Route::get('/cart', [CartController::class, 'index'])->name('cart.index');
 
+// thêm vào giỏ hàng
+Route::post('/cart/add', [CartController::class, 'addToCart'])->name('cart.add');
+
 // Thanh toán (gửi dữ liệu POST từ giỏ hàng)
 Route::post('/pay', [CheckoutController::class, 'handleCheckout'])->name('pay.checkout');
 
@@ -71,6 +75,7 @@ Route::get('/product-details', function () {
 });
 
 Route::post('/momo/payment', [MomoController::class, 'momo_payment'])->name('momo.payment');
+Route::post('/vnpay/payment', [VnpayController::class, 'vnpay_payment'])->name('vnpay.payment');
 
 // 🟢 Khi thanh toán xong, MoMo redirect người dùng về link này
 Route::get('/momo/return', [MomoController::class, 'momo_return'])->name('momo.return');
