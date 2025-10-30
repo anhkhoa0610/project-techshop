@@ -20,6 +20,7 @@ class CartController extends Controller
         return view('ui-giohang.cart', ['cartItems' => $cartItems 
         ]);
     }
+   
 
     public function destroy($cart_id)
     {
@@ -31,4 +32,36 @@ class CartController extends Controller
         ]);
     }
 
+    // Thêm sản phẩm vào giỏ hàng
+    public function addToCart(Request $request)
+    {
+        $user_id = Auth::id() ?? 1; // fallback nếu chưa đăng nhập
+        $product_id = $request->input('product_id');
+        $quantity = $request->input('quantity', 1);
+
+        // Kiểm tra sản phẩm đã có trong giỏ chưa
+        $cartItem = CartItem::where('user_id', $user_id)
+            ->where('product_id', $product_id)
+            ->first();
+
+        if ($cartItem) {
+            $cartItem->quantity += $quantity;
+            $cartItem->save();
+        } else {
+            CartItem::create([
+                'user_id' => $user_id,
+                'product_id' => $product_id,
+                'quantity' => $quantity,
+            ]);
+        }
+
+        if ($request->wantsJson()) {
+            return response()->json([
+                'success' => true,
+                'message' => 'Thêm vào giỏ hàng thành công!'
+            ]);
+        } else {
+            return redirect()->back()->with('success', 'Thêm vào giỏ hàng thành công!');
+        }
+    }
 }

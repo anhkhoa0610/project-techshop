@@ -26,6 +26,7 @@ class OrderDetail extends Model
         'order_id',
         'product_id',
         'quantity',
+        'unit_price', // Sử dụng 'unit_price' thay vì 'price' để rõ ràng hơn
     ];
 
     /**
