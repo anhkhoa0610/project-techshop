@@ -8,7 +8,7 @@ var swiper = new Swiper(".mySwiper", {
     slidesPerGroup: 2,
 
     autoplay: {
-      delay: 4000, // 1000 milliseconds = 1 giây
+      delay: 2000, // 1000 milliseconds = 1 giây
       disableOnInteraction: false, // Giữ autoplay sau khi người dùng tương tác
       pauseOnMouseEnter: true, // Tạm dừng khi di chuột vào slider
     },

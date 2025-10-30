@@ -317,11 +317,121 @@
         <section class="slider-container">
             <div class="swiper mySwiper">
                 <div class="swiper-wrapper">
-                    <div class="swiper-slide">Phần tử 1</div>
-                    <div class="swiper-slide">Phần tử 2</div>
-                    <div class="swiper-slide">Phần tử 3</div>
-                    <div class="swiper-slide">Phần tử 4</div>
-                    <div class="swiper-slide">Phần tử 5</div>
+                    <div class="swiper-slide">
+                        <div class="testimonial-card">
+                            <div class="quote-icon">“</div>
+
+                            <p class="testimonial-text">
+                                Môi trường học tập tại FIT-TDC rất tốt, năng động, đây là điều kiện quan trọng nhất đối với
+                                quá trình học tập của SV. Thầy cô giỏi, thân thiện, quan tâm đến sinh viên. Giáo trình được
+                                cập nhật thường xuyên, phù hợp với yêu cầu của xã hội. Tôi tin chắc rằng bất cứ bạn SV nào
+                                đến với TDC đều sẽ được cung cấp một hành trang vững chắc để phục vụ cho công việc và phát
+                                triển sự nghiệp trong tương lai. Tôi cảm thấy rất hài lòng khi được học tập tại FIT.TDC.
+                            </p>
+
+                            <div class="author-info">
+                                <img src="https://i.pravatar.cc/150?u=a042581f4e29026704d" alt="Võ Mạnh Hùng Dương"
+                                    class="author-avatar">
+                                <div class="author-details">
+                                    <div class="author-name">Võ Mạnh Hùng Dương</div>
+                                    <div class="author-title">Senior Software Engineer, Cty TNHH Giải pháp phần mềm Việt Tin
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="swiper-slide">
+                        <div class="testimonial-card">
+                            <div class="quote-icon">“</div>
+
+                            <p class="testimonial-text">
+                                Môi trường học tập tại FIT-TDC rất tốt, năng động, đây là điều kiện quan trọng nhất đối với
+                                quá trình học tập của SV. Thầy cô giỏi, thân thiện, quan tâm đến sinh viên. Giáo trình được
+                                cập nhật thường xuyên, phù hợp với yêu cầu của xã hội. Tôi tin chắc rằng bất cứ bạn SV nào
+                                đến với TDC đều sẽ được cung cấp một hành trang vững chắc để phục vụ cho công việc và phát
+                                triển sự nghiệp trong tương lai. Tôi cảm thấy rất hài lòng khi được học tập tại FIT.TDC.
+                            </p>
+
+                            <div class="author-info">
+                                <img src="https://i.pravatar.cc/150?u=a042581f4e29026704d" alt="Võ Mạnh Hùng Dương"
+                                    class="author-avatar">
+                                <div class="author-details">
+                                    <div class="author-name">Võ Mạnh Hùng Dương</div>
+                                    <div class="author-title">Senior Software Engineer, Cty TNHH Giải pháp phần mềm Việt Tin
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="swiper-slide">
+                        <div class="testimonial-card">
+                            <div class="quote-icon">“</div>
+
+                            <p class="testimonial-text">
+                                Môi trường học tập tại FIT-TDC rất tốt, năng động, đây là điều kiện quan trọng nhất đối với
+                                quá trình học tập của SV. Thầy cô giỏi, thân thiện, quan tâm đến sinh viên. Giáo trình được
+                                cập nhật thường xuyên, phù hợp với yêu cầu của xã hội. Tôi tin chắc rằng bất cứ bạn SV nào
+                                đến với TDC đều sẽ được cung cấp một hành trang vững chắc để phục vụ cho công việc và phát
+                                triển sự nghiệp trong tương lai. Tôi cảm thấy rất hài lòng khi được học tập tại FIT.TDC.
+                            </p>
+
+                            <div class="author-info">
+                                <img src="https://i.pravatar.cc/150?u=a042581f4e29026704d" alt="Võ Mạnh Hùng Dương"
+                                    class="author-avatar">
+                                <div class="author-details">
+                                    <div class="author-name">Võ Mạnh Hùng Dương</div>
+                                    <div class="author-title">Senior Software Engineer, Cty TNHH Giải pháp phần mềm Việt Tin
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="swiper-slide">
+                        <div class="testimonial-card">
+                            <div class="quote-icon">“</div>
+
+                            <p class="testimonial-text">
+                                Môi trường học tập tại FIT-TDC rất tốt, năng động, đây là điều kiện quan trọng nhất đối với
+                                quá trình học tập của SV. Thầy cô giỏi, thân thiện, quan tâm đến sinh viên. Giáo trình được
+                                cập nhật thường xuyên, phù hợp với yêu cầu của xã hội. Tôi tin chắc rằng bất cứ bạn SV nào
+                                đến với TDC đều sẽ được cung cấp một hành trang vững chắc để phục vụ cho công việc và phát
+                                triển sự nghiệp trong tương lai. Tôi cảm thấy rất hài lòng khi được học tập tại FIT.TDC.
+                            </p>
+
+                            <div class="author-info">
+                                <img src="https://i.pravatar.cc/150?u=a042581f4e29026704d" alt="Võ Mạnh Hùng Dương"
+                                    class="author-avatar">
+                                <div class="author-details">
+                                    <div class="author-name">Võ Mạnh Hùng Dương</div>
+                                    <div class="author-title">Senior Software Engineer, Cty TNHH Giải pháp phần mềm Việt Tin
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="swiper-slide">
+                        <div class="testimonial-card">
+                            <div class="quote-icon">“</div>
+
+                            <p class="testimonial-text">
+                                Môi trường học tập tại FIT-TDC rất tốt, năng động, đây là điều kiện quan trọng nhất đối với
+                                quá trình học tập của SV. Thầy cô giỏi, thân thiện, quan tâm đến sinh viên. Giáo trình được
+                                cập nhật thường xuyên, phù hợp với yêu cầu của xã hội. Tôi tin chắc rằng bất cứ bạn SV nào
+                                đến với TDC đều sẽ được cung cấp một hành trang vững chắc để phục vụ cho công việc và phát
+                                triển sự nghiệp trong tương lai. Tôi cảm thấy rất hài lòng khi được học tập tại FIT.TDC.
+                            </p>
+
+                            <div class="author-info">
+                                <img src="https://i.pravatar.cc/150?u=a042581f4e29026704d" alt="Võ Mạnh Hùng Dương"
+                                    class="author-avatar">
+                                <div class="author-details">
+                                    <div class="author-name">Võ Mạnh Hùng Dương</div>
+                                    <div class="author-title">Senior Software Engineer, Cty TNHH Giải pháp phần mềm Việt Tin
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
                     <div class="swiper-slide">Phần tử 6</div>
                     <div class="swiper-slide">Phần tử 7</div>
                     <div class="swiper-slide">Phần tử 8</div>
