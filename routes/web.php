@@ -12,8 +12,10 @@ use App\Http\Controllers\ProductController;
 use App\Http\Controllers\SupplierController;
 use App\Http\Controllers\OrderDetailController;
 use App\Http\Controllers\IndexController;
-use App\Http\Controllers\VoucherController;
-use App\Http\Controllers\UserController;
+ use App\Http\Controllers\VoucherController;
+ use App\Http\Controllers\ReviewController;
+
+ use App\Http\Controllers\UserController;
 use App\Http\Controllers\LoginController;
 use App\Http\Controllers\MomoController;
 
@@ -93,7 +95,7 @@ Route::prefix('users')->group(function () {
     Route::get('/search/autocomplete', [UserController::class, 'search'])->name('users.search');
 });
 
-// login routes //
+ // login routes //
 Route::get('login', [LoginController::class, 'showLoginForm'])->name('login');
 Route::post('login', [LoginController::class, 'login'])->name('user.authUser');
 
@@ -131,4 +133,14 @@ Route::post('reset-password', function (Illuminate\Http\Request $request) {
         ? redirect()->route('login')->with('success', 'Password reset successfully.')
         : back()->withErrors(['email' => [__($status)]]);
 })->name('password.update');
+ 
 
+Route::prefix('reviews')->group(function () {
+    Route::get('/', [ReviewController::class, 'index'])->name('reviews.index');
+    Route::get('/create', [ReviewController::class, 'create'])->name('reviews.create');
+    Route::post('/', [ReviewController::class, 'store'])->name('reviews.store');
+    Route::get('/{reviewId}/edit', [ReviewController::class, 'edit'])->name('reviews.edit');
+    Route::put('/{reviewId}', [ReviewController::class, 'update'])->name('reviews.update');
+    Route::delete('/{reviewId}', [ReviewController::class, 'destroy'])->name('reviews.destroy');
+});
+ 
