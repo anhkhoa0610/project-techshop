@@ -18,7 +18,7 @@ class OrderFactory extends Factory
     public function definition(): array
     {
         return [
-            'user_id' => User::inRandomOrder()->first()?->id ?? User::factory(),
+            'user_id' => User::inRandomOrder()->value('user_id'),
             'order_date' => $this->faker->dateTimeBetween('-1 month', 'now'),
             'status' => 'pending',
             'shipping_address' => $this->faker->address(),

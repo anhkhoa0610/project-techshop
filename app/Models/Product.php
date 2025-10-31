@@ -45,7 +45,7 @@ class Product extends Model
 
     public function images()
     {
-        return $this->hasMany(ProductImage::class,'product_id', 'product_id');
+        return $this->hasMany(ProductImage::class, 'product_id', 'product_id');
     }
 
     public function scopePriceRange($query, $min_price = null, $max_price = null)
@@ -94,6 +94,53 @@ class Product extends Model
         }
         return $query;
     }
+
+    // Mỗi sản phẩm có nhiều đánh giá (reviews)
+    public function reviews()
+    {
+        return $this->hasMany(Review::class, 'product_id', 'product_id');
+    }
+
+    // Hàm tổng hợp số lượng đánh giá theo từng sao
+    public function getReviewSummary()
+    {
+        $counts = $this->reviews()
+            ->selectRaw('rating, COUNT(*) as total')
+            ->groupBy('rating')
+            ->pluck('total', 'rating')
+            ->toArray();
+
+
+        $counts['all'] = array_sum($counts);
+
+        return $counts;
+    }
+
+    // Hàm lấy bình luận lọc theo số sao
+    public function getFilteredReviews($rating = null)
+    {
+        $query = $this->reviews()->with('user')->latest();
+
+        if ($rating) {
+            $query->where('rating', $rating);
+        }
+
+        return $query->paginate(5);
+    }
+
+    // Hàm lấy thông tin review
+    public function getReviews()
+    {
+        $query = $this->reviews()->with('user')->latest();
+        return $query->paginate(5);
+    }
+
+
+
+
+
+
+
 
 
 
