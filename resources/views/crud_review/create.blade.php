@@ -59,16 +59,14 @@
                             </div>
 
                             <div class="form-group">
-                                <label for="rating">Đánh giá <span class="text-danger">*</span></label>
-                                <select class="form-control @error('rating') is-invalid @enderror" 
-                                        id="rating" name="rating" required>
-                                    <option value="">-- Chọn số sao --</option>
-                                    @for($i = 1; $i <= 5; $i++)
-                                    <option value="{{ $i }}" {{ old('rating') == $i ? 'selected' : '' }}>
-                                        {{ $i }} ⭐
-                                    </option>
+                                <label class="form-label">Đánh giá</label>
+                                <div class="rating">
+                                    @for($i = 5; $i >= 1; $i--)
+                                        <input type="radio" id="star{{ $i }}" name="rating" value="{{ $i }}" 
+                                            {{ old('rating', 5) == $i ? 'checked' : '' }}/>
+                                        <label for="star{{ $i }}"></label>
                                     @endfor
-                                </select>
+                                </div>
                                 @error('rating')
                                 <div class="invalid-feedback">{{ $message }}</div>
                                 @enderror
@@ -117,6 +115,32 @@
         </div>
     </div>
 </div>
+<!-- End Main Content -->
+  <style>
+        .rating {
+            display: flex;
+            flex-direction: row-reverse;
+            justify-content: flex-end;
+        }
+        .rating input {
+            display: none;
+        }
+        .rating label {
+            cursor: pointer;
+            width: 30px;
+            height: 30px;
+            margin: 0 5px;
+            background-image: url('data:image/svg+xml;charset=UTF-8,<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><path d="M12 .587l3.668 7.568 8.332 1.151-6.064 5.828 1.48 8.279-7.416-3.967-7.417 3.967 1.481-8.279-6.064-5.828 8.332-1.151z" fill="white" stroke="black" stroke-width="1"/></svg>');
+            background-repeat: no-repeat;
+            background-position: center;
+            background-size: contain;
+        }
+        .rating label:hover,
+        .rating label:hover ~ label,
+        .rating input:checked ~ label {
+            background-image: url('data:image/svg+xml;charset=UTF-8,<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><path d="M12 .587l3.668 7.568 8.332 1.151-6.064 5.828 1.48 8.279-7.416-3.967-7.417 3.967 1.481-8.279-6.064-5.828 8.332-1.151z" fill="gold"/></svg>');
+        }
+    </style>
 @endsection
 
 @push('scripts')
