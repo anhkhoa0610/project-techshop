@@ -23,6 +23,7 @@ class Product extends Model
         'supplier_id',
         'warranty_period',
         'release_date',
+        'embed_url_review',
     ];
 
     // Mỗi sản phẩm thuộc về 1 danh mục
@@ -95,7 +96,9 @@ class Product extends Model
         return $query;
     }
 
-
-
+    public function scopeWithVideo($query)
+    {
+        return $query->whereNotNull('embed_url_review');
+    }
 
 }

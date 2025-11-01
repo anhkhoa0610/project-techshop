@@ -7,20 +7,11 @@
     <link rel="stylesheet" href="{{ asset('css/index.css') }}">
     <link rel="stylesheet" href="{{ asset('css/index-filter.css') }}">
     <link rel="stylesheet" href="{{ asset('css/index-chatbot.css') }}">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css" />
+    <link rel="stylesheet" href="{{ asset('css/swiper.css') }}">
 
-    <!-- Sidebar -->
-
-
-    <!-- Nút mở sidebar -->
-    <!-- <button id="openSidebar" class="sidebar-toggle">
-                        <span> <i class="bi bi-funnel me-1"></i> Lọc</span>
-                    </button> -->
-
-
-    <!-- Hero Section -->
 
     <section class="hero">
-        <!-- moved hero-image ra trước container để video có thể phủ toàn section -->
         <div class="hero-image">
             <video class="hero-video" autoplay muted loop playsinline preload="metadata"
                 poster="{{ asset('images/place-holder.jpg') }}">
@@ -60,7 +51,6 @@
                         </div>
                     </div>
                 </div>
-                <!-- hero-image removed from here -->
             </div>
         </div>
     </section>
@@ -136,8 +126,9 @@
                                 <span
                                     class="original-price"><?= number_format($product->original_price, 0, ',', '.'); ?>₫</span>
                             </div>
-                            <button class="btn btn-primary full-width">🛒 Thêm vào giỏ</button>
                         </div>
+                        <button data-product-id="{{ $product->product_id }}" data-quantity="1"
+                            class="btn-add-cart btn btn-primary full-width">🛒 Thêm vào giỏ</button>
                     </div>
                     <?php endforeach; ?>
                 </div>
@@ -170,8 +161,9 @@
                             <div class="product-price">
                                 <span class="current-price"><?= number_format($product->price, 0, ',', '.'); ?>₫</span>
                             </div>
-                            <button class="btn btn-primary full-width">🛒 Thêm vào giỏ</button>
                         </div>
+                        <button data-product-id="{{ $product->product_id }}" data-quantity="1"
+                            class="btn-add-cart btn btn-primary full-width">🛒 Thêm vào giỏ</button>
                     </div>
                     <?php endforeach; ?>
                 </div>
@@ -289,58 +281,171 @@
                 </div>
             </div>
         </section>
-    </div>
 
-    <!-- Deal of the Day -->
-    <section class="deal-section">
-        <div class="container">
-            <div class="deal-header">
-                <h2 class="deal-title">⚡ Deal of the Day</h2>
-                <p class="deal-subtitle">Ưu đãi có thời hạn - Nhanh tay kẻo lỡ!</p>
-            </div>
-            <div class="deal-card">
-                <div class="deal-image">
-                    <img src="https://www.apple.com/v/iphone-17-pro/a/images/overview/contrast/iphone_17_pro__dwccrdina7qu_large.jpg"
-                        alt="Xiaomi Deal">
-                    <div class="flash-badge">FLASH SALE</div>
+        <!-- Video Review -->
+        <section class="review-video">
+            <div class="container-fluid">
+                <div class="section-header">
+                    <h2 class="section-title">Video Review</h2>
+                    <p class="section-subtitle">Những sản phẩm được yêu thích nhất</p>
                 </div>
-                <div class="deal-content">
-                    <h3 class="deal-product-title">Xiaomi 13 Ultra 5G</h3>
-                    <div class="deal-rating">
-                        <span class="stars">⭐ 4.8</span>
-                        <span class="reviews">(234 đánh giá)</span>
-                    </div>
-                    <p class="deal-description">
-                        Camera Leica 50MP, chip Snapdragon 8 Gen 2, RAM 12GB,
-                        bộ nhớ 256GB. Trải nghiệm nhiếp ảnh chuyên nghiệp.
-                    </p>
-                    <div class="deal-pricing">
-                        <span class="deal-price">12,990,000₫</span>
-                        <span class="deal-original">18,990,000₫</span>
-                        <div class="savings">Tiết kiệm 6,000,000₫ (32% OFF)</div>
-                    </div>
-                    <div class="countdown">
-                        <div class="countdown-label">⏰ Thời gian còn lại:</div>
-                        <div class="countdown-timer">
-                            <div class="time-unit">
-                                <span id="hours">12</span>
-                                <label>Giờ</label>
+                <div class="video-grid">
+                    @foreach ($videoProducts as $product)
+                        <div class="video-card">
+                            <div class="video-thumb" onclick="playVideo(this)">
+                                <iframe src="{{ $product->embed_url_review }}?mute=1&playsinline=1&rel=0&modestbranding=1"
+                                    title="Video sản phẩm" frameborder="0" allow="autoplay; encrypted-media; picture-in-picture"
+                                    allowfullscreen>
+                                </iframe>
+                                <div class="overlay">
+                                    <div class="channel-info">
+                                        <img src="{{ asset('/images/logo.jpg') }}" alt="Channel" class="channel-logo">
+                                    </div>
+                                </div>
                             </div>
-                            <div class="time-unit">
-                                <span id="minutes">34</span>
-                                <label>Phút</label>
+
+
+                            <div class="product-info">
+                                <img src="/uploads/{{ $product->cover_image }}" alt="Sản phẩm" class="product-thumb">
+                                <div class="product-name">{{ $product->product_name }}</div>
                             </div>
-                            <div class="time-unit">
-                                <span id="seconds">56</span>
-                                <label>Giây</label>
+                        </div>
+                    @endforeach
+                </div>
+            </div>
+        </section>
+
+        <!-- Review -->
+        <section class="slider-container">
+            <div class="swiper mySwiper">
+                <div class="swiper-wrapper">
+                    <div class="swiper-slide">
+                        <div class="testimonial-card">
+                            <div class="quote-icon">“</div>
+
+                            <p class="testimonial-text">
+                                Môi trường học tập tại FIT-TDC rất tốt, năng động, đây là điều kiện quan trọng nhất đối với
+                                quá trình học tập của SV. Thầy cô giỏi, thân thiện, quan tâm đến sinh viên. Giáo trình được
+                                cập nhật thường xuyên, phù hợp với yêu cầu của xã hội. Tôi tin chắc rằng bất cứ bạn SV nào
+                                đến với TDC đều sẽ được cung cấp một hành trang vững chắc để phục vụ cho công việc và phát
+                                triển sự nghiệp trong tương lai. Tôi cảm thấy rất hài lòng khi được học tập tại FIT.TDC.
+                            </p>
+
+                            <div class="author-info">
+                                <img src="https://i.pravatar.cc/150?u=a042581f4e29026704d" alt="Võ Mạnh Hùng Dương"
+                                    class="author-avatar">
+                                <div class="author-details">
+                                    <div class="author-name">Võ Mạnh Hùng Dương</div>
+                                    <div class="author-title">Senior Software Engineer, Cty TNHH Giải pháp phần mềm Việt Tin
+                                    </div>
+                                </div>
                             </div>
                         </div>
                     </div>
-                    <button class="btn btn-deal">🛒 Mua ngay - Flash Sale</button>
+                    <div class="swiper-slide">
+                        <div class="testimonial-card">
+                            <div class="quote-icon">“</div>
+
+                            <p class="testimonial-text">
+                                Môi trường học tập tại FIT-TDC rất tốt, năng động, đây là điều kiện quan trọng nhất đối với
+                                quá trình học tập của SV. Thầy cô giỏi, thân thiện, quan tâm đến sinh viên. Giáo trình được
+                                cập nhật thường xuyên, phù hợp với yêu cầu của xã hội. Tôi tin chắc rằng bất cứ bạn SV nào
+                                đến với TDC đều sẽ được cung cấp một hành trang vững chắc để phục vụ cho công việc và phát
+                                triển sự nghiệp trong tương lai. Tôi cảm thấy rất hài lòng khi được học tập tại FIT.TDC.
+                            </p>
+
+                            <div class="author-info">
+                                <img src="https://i.pravatar.cc/150?u=a042581f4e29026704d" alt="Võ Mạnh Hùng Dương"
+                                    class="author-avatar">
+                                <div class="author-details">
+                                    <div class="author-name">Võ Mạnh Hùng Dương</div>
+                                    <div class="author-title">Senior Software Engineer, Cty TNHH Giải pháp phần mềm Việt Tin
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="swiper-slide">
+                        <div class="testimonial-card">
+                            <div class="quote-icon">“</div>
+
+                            <p class="testimonial-text">
+                                Môi trường học tập tại FIT-TDC rất tốt, năng động, đây là điều kiện quan trọng nhất đối với
+                                quá trình học tập của SV. Thầy cô giỏi, thân thiện, quan tâm đến sinh viên. Giáo trình được
+                                cập nhật thường xuyên, phù hợp với yêu cầu của xã hội. Tôi tin chắc rằng bất cứ bạn SV nào
+                                đến với TDC đều sẽ được cung cấp một hành trang vững chắc để phục vụ cho công việc và phát
+                                triển sự nghiệp trong tương lai. Tôi cảm thấy rất hài lòng khi được học tập tại FIT.TDC.
+                            </p>
+
+                            <div class="author-info">
+                                <img src="https://i.pravatar.cc/150?u=a042581f4e29026704d" alt="Võ Mạnh Hùng Dương"
+                                    class="author-avatar">
+                                <div class="author-details">
+                                    <div class="author-name">Võ Mạnh Hùng Dương</div>
+                                    <div class="author-title">Senior Software Engineer, Cty TNHH Giải pháp phần mềm Việt Tin
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="swiper-slide">
+                        <div class="testimonial-card">
+                            <div class="quote-icon">“</div>
+
+                            <p class="testimonial-text">
+                                Môi trường học tập tại FIT-TDC rất tốt, năng động, đây là điều kiện quan trọng nhất đối với
+                                quá trình học tập của SV. Thầy cô giỏi, thân thiện, quan tâm đến sinh viên. Giáo trình được
+                                cập nhật thường xuyên, phù hợp với yêu cầu của xã hội. Tôi tin chắc rằng bất cứ bạn SV nào
+                                đến với TDC đều sẽ được cung cấp một hành trang vững chắc để phục vụ cho công việc và phát
+                                triển sự nghiệp trong tương lai. Tôi cảm thấy rất hài lòng khi được học tập tại FIT.TDC.
+                            </p>
+
+                            <div class="author-info">
+                                <img src="https://i.pravatar.cc/150?u=a042581f4e29026704d" alt="Võ Mạnh Hùng Dương"
+                                    class="author-avatar">
+                                <div class="author-details">
+                                    <div class="author-name">Võ Mạnh Hùng Dương</div>
+                                    <div class="author-title">Senior Software Engineer, Cty TNHH Giải pháp phần mềm Việt Tin
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="swiper-slide">
+                        <div class="testimonial-card">
+                            <div class="quote-icon">“</div>
+
+                            <p class="testimonial-text">
+                                Môi trường học tập tại FIT-TDC rất tốt, năng động, đây là điều kiện quan trọng nhất đối với
+                                quá trình học tập của SV. Thầy cô giỏi, thân thiện, quan tâm đến sinh viên. Giáo trình được
+                                cập nhật thường xuyên, phù hợp với yêu cầu của xã hội. Tôi tin chắc rằng bất cứ bạn SV nào
+                                đến với TDC đều sẽ được cung cấp một hành trang vững chắc để phục vụ cho công việc và phát
+                                triển sự nghiệp trong tương lai. Tôi cảm thấy rất hài lòng khi được học tập tại FIT.TDC.
+                            </p>
+
+                            <div class="author-info">
+                                <img src="https://i.pravatar.cc/150?u=a042581f4e29026704d" alt="Võ Mạnh Hùng Dương"
+                                    class="author-avatar">
+                                <div class="author-details">
+                                    <div class="author-name">Võ Mạnh Hùng Dương</div>
+                                    <div class="author-title">Senior Software Engineer, Cty TNHH Giải pháp phần mềm Việt Tin
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="swiper-slide">Phần tử 6</div>
+                    <div class="swiper-slide">Phần tử 7</div>
+                    <div class="swiper-slide">Phần tử 8</div>
                 </div>
+
+                <div class="swiper-pagination"></div>
             </div>
-        </div>
-    </section>
+        </section>
+    </div>
+
+
+
 
     <!-- Chatbot Bubble -->
     <div class="chatbot-container">
@@ -365,10 +470,13 @@
         </div>
     </div>
 
-
-
-
+    <script>
+        const USER_ID = {{ auth()->id() ?? 'null' }};
+        console.log("User ID:", USER_ID);
+    </script>
     <script src="{{ asset('js/index-chatbot.js') }}"></script>
     <script src="{{ asset('js/index-filter.js') }}"></script>
     <script src="{{ asset('js/index.js') }}"></script>
+    <script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
+    <script src="{{ asset('js/swiper.js') }}"></script>
 @endsection
