@@ -45,7 +45,7 @@
 
           <div class="text-center mt-3 small">
             Chưa có tài khoản?
-            <a href="{{ route('register') }}" class="text-primary text-decoration-none">Đăng ký</a>
+            <a href="" class="text-primary text-decoration-none">Đăng ký</a>
           </div>
         </form>
       </div>
