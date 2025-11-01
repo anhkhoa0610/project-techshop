@@ -9,6 +9,7 @@ use App\Http\Controllers\OrderDetailController;
 use App\Http\Controllers\SupplierController;
 use App\Http\Controllers\VoucherController;
 use App\Http\Controllers\AuthController;
+use App\Http\Controllers\UIProductDetailsController;
 
 
 Route::apiResource('categories', CategoryController::class);
@@ -44,3 +45,4 @@ Route::middleware('api.token')->post('/logout', [AuthController::class, 'logout'
 
 
 Route::post('/index/add-to-cart', [IndexController::class, 'addToCart']);
+Route::get('/product/{id}/reviews', [UIProductDetailsController::class, 'index']);
