@@ -33,6 +33,7 @@ class ProductFactory extends Factory
             'supplier_id'     => $supplier->supplier_id,
             'warranty_period' => $this->faker->numberBetween(6, 36),
             'release_date'    => $this->faker->date(),
+            'embed_url_review' => 'https://www.youtube.com/embed/Pc1P-Xch0YU',
             'created_at'      => now(),
             'updated_at'      => now(),
         ];

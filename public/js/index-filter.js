@@ -11,7 +11,7 @@ function renderProductsAndPaginationFilter(data, min_price, max_price, category_
                 <div class="product-price">
                     <span class="current-price">${Number(product.price).toLocaleString('vi-VN')}₫</span>
                 </div>
-                <button class="btn btn-primary full-width">🛒 Thêm vào giỏ</button>
+                <button class="btn-add-cart btn btn-primary full-width" data-product-id="${product.product_id}" data-quantity="1">🛒 Thêm vào giỏ</button>
             </div>
         </div>
         `;

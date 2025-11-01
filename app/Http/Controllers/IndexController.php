@@ -3,6 +3,8 @@
 namespace App\Http\Controllers;
 use App\Models\Product;
 use Illuminate\Http\Request;
+use App\Models\CartItem;
+use App\Http\Requests\CartRequest;
 
 class IndexController extends Controller
 {
@@ -11,7 +13,12 @@ class IndexController extends Controller
         $topProducts = Product::orderByDesc('volume_sold')->limit(4)->get();
         $newProducts = Product::orderByDesc('release_date')->limit(4)->get();
         $allProducts = Product::all();
-        return view('index', compact('topProducts', 'newProducts', 'allProducts'));
+
+        $videoProducts = Product::withVideo()
+            ->inRandomOrder()
+            ->limit(4)
+            ->get();
+        return view('index', compact('topProducts', 'newProducts', 'allProducts', 'videoProducts'));
     }
 
     public function getProductsByCategory($categoryId)
@@ -30,12 +37,35 @@ class IndexController extends Controller
 
     public function searchProductsAPI(Request $request)
     {
-        $keyword = $request->input('keyword'); 
+        $keyword = $request->input('keyword');
         $products = Product::search($keyword)->get();
 
         return response()->json([
             'status' => 'success',
             'data' => $products
+        ]);
+    }
+
+     public function addToCart(CartRequest $request)
+    {
+        // Lấy dữ liệu đã validate
+        $data = $request->validated();
+
+        // Kiểm tra xem sản phẩm đã có trong giỏ chưa
+        $cartItem = CartItem::where('user_id', $data['user_id'])
+                        ->where('product_id', $data['product_id'])
+                        ->first();
+
+        if ($cartItem) {
+            return response()->json([
+                'message' => 'Sản phẩm đã có trong giỏ hàng!'
+            ], 400);
+        } else {
+            CartItem::create($data);
+        }
+
+        return response()->json([
+            'message' => 'Added to cart successfully!'
         ]);
     }
 
