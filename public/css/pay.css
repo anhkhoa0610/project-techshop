@@ -30,7 +30,7 @@
     background-size: cover !important;
     background-repeat: no-repeat !important;
     background-position: center center !important;
-    z-index: 0 !important;
+    z-index: -1 !important;
     transform-origin: center center !important;
     will-change: transform !important;
     animation: kenburns 18s ease-in-out infinite alternate !important;
@@ -78,6 +78,67 @@
     backdrop-filter: blur(6px) saturate(120%) !important;
     color: white;
     border: 1px solid rgb(21, 117, 155);
+}
+
+.summary .items-list {
+  max-height: 360px; 
+  overflow-y: auto;
+  margin-bottom: 1rem;
+  scrollbar-width: thin; /* Firefox */
+  scrollbar-color: #555 #222;
+}
+
+/* Thanh cuộn tùy chỉnh cho Chrome/Safari */
+.summary .items-list::-webkit-scrollbar {
+  width: 6px;
+}
+.summary .items-list::-webkit-scrollbar-thumb {
+  background: #666;
+  border-radius: 10px;
+}
+.summary .items-list::-webkit-scrollbar-thumb:hover {
+  background: #888;
+}
+
+/* Căn chỉnh từng item */
+.summary .item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 12px;
+  gap: 10px;
+}
+
+.summary .thumb img {
+  width: 50px;
+  height: 50px;
+  border-radius: 8px;
+  object-fit: cover;
+}
+
+.summary .title {
+  font-weight: 600;
+}
+
+.summary .meta {
+  font-size: 0.9rem;
+  color: #cbd5e1;
+}
+
+/* Căn hàng giảm giá và tổng tiền */
+.summary .item-text {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin: 6px 0;
+}
+
+.summary .total {
+  font-size: 1.1rem;
+  font-weight: 700;
+  border-top: 1px solid #475569;
+  padding-top: 8px;
+  margin-top: 8px;
 }
 
 .section {
@@ -274,7 +335,7 @@ select:focus {
     padding-top: 14px;
 }
 
-.row {
+.item-text {
     display: flex;
     justify-content: space-between;
     align-items: center;
@@ -282,7 +343,7 @@ select:focus {
     font-size: 14px;
 }
 
-.row.total {
+.item-text.total {
     font-weight: 700;
     font-size: 18px;
     color: var(--text);

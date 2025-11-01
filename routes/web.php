@@ -149,3 +149,4 @@ Route::prefix('reviews')->group(function () {
     Route::delete('/{reviewId}', [ReviewController::class, 'destroy'])->name('reviews.destroy');
 });
  
+Route::post('/api/voucher/check', [App\Http\Controllers\VoucherController::class, 'checkVoucher']);
