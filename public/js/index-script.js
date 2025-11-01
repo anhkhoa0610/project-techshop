@@ -66,6 +66,10 @@ document.addEventListener('click', (e) => {
     }
 });
 
+document.addEventListener("click", debounce((event) => {
+    const button = event.target.closest(".btn-add-cart");
+    if (button) handleAddToCart(button);
+}, 500));
 
 // Thêm vào giỏ hàng
 const addCartButtons = document.querySelectorAll(".btn-add-cart");
@@ -95,6 +99,8 @@ async function handleAddToCart(button) {
 
         // Đọc text trước để tránh lỗi JSON parse
         const text = await response.text();
+        console.log("Phản hồi từ server:", text);
+
         let data;
         try {
             data = JSON.parse(text);
