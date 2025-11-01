@@ -27,9 +27,17 @@
             <li><a href="{{ route('categories.list') }}"><i class="fa fa-list"></i> Quản Lý Danh Mục</a></li>
             <li><a href="{{ route('orders.list')}}"><i class="fa fa-shopping-bag"></i> Quản Lý Đơn Hàng</a></li>
             <li><a href="{{ route('supplier.list') }}"><i class="fa fa-truck"></i> Quản Lý Nhà Phân Phối</a></li>
-             <li><a href="{{ route('voucher.list') }}"><i class="fa fa-ticket"></i> Quản Lý Voucher</a></li>
-             <li><a href="{{ route('reviews.index') }}"><i class="fa fa-star"></i> Quản Lý Review</a></li>
-             <li><a href="#"><i class="fa fa-sign-out"></i> Đăng Xuất</a></li>
+            <li><a href="{{ route('voucher.list') }}"><i class="fa fa-ticket"></i> Quản Lý Voucher</a></li>
+            <li><a href="{{ route('reviews.index') }}"><i class="fa fa-star"></i> Quản Lý Review</a></li>
+            <li><a href="{{ route('index') }}"><i class="fa fa-home"></i> Trang chủ</a></li>
+            <li>
+                <form action="{{ route('logout') }}" method="POST">
+                   @csrf
+                   <button type="submit">
+                       <i class="fa fa-sign-out"></i> Đăng Xuất
+                   </button>
+               </form>
+            </li>
         </ul>
     </div>
 
