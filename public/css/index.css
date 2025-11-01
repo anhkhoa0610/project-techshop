@@ -592,9 +592,8 @@ input[type=number]::-webkit-outer-spin-button {
     font-weight: 500;
     color: #333;
 } */
-=======
-    padding-right: 8rem;
-}
+
+
 
 .toggle-password {
     position: absolute;
@@ -608,4 +607,3 @@ input[type=number]::-webkit-outer-spin-button {
 .input-wrapper {
     position: relative;
 }
->>>>>>> main

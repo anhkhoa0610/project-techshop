@@ -14,7 +14,7 @@ function renderProductsAndPagination(data, categoryId) {
                     <span class="current-price">${Number(product.price).toLocaleString('vi-VN')}₫</span>
                 </div>
             </div>
-            <button class="btn-add-cart btn btn-primary full-width">🛒 Thêm vào giỏ</button>
+            <button class="btn-add-cart btn btn-primary full-width" data-product-id="${product.id}" data-quantity="1">🛒 Thêm vào giỏ</button>
         </div>
         `;
     });
@@ -142,4 +142,3 @@ function playVideo(container) {
     const overlay = container.querySelector('.overlay');
     overlay.style.display = 'none';
 }
-

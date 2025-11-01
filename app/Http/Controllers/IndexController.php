@@ -3,6 +3,8 @@
 namespace App\Http\Controllers;
 use App\Models\Product;
 use Illuminate\Http\Request;
+use App\Models\CartItem;
+use App\Http\Requests\CartRequest;
 
 class IndexController extends Controller
 {
@@ -41,6 +43,28 @@ class IndexController extends Controller
         return response()->json([
             'status' => 'success',
             'data' => $products
+        ]);
+    }
+
+     public function addToCart(CartRequest $request)
+    {
+        // Lấy dữ liệu đã validate
+        $data = $request->validated();
+
+        // Kiểm tra xem sản phẩm đã có trong giỏ chưa
+        $cartItem = CartItem::where('user_id', $data['user_id'])
+                        ->where('product_id', $data['product_id'])
+                        ->first();
+
+        if ($cartItem) {
+            $cartItem->quantity += $data['quantity'];
+            $cartItem->save();
+        } else {
+            CartItem::create($data);
+        }
+
+        return response()->json([
+            'message' => 'Added to cart successfully!'
         ]);
     }
 

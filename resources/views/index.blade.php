@@ -127,7 +127,8 @@
                                     class="original-price"><?= number_format($product->original_price, 0, ',', '.'); ?>₫</span>
                             </div>
                         </div>
-                        <button class="btn-add-cart btn btn-primary full-width">🛒 Thêm vào giỏ</button>
+                        <button data-product-id="{{ $product->product_id }}" data-quantity="1"
+                            class="btn-add-cart btn btn-primary full-width">🛒 Thêm vào giỏ</button>
                     </div>
                     <?php endforeach; ?>
                 </div>
@@ -161,7 +162,8 @@
                                 <span class="current-price"><?= number_format($product->price, 0, ',', '.'); ?>₫</span>
                             </div>
                         </div>
-                        <button class="btn-add-cart btn btn-primary full-width">🛒 Thêm vào giỏ</button>
+                        <button data-product-id="{{ $product->product_id }}" data-quantity="1"
+                            class="btn-add-cart btn btn-primary full-width">🛒 Thêm vào giỏ</button>
                     </div>
                     <?php endforeach; ?>
                 </div>
@@ -468,6 +470,10 @@
         </div>
     </div>
 
+    <script>
+        const USER_ID = {{ auth()->id() ?? 'null' }};
+        console.log("User ID:", USER_ID);
+    </script>
     <script src="{{ asset('js/index-chatbot.js') }}"></script>
     <script src="{{ asset('js/index-filter.js') }}"></script>
     <script src="{{ asset('js/index.js') }}"></script>
