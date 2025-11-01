@@ -21,6 +21,10 @@
                             class="prodcut-image" alt="Ảnh sản phẩm chính" id="mainImage">
                         <div class="swiper">
                             <div class="swiper-wrapper">
+                                <div class="swiper-slide">
+                                    <img src="{{isset($product->cover_image) ? asset('uploads/' . $product->cover_image) : asset('images/blank_product.png') }}"
+                                        alt="Ảnh chính" class="swiper-slide-img">
+                                </div>
                                 @if(isset($product->images) && $product->images->count() > 0)
                                     @foreach($product->images as $image)
                                         <div class="swiper-slide">
@@ -44,7 +48,8 @@
                 <div class="col-md-6">
                     <h3 class="fw-bold text-center">{{ $product->product_name ?? "Sản phẩm không tồn tại!!!"}}</h3>
                     <p class="text-warning mb-1 fs-3 text-center">
-                        ⭐ {{ number_format($avg, 1) ?? 0 }} | {{ $reviews_count ?? 0 }} đánh giá | Đã bán
+                        <span class="star filled text-warning fs-1">★</span>
+                        {{ number_format($avg, 1) ?? 0 }} | {{ $reviews_count ?? 0 }} đánh giá | Đã bán
                         {{ $product->volume_sold ?? 0 }}
                     </p>
 
@@ -134,6 +139,45 @@
                 </div>
 
             </div>
+            <div class="post-review">
+                <div class="title-post bg-primary">
+                    <h3>Thêm đánh giá sản phẩm</h3>
+                </div>
+                <div class="post-form">
+                    <form id="form-post-review">
+                        @csrf
+                        <div class="mb-3">
+                            <label for="reviewRating" class="form-label">Đánh giá của bạn:</label>
+                            <input type="hidden" name="product_id" value="{{ $product->product_id }}">
+                            <input type="hidden" name="user_id" value="{{ auth()->id() }}">
+                            <select class="form-select" id="reviewRating" name="rating" required>
+                                <option value="" selected disabled>Chọn số sao đánh giá</option>
+                                <option class="text-warning" value="1">
+                                    <span class="star filled text-warning fs-1">★</span>
+                                </option>
+                                <option class="text-warning" value="2">
+                                    <span class="star filled text-warning fs-1">★★</span>
+                                </option>
+                                <option class="text-warning" value="3">
+                                    <span class="star filled text-warning fs-1">★★★</span>
+                                </option>
+                                <option class="text-warning" value="4">
+                                    <span class="star filled text-warning fs-1">★★★★</span>
+                                </option>
+                                <option class="text-warning" value="5">
+                                    <span class="star filled text-warning fs-1">★★★★★</span>
+                                </option>
+                            </select>
+                        </div>
+                        <div class="mb-3">
+                            <label for="reviewComment" class="form-label">Bình luận của bạn:</label>
+                            <textarea class="form-control" id="reviewComment" name="comment" rows="4" required></textarea>
+                        </div>
+                        <button type="submit" class="btn btn-primary">Gửi đánh giá</button>
+                    </form>
+                </div>
+            </div>
+
             {{-- Vùng hiển thị các đánh giá của user--}}
             <div class="container comment-field">
 
@@ -164,6 +208,30 @@
                 clearTimeout(hoverTimeout);
             });
         });
+
+        // Utility: tagged template to remove common indentation from multiline template literals
+        // Usage: dedent`\n    <div>...\n    </div>\n`;
+        function dedent(strings, ...values) {
+            // Build the full string
+            let raw = strings.raw ? strings.raw : strings;
+            let result = '';
+            for (let i = 0; i < raw.length; i++) {
+                result += raw[i];
+                if (i < values.length) result += values[i];
+            }
+
+            // Split into lines and remove leading/trailing empty lines
+            let lines = result.split('\n');
+            while (lines.length && lines[0].trim() === '') lines.shift();
+            while (lines.length && lines[lines.length - 1].trim() === '') lines.pop();
+
+            // Determine minimum indentation (excluding empty lines)
+            const indents = lines.filter(l => l.trim()).map(l => l.match(/^\s*/)[0].length);
+            const minIndent = indents.length ? Math.min(...indents) : 0;
+
+            // Remove the common indent
+            return lines.map(l => l.slice(minIndent)).join('\n');
+        }
 
         const swiper_wrapper = document.querySelector('.swiper-wrapper');
         const swiper_button_prev = document.querySelector('.swiper-button-prev');
@@ -272,19 +340,19 @@
                                     hour: '2-digit', minute: '2-digit'
                                 });
 
-                            return `
-                                    <div class="review-display border-bottom py-2">
-                                        <img class="user-avatar" src="/images/user-icon.jpg" alt="">
-                                        <div class="user-review">
-                                            <div class="d-flex">
-                                                <strong class="review-info">${review.user.full_name}</strong>
-                                                <p class="review-info ms-5">| ${formattedDate}</p>
-                                            </div>
-                                            <p class="review-info">${stars}</p>
-                                            <p class="review-info">${review.comment}</p>
+                            return dedent`
+                                <div class="review-display border-bottom py-2">
+                                    <img class="user-avatar" src="/images/user-icon.jpg" alt="">
+                                    <div class="user-review">
+                                        <div class="d-flex">
+                                            <strong class="review-info">${review.user.full_name}</strong>
+                                            <p class="review-info ms-5">| ${formattedDate}</p>
                                         </div>
+                                        <p class="review-info">${stars}</p>
+                                        <p class="review-info">${review.comment}</p>
                                     </div>
-                                `;
+                                </div>
+                            `;
                         }).join('');
 
                         // Render thanh phân trang
@@ -294,15 +362,15 @@
                             const activeClass = link.active ? 'active' : '';
                             const disabled = link.url === null ? 'disabled' : '';
 
-                            return `
-                                    <button 
-                                        class="btn btn-sm btn-outline-secondary mx-1 ${activeClass}" 
-                                        ${disabled ? 'disabled' : ''} 
-                                        data-url="${link.url || '#'}"
-                                    >
-                                        ${label}
-                                    </button>
-                                `;
+                            return dedent`
+                                <button
+                                    class="btn btn-sm btn-outline-secondary mx-1 ${activeClass}"
+                                    ${disabled ? 'disabled' : ''}
+                                    data-url="${link.url || '#'}"
+                                >
+                                    ${label}
+                                </button>
+                            `;
                         }).join('');
 
                         // Gán sự kiện click cho từng nút
@@ -335,6 +403,21 @@
 
             // Tải mặc định trang đầu tiên
             loadReviews(apiBase);
+        });
+
+        // xử lý submit form thêm đánh giá
+        document.getElementById('form-post-review').addEventListener('submit', async function (e) {
+            e.preventDefault();
+            const formData = new FormData(this);
+            console.log(Object.fromEntries(formData));
+            const response = await fetch('/api/product/{{ $product->product_id }}/reviews', {
+                method: 'POST',
+                headers: {
+                    'Accept': 'application/json',
+                    'X-CSRF-TOKEN': '{{ csrf_token() }}',
+                },
+                body: formData
+            });
         });
 
     </script>
