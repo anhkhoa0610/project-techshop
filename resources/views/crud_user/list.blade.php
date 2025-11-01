@@ -72,10 +72,13 @@
                         </thead>
                         <tbody>
                             @forelse($users as $user)
-                                <tr data-user-id="{{ $user->user_id }}" data-full_name="{{ $user->full_name }}"
-                                    data-email="{{ $user->email }}" data-phone="{{ $user->phone }}"
-                                    data-address="{{ $user->address }}" data-role="{{ $user->role }}"
-                                    data-birth="{{ $user->birth->format('Y-m-d') }}"
+                                <tr data-user_id="{{ $user->user_id }}"
+                                    data-full_name="{{ $user->full_name }}"
+                                    data-email="{{ $user->email }}"
+                                    data-phone="{{ $user->phone }}"
+                                    data-address="{{ $user->address }}"
+                                    data-birth="{{ $user->birth }}"
+                                    data-role="{{ $user->role }}"
                                     data-is_tdc_student="{{ $user->is_tdc_student }}">
                                     <td>{{ $user->user_id }}</td>
                                     <td>{{ $user->full_name }}</td>
@@ -98,7 +101,7 @@
                                         <a href="#" class="view" title="Xem" data-toggle="modal" data-target="#viewUserModal">
                                             <i class="material-icons text-info">&#xE417;</i>
                                         </a>
-                                        <a href="#" class="edit" title="Sửa" data-toggle="modal" data-target="#editUserModal">
+                                        <a href="{{ route('users.edit', $user->user_id) }}" class="edit" title="Sửa">
                                             <i class="material-icons text-warning">&#xE254;</i>
                                         </a>
                                         <form action="{{ route('users.destroy', $user->user_id) }}" method="POST"
@@ -136,36 +139,7 @@
 
 @push('scripts')
     <script>
-        // Trong sự kiện click nút chỉnh sửa
-        $(document).on('click', '.edit', function () {
-            const row = $(this).closest('tr');
-            const userId = row.data('user-id');
-            const form = $('#editUserForm');
-            const email = row.data('email');
 
-            // Kiểm tra đuôi email
-            const isTDCEmail = email.endsWith('@mail.tdc.edu.vn');
-
-            form.attr('action', '/users/' + userId);
-            form.find('#edit_full_name').val(row.data('full_name'));
-            form.find('#edit_email').val(email);
-            form.find('#edit_phone').val(row.data('phone') || '');
-            form.find('#edit_address').val(row.data('address') || '');
-            form.find('#edit_role').val(row.data('role') || 'User');
-            form.find('#edit_birth').val(row.data('birth') || '');
-
-            form.find('#edit_is_tdc_student').prop('checked', isTDCEmail || row.data('is_tdc_student') === 'true');
-        });
-
-        // Thêm sự kiện thay đổi email để tự động cập nhật toggle
-        $(document).on('change', '#edit_email', function () {
-            const email = $(this).val();
-            const isTDCEmail = email.endsWith('@mail.tdc.edu.vn');
-            if (isTDCEmail) {
-                $('#edit_is_tdc_student').prop('checked', true);
-            }
-        });
-        // End Edit User
         $(document).ready(function () {
             // View user details
             $(document).on('click', '.view', function () {
@@ -185,21 +159,7 @@
                 $('#view_tdc').text(isTDC ? 'Có' : 'Không').removeClass().addClass('badge ' + tdcBadge);
             });
 
-            // Edit user - populate form
-            $(document).on('click', '.edit', function () {
-                const row = $(this).closest('tr');
-                const userId = row.data('user-id');
-                const form = $('#editUserForm');
 
-                form.attr('action', '/users/' + userId);
-                form.find('#edit_full_name').val(row.data('full_name'));
-                form.find('#edit_email').val(row.data('email'));
-                form.find('#edit_phone').val(row.data('phone') || '');
-                form.find('#edit_address').val(row.data('address') || '');
-                form.find('#edit_role').val(row.data('role') || 'User');
-                form.find('#edit_birth').val(row.data('birth') || '');
-                form.find('#edit_is_tdc_student').prop('checked', row.data('is_tdc_student') === 'true');
-            });
 
             // Search functionality with AJAX
             $('#searchInput').on('keyup', function () {

@@ -92,6 +92,14 @@ class UserController extends Controller
     }
 
     /**
+     * Hiển thị form chỉnh sửa người dùng.
+     */
+    public function edit(User $user)
+    {
+        return view('crud_user.edit', compact('user'));
+    }
+
+    /**
      * Cập nhật người dùng.
      */
     public function update(Request $request, User $user)
