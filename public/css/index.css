@@ -195,7 +195,7 @@ input[type=number]::-webkit-outer-spin-button {
     box-shadow: 0 6px 18px rgba(3, 8, 22, 0.06);
     display: flex;
     flex-direction: column;
-    height: 32rem;
+    height: 35rem;
     width: 300px;
     position: relative;
     transition: all 0.5s cubic-bezier(0.25, 0.8, 0.25, 1);
@@ -325,18 +325,17 @@ input[type=number]::-webkit-outer-spin-button {
 .product-rating {
     display: flex;
     align-items: center;
-    gap: 0.5rem;
-    margin-bottom: 0.75rem;
+    gap: 5px;
+    margin: 8px 0;
 }
 
-.stars {
-    font-size: 0.875rem;
-    font-weight: 500;
+.product-rating .stars i {
+    font-size: 14px;
 }
 
-.reviews {
-    color: #6b7280;
-    font-size: 0.875rem;
+.product-rating .reviews {
+    color: #777;
+    font-size: 13px;
 }
 
 .product-price {
@@ -606,4 +605,15 @@ input[type=number]::-webkit-outer-spin-button {
 
 .input-wrapper {
     position: relative;
+}
+
+.product-meta {
+    margin-top: 8px;
+    font-size: 0.9rem;
+    color: #bbb8b8;
+    line-height: 1.4;
+}
+
+.product-meta strong {
+    color: #d1cccc;
 }
