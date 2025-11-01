@@ -13,8 +13,8 @@ function renderProductsAndPagination(data, categoryId) {
                 <div class="product-price">
                     <span class="current-price">${Number(product.price).toLocaleString('vi-VN')}₫</span>
                 </div>
-                <button class="btn btn-primary full-width">🛒 Thêm vào giỏ</button>
             </div>
+            <button class="btn-add-cart btn btn-primary full-width" data-product-id="${product.product_id}" data-quantity="1">🛒 Thêm vào giỏ</button>
         </div>
         `;
     });
@@ -52,7 +52,7 @@ function renderProductsAndPagination(data, categoryId) {
                     max="${data.last_page}" 
                     aria-label="Nhập số trang để chuyển đến"
                 /> 
-                / ${data.last_page}
+                <span style="color: white">/ ${data.last_page}</span>
             </span>
         `;
 
@@ -128,30 +128,17 @@ document.querySelectorAll('.category-card').forEach(function (card, idx) {
     });
 });
 
+function playVideo(container) {
+    const iframe = container.querySelector('iframe');
+    let src = iframe.getAttribute('src');
 
-//chatbot + sidebar
-
-document.getElementById('openSidebar').onclick = function () {
-    document.getElementById('sidebar').classList.add('open');
-};
-document.getElementById('closeSidebar').onclick = function () {
-    document.getElementById('sidebar').classList.remove('open');
-};
-// Đóng sidebar khi click ra ngoài
-document.addEventListener('click', function (e) {
-    const sidebar = document.getElementById('sidebar');
-    if (sidebar.classList.contains('open')) {
-        if (!sidebar.contains(e.target) && !document.getElementById('openSidebar').contains(e.target)) {
-            sidebar.classList.remove('open');
-        }
+    // Nếu chưa có autoplay thì thêm vào
+    if (!src.includes('autoplay=1')) {
+        src += (src.includes('?') ? '&' : '?') + 'autoplay=1';
+        iframe.setAttribute('src', src);
     }
-});
 
-
-
-document.getElementById('chatbot-btn').onclick = function () {
-    document.getElementById('chatbot-dialog').classList.add('open');
-};
-document.getElementById('chatbot-close').onclick = function () {
-    document.getElementById('chatbot-dialog').classList.remove('open');
-};
+    // Ẩn overlay sau khi phát
+    const overlay = container.querySelector('.overlay');
+    overlay.style.display = 'none';
+}

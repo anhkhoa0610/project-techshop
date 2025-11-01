@@ -24,7 +24,7 @@
     {{-- Nội dung từng trang --}}
 
     <body>
-        <div class="container-center">
+        <div class="container-center background-layout">
             <div class="wrap">
                 <!-- LEFT -->
                 <section class="panel">
@@ -32,24 +32,40 @@
                     <p class="lead">Điền thông tin giao hàng và chọn phương thức thanh toán</p>
                     <form id="checkoutForm">
                         <div class="section">
-                            <div class="subtitle"><label>Thông tin người nhận</label><small class="muted">Thông tin bắt
-                                    buộc</small></div>
-                            <div class="two-col">
-                                <div><label for="fname">Họ và tên</label><input id="fname" type="text"
-                                        placeholder="Nguyễn Văn A" required>
-                                </div>
-                                <div><label for="phone">Số điện thoại</label><input id="phone" type="tel"
-                                        placeholder="09x xxx xxxx" required></div>
+                            <div class="subtitle">
+                                <label>Thông tin người nhận</label>
+                                <small class="muted">Thông tin bắt buộc</small>
                             </div>
-                            <div style="margin-top:12px"><label for="email">Email</label><input id="email" type="email"
-                                    placeholder="you@example.com" required></div>
+
+                            <div class="two-col">
+                                <div>
+                                    <label for="fname">Họ và tên</label>
+                                    <input id="fname" name="fullname" type="text"
+                                        value="{{ old('fullname', $user->full_name ?? '') }}" placeholder="Nguyễn Văn A"
+                                        required>
+                                </div>
+                            
+                                <div>
+                                    <label for="phone">Số điện thoại</label>
+                                    <input id="phone" name="phone" type="tel"
+                                        value="{{ old('phone', $user->phone ?? '') }}" placeholder="09x xxx xxxx"
+                                        required>
+                                </div>
+                            </div>
+
+                            <div style="margin-top:12px">
+                                <label for="email">Email</label>
+                                <input id="email" name="email" type="email"
+                                    value="{{ old('email', $user->email ?? '') }}" placeholder="you@example.com"
+                                    required>
+                            </div>
                         </div>
 
                         <div class="section">
 
                             <div style="margin-bottom:12px">
                                 <label for="address">Địa chỉ</label>
-                                <input id="address" type="text" placeholder="Số nhà, tên đường" required>
+                                <input id="address" type="text"  placeholder="Số nhà, tên đường" required>
                             </div>
                             <div class="two-col">
                                 <div>
@@ -79,22 +95,17 @@
                                     một</small>
                             </div>
                             <div class="radio-group">
+
                                 <label class="radio">
-                                    <input type="radio" name="pay">
-                                    <div>
-                                        <div class="label">COD</div>
-                                        <div class="meta">Thanh toán khi nhận hàng</div>
-                                    </div>
-                                </label>
-                                <label class="radio">
-                                    <input type="radio" name="pay" checked>
+                                    <input type="radio" name="pay" value="vnpay" checked>
                                     <div>
                                         <div class="label">VNPay</div>
-                                        <div class="meta">Cổng thanh toán nhanh</div>
+                                        <div class="meta">Thanh Toán VNPAY</div>
                                     </div>
                                 </label>
+
                                 <label class="radio">
-                                    <input type="radio" name="pay">
+                                    <input type="radio" name="pay" value="momo">
                                     <div>
                                         <div class="label">MoMo</div>
                                         <div class="meta">Ví điện tử MoMo</div>
@@ -109,7 +120,7 @@
                 </section>
 
                 <!-- RIGHT -->
-                <aside class="summary">
+                <!-- <aside class="summary">
                     <h3>Đơn hàng của bạn</h3>
                     <div class="item">
                         <div class="thumb"><img src="https://i.imgur.com/tGbaZCY.jpg"></div>
@@ -118,6 +129,7 @@
                             <div class="meta">Size M • Số lượng: 1</div>
                         </div>
                         <div class="price">350.000₫</div>
+                       
                     </div>
                     <div class="item">
                         <div class="thumb"><img src="https://i.imgur.com/6oHix35.jpg"></div>
@@ -127,6 +139,7 @@
                         </div>
                         <div class="price">200.000₫</div>
                     </div>
+                     <div>Sinh Viên TDC Giảm 10%</div>
                     <div class="divider"></div>
                     <div class="totals">
                         <div class="row total">
@@ -135,99 +148,55 @@
                         </div>
                         <button class="pay-btn" type="button" id="payBtn">Thanh toán & Đặt hàng</button>
                     </div>
+                </aside> -->
+                <aside class="summary">
+                    <h3>Đơn hàng của bạn</h3>
+
+                    @php
+                        // Đảm bảo biến luôn là một Collection (hoặc mảng) để tránh lỗi
+                        $selectedCartItems = $selectedCartItems ?? collect();
+                        $subtotal = 0;
+                    @endphp
+
+                    @forelse($cartItems as $item)
+                        @php
+                            // ... (Logic tính toán của bạn ở đây)
+                            $product = $item->product ?? (object) ['product_name' => 'Không tìm thấy', 'image' => 'https://via.placeholder.com/64', 'price' => 0];
+                            $quantity = $item->quantity ?? 1;
+                            $price = $product->price ?? 0;
+                            $itemTotal = $price * $quantity;
+                            $subtotal += $itemTotal;
+                            $discountAmount = $subtotal * 0.2; // Giảm giá 20%
+                            $finalSubtotal = $subtotal - $discountAmount;
+                        @endphp
+                        <div class="item">
+                            <div class="thumb"><img src="/uploads/{{ $item->product->cover_image}}"></div>
+                            <div>
+                                <div class="title">{{ $product->product_name }}</div>
+                                <div class="meta">Số lượng: {{ $quantity }}</div>
+                            </div>
+                            <div class="price">{{ number_format($itemTotal, 0, ',', '.') }}₫</div>
+                        </div>
+                    @empty
+                        <div class="item">
+                            <p>Không có sản phẩm nào được chọn. Vui lòng quay lại <a href="/cart">Giỏ hàng</a>.</p>
+                        </div>
+                    @endforelse
+                    <div class="row">
+                        <div style="font-weight: 600; color: white;">Giảm giá TDC (20%)</div>
+                        <div style="font-weight: 600; color: white;">-
+                            {{ number_format($discountAmount, 0, ',', '.') }}₫
+                        </div>
+                    </div>
+                    <div class="row total">
+                        <div style="color: white;">Tổng phải trả</div>
+                        <div style="color: white;">{{ number_format($finalSubtotal, 0, ',', '.') }}₫</div>
+                    </div>
+                    <button class="pay-btn" type="button" id="payBtn">Thanh toán & Đặt hàng</button>
                 </aside>
             </div>
         </div>
 
-        <script>
-            // === Load API địa chỉ Việt Nam ===
-            const host = "https://provinces.open-api.vn/api/";
-            const citySelect = document.getElementById("city");
-            const districtSelect = document.getElementById("district");
-            const wardSelect = document.getElementById("ward");
-
-            async function loadCities() {
-                const res = await fetch(host + "?depth=1");
-                const data = await res.json();
-                citySelect.innerHTML = '<option value="">Chọn tỉnh/thành</option>';
-                data.forEach(city => {
-                    citySelect.innerHTML += `<option value="${city.code}">${city.name}</option>`;
-                });
-            }
-
-            async function loadDistricts(cityCode) {
-                const res = await fetch(host + "p/" + cityCode + "?depth=2");
-                const data = await res.json();
-                districtSelect.innerHTML = '<option value="">Chọn quận/huyện</option>';
-                wardSelect.innerHTML = '<option value="">Chọn phường/xã</option>';
-                data.districts.forEach(d => {
-                    districtSelect.innerHTML += `<option value="${d.code}">${d.name}</option>`;
-                });
-            }
-
-            async function loadWards(districtCode) {
-                const res = await fetch(host + "d/" + districtCode + "?depth=2");
-                const data = await res.json();
-                wardSelect.innerHTML = '<option value="">Chọn phường/xã</option>';
-                data.wards.forEach(w => {
-                    wardSelect.innerHTML += `<option value="${w.code}">${w.name}</option>`;
-                });
-            }
-
-            citySelect.addEventListener("change", () => {
-                const cityCode = citySelect.value;
-                if (cityCode) loadDistricts(cityCode);
-            });
-            districtSelect.addEventListener("change", () => {
-                const districtCode = districtSelect.value;
-                if (districtCode) loadWards(districtCode);
-            });
-
-            loadCities();
-
-
-            // === Sự kiện thanh toán ===
-            document.getElementById("payBtn").addEventListener("click", () => {
-                const name = document.getElementById("fname");
-                const phone = document.getElementById("phone");
-                const email = document.getElementById("email");
-                const address = document.getElementById("address");
-
-                // Xoá lỗi cũ
-                [name, phone, email, address].forEach(i => i.classList.remove("error"));
-
-                // Regex kiểm tra
-                const phoneRegex = /^(0|\+84)[0-9]{9}$/;
-                const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-
-                if (!name.value.trim() || !phone.value.trim() || !email.value.trim() || !address.value.trim()) {
-                    alert("⚠️ Vui lòng nhập đầy đủ thông tin bắt buộc!");
-                    [name, phone, email, address].forEach(i => { if (!i.value.trim()) i.classList.add("error"); });
-                    return;
-                }
-
-                if (!phoneRegex.test(phone.value)) {
-                    alert("⚠️ Số điện thoại không hợp lệ!");
-                    phone.classList.add("error");
-                    return;
-                }
-
-                if (!emailRegex.test(email.value)) {
-                    alert("⚠️ Email không hợp lệ!");
-                    email.classList.add("error");
-                    return;
-                }
-
-                const payment = document.querySelector('input[name="pay"]:checked').nextElementSibling.querySelector(".label").textContent;
-                const isTDC = document.getElementById("tdc-check").checked;
-
-                if (isTDC) {
-                    alert(`✅ Bạn là sinh viên TDC — được giảm 10% khi thanh toán qua ${payment}!`);
-                } else {
-                    alert(`🧾 Thanh toán qua ${payment} thành công!`);
-                }
-            });
-        </script>
     </body>
 
 
@@ -239,3 +208,10 @@
 </body>
 
 </html>
+<script>
+    const momoUrl = "{{ route('momo.payment') }}";
+    const vnpayUrl = "{{ route('vnpay.payment') }}";
+    const csrfToken = "{{ csrf_token() }}";
+    const totalAmount = "{{ $finalSubtotal ?? 0 }}";
+</script>
+<script src="{{ asset('js/pay.js') }}"></script>

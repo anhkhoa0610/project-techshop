@@ -1,0 +1,132 @@
+.content-container {
+    background-image: url('/images/background.jpg');
+    background-size: fill;
+    background-position: center;
+    position: relative;
+    min-height: 100vh;
+    padding-bottom: 50px;
+}
+
+.container-details {
+    padding: 20px;
+    border-radius: 10px;
+    position: relative;
+    margin-top: 30px;
+    background-color: rgba(255, 255, 255, 0.85);
+}
+
+.header-back-ground {
+    height: 70px;
+    background-image: url('/images/background.jpg');
+}
+
+.footer-back-ground {
+    height: 70px;
+}
+
+.prodcut-image {
+    width: 628px;
+    height: 628px;
+    object-fit: cover;
+
+}
+
+.swiper-slide-img {
+    width: 82px;
+    height: 82px;
+    padding: 5px;
+    box-sizing: content-box;
+    border: 1px solid #ddd;
+
+}
+
+.swiper-wrapper {
+    display: flex;
+    overflow-x: hidden;
+    justify-content: center;
+
+}
+
+.swiper-button-next img,
+.swiper-button-prev img {
+    width: 50px;
+    height: 50px;
+    background-color: rgba(0, 0, 0, 0.5);
+    ;
+}
+
+.swiper-button-next {
+    position: absolute;
+    transform: translate(578px, -66px);
+
+}
+
+.swiper-button-prev {
+    position: absolute;
+    transform: translateY(-66px);
+}
+
+.quantity-button {
+    width: 30px;
+    height: 30px;
+    cursor: pointer;
+    margin: 0;
+}
+
+.input-quantity {
+    width: 100px;
+    text-align: center;
+    margin: 0;
+}
+
+.desc-product {
+    margin-top: 30px;
+    padding: 20px;
+    border-radius: 10px;
+    min-height: 500px;
+}
+
+.review-product {
+    margin-top: 30px;
+    padding: 20px;
+    border-radius: 10px;
+    min-height: 500px;
+    position: relative;
+}
+.review-title {
+    min-height: 180px;
+    width: 100%;
+    background-color: #28a745;
+    border-radius: 5px;
+    margin-bottom: 20px;
+    display: flex;
+}
+.rating-star {
+    background-color:aqua;
+    padding-left:10px ;
+
+}
+.star-filter{
+    background-color: palegoldenrod;
+}
+.rating{
+text-align: center;
+align-items: center;
+display: flex;
+justify-content: center;
+
+}
+.rating-left{
+    color: tomato;
+    font-size: 1.85rem;
+    padding-right:5px ;
+}
+.rating-right{
+    color: tomato;
+    font-size: 1.525rem;
+}
+.rating-star-display{
+    margin-top: 10px;
+    display: flex;
+    justify-content: center;
+}

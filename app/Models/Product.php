@@ -23,6 +23,7 @@ class Product extends Model
         'supplier_id',
         'warranty_period',
         'release_date',
+        'embed_url_review',
     ];
 
     // Mỗi sản phẩm thuộc về 1 danh mục
@@ -41,6 +42,11 @@ class Product extends Model
     public function orderDetails()
     {
         return $this->hasMany(OrderDetail::class, 'product_id', 'product_id');
+    }
+
+    public function images()
+    {
+        return $this->hasMany(ProductImage::class);
     }
 
     public function scopePriceRange($query, $min_price = null, $max_price = null)
@@ -79,13 +85,20 @@ class Product extends Model
             ->filterBySupplier($supplier_id);
     }
 
-    public function scopeSearch($query, $search = null)
+    public function scopeSearch($query, $keyword)
     {
-        if (!empty($search)) {
-            $query->where('product_name', 'like', '%' . $search . '%');
+        if (!empty($keyword)) {
+            $query->where(function ($q) use ($keyword) {
+                $q->where('product_name', 'like', "%{$keyword}%")
+                    ->orWhere('description', 'like', "%{$keyword}%");
+            });
         }
-
         return $query;
+    }
+
+    public function scopeWithVideo($query)
+    {
+        return $query->whereNotNull('embed_url_review');
     }
 
 }

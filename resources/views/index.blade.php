@@ -6,82 +6,12 @@
 
     <link rel="stylesheet" href="{{ asset('css/index.css') }}">
     <link rel="stylesheet" href="{{ asset('css/index-filter.css') }}">
-    <style>
+    <link rel="stylesheet" href="{{ asset('css/index-chatbot.css') }}">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css" />
+    <link rel="stylesheet" href="{{ asset('css/swiper.css') }}">
 
-    </style>
-
-    <!-- Sidebar -->
-    <div id="sidebar" class="sidebar">
-        <div class="sidebar-header">
-            <span class="sidebar-title">Lọc sản phẩm</span>
-            <button id="closeSidebar" class="sidebar-close">&times;</button>
-        </div>
-        <form id="filterForm" class="mt-4">
-            <!-- Giá tiền -->
-            <div class="mb-4">
-                <label class="form-label fw-semibold">Giá tiền (VNĐ)</label>
-                <div class="d-flex align-items-center gap-2">
-                    <input type="number" class="form-control number-input" name="price_min" placeholder="" min="0"
-                        step="1000" style="max-width: 120px;">
-                    <span class="fw-bold">–</span>
-                    <input type="number" class="form-control number-input" name="price_max" placeholder="" min="0"
-                        step="1000" style="max-width: 120px;">
-                </div>
-            </div>
-
-
-            <!-- Danh mục -->
-            <div class="mb-4">
-                <label for="category" class="form-label fw-semibold">Danh mục</label>
-                <select class="form-select" id="category" name="category_filter">
-                    <option value="0">Tất cả</option>
-                    <option value="1">Laptop</option>
-                    <option value="2">Điện thoại</option>
-                    <option value="3">Phụ kiện</option>
-                    <option value="4">Máy tính bảng</option>
-                </select>
-            </div>
-
-            <!-- Nhà phân phối -->
-            <div class="mb-4">
-                <label for="supplier" class="form-label fw-semibold">Nhà phân phối</label>
-                <select class="form-select" id="supplier" name="supplier_filter">
-                    <option value="0">Tất cả</option>
-                    <option value="1">Apple</option>
-                    <option value="2">Samsung</option>
-                    <option value="3">ASUS</option>
-                    <option value="4">Dell</option>
-                </select>
-            </div>
-
-            <!-- Rating -->
-
-            <div class="mb-4">
-                <label for="rating" class="form-label fw-semibold">Đánh giá</label>
-                <select class="form-select" id="rating" name="rating">
-                    <option value="all">Tất cả</option>
-                    <option value="5">⭐️⭐️⭐️⭐️⭐️</option>
-                    <option value="4">⭐️⭐️⭐️⭐️</option>
-                    <option value="3">⭐️⭐️⭐️</option>
-                    <option value="2">⭐️⭐️</option>
-                    <option value="1">⭐️</option>
-                </select>
-            </div>
-            <!-- Nút áp dụng -->
-            <button type="submit" class="btn btn-primary w-100">Áp dụng bộ lọc</button>
-        </form>
-    </div>
-
-    <!-- Nút mở sidebar -->
-    <button id="openSidebar" class="sidebar-toggle">
-        <span> <i class="bi bi-funnel me-1"></i> Lọc</span>
-    </button>
-
-
-    <!-- Hero Section -->
 
     <section class="hero">
-        <!-- moved hero-image ra trước container để video có thể phủ toàn section -->
         <div class="hero-image">
             <video class="hero-video" autoplay muted loop playsinline preload="metadata"
                 poster="{{ asset('images/place-holder.jpg') }}">
@@ -121,7 +51,6 @@
                         </div>
                     </div>
                 </div>
-                <!-- hero-image removed from here -->
             </div>
         </div>
     </section>
@@ -197,8 +126,9 @@
                                 <span
                                     class="original-price"><?= number_format($product->original_price, 0, ',', '.'); ?>₫</span>
                             </div>
-                            <button class="btn btn-primary full-width">🛒 Thêm vào giỏ</button>
                         </div>
+                        <button data-product-id="{{ $product->product_id }}" data-quantity="1"
+                            class="btn-add-cart btn btn-primary full-width">🛒 Thêm vào giỏ</button>
                     </div>
                     <?php endforeach; ?>
                 </div>
@@ -231,8 +161,9 @@
                             <div class="product-price">
                                 <span class="current-price"><?= number_format($product->price, 0, ',', '.'); ?>₫</span>
                             </div>
-                            <button class="btn btn-primary full-width">🛒 Thêm vào giỏ</button>
                         </div>
+                        <button data-product-id="{{ $product->product_id }}" data-quantity="1"
+                            class="btn-add-cart btn btn-primary full-width">🛒 Thêm vào giỏ</button>
                     </div>
                     <?php endforeach; ?>
                 </div>
@@ -241,102 +172,311 @@
 
         <!-- Featured Products -->
         <section class="products categories-products" style="display: none">
-            <div class="container">
+            <div class="container-fluid">
                 <div class="section-header">
                     <h2 class="section-title">Sản phẩm theo danh mục</h2>
-                    <p class="section-subtitle">Các sản phẩm là </p>
+                    <p class="section-subtitle">Tất cả sản phẩm</p>
                 </div>
-                <div class="products-grid show-by-category">
+                <div class="row">
+                    <div class="col-md-3" style="color: white">
+                        <div class="sidebar">
+                            <div class="sidebar-header">
+                                <span class="sidebar-title">Lọc sản phẩm</span>
+                            </div>
+                            <form id="filterForm" class="mt-4">
+                                <!-- Giá tiền -->
+                                <div class="mb-4">
+                                    <label class="form-label fw-semibold">Giá tiền (VNĐ)</label>
+                                    <div class="d-flex align-items-center gap-2">
+                                        <input type="number" class="form-control number-input" name="price_min"
+                                            placeholder="" min="0" step="1000" style="max-width: 16rem;">
+                                        <span class="fw-bold">–</span>
+                                        <input type="number" class="form-control number-input" name="price_max"
+                                            placeholder="" min="0" step="1000" style="max-width: 16rem;">
+                                    </div>
+                                </div>
 
+
+                                <!-- Danh mục -->
+                                <div class="mb-4">
+                                    <label for="category" class="form-label fw-semibold">Danh mục</label>
+                                    <select class="form-select" id="category" name="category_filter">
+                                        <option value="0">Tất cả</option>
+                                        <option value="1">Laptop</option>
+                                        <option value="2">Điện thoại</option>
+                                        <option value="3">Phụ kiện</option>
+                                        <option value="4">Máy tính bảng</option>
+                                    </select>
+                                </div>
+
+                                <!-- Nhà phân phối -->
+                                <div class="mb-4">
+                                    <label for="supplier" class="form-label fw-semibold">Nhà phân phối</label>
+                                    <select class="form-select" id="supplier" name="supplier_filter">
+                                        <option value="0">Tất cả</option>
+                                        <option value="1">Apple</option>
+                                        <option value="2">Samsung</option>
+                                        <option value="3">ASUS</option>
+                                        <option value="4">Dell</option>
+                                    </select>
+                                </div>
+
+                                <!-- Rating -->
+
+                                <div class="mb-4">
+                                    <label for="rating" class="form-label fw-semibold">Đánh giá</label>
+                                    <select class="form-select" id="rating" name="rating">
+                                        <option value="all">Tất cả</option>
+                                        <option value="5">⭐️⭐️⭐️⭐️⭐️</option>
+                                        <option value="4">⭐️⭐️⭐️⭐️</option>
+                                        <option value="3">⭐️⭐️⭐️</option>
+                                        <option value="2">⭐️⭐️</option>
+                                        <option value="1">⭐️</option>
+                                    </select>
+                                </div>
+
+                                <!-- Tình trạng hàng -->
+                                <div class="mb-4">
+                                    <label for="stock_status" class="form-label fw-semibold">Tình trạng hàng</label>
+                                    <select class="form-select" id="stock_status" name="stock_status">
+                                        <option value="all">Tất cả</option>
+                                        <option value="in_stock">Còn hàng</option>
+                                        <option value="out_of_stock">Hết hàng</option>
+                                    </select>
+                                </div>
+
+                                <!-- Thời gian ra mắt -->
+                                <div class="mb-4">
+                                    <label for="release_date" class="form-label fw-semibold">Thời gian ra mắt</label>
+                                    <select class="form-select" id="release_date" name="release_date">
+                                        <option value="all">Tất cả</option>
+                                        <option value="last_30_days">30 ngày qua</option>
+                                        <option value="last_90_days">90 ngày qua</option>
+                                        <option value="last_6_months">6 tháng qua</option>
+                                        <option value="last_1_year">1 năm qua</option>
+                                    </select>
+                                </div>
+
+                                <!-- Đang giảm giá -->
+                                <div class="mb-4 form-check">
+                                    <input type="checkbox" class="form-check-input" id="on_sale" name="on_sale">
+                                    <label class="form-check-label fw-semibold" for="on_sale">Chỉ hiển thị sản phẩm đang
+                                        giảm giá</label>
+                                </div>
+
+                                <!-- Nút áp dụng -->
+                                <button type="submit" class="btn btn-primary w-100">Áp dụng bộ lọc</button>
+                            </form>
+                        </div>
+                    </div>
+                    <div class="col-md-9">
+                        <div class="products-grid show-by-category">
+
+                        </div>
+                    </div>
                 </div>
+
                 <div class="pagination mt-5">
                     <!-- ... -->
                 </div>
-
             </div>
-
         </section>
-    </div>
 
-    <!-- Deal of the Day -->
-    <section class="deal-section">
-        <div class="container">
-            <div class="deal-header">
-                <h2 class="deal-title">⚡ Deal of the Day</h2>
-                <p class="deal-subtitle">Ưu đãi có thời hạn - Nhanh tay kẻo lỡ!</p>
-            </div>
-            <div class="deal-card">
-                <div class="deal-image">
-                    <img src="https://www.apple.com/v/iphone-17-pro/a/images/overview/contrast/iphone_17_pro__dwccrdina7qu_large.jpg"
-                        alt="Xiaomi Deal">
-                    <div class="flash-badge">FLASH SALE</div>
+        <!-- Video Review -->
+        <section class="review-video">
+            <div class="container-fluid">
+                <div class="section-header">
+                    <h2 class="section-title">Video Review</h2>
+                    <p class="section-subtitle">Những sản phẩm được yêu thích nhất</p>
                 </div>
-                <div class="deal-content">
-                    <h3 class="deal-product-title">Xiaomi 13 Ultra 5G</h3>
-                    <div class="deal-rating">
-                        <span class="stars">⭐ 4.8</span>
-                        <span class="reviews">(234 đánh giá)</span>
-                    </div>
-                    <p class="deal-description">
-                        Camera Leica 50MP, chip Snapdragon 8 Gen 2, RAM 12GB,
-                        bộ nhớ 256GB. Trải nghiệm nhiếp ảnh chuyên nghiệp.
-                    </p>
-                    <div class="deal-pricing">
-                        <span class="deal-price">12,990,000₫</span>
-                        <span class="deal-original">18,990,000₫</span>
-                        <div class="savings">Tiết kiệm 6,000,000₫ (32% OFF)</div>
-                    </div>
-                    <div class="countdown">
-                        <div class="countdown-label">⏰ Thời gian còn lại:</div>
-                        <div class="countdown-timer">
-                            <div class="time-unit">
-                                <span id="hours">12</span>
-                                <label>Giờ</label>
+                <div class="video-grid">
+                    @foreach ($videoProducts as $product)
+                        <div class="video-card">
+                            <div class="video-thumb" onclick="playVideo(this)">
+                                <iframe src="{{ $product->embed_url_review }}?mute=1&playsinline=1&rel=0&modestbranding=1"
+                                    title="Video sản phẩm" frameborder="0" allow="autoplay; encrypted-media; picture-in-picture"
+                                    allowfullscreen>
+                                </iframe>
+                                <div class="overlay">
+                                    <div class="channel-info">
+                                        <img src="{{ asset('/images/logo.jpg') }}" alt="Channel" class="channel-logo">
+                                    </div>
+                                </div>
                             </div>
-                            <div class="time-unit">
-                                <span id="minutes">34</span>
-                                <label>Phút</label>
+
+
+                            <div class="product-info">
+                                <img src="/uploads/{{ $product->cover_image }}" alt="Sản phẩm" class="product-thumb">
+                                <div class="product-name">{{ $product->product_name }}</div>
                             </div>
-                            <div class="time-unit">
-                                <span id="seconds">56</span>
-                                <label>Giây</label>
+                        </div>
+                    @endforeach
+                </div>
+            </div>
+        </section>
+
+        <!-- Review -->
+        <section class="slider-container">
+            <div class="swiper mySwiper">
+                <div class="swiper-wrapper">
+                    <div class="swiper-slide">
+                        <div class="testimonial-card">
+                            <div class="quote-icon">“</div>
+
+                            <p class="testimonial-text">
+                                Môi trường học tập tại FIT-TDC rất tốt, năng động, đây là điều kiện quan trọng nhất đối với
+                                quá trình học tập của SV. Thầy cô giỏi, thân thiện, quan tâm đến sinh viên. Giáo trình được
+                                cập nhật thường xuyên, phù hợp với yêu cầu của xã hội. Tôi tin chắc rằng bất cứ bạn SV nào
+                                đến với TDC đều sẽ được cung cấp một hành trang vững chắc để phục vụ cho công việc và phát
+                                triển sự nghiệp trong tương lai. Tôi cảm thấy rất hài lòng khi được học tập tại FIT.TDC.
+                            </p>
+
+                            <div class="author-info">
+                                <img src="https://i.pravatar.cc/150?u=a042581f4e29026704d" alt="Võ Mạnh Hùng Dương"
+                                    class="author-avatar">
+                                <div class="author-details">
+                                    <div class="author-name">Võ Mạnh Hùng Dương</div>
+                                    <div class="author-title">Senior Software Engineer, Cty TNHH Giải pháp phần mềm Việt Tin
+                                    </div>
+                                </div>
                             </div>
                         </div>
                     </div>
-                    <button class="btn btn-deal">🛒 Mua ngay - Flash Sale</button>
+                    <div class="swiper-slide">
+                        <div class="testimonial-card">
+                            <div class="quote-icon">“</div>
+
+                            <p class="testimonial-text">
+                                Môi trường học tập tại FIT-TDC rất tốt, năng động, đây là điều kiện quan trọng nhất đối với
+                                quá trình học tập của SV. Thầy cô giỏi, thân thiện, quan tâm đến sinh viên. Giáo trình được
+                                cập nhật thường xuyên, phù hợp với yêu cầu của xã hội. Tôi tin chắc rằng bất cứ bạn SV nào
+                                đến với TDC đều sẽ được cung cấp một hành trang vững chắc để phục vụ cho công việc và phát
+                                triển sự nghiệp trong tương lai. Tôi cảm thấy rất hài lòng khi được học tập tại FIT.TDC.
+                            </p>
+
+                            <div class="author-info">
+                                <img src="https://i.pravatar.cc/150?u=a042581f4e29026704d" alt="Võ Mạnh Hùng Dương"
+                                    class="author-avatar">
+                                <div class="author-details">
+                                    <div class="author-name">Võ Mạnh Hùng Dương</div>
+                                    <div class="author-title">Senior Software Engineer, Cty TNHH Giải pháp phần mềm Việt Tin
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="swiper-slide">
+                        <div class="testimonial-card">
+                            <div class="quote-icon">“</div>
+
+                            <p class="testimonial-text">
+                                Môi trường học tập tại FIT-TDC rất tốt, năng động, đây là điều kiện quan trọng nhất đối với
+                                quá trình học tập của SV. Thầy cô giỏi, thân thiện, quan tâm đến sinh viên. Giáo trình được
+                                cập nhật thường xuyên, phù hợp với yêu cầu của xã hội. Tôi tin chắc rằng bất cứ bạn SV nào
+                                đến với TDC đều sẽ được cung cấp một hành trang vững chắc để phục vụ cho công việc và phát
+                                triển sự nghiệp trong tương lai. Tôi cảm thấy rất hài lòng khi được học tập tại FIT.TDC.
+                            </p>
+
+                            <div class="author-info">
+                                <img src="https://i.pravatar.cc/150?u=a042581f4e29026704d" alt="Võ Mạnh Hùng Dương"
+                                    class="author-avatar">
+                                <div class="author-details">
+                                    <div class="author-name">Võ Mạnh Hùng Dương</div>
+                                    <div class="author-title">Senior Software Engineer, Cty TNHH Giải pháp phần mềm Việt Tin
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="swiper-slide">
+                        <div class="testimonial-card">
+                            <div class="quote-icon">“</div>
+
+                            <p class="testimonial-text">
+                                Môi trường học tập tại FIT-TDC rất tốt, năng động, đây là điều kiện quan trọng nhất đối với
+                                quá trình học tập của SV. Thầy cô giỏi, thân thiện, quan tâm đến sinh viên. Giáo trình được
+                                cập nhật thường xuyên, phù hợp với yêu cầu của xã hội. Tôi tin chắc rằng bất cứ bạn SV nào
+                                đến với TDC đều sẽ được cung cấp một hành trang vững chắc để phục vụ cho công việc và phát
+                                triển sự nghiệp trong tương lai. Tôi cảm thấy rất hài lòng khi được học tập tại FIT.TDC.
+                            </p>
+
+                            <div class="author-info">
+                                <img src="https://i.pravatar.cc/150?u=a042581f4e29026704d" alt="Võ Mạnh Hùng Dương"
+                                    class="author-avatar">
+                                <div class="author-details">
+                                    <div class="author-name">Võ Mạnh Hùng Dương</div>
+                                    <div class="author-title">Senior Software Engineer, Cty TNHH Giải pháp phần mềm Việt Tin
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="swiper-slide">
+                        <div class="testimonial-card">
+                            <div class="quote-icon">“</div>
+
+                            <p class="testimonial-text">
+                                Môi trường học tập tại FIT-TDC rất tốt, năng động, đây là điều kiện quan trọng nhất đối với
+                                quá trình học tập của SV. Thầy cô giỏi, thân thiện, quan tâm đến sinh viên. Giáo trình được
+                                cập nhật thường xuyên, phù hợp với yêu cầu của xã hội. Tôi tin chắc rằng bất cứ bạn SV nào
+                                đến với TDC đều sẽ được cung cấp một hành trang vững chắc để phục vụ cho công việc và phát
+                                triển sự nghiệp trong tương lai. Tôi cảm thấy rất hài lòng khi được học tập tại FIT.TDC.
+                            </p>
+
+                            <div class="author-info">
+                                <img src="https://i.pravatar.cc/150?u=a042581f4e29026704d" alt="Võ Mạnh Hùng Dương"
+                                    class="author-avatar">
+                                <div class="author-details">
+                                    <div class="author-name">Võ Mạnh Hùng Dương</div>
+                                    <div class="author-title">Senior Software Engineer, Cty TNHH Giải pháp phần mềm Việt Tin
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="swiper-slide">Phần tử 6</div>
+                    <div class="swiper-slide">Phần tử 7</div>
+                    <div class="swiper-slide">Phần tử 8</div>
                 </div>
+
+                <div class="swiper-pagination"></div>
             </div>
-        </div>
-    </section>
+        </section>
+    </div>
+
+
+
 
     <!-- Chatbot Bubble -->
-    <div id="chatbot-bubble">
-        <button id="chatbot-btn">
-            <svg width="32" height="32" viewBox="0 0 24 24" fill="none">
-                <circle cx="12" cy="12" r="12" fill="#0d6efd" />
-                <path d="M8 10h8M8 14h5" stroke="#fff" stroke-width="2" stroke-linecap="round" />
-                <circle cx="17" cy="14" r="1.5" fill="#fff" />
-            </svg>
-        </button>
-    </div>
+    <div class="chatbot-container">
+        <div id="chatbot-button">💬</div>
 
-    <!-- Chatbot Dialog -->
-    <div id="chatbot-dialog">
-        <div class="chatbot-header">
-            <span>Chatbot hỗ trợ</span>
-            <button id="chatbot-close">&times;</button>
-        </div>
-        <div class="chatbot-body">
-            <div class="chatbot-message">Xin chào! Tôi có thể giúp gì cho bạn?</div>
-            <!-- Thêm nội dung chat ở đây -->
-        </div>
-        <div class="chatbot-footer">
-            <input type="text" class="chatbot-input" placeholder="Nhập câu hỏi...">
-            <button class="chatbot-send">Gửi</button>
+        <div id="chatbot-window">
+            <div class="chatbot-header">
+                <div class="chat-avatar">F</div>
+                <div class="chat-info">
+                    <strong>Chatbot hỗ trợ</strong>
+                    <span>October 15, 2024</span>
+                </div>
+                <button class="chat-close" id="chatbot-close">&times;</button>
+            </div>
+            <div class="chatbot-body">
+                <div class="bot-message">Xin chào 👋! Tôi có thể giúp gì cho bạn?</div>
+            </div>
+            <div class="chatbot-footer">
+                <input type="text" id="chatbot-input" placeholder="Nhập tin nhắn..." />
+                <button id="chatbot-send">Gửi</button>
+            </div>
         </div>
     </div>
 
-
+    <script>
+        const USER_ID = {{ auth()->id() ?? 'null' }};
+        console.log("User ID:", USER_ID);
+    </script>
+    <script src="{{ asset('js/index-chatbot.js') }}"></script>
     <script src="{{ asset('js/index-filter.js') }}"></script>
     <script src="{{ asset('js/index.js') }}"></script>
+    <script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
+    <script src="{{ asset('js/swiper.js') }}"></script>
 @endsection

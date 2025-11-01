@@ -12,9 +12,9 @@ body {
     background-color: #ffffff;
 }
 
-.container {
-    max-width: 1200px;
-    margin: 0 auto;
+.header-container {
+    max-width: 100vw;
+    margin: 0;
     padding: 0 1rem;
 }
 
@@ -31,6 +31,7 @@ body {
     .desktop-only {
         display: block;
     }
+
     .mobile-only {
         display: none;
     }
@@ -104,8 +105,8 @@ body {
 .header-content {
     display: flex;
     align-items: center;
-    justify-content: space-between;
-    height: 4rem;
+    justify-content: space-evenly;
+    height: 70px;
 }
 
 .header-left {
@@ -147,12 +148,13 @@ body {
 .nav-link {
     text-decoration: none;
     color: white !important;
+    font-size: 1.4rem !important;
     font-weight: 500;
-    transition: color 0.3s ease;
+    transition: all 0.3s ease;
 }
 
 .nav-link:hover {
-    color: #0ea5e9;
+    color: #0ea5e9 !important;
 }
 
 .header-actions {
@@ -172,8 +174,9 @@ body {
     padding: 0.5rem 0.75rem 0.5rem 2.5rem;
     border: 1px solid #d1d5db;
     border-radius: 0.5rem;
-    background: rgba(249, 250, 251, 0.5);
+    background: transparent;
     font-size: 0.875rem;
+    color: white;
 }
 
 .search-btn {
@@ -184,7 +187,8 @@ body {
     cursor: pointer;
 }
 
-.cart-btn, .user-btn {
+.cart-btn,
+.user-btn {
     position: relative;
     background: none;
     border: none;
@@ -397,172 +401,6 @@ body {
     color: white;
 }
 
-
-
-
-/* Deal of the Day */
-.deal-section {
-    padding: 4rem 0;
-    background: linear-gradient(135deg, #ea580c, #dc2626);
-    color: white;
-    position: relative;
-    overflow: hidden;
-}
-
-.deal-section::before {
-    content: '';
-    position: absolute;
-    inset: 0;
-    background: rgba(0, 0, 0, 0.1);
-}
-
-.deal-header {
-    text-align: center;
-    margin-bottom: 2rem;
-    position: relative;
-    z-index: 10;
-}
-
-.deal-title {
-    font-size: 2.5rem;
-    font-weight: 800;
-    margin-bottom: 1rem;
-}
-
-.deal-subtitle {
-    font-size: 1.125rem;
-    color: rgba(255, 255, 255, 0.9);
-}
-
-.deal-card {
-    display: grid;
-    grid-template-columns: 1fr;
-    gap: 2rem;
-    align-items: center;
-    background: rgba(255, 255, 255, 0.1);
-    backdrop-filter: blur(10px);
-    border-radius: 1rem;
-    padding: 2rem;
-    max-width: 64rem;
-    margin: 0 auto;
-    position: relative;
-    z-index: 10;
-}
-
-@media (min-width: 1024px) {
-    .deal-card {
-        grid-template-columns: 1fr 1fr;
-    }
-}
-
-.deal-image {
-    position: relative;
-    text-align: center;
-}
-
-.deal-image img {
-    max-width: 20rem;
-    width: 100%;
-    height: auto;
-    border-radius: 1rem;
-    box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
-}
-
-.flash-badge {
-    position: absolute;
-    top: 1rem;
-    right: 1rem;
-    background: #fbbf24;
-    color: #000;
-    padding: 0.5rem 0.75rem;
-    border-radius: 0.5rem;
-    font-size: 0.75rem;
-    font-weight: 700;
-}
-
-.deal-content {
-    color: white;
-}
-
-.deal-product-title {
-    font-size: 2rem;
-    font-weight: 700;
-    margin-bottom: 0.5rem;
-}
-
-.deal-rating {
-    display: flex;
-    align-items: center;
-    gap: 0.5rem;
-    margin-bottom: 1rem;
-}
-
-.deal-description {
-    color: rgba(255, 255, 255, 0.9);
-    line-height: 1.6;
-    margin-bottom: 1.5rem;
-}
-
-.deal-pricing {
-    margin-bottom: 1.5rem;
-}
-
-.deal-price {
-    font-size: 2rem;
-    font-weight: 700;
-    display: block;
-}
-
-.deal-original {
-    color: rgba(255, 255, 255, 0.7);
-    text-decoration: line-through;
-    font-size: 1.25rem;
-}
-
-.savings {
-    background: #fbbf24;
-    color: #000;
-    padding: 0.25rem 0.75rem;
-    border-radius: 9999px;
-    font-size: 0.875rem;
-    font-weight: 700;
-    display: inline-block;
-    margin-top: 0.5rem;
-}
-
-.countdown {
-    margin-bottom: 2rem;
-}
-
-.countdown-label {
-    font-weight: 500;
-    margin-bottom: 1rem;
-}
-
-.countdown-timer {
-    display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    gap: 1rem;
-    text-align: center;
-}
-
-.time-unit {
-    background: rgba(255, 255, 255, 0.2);
-    border-radius: 0.75rem;
-    padding: 0.75rem;
-}
-
-.time-unit span {
-    display: block;
-    font-size: 1.5rem;
-    font-weight: 700;
-}
-
-.time-unit label {
-    font-size: 0.875rem;
-    color: rgba(255, 255, 255, 0.7);
-}
-
 /* Footer */
 .footer {
     background: #0f172a;
@@ -742,27 +580,135 @@ body {
 
 /* Responsive Design */
 @media (max-width: 767px) {
-    .container {
+    .header-container {
         padding: 0 0.75rem;
     }
-    
+
     .hero {
         padding: 3rem 0;
     }
-    
+
     .hero-title {
         font-size: 2.5rem;
     }
-    
+
     .section-title {
         font-size: 1.75rem;
     }
-    
+
     .deal-title {
         font-size: 2rem;
     }
-    
-    .products, .categories {
+
+    .products,
+    .categories {
         padding: 3rem 0;
     }
+}
+
+/* Search styles */
+.search-results {
+    position: absolute;
+    top: 110%;
+    right: 0;
+    background: transparent;
+    -webkit-backdrop-filter: blur(6px) saturate(120%);
+    backdrop-filter: blur(6px) saturate(120%);
+    border-radius: 8px;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.12);
+    border: 1px solid #eee;
+    z-index: 100;
+    max-height: 720px;
+    overflow-y: auto;
+    display: none;
+    padding: 8px 0;
+    width: 30vw;
+    opacity: 0;
+    transform: translateY(10px);
+    transition: all 1.2s ease !important;
+}
+
+.search-results.active {
+    opacity: 1;
+    transform: translateY(0);
+    pointer-events: auto;
+}
+
+
+.result-item::before {
+    content: "";
+    position: absolute;
+    inset: 0 !important;
+    background: rgba(20, 20, 20, 0.9);
+    z-index: -1;
+    pointer-events: none;
+}
+
+.result-title {
+    font-weight: 600;
+    color: white;
+    margin-bottom: 4px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.result-price {
+    color: #d32f2f;
+    font-weight: 600;
+    font-size: 0.95rem;
+    margin-top: 4px;
+    align-self: flex-end;
+}
+
+/* Đảm bảo nội dung nằm trên pseudo-element */
+.search-results>* {
+    position: relative;
+    z-index: 1;
+}
+
+.search-results .result-item {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 10px 14px;
+    border-bottom: 1px solid #eee;
+    transition: background 0.2s, transform 0.15s;
+    cursor: pointer;
+    min-height: 10rem;
+}
+
+.result-info {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+}
+
+
+.search-results .result-item:hover {
+    background: #565a68;
+}
+
+.result-thumb img {
+    width: 70px;
+    height: 70px;
+    object-fit: cover;
+    border-radius: 8px;
+    flex-shrink: 0;
+}
+
+.search-results .no-result {
+    padding: 10px 18px;
+    color: white;
+    font-style: italic;
+}
+
+.search-results .no-result::before {
+    content: "";
+    position: absolute;
+    inset: 0 !important;
+    background: rgba(20, 20, 20, 0.9);
+    z-index: -1;
+    pointer-events: none;
 }

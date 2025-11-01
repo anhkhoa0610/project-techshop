@@ -71,7 +71,8 @@
                                     data-volume-sold="{{ $product->volume_sold }}"
                                     data-release-date="{{ $product->release_date }}"
                                     data-category-name="{{ $product->category->category_name ?? '' }}"
-                                    data-supplier-name="{{ $product->supplier->name ?? '' }}">
+                                    data-supplier-name="{{ $product->supplier->name ?? '' }}"
+                                    data-embed-url-review="{{ $product->embed_url_review ?? '' }}">
                                     <td>{{ $product->product_id }}</td>
                                     <td>{{ $product->product_name }}</td>
                                     <td>
@@ -181,6 +182,7 @@
                                     </select>
                                     <div class="text-danger error-message" id="error_edit_category_id"></div>
                                 </div>
+
                             </div>
 
                             <!-- Cột phải -->
@@ -212,6 +214,12 @@
                                     <label for="warranty_period">Bảo hành</label>
                                     <input type="number" class="form-control" id="warranty_period" name="warranty_period">
                                     <div class="text-danger error-message" id="error_edit_warranty_period"></div>
+                                </div>
+
+                                <div class="form-group">
+                                    <label for="embed_url_review">Link review</label>
+                                    <input type="text" class="form-control" id="embed_url_review" name="embed_url_review">
+                                    <div class="text-danger error-message" id="error_edit_embed_url_review"></div>
                                 </div>
 
                             </div>
@@ -289,6 +297,7 @@
                                     </select>
                                     <div class="text-danger error-message" id="error_add_category_id"></div>
                                 </div>
+
                             </div>
                             <!-- Cột phải -->
                             <div class="col-md-6">
@@ -321,6 +330,14 @@
                                         name="warranty_period">
                                     <div class="text-danger error-message" id="error_add_warranty_period"></div>
                                 </div>
+
+                                <div class="form-group">
+                                    <label for="add_embed_url_review">Link review</label>
+                                    <input type="text" class="form-control" id="add_embed_url_review"
+                                        name="embed_url_review">
+                                    <div class="text-danger error-message" id="error_add_embed_url_review"></div>
+                                </div>
+
                             </div>
                         </div>
                     </div>
@@ -382,6 +399,11 @@
                                     <div class="row">
                                         <div class="col-4 font-weight-bold text-secondary">Mô tả:</div>
                                         <div class="col-8" id="view_description"></div>
+                                    </div>
+
+                                    <div class="row">
+                                        <div class="col-4 font-weight-bold text-secondary">Link Review</div>
+                                        <div class="col-8" id="view_embed_url_review"></div>
                                     </div>
                                 </div>
                             </div>

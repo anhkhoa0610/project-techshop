@@ -27,3 +27,5 @@ Dockerfile
 laravel
 .dockerignore
 nginx/conf.d/app.conf
+package-lock.json
+/origin)

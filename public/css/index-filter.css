@@ -16,6 +16,7 @@
 }
 
 .filter-pagination:hover {
+    transform: translateY(-6px) scale(1.02);
     box-shadow:
         0 0 15px 7px rgba(109, 142, 214, 0.8),
         0 0 30px 15px rgba(67, 55, 136, 0.6),

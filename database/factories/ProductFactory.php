@@ -25,14 +25,15 @@ class ProductFactory extends Factory
         return [
             'product_name'    => $productName,
             'description'     => "Sản phẩm {$productName} là lựa chọn chất lượng trong danh mục {$category->category_name}, được phân phối bởi {$supplier->name}.",
-            'stock_quantity'  => $this->faker->numberBetween(10, 500),
+            'stock_quantity'  => $this->faker->numberBetween(0, 500),
             'price'           => $this->faker->numberBetween(10, 100) * 100000,
-            'cover_image'     => null,
+            'cover_image'     => "dell-remove-bg.png",
             'volume_sold'     => $this->faker->numberBetween(0, 1000),
             'category_id'     => $category->category_id,
             'supplier_id'     => $supplier->supplier_id,
             'warranty_period' => $this->faker->numberBetween(6, 36),
             'release_date'    => $this->faker->date(),
+            'embed_url_review' => 'https://www.youtube.com/embed/Pc1P-Xch0YU',
             'created_at'      => now(),
             'updated_at'      => now(),
         ];

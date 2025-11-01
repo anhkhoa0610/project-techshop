@@ -1,37 +1,62 @@
 @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap');
 
-* {
-  margin: 0;
-  padding: 0;
-  box-sizing: border-box;
-  font-family: "Poppins", sans-serif;
+
+.background-layout::before {
+  content: "" !important;
+  position: absolute !important;
+  inset: 0 !important;
+  /* top:0; right:0; bottom:0; left:0 */
+  background-image: url('/images/background.jpg') !important;
+  background-size: cover !important;
+  background-repeat: no-repeat !important;
+  background-position: center center !important;
+  z-index: -1 !important;
+  transform-origin: center center !important;
+  will-change: transform !important;
+  animation: kenburns 18s ease-in-out infinite alternate !important;
 }
 
+.background-layout>* {
+  position: relative !important;
+  z-index: 2 !important;
+}
+
+@keyframes kenburns {
+  0% {
+    transform: scale(1) translate(0, 0);
+  }
+
+  50% {
+    transform: scale(1.12) translate(-2%, -2%);
+  }
+
+  100% {
+    transform: scale(1) translate(0, 0);
+  }
+}
 
 .cartp-container {
-  background: #fff;
+
+  background: transparent !important;
+  -webkit-backdrop-filter: blur(6px) saturate(120%) !important;
+  backdrop-filter: blur(6px) saturate(120%) !important;
+  color: white;
+  border: 1px solid rgb(21, 117, 155);
   width: 100%;
   max-width: 900px;
   border-radius: 20px;
-  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.08);
   overflow: hidden;
-  animation: cartpFadeIn 0.6s ease;
-  margin: 80px auto; 
+  margin: 80px auto;
+ min-height: 50vh;
+  margin-top: 120px;
 }
 
-@keyframes cartpFadeIn {
-  from {
-    opacity: 0;
-    transform: translateY(10px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
-}
+
 
 .cartp-header {
-  background: linear-gradient(90deg, #007bff, #00b4d8);
+   background: transparent !important;
+  -webkit-backdrop-filter: blur(6px) saturate(120%) !important;
+  backdrop-filter: blur(6px) saturate(120%) !important;
   color: #fff;
   padding: 20px;
   font-size: 26px;
@@ -44,9 +69,10 @@
   padding: 20px 30px;
 }
 
+/* ✅ Thêm checkbox cột đầu tiên */
 .cartp-item {
   display: grid;
-  grid-template-columns: 90px 1fr 120px 80px 50px;
+  grid-template-columns: 40px 90px 1fr 120px 80px 50px;
   align-items: center;
   gap: 15px;
   border-bottom: 1px solid #eee;
@@ -55,8 +81,17 @@
 }
 
 .cartp-item:hover {
-  background: #f8fbff;
+  background: #bdbdbd;
   border-radius: 12px;
+  opacity: 1.2;
+}
+
+.cartp-select {
+  width: 18px;
+  height: 18px;
+  accent-color: #007bff;
+  cursor: pointer;
+  transform: scale(1.2);
 }
 
 .cartp-item img {
@@ -67,13 +102,13 @@
   box-shadow: 0 3px 10px rgba(0, 0, 0, 0.1);
 }
 
-.cartp-item h3 {
+.cartp-info h3 {
   font-size: 18px;
   color: #333;
   margin-bottom: 5px;
 }
 
-.cartp-item p {
+.cartp-info p {
   color: #777;
   font-size: 14px;
 }
@@ -114,17 +149,21 @@
 }
 
 .cartp-footer {
-  background: #f8fbff;
-  padding: 25px 30px;
+   background: transparent !important;
+  -webkit-backdrop-filter: blur(6px) saturate(120%) !important;
+  backdrop-filter: blur(6px) saturate(120%) !important;
+  padding: 60px 40px;
   text-align: right;
   border-top: 1px solid #eee;
+  
+  
 }
 
 .cartp-total {
   font-size: 20px;
   font-weight: 600;
-  margin-bottom: 10px;
-  color: #222;
+  margin-bottom: 12px;
+  color: #ffffff;
 }
 
 .cartp-checkout {
@@ -147,18 +186,21 @@
 
 @media (max-width: 768px) {
   .cartp-item {
-    grid-template-columns: 70px 1fr 60px;
+    grid-template-columns: 25px 70px 1fr 60px;
     grid-template-areas:
-      "img name remove"
-      "img quantity price";
+      "checkbox img name remove"
+      "checkbox img quantity price";
+  }
+
+  .cartp-select {
+    grid-area: checkbox;
   }
 
   .cartp-item img {
     grid-area: img;
   }
 
-  .cartp-item h3,
-  .cartp-item p {
+  .cartp-info {
     grid-area: name;
   }
 
@@ -174,4 +216,36 @@
     grid-area: remove;
     text-align: right;
   }
+}
+
+.cartp-footer-buttons {
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+}
+
+.cartp-delete-selected {
+  background: #ff4b5c;
+  color: white;
+  padding: 14px 28px;
+  border: none;
+  border-radius: 10px;
+  font-size: 16px;
+  font-weight: 500;
+  cursor: pointer;
+  box-shadow: 0 4px 12px rgba(255, 75, 92, 0.3);
+  transition: 0.3s;
+}
+
+.cartp-delete-selected:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 18px rgba(255, 75, 92, 0.4);
+}
+.input-error {
+  animation: flashRed 0.4s ease;
+}
+
+@keyframes flashRed {
+  0% { background-color: #ffdede; }
+  100% { background-color: white; }
 }

@@ -13,6 +13,7 @@ document.querySelectorAll('.edit').forEach(function (btn) {
         document.getElementById('warranty_period').value = row.getAttribute('data-warranty-period') || '';
         document.getElementById('volume_sold').value = row.getAttribute('data-volume-sold') || '';
         document.getElementById('release_date').value = row.getAttribute('data-release-date') || '';
+        document.getElementById('embed_url_review').value = row.getAttribute('data-embed-url-review') || '';
 
         const imageFile = row.getAttribute('data-cover-image');
         const preview = document.getElementById('preview_image');
@@ -65,6 +66,7 @@ document.getElementById('editProductForm').addEventListener('submit', async func
     formData.append('supplier_id', document.getElementById('supplier_id').value);
     formData.append('warranty_period', document.getElementById('warranty_period').value);
     formData.append('release_date', document.getElementById('release_date').value);
+    formData.append('embed_url_review', document.getElementById('embed_url_review').value);
     const fileInput = document.getElementById('cover_image');
     if (fileInput.files.length > 0) {
         formData.append('cover_image', fileInput.files[0]);
@@ -141,6 +143,7 @@ document.getElementById('addProductForm').addEventListener('submit', async funct
     formData.append('supplier_id', document.getElementById('add_supplier_id').value);
     formData.append('warranty_period', document.getElementById('add_warranty_period').value);
     formData.append('release_date', document.getElementById('add_release_date').value);
+    formData.append('embed_url_review', document.getElementById('add_embed_url_review').value);
     const fileInput = document.getElementById('add_cover_image');
     if (fileInput.files.length > 0) {
         formData.append('cover_image', fileInput.files[0]);
@@ -219,6 +222,7 @@ document.querySelectorAll('.view').forEach(function (btn) {
         document.getElementById('view_warranty_period').textContent = row.getAttribute('data-warranty-period') || '';
         document.getElementById('view_release_date').textContent = row.getAttribute('data-release-date') || '';
         document.getElementById('view_description').innerHTML = row.getAttribute('data-description') || '';
+        document.getElementById('view_embed_url_review').innerHTML = row.getAttribute('data-embed-url-review') || '';
         $('#viewProductModal').modal('show');
     });
 });
