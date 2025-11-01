@@ -148,8 +148,3 @@ async function handleAddToCart(button) {
         });
     }
 }
-
-
-addCartButtons.forEach(button => {
-    button.addEventListener("click", debounce(() => handleAddToCart(button), 500));
-});

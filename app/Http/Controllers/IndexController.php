@@ -57,8 +57,9 @@ class IndexController extends Controller
                         ->first();
 
         if ($cartItem) {
-            $cartItem->quantity += $data['quantity'];
-            $cartItem->save();
+            return response()->json([
+                'message' => 'Sản phẩm đã có trong giỏ hàng!'
+            ], 400);
         } else {
             CartItem::create($data);
         }
