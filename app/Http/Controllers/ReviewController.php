@@ -175,7 +175,7 @@ class ReviewController extends Controller
         ]);
 
         return redirect()
-            ->route('crud_review.index')
+            ->route('reviews.index')
             ->with('success', 'Đánh giá đã được cập nhật thành công.');
     }
 
