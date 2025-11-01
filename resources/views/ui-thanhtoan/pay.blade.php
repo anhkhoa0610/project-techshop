@@ -44,7 +44,7 @@
                                         value="{{ old('fullname', $user->full_name ?? '') }}" placeholder="Nguyễn Văn A"
                                         required>
                                 </div>
-                            
+
                                 <div>
                                     <label for="phone">Số điện thoại</label>
                                     <input id="phone" name="phone" type="tel"
@@ -65,7 +65,7 @@
 
                             <div style="margin-bottom:12px">
                                 <label for="address">Địa chỉ</label>
-                                <input id="address" type="text"  placeholder="Số nhà, tên đường" required>
+                                <input id="address" type="text" placeholder="Số nhà, tên đường" required>
                             </div>
                             <div class="two-col">
                                 <div>
@@ -86,6 +86,12 @@
                                 <select id="ward" required>
                                     <option value="">Chọn phường/xã</option>
                                 </select>
+                            </div>
+                        </div>
+                        <div class="section">
+                            <div style="margin-top:12px">
+                                <label for="vocher">Vocher</label>
+                                <input id="vocher" name="vocher" type="text" value="" placeholder="Nhập Vocher">
                             </div>
                         </div>
 
@@ -157,40 +163,39 @@
                         $selectedCartItems = $selectedCartItems ?? collect();
                         $subtotal = 0;
                     @endphp
-
-                    @forelse($cartItems as $item)
-                        @php
-                            // ... (Logic tính toán của bạn ở đây)
-                            $product = $item->product ?? (object) ['product_name' => 'Không tìm thấy', 'image' => 'https://via.placeholder.com/64', 'price' => 0];
-                            $quantity = $item->quantity ?? 1;
-                            $price = $product->price ?? 0;
-                            $itemTotal = $price * $quantity;
-                            $subtotal += $itemTotal;
-                            $discountAmount = $subtotal * 0.2; // Giảm giá 20%
-                            $finalSubtotal = $subtotal - $discountAmount;
-                        @endphp
-                        <div class="item">
-                            <div class="thumb"><img src="/uploads/{{ $item->product->cover_image}}"></div>
-                            <div>
-                                <div class="title">{{ $product->product_name }}</div>
-                                <div class="meta">Số lượng: {{ $quantity }}</div>
+                    <div class="items-list">
+                        @forelse($cartItems as $item)
+                            <div class="item">
+                                <div class="thumb"><img src="/uploads/{{ $item->product->cover_image}}"></div>
+                                <div>
+                                    <div class="title">{{ $item->product->name }}</div>
+                                    <div class="meta">Số lượng: {{ $item->quantity }}</div>
+                                </div>
+                                <div class="price">
+                                    {{ number_format($item->product->price * $item->quantity, 0, ',', '.') }}₫</div>
                             </div>
-                            <div class="price">{{ number_format($itemTotal, 0, ',', '.') }}₫</div>
-                        </div>
-                    @empty
-                        <div class="item">
-                            <p>Không có sản phẩm nào được chọn. Vui lòng quay lại <a href="/cart">Giỏ hàng</a>.</p>
-                        </div>
-                    @endforelse
-                    <div class="row">
-                        <div style="font-weight: 600; color: white;">Giảm giá TDC (20%)</div>
-                        <div style="font-weight: 600; color: white;">-
-                            {{ number_format($discountAmount, 0, ',', '.') }}₫
-                        </div>
+                        @empty
+                            <div class="item">
+                                <p>Không có sản phẩm nào được chọn. Vui lòng quay lại <a href="/cart">Giỏ hàng</a>.</p>
+                            </div>
+                        @endforelse
                     </div>
-                    <div class="row total">
+                    <div class="item-text" id="voucher-discount" style="display: none;">
+                        <div style="font-weight: 600; color: white;">Giảm giá voucher</div>
+                        <div id="voucher-amount" style="font-weight: 600; color: white;">-0₫</div>
+                        
+                    </div>
+                    @php
+                        $total = 0;
+                        foreach ($cartItems as $item) {
+                            $total += ($item->product->price ?? 0) * $item->quantity;
+                        }
+                    @endphp
+                    <div class="item-text total">
                         <div style="color: white;">Tổng phải trả</div>
-                        <div style="color: white;">{{ number_format($finalSubtotal, 0, ',', '.') }}₫</div>
+                        <div id="total-price" style="color: white;">
+                            {{ number_format($total, 0, ',', '.') }}₫
+                        </div>
                     </div>
                     <button class="pay-btn" type="button" id="payBtn">Thanh toán & Đặt hàng</button>
                 </aside>
@@ -212,6 +217,6 @@
     const momoUrl = "{{ route('momo.payment') }}";
     const vnpayUrl = "{{ route('vnpay.payment') }}";
     const csrfToken = "{{ csrf_token() }}";
-    const totalAmount = "{{ $finalSubtotal ?? 0 }}";
+    const totalAmount = "{{ $total ?? 0 }}";
 </script>
 <script src="{{ asset('js/pay.js') }}"></script>

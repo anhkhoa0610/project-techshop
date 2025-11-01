@@ -67,6 +67,8 @@
 
 .cartp-items {
   padding: 20px 30px;
+    max-height: 460px; /* vừa đủ cho ~5 sản phẩm (tùy chiều cao mỗi item) */
+  overflow-y: auto;
 }
 
 /* ✅ Thêm checkbox cột đầu tiên */
