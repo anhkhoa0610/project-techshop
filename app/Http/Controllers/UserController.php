@@ -28,7 +28,7 @@ class UserController extends Controller
         ->when($roleFilter, function($query) use ($roleFilter) {
             return $query->where('role', $roleFilter);
         })
-
+        ->orderBy('user_id', 'desc')
         ->latest()
         ->paginate(10);
 
