@@ -31,7 +31,7 @@ class ReviewController extends Controller
             });
         }
 
-        $reviews = $query->orderBy('review_date', 'desc')->paginate(10);
+        $reviews = $query->orderBy('review_id', 'desc')->paginate(10);
 
         if ($request->ajax()) {
             return response()->json([
