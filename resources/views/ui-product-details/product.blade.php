@@ -113,27 +113,29 @@
                 <div class="col-md-9 filter-by-star">
                     <div class="groub-button-filter">
                         <button class="button-filter-star active" data-rating="">Tất cả</button>
-                        <p>Bình luận: ({{ $reviewSummary['all'] ?? 0 }})</p>
+                        <p>Bình luận: (<span class="review-count" data-rating="all">{{ $reviewSummary['all'] ?? 0 }}</span>)
+                        </p>
                     </div>
                     <div class="groub-button-filter">
                         <button class="button-filter-star" data-rating="1">1 sao</button>
-                        <p>Bình luận: ({{ $reviewSummary['1'] ?? 0 }})</p>
+                        <p>Bình luận: (<span class="review-count" data-rating="1">{{ $reviewSummary['1'] ?? 0 }}</span>)</p>
                     </div>
                     <div class="groub-button-filter">
                         <button class="button-filter-star " data-rating="2">2 sao</button>
-                        <p>Bình luận: ({{ $reviewSummary['2'] ?? 0 }})</p>
+                        <p>Bình luận: (<span class="review-count" data-rating="2">{{ $reviewSummary['2'] ?? 0 }})</span></p>
                     </div>
                     <div class="groub-button-filter">
                         <button class="button-filter-star " data-rating="3">3 sao</button>
-                        <p>Bình luận: ({{ $reviewSummary['3'] ?? 0 }})</p>
+                        <p>Bình luận: (<span class="review-count" data-rating="3">{{ $reviewSummary['3'] ?? 0 }})</span></p>
                     </div>
                     <div class="groub-button-filter">
                         <button class="button-filter-star " data-rating="4">4 sao</button>
-                        <p>Bình luận: ({{ $reviewSummary['4'] ?? 0 }})</p>
+                        <p>Bình luận: (<span class="review-count" data-rating="4">{{ $reviewSummary['4'] ?? 0 }})</span></p>
                     </div>
                     <div class="groub-button-filter">
                         <button class="button-filter-star " data-rating="5">5 sao</button>
-                        <p class="text-center">Bình luận: ({{ $reviewSummary['5'] ?? 0 }})</p>
+                        <p class="text-center">Bình luận: (<span class="review-count"
+                                data-rating="5">{{ $reviewSummary['5'] ?? 0 }}</span>)</p>
                     </div>
 
                 </div>
@@ -209,29 +211,7 @@
             });
         });
 
-        // Utility: tagged template to remove common indentation from multiline template literals
-        // Usage: dedent`\n    <div>...\n    </div>\n`;
-        function dedent(strings, ...values) {
-            // Build the full string
-            let raw = strings.raw ? strings.raw : strings;
-            let result = '';
-            for (let i = 0; i < raw.length; i++) {
-                result += raw[i];
-                if (i < values.length) result += values[i];
-            }
 
-            // Split into lines and remove leading/trailing empty lines
-            let lines = result.split('\n');
-            while (lines.length && lines[0].trim() === '') lines.shift();
-            while (lines.length && lines[lines.length - 1].trim() === '') lines.pop();
-
-            // Determine minimum indentation (excluding empty lines)
-            const indents = lines.filter(l => l.trim()).map(l => l.match(/^\s*/)[0].length);
-            const minIndent = indents.length ? Math.min(...indents) : 0;
-
-            // Remove the common indent
-            return lines.map(l => l.slice(minIndent)).join('\n');
-        }
 
         const swiper_wrapper = document.querySelector('.swiper-wrapper');
         const swiper_button_prev = document.querySelector('.swiper-button-prev');
@@ -340,19 +320,19 @@
                                     hour: '2-digit', minute: '2-digit'
                                 });
 
-                            return dedent`
-                                <div class="review-display border-bottom py-2">
-                                    <img class="user-avatar" src="/images/user-icon.jpg" alt="">
-                                    <div class="user-review">
-                                        <div class="d-flex">
-                                            <strong class="review-info">${review.user.full_name}</strong>
-                                            <p class="review-info ms-5">| ${formattedDate}</p>
-                                        </div>
-                                        <p class="review-info">${stars}</p>
-                                        <p class="review-info">${review.comment}</p>
-                                    </div>
-                                </div>
-                            `;
+                            return `
+                         <div class="review-display border-bottom py-2">
+                             <img class="user-avatar" src="/images/user-icon.jpg" alt="">
+                             <div class="user-review">
+                                 <div class="d-flex">
+                                     <strong class="review-info">${review.user.full_name}</strong>
+                                     <p class="review-info ms-5">| ${formattedDate}</p>
+                                 </div>
+                                 <p class="review-info">${stars}</p>
+                                 <p class="review-info">${review.comment}</p>
+                            </div>
+                        </div>
+                                    `;
                         }).join('');
 
                         // Render thanh phân trang
@@ -362,15 +342,15 @@
                             const activeClass = link.active ? 'active' : '';
                             const disabled = link.url === null ? 'disabled' : '';
 
-                            return dedent`
-                                <button
-                                    class="btn btn-sm btn-outline-secondary mx-1 ${activeClass}"
-                                    ${disabled ? 'disabled' : ''}
-                                    data-url="${link.url || '#'}"
-                                >
-                                    ${label}
-                                </button>
-                            `;
+                            return `
+                                        <button
+                                            class="btn btn-sm btn-outline-secondary mx-1 ${activeClass}"
+                                            ${disabled ? 'disabled' : ''}
+                                            data-url="${link.url || '#'}"
+                                        >
+                                            ${label}
+                                        </button>
+                                    `;
                         }).join('');
 
                         // Gán sự kiện click cho từng nút
@@ -403,27 +383,58 @@
 
             // Tải mặc định trang đầu tiên
             loadReviews(apiBase);
-        });
 
-        // xử lý submit form thêm đánh giá
-        document.getElementById('form-post-review').addEventListener('submit', async function (e) {
-            e.preventDefault();
-            const formData = new FormData(this);
-            console.log(Object.fromEntries(formData));
-            const response = await fetch('/api/product/{{ $product->product_id }}/reviews', {
-                method: 'POST',
-                headers: {
-                    'Accept': 'application/json',
-                    'X-CSRF-TOKEN': '{{ csrf_token() }}',
-                },
-                body: formData
+            // xử lý submit form thêm đánh giá
+            document.getElementById('form-post-review').addEventListener('submit', async function (e) {
+                e.preventDefault();
+                const formData = new FormData(this);
+                const response = await fetch('/api/product/{{ $product->product_id }}/reviews', {
+                    method: 'POST',
+                    headers: {
+                        'Accept': 'application/json',
+                        'X-CSRF-TOKEN': '{{ csrf_token() }}',
+                    },
+                    body: formData
+                });
+                if (response.ok) {
+                    Swal.fire('thành công', 'đánh giá của bạn đã được lưu lại', 'success');
+
+                    // Lấy rating từ form (nếu input có name="rating")
+                    const rating = formData.get('rating');
+
+                    // xử lý tăng số lượng đánh giá hiển thị ở từng mức sao
+                    const span = document.querySelector(`.review-count[data-rating="${rating}"]`);
+                    if (span) {
+                        span.textContent = parseInt(span.textContent) + 1; // tăng lên 1
+                    }
+
+                    // xử lý tăng số lượng đánh giá hiển thị ở phần tất cả
+                    const allSpan = document.querySelector('.review-count[data-rating=""]');
+                    if (allSpan) {
+                        allSpan.textContent = parseInt(allSpan.textContent) + 1;
+                    }
+
+                    // Cập nhật nút lọc sao đang active đúng với số sao mà user vừa đánh giá
+                    document.querySelectorAll('.button-filter-star').forEach(b => b.classList.remove('active'));
+                    const activeBtn = document.querySelector(`.button-filter-star[data-rating="${rating}"]`);
+                    if (activeBtn) activeBtn.classList.add('active');
+
+                    // Gọi callback hàm để load lại review 
+                    const apiBase = `/api/product/{{ $product->product_id }}/reviews`;
+                    const url = rating ? `${apiBase}?rating=${rating}` : apiBase;
+                    loadReviews(url);
+
+                    // Reset form
+                    this.reset();
+                } else {
+                    const errorData = await response.json();
+                    Swal.fire('Lỗi', 'Lỗi khi gửi đánh giá, vui lòng thử lại sau.', 'error');
+                }
             });
         });
 
+
     </script>
-
-
-
-
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
 @endsection

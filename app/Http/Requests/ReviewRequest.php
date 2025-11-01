@@ -18,7 +18,6 @@ class ReviewRequest extends FormRequest
             'user_id' => 'required|exists:users,user_id',
             'rating' => 'required|integer|min:1|max:5',
             'comment' => 'nullable|string|max:1000',
-            'review_date' => 'required|date|before_or_equal:today',
         ];
     }
 

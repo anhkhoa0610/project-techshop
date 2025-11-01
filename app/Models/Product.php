@@ -140,14 +140,4 @@ class Product extends Model
         return $query->paginate(5);
     }
 
-
-
-
-
-
-
-
-
-
-
 }
