@@ -30,16 +30,32 @@
                     🛒
                     <span class="cart-count">2</span>
                 </button>
-                <button class="user-btn">👤</button>
                 @if (Auth::check())
-                    <span class="me-3">
-                        Xin chào, <strong>{{ Auth::user()->full_name }}</strong>
-                        <form action="{{ route('logout') }}" method="POST" class="d-inline">
-                            @csrf
-                            <button type="submit" class="btn btn-outline-danger btn-sm ms-2">Đăng xuất</button>
-                        </form>
-                    </span>
+                    <div class="user-dropdown">
+                        <button type="button" class="user-toggle" aria-haspopup="true" aria-expanded="false">
+                            <i class="fa-solid fa-user me-2"></i>
+                            <strong>{{ explode(' ', Auth::user()->full_name)[count(explode(' ', Auth::user()->full_name)) - 1] }}</strong>
+                            <i class="fa-solid fa-caret-down ms-2 small caret-icon"></i>
+                        </button>
+
+                        <div class="user-menu" role="menu" aria-hidden="true">
+                            <a href="" class="dropdown-item">
+                                <i class="fa-solid fa-id-card me-2"></i> Tài khoản của tôi
+                            </a>
+
+                            <form action="{{ route('logout') }}" method="POST" class="dropdown-form" role="none">
+                                @csrf
+                                <button type="submit" class="dropdown-item logout-btn">
+                                    <i class="fa-solid fa-right-from-bracket me-2"></i> Đăng xuất
+                                </button>
+                            </form>
+                        </div>
+                    </div>
+
                 @else
+                    <a href="{{ route('register') }}" style="text-decoration: none;">
+                        <button id="BtnLogin" class="login-btn">Đăng ký</button>
+                    </a>
                     <a href="{{ route('login') }}" style="text-decoration: none;">
                         <button id="BtnLogin" class="login-btn desktop-only">Đăng nhập</button>
                     </a>
@@ -48,3 +64,16 @@
         </div>
     </div>
 </header>
+
+<script>
+    const dropdown = document.querySelector('.user-dropdown');
+
+    dropdown.addEventListener('mouseenter', () => {
+        dropdown.classList.add('open');
+    });
+
+    dropdown.addEventListener('mouseleave', () => {
+        dropdown.classList.remove('open');
+    });
+
+</script>
