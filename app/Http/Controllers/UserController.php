@@ -28,7 +28,7 @@ class UserController extends Controller
         ->when($roleFilter, function($query) use ($roleFilter) {
             return $query->where('role', $roleFilter);
         })
-
+        ->orderBy('user_id', 'desc')
         ->latest()
         ->paginate(10);
 
@@ -89,6 +89,14 @@ class UserController extends Controller
         } catch (\Exception $e) {
             return back()->withInput()->with('error', 'Lỗi hệ thống: ' . $e->getMessage());
         }
+    }
+
+    /**
+     * Hiển thị form chỉnh sửa người dùng.
+     */
+    public function edit(User $user)
+    {
+        return view('crud_user.edit', compact('user'));
     }
 
     /**

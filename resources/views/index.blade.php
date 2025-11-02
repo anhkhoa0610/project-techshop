@@ -118,8 +118,25 @@
                         <div class="product-info">
                             <h3 class="product-name"><?= $product->product_name; ?></h3>
                             <div class="product-rating">
-                                <span class="stars">⭐ 4.9</span>
-                                <span class="reviews">(156 đánh giá)</span>
+                                @php
+                                    $rating = round($product->reviews_avg_rating ?? 0, 1);
+                                    $count = $product->reviews_count ?? 0;
+                                @endphp
+
+                                <span class="stars">
+                                    @for ($i = 1; $i <= 5; $i++)
+                                        @if ($i <= $rating)
+                                            <i class="fa fa-star" style="color: #FFD700;"></i>
+                                        @elseif ($i - 0.5 <= $rating)
+                                            <i class="fa fa-star-half-o" style="color: #FFD700;"></i>
+                                        @else
+                                            <i class="fa fa-star-o" style="color: #FFD700;"></i>
+                                        @endif
+                                    @endfor
+                                    <span>{{ $rating }}</span>
+                                </span>
+
+                                <span class="reviews">({{ $count }} đánh giá)</span>
                             </div>
                             <div class="product-price">
                                 <span class="current-price"><?= number_format($product->price, 0, ',', '.'); ?>₫</span>
@@ -127,7 +144,8 @@
                                     class="original-price"><?= number_format($product->original_price, 0, ',', '.'); ?>₫</span>
                             </div>
                         </div>
-                        <button class="btn-add-cart btn btn-primary full-width">🛒 Thêm vào giỏ</button>
+                        <button data-product-id="{{ $product->product_id }}" data-quantity="1"
+                            class="btn-add-cart btn btn-primary full-width">🛒 Thêm vào giỏ</button>
                     </div>
                     <?php endforeach; ?>
                 </div>
@@ -154,14 +172,32 @@
                         <div class="product-info">
                             <h3 class="product-name"><?= $product->product_name; ?></h3>
                             <div class="product-rating">
-                                <span class="stars">⭐ 4.9</span>
-                                <span class="reviews">(156 đánh giá)</span>
+                                @php
+                                    $rating = round($product->reviews_avg_rating ?? 0, 1);
+                                    $count = $product->reviews_count ?? 0;
+                                @endphp
+
+                                <span class="stars">
+                                    @for ($i = 1; $i <= 5; $i++)
+                                        @if ($i <= $rating)
+                                            <i class="fa fa-star" style="color: #FFD700;"></i>
+                                        @elseif ($i - 0.5 <= $rating)
+                                            <i class="fa fa-star-half-o" style="color: #FFD700;"></i>
+                                        @else
+                                            <i class="fa fa-star-o" style="color: #FFD700;"></i>
+                                        @endif
+                                    @endfor
+                                    <span>{{ $rating }}</span>
+                                </span>
+
+                                <span class="reviews">({{ $count }} đánh giá)</span>
                             </div>
                             <div class="product-price">
                                 <span class="current-price"><?= number_format($product->price, 0, ',', '.'); ?>₫</span>
                             </div>
                         </div>
-                        <button class="btn-add-cart btn btn-primary full-width">🛒 Thêm vào giỏ</button>
+                        <button data-product-id="{{ $product->product_id }}" data-quantity="1"
+                            class="btn-add-cart btn btn-primary full-width">🛒 Thêm vào giỏ</button>
                     </div>
                     <?php endforeach; ?>
                 </div>
@@ -199,7 +235,7 @@
                                 <div class="mb-4">
                                     <label for="category" class="form-label fw-semibold">Danh mục</label>
                                     <select class="form-select" id="category" name="category_filter">
-                                        <option value="0">Tất cả</option>
+                                        <option value="">Tất cả</option>
                                         <option value="1">Laptop</option>
                                         <option value="2">Điện thoại</option>
                                         <option value="3">Phụ kiện</option>
@@ -211,7 +247,7 @@
                                 <div class="mb-4">
                                     <label for="supplier" class="form-label fw-semibold">Nhà phân phối</label>
                                     <select class="form-select" id="supplier" name="supplier_filter">
-                                        <option value="0">Tất cả</option>
+                                        <option value="">Tất cả</option>
                                         <option value="1">Apple</option>
                                         <option value="2">Samsung</option>
                                         <option value="3">ASUS</option>
@@ -223,8 +259,8 @@
 
                                 <div class="mb-4">
                                     <label for="rating" class="form-label fw-semibold">Đánh giá</label>
-                                    <select class="form-select" id="rating" name="rating">
-                                        <option value="all">Tất cả</option>
+                                    <select class="form-select" id="rating" name="rating_filter">
+                                        <option value="">Tất cả</option>
                                         <option value="5">⭐️⭐️⭐️⭐️⭐️</option>
                                         <option value="4">⭐️⭐️⭐️⭐️</option>
                                         <option value="3">⭐️⭐️⭐️</option>
@@ -236,22 +272,22 @@
                                 <!-- Tình trạng hàng -->
                                 <div class="mb-4">
                                     <label for="stock_status" class="form-label fw-semibold">Tình trạng hàng</label>
-                                    <select class="form-select" id="stock_status" name="stock_status">
-                                        <option value="all">Tất cả</option>
-                                        <option value="in_stock">Còn hàng</option>
-                                        <option value="out_of_stock">Hết hàng</option>
+                                    <select class="form-select" id="stock_status" name="stock_filter">
+                                        <option value="">Tất cả</option>
+                                        <option value="1">Còn hàng</option>
+                                        <option value="2">Hết hàng</option>
                                     </select>
                                 </div>
 
                                 <!-- Thời gian ra mắt -->
                                 <div class="mb-4">
                                     <label for="release_date" class="form-label fw-semibold">Thời gian ra mắt</label>
-                                    <select class="form-select" id="release_date" name="release_date">
-                                        <option value="all">Tất cả</option>
-                                        <option value="last_30_days">30 ngày qua</option>
-                                        <option value="last_90_days">90 ngày qua</option>
-                                        <option value="last_6_months">6 tháng qua</option>
-                                        <option value="last_1_year">1 năm qua</option>
+                                    <select class="form-select" id="release_date" name="release_filter">
+                                        <option value="">Tất cả</option>
+                                        <option value="30">30 ngày qua</option>
+                                        <option value="90">90 ngày qua</option>
+                                        <option value="180">6 tháng qua</option>
+                                        <option value="365">1 năm qua</option>
                                     </select>
                                 </div>
 
@@ -468,6 +504,10 @@
         </div>
     </div>
 
+    <script>
+        const USER_ID = {{ auth()->id() ?? 'null' }};
+        console.log("User ID:", USER_ID);
+    </script>
     <script src="{{ asset('js/index-chatbot.js') }}"></script>
     <script src="{{ asset('js/index-filter.js') }}"></script>
     <script src="{{ asset('js/index.js') }}"></script>

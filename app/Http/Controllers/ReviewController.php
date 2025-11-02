@@ -31,7 +31,7 @@ class ReviewController extends Controller
             });
         }
 
-        $reviews = $query->orderBy('review_date', 'desc')->paginate(10);
+        $reviews = $query->orderBy('review_id', 'desc')->paginate(10);
 
         if ($request->ajax()) {
             return response()->json([
@@ -175,7 +175,7 @@ class ReviewController extends Controller
         ]);
 
         return redirect()
-            ->route('crud_review.index')
+            ->route('reviews.index')
             ->with('success', 'Đánh giá đã được cập nhật thành công.');
     }
 

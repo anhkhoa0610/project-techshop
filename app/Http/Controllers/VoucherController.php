@@ -116,4 +116,33 @@ class VoucherController extends Controller
             ], 500);
         }
     }
+
+    // Kiểm tra mã voucher
+    public function checkVoucher(Request $request)
+    {
+        $code = $request->input('vocher');
+        $voucher = Voucher::where('code', $code)->first();
+        if ($voucher && $voucher->status === 'active') {
+            if($code == $voucher->code){
+                if($voucher->discount_type == 'percent'){
+                    $discount = $voucher->discount_value; // Lấy giá trị phần trăm giảm giá
+                } elseif($voucher->discount_type == 'amount'){
+                    $discount = $voucher->discount_value; // Lấy giá trị số tiền giảm giá
+                } else{
+                    $discount = 0; // Trường hợp không xác định loại giảm giá
+                }
+            }
+            return response()->json([
+                'valid' => true,
+                'discount_type' => $voucher->discount_type,
+                'discount_value' => $discount,
+                'message' => 'Voucher hợp lệ!'
+            ]);
+        } else {
+            return response()->json([
+                'valid' => false,
+                'message' => 'Voucher không hợp lệ hoặc đã hết hạn.'
+            ]);
+        }
+    }
 }

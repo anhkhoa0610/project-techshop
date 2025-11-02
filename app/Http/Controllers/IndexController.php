@@ -3,14 +3,25 @@
 namespace App\Http\Controllers;
 use App\Models\Product;
 use Illuminate\Http\Request;
+use App\Models\CartItem;
+use App\Http\Requests\CartRequest;
 
 class IndexController extends Controller
 {
     public function index()
     {
-        $topProducts = Product::orderByDesc('volume_sold')->limit(4)->get();
-        $newProducts = Product::orderByDesc('release_date')->limit(4)->get();
-        $allProducts = Product::all();
+        $topProducts = Product::withAvg('reviews', 'rating')
+            ->withCount('reviews')
+            ->orderByDesc('volume_sold')
+            ->limit(4)
+            ->get();
+        $newProducts = Product::withAvg('reviews', 'rating')
+            ->withCount('reviews')
+            ->orderByDesc('release_date')
+            ->limit(4)
+            ->get();
+
+        $allProducts = Product::withAvg('reviews', 'rating')->get();
 
         $videoProducts = Product::withVideo()
             ->inRandomOrder()
@@ -21,7 +32,10 @@ class IndexController extends Controller
 
     public function getProductsByCategory($categoryId)
     {
-        $products = Product::where('category_id', $categoryId)->paginate(8);
+        $products = Product::withAvg('reviews', 'rating')
+            ->withCount('reviews')
+            ->where('category_id', $categoryId)
+            ->paginate(8);
 
         return response()->json([
             'success' => true,
@@ -36,11 +50,37 @@ class IndexController extends Controller
     public function searchProductsAPI(Request $request)
     {
         $keyword = $request->input('keyword');
-        $products = Product::search($keyword)->get();
+        $products = Product::withAvg('reviews', 'rating')
+            ->withCount('reviews')
+            ->search($keyword)
+            ->get();
 
         return response()->json([
             'status' => 'success',
             'data' => $products
+        ]);
+    }
+
+    public function addToCart(CartRequest $request)
+    {
+        // Lấy dữ liệu đã validate
+        $data = $request->validated();
+
+        // Kiểm tra xem sản phẩm đã có trong giỏ chưa
+        $cartItem = CartItem::where('user_id', $data['user_id'])
+            ->where('product_id', $data['product_id'])
+            ->first();
+
+        if ($cartItem) {
+            return response()->json([
+                'message' => 'Sản phẩm đã có trong giỏ hàng!'
+            ], 400);
+        } else {
+            CartItem::create($data);
+        }
+
+        return response()->json([
+            'message' => 'Added to cart successfully!'
         ]);
     }
 

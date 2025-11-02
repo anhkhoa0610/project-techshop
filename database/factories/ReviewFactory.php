@@ -11,13 +11,13 @@ class ReviewFactory extends Factory
 {
     public function definition(): array
     {
-        return [
-            'product_id' => Product::factory(), // Tạo product giả
-            'user_id' => User::factory(), // Tạo user giả
-            'rating' => $this->faker->numberBetween(1, 5), // Điểm từ 1-5
-            'comment' => $this->faker->paragraph(2), // Bình luận ngẫu nhiên
-            'review_date'=>$this->faker->dateTimeBetween('-2 years', 'now'),
-            'updated_at' => $this->faker->dateTimeThisYear(),
-        ];
+         return [
+        //     'product_id' => Product::factory(), // Tạo product giả
+        //     'user_id' => User::factory(), // Tạo user giả
+        //     'rating' => $this->faker->numberBetween(1, 5), // Điểm từ 1-5
+        //     'comment' => $this->faker->paragraph(2), // Bình luận ngẫu nhiên
+        //     'review_date'=>$this->faker->dateTimeBetween('-2 years', 'now'),
+        //     'updated_at' => $this->faker->dateTimeThisYear(),
+         ];
     }
 }
