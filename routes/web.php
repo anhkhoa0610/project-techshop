@@ -146,6 +146,6 @@ Route::prefix('reviews')->group(function () {
     Route::post('/', [ReviewController::class, 'store'])->name('reviews.store');
     Route::get('/{reviewId}/edit', [ReviewController::class, 'edit'])->name('reviews.edit');
     Route::put('/{reviewId}', [ReviewController::class, 'update'])->name('reviews.update');
-    Route::delete('/{reviewId}', [ReviewController::class, 'destroy'])->name('reviews.destroy');
+    Route::delete('/{review_id}', [ReviewController::class, 'destroy'])->name('reviews.destroy');
 });
  
