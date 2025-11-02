@@ -104,14 +104,13 @@
                                         <a href="{{ route('users.edit', $user->user_id) }}" class="edit" title="Sửa">
                                             <i class="material-icons text-warning">&#xE254;</i>
                                         </a>
-                                        <form action="{{ route('users.destroy', $user->user_id) }}" method="POST"
-                                            class="d-inline delete-form">
-                                            @csrf
-                                            @method('DELETE')
-                                            <button type="submit" class="btn btn-link p-0 m-0 align-baseline" title="Xóa">
-                                                <i class="material-icons text-danger">&#xE872;</i>
-                                            </button>
-                                        </form>
+                                        
+                                        <a href="#deleteUserModal" class="delete" title="Xóa" data-toggle="modal"
+                                            data-target="#deleteUserModal"
+                                            data-url="{{ route('users.destroy', $user->user_id) }}"
+                                            data-name="Họ và tên {{ $user->full_name ?? 'người dùng' }}">
+                                            <i class="material-icons text-danger">&#xE872;</i>
+                                        </a>
                                     </td>
                                 </tr>
                             @empty
@@ -133,84 +132,147 @@
             </div>
         </div>
     </div>
-    <!-- End Main Content -->
 
+<!-- Modal Xóa -->
+    <div id="deleteUserModal" class="modal fade" tabindex="-1" role="dialog">
+        <div class="modal-dialog modal-confirm" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <i class="material-icons modal-icon">priority_high</i>
+                    <h4 class="modal-title w-100">Xác nhận xóa</h4>
+                </div>
+                <div class="modal-body">
+                    <p>Bạn có chắc chắn muốn xóa người dùng này không?</p>
+                    <p id="modalEntityName" style="font-weight: bold; color: #555;"></p>
+                </div>
+                <div class="modal-footer justify-content-center">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Hủy</button>
+                    <button type="button" class="btn btn-danger" id="confirmDeleteBtn">Xóa</button>
+                </div>
+            </div>
+        </div>
+    </div>
 @endsection
 
-@push('scripts')
-    <script>
+@section('scripts')
+<script>
+    $(document).ready(function() {
+        // Khởi tạo biến lưu trữ URL xóa và dòng cần xóa
+        let deleteUrl = "";
+        let rowToDelete = null;
 
-        $(document).ready(function () {
-            // View user details
-            $(document).on('click', '.view', function () {
-                const row = $(this).closest('tr');
-                $('#view_full_name').text(row.data('full_name') || '—');
-                $('#view_email').text(row.data('email') || '—');
-                $('#view_phone').text(row.data('phone') || '—');
-                $('#view_address').text(row.data('address') || '—');
-                $('#view_birth').text(row.data('birth') ? new Date(row.data('birth')).toLocaleDateString('vi-VN') : '—');
+        // Khi mở modal xác nhận xóa
+        $(document).on('show.bs.modal', '#deleteUserModal', function(event) {
+            // Đảm bảo chỉ có một modal backdrop
+            if ($('.modal-backdrop').length > 1) {
+                $('.modal-backdrop').not(':first').remove();
+            }
+            const button = $(event.relatedTarget);
+            deleteUrl = button.data('url');
+            rowToDelete = button.closest('tr');
+            const entityName = button.data('name') || 'đánh giá';
+            $('#modalEntityName').text(entityName);
+            
+            console.log('Delete URL:', deleteUrl);
+        });
 
-                const role = row.data('role');
-                const roleBadge = role === 'Admin' ? 'badge-success' : 'badge-primary';
-                $('#view_role').text(role).removeClass().addClass('badge ' + roleBadge);
+        // Hàm đóng modal đúng cách
+        function closeModal() {
+            $('body').removeClass('modal-open');
+            $('.modal-backdrop').remove();
+            $('#deleteUserModal').modal('hide').remove();
+        }
 
-                const isTDC = row.data('is_tdc_student') === 'true';
-                const tdcBadge = isTDC ? 'badge-success' : 'badge-secondary';
-                $('#view_tdc').text(isTDC ? 'Có' : 'Không').removeClass().addClass('badge ' + tdcBadge);
-            });
+        // Khi click nút xác nhận xóa
+        $(document).on('click', '#confirmDeleteBtn', function() {
+            const $btn = $(this);
+            
+            if (!deleteUrl) {
+                alert('Không tìm thấy URL để xóa!');
+                return;
+            }
 
+            // Vô hiệu hóa nút và hiển thị trạng thái đang xử lý
+            $btn.html('<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span> Đang xóa...').prop('disabled', true);
 
-
-            // Search functionality with AJAX
-            $('#searchInput').on('keyup', function () {
-                const searchValue = $(this).val();
-
-                if (searchValue.length >= 3 || searchValue.length === 0) {
-                    $.ajax({
-                        url: '{{ route("users.index") }}',
-                        type: 'GET',
-                        data: {
-                            search: searchValue,
-                            role: $('select[name="role"]').val()
-                        },
-                        success: function (data) {
-                            $('#user-table-container').html(data);
-                        },
-                        error: function (xhr) {
-                            console.log('Error:', xhr);
+            // Gửi yêu cầu xóa
+            $.ajax({
+                url: deleteUrl,
+                type: 'POST',
+                data: {
+                    _token: '{{ csrf_token() }}',
+                    _method: 'DELETE'
+                },
+                dataType: 'json',
+                success: function(response) {
+                    console.log('Delete success:', response);
+                    
+                    if (response.success) {
+                        // Đóng modal
+                        $('body').removeClass('modal-open');
+                        $('.modal-backdrop').remove();
+                        $('#deleteUserModal').modal('hide');
+                        
+                        // Hiển thị thông báo thành công
+                        showAlert('success', response.message || 'Đã xóa đánh giá thành công!');
+                        
+                        // Tự động tải lại trang sau 1 giây
+                        setTimeout(function() {
+                            window.location.reload();
+                        }, 500);
+                    } else {
+                        showAlert('danger', response.message || 'Không thể xóa đánh giá.');
+                    }
+                },
+                error: function(xhr, status, error) {
+                    console.error('Delete error:', status, error);
+                    console.error('Response:', xhr.responseText);
+                    
+                    let errorMessage = 'Đã xảy ra lỗi khi xóa đánh giá.';
+                    
+                    try {
+                        const response = JSON.parse(xhr.responseText);
+                        if (response && response.message) {
+                            errorMessage = response.message;
                         }
-                    });
-                }
-            });
-
-            // Delete user with AJAX
-            $(document).on('submit', '.delete-form', function (e) {
-                e.preventDefault();
-
-                if (confirm('Bạn có chắc chắn muốn xóa người dùng này?')) {
-                    const form = $(this);
-                    const url = form.attr('action');
-
-                    $.ajax({
-                        url: url,
-                        type: 'POST',
-                        data: {
-                            _method: 'DELETE',
-                            _token: '{{ csrf_token() }}'
-                        },
-                        success: function (response) {
-                            if (response.success) {
-                                // Reload the user table
-                                $('#searchInput').trigger('keyup');
-                                alert(response.message);
-                            }
-                        },
-                        error: function (xhr) {
-                            alert('Có lỗi xảy ra khi xóa người dùng!');
-                        }
-                    });
+                    } catch (e) {
+                        console.error('Error parsing error response:', e);
+                    }
+                    
+                    showAlert('danger', errorMessage);
+                },
+                complete: function() {
+                    // Khôi phục trạng thái nút
+                    $btn.html('Xóa').prop('disabled', false);
+                    
+                    // Đảm bảo modal được đóng đúng cách nếu có lỗi
+                    if ($('#deleteUserModal').length) {
+                        closeModal();
+                    }
                 }
             });
         });
-    </script>
-@endpush
+        
+        // Hàm hiển thị thông báo
+        function showAlert(type, message) {
+            const alertHtml = `
+                <div class="alert alert-${type} alert-dismissible fade show" role="alert">
+                    ${message}
+                    <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>`;
+            
+            // Thêm thông báo vào đầu container
+            $('.container-xl').prepend(alertHtml);
+            
+            // Tự động ẩn thông báo sau 5 giây
+            setTimeout(() => {
+                $('.alert').fadeOut(400, function() {
+                    $(this).remove();
+                });
+            }, 5000);
+        }
+    });
+</script>
+@endsection
