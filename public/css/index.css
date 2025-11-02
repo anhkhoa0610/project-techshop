@@ -1,3 +1,74 @@
+/* Section Headers */
+.section-header {
+    text-align: left;
+    width: fit-content;
+    background-color: white;
+    padding: 40px;
+    margin-left: 5vw;
+    border-radius: 15px 15px 0 0;
+}
+
+.section-subtitle {
+    font-size: 1.125rem;
+    color: #d9dce4;
+    padding: 0px 20px 20px 0px;
+}
+
+
+/* Categories */
+.categories {
+    padding: 4rem 0;
+}
+
+.categories-grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 3.5rem;
+    padding: 40px;
+    background-color: white;
+    width: 90vw;
+    margin-left: 5vw;
+    border-radius: 0 15px 15px 15px;
+}
+
+@media (min-width: 640px) {
+    .categories-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+
+@media (min-width: 1024px) {
+    .categories-grid {
+        grid-template-columns: repeat(3, 1fr);
+    }
+}
+
+
+
+.category-icon {
+    display: inline-flex;
+    padding: 1rem;
+    border-radius: 1rem;
+    margin-bottom: 1rem;
+    font-size: 2rem;
+    transition: transform 0.3s ease;
+}
+
+.category-card:hover .category-icon {
+    transform: scale(1.1);
+}
+
+.category-icon.primary {
+    background: #0ea5e9;
+    color: white;
+}
+
+.category-icon.accent {
+    background: #ea580c;
+    color: white;
+}
+
+
 .category-pagination {
     padding: 20px;
     width: fit-content !important;
@@ -163,6 +234,7 @@ input[type=number]::-webkit-outer-spin-button {
     backdrop-filter: blur(6px) saturate(120%);
     padding: 1.25rem;
     border-radius: 1rem;
+    width: 25rem;
     text-align: center;
     border: 1px solid rgb(21, 117, 155);
     transition: all 0.5s cubic-bezier(0.25, 0.8, 0.25, 1);
@@ -387,10 +459,6 @@ input[type=number]::-webkit-outer-spin-button {
     }
 }
 
-.section-subtitle {
-    font-size: 1.125rem;
-    color: #d9dce4;
-}
 
 .category-title {
     font-size: 1.25rem;
@@ -567,7 +635,7 @@ input[type=number]::-webkit-outer-spin-button {
     transform: translate(-50%, -50%);
     font-size: 48px;
     opacity: 0.85;
-    text-shadow: 0 0 10px rgba(0,0,0,0.8);
+    text-shadow: 0 0 10px rgba(0, 0, 0, 0.8);
     pointer-events: none;
 }
 
