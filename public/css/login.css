@@ -1,0 +1,104 @@
+.form-group {
+  position: relative;
+  margin-bottom: 2rem;
+  /* chừa chỗ hiển thị lỗi */
+}
+
+.login-input {
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  padding: 12px 42px 12px 14px;
+  font-size: 14px;
+  width: 100%;
+  transition: all 0.2s ease;
+}
+
+.login-input:focus {
+  border-color: #00bfffff;
+  box-shadow: 0 0 0 2px rgba(255, 122, 0, 0.15);
+  outline: none;
+}
+
+.login-input.is-invalid {
+  border-color: #dc3545 !important;
+}
+
+.toggle-password {
+  position: absolute;
+  right: 14px;
+  top: 50%;
+  transform: translateY(-50%);
+  cursor: pointer;
+  color: #aaa;
+  font-size: 18px;
+  transition: color 0.2s;
+}
+
+.toggle-password:hover {
+  color: #555;
+}
+
+/* lỗi đặt tuyệt đối để không đẩy icon lệch */
+.text-danger {
+  position: absolute;
+  bottom: -18px;
+  left: 4px;
+  font-size: 13px;
+}
+
+.btn-login {
+  background-color: #00bfffff;
+  color: #fff;
+  border: none;
+  padding: 12px;
+  border-radius: 8px;
+  font-weight: 600;
+  letter-spacing: 0.5px;
+  transition: background-color 0.25s ease;
+}
+
+.btn-login:hover {
+  background-color: #0086e5ff;
+  color: #fff;
+}
+
+.login-input.is-invalid {
+  background-image: none !important;
+  padding-right: 42px;
+  /* giữ nguyên chỗ cho icon mắt */
+}
+
+.alert-danger {
+  background-color: #ffecec;
+  color: #d8000c;
+  border: none;
+  border-radius: 6px;
+  font-size: 14px;
+  font-weight: 500;
+}
+
+/* Giữ icon luôn nằm giữa input, không bị đẩy khi có lỗi */
+.mb-3.position-relative {
+  display: flex;
+  flex-direction: column;
+}
+
+.mb-3.position-relative>.position-relative {
+  position: relative;
+}
+
+.toggle-password {
+  position: absolute;
+  top: 50%;
+  right: 12px;
+  transform: translateY(-50%);
+  cursor: pointer;
+  color: #6c757d;
+  z-index: 2;
+}
+
+#password-error {
+  position: absolute;
+  bottom: -20px;
+  /* đẩy text lỗi ra ngoài input */
+}

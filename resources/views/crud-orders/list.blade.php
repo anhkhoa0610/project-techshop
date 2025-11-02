@@ -168,18 +168,7 @@
                                     <div class="text-danger error-message" id="error_add_user_id"></div>
                                 </div>
 
-                                {{-- Trạng thái --}}
-                                <div class="form-group">
-                                    <label for="add_status">Trạng thái</label>
-                                    <select class="form-control" id="add_status" name="status">
-                                        <option value="">-- Chọn trạng thái --</option>
-                                        <option value="pending">pending</option>
-                                        <option value="processing">processing</option>
-                                        <option value="completed">completed</option>
-                                        <option value="cancelled">cancelled</option>
-                                    </select>
-                                    <div class="text-danger error-message" id="error_add_status"></div>
-                                </div>
+
 
                                 {{-- Địa chỉ giao hàng --}}
                                 <div class="form-group">
@@ -246,17 +235,7 @@
                         <div class="row">
                             <!-- Cột trái -->
                             <div class="col-md-6">
-                                {{-- Người dùng --}}
-                                <div class="form-group">
-                                    <label for="edit_user_id">Người dùng</label>
-                                    <select class="form-control" id="edit_user_id" name="user_id">
-                                        <option value="">-- Chọn người dùng --</option>
-                                        @foreach ($users as $user)
-                                            <option value="{{ $user->user_id }}">{{ $user->full_name }}</option>
-                                        @endforeach
-                                    </select>
-                                    <div class="text-danger error-message" id="error_edit_user_id"></div>
-                                </div>
+
 
                                 {{-- Trạng thái --}}
                                 <div class="form-group">
@@ -328,7 +307,6 @@
                 var row = btn.closest('tr'); // Lấy dòng chứa nút edit được bấm
 
                 // Gán dữ liệu vào form
-                document.getElementById('edit_user_id').value = row.getAttribute('data-user-id') || '';
                 document.getElementById('edit_status').value = row.getAttribute('data-status') || '';
                 document.getElementById('edit_shipping_address').value = row.getAttribute('data-shipping-address') || '';
                 document.getElementById('edit_payment_method').value = row.getAttribute('data-payment-method') || '';
@@ -348,10 +326,11 @@
             const orderId = this.dataset.id;
             const url = `/api/orders/${orderId}`;
             const formData = new FormData(this);
+            // Xóa lỗi cũ
+            document.querySelectorAll('.error-message').forEach(el => el.textContent = '');
             formData.append('_method', 'PUT');
             formData.append('shipping_address', document.getElementById('edit_shipping_address').value);
             formData.append('order_id', this.dataset.id);
-            formData.append('user_id', document.getElementById('edit_user_id').value);
             formData.append('status', document.getElementById('edit_status').value);
             formData.append('payment_method', document.getElementById('edit_payment_method').value);
             formData.append('voucher_id', document.getElementById('edit_voucher_id').value);

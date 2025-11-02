@@ -1,0 +1,236 @@
+.content-container {
+    background-image: url('/images/background.jpg');
+    background-size: fill;
+    background-position: center;
+    position: relative;
+    min-height: 100vh;
+    padding-bottom: 50px;
+}
+
+.container-details {
+    padding: 20px;
+    border-radius: 10px;
+    position: relative;
+    margin-top: 30px;
+    background-color: rgba(255, 255, 255, 0.65);
+}
+
+.header-back-ground {
+    height: 70px;
+    background-image: url('/images/background.jpg');
+}
+
+.footer-back-ground {
+    height: 70px;
+}
+
+.prodcut-image {
+    width: 628px;
+    height: 628px;
+    object-fit: cover;
+    content: center;
+
+}
+
+.swiper-slide-img {
+    width: 120px;
+    height: 82px;
+    padding: 5px;
+    box-sizing: content-box;
+    border: 1px solid #ddd;
+
+}
+
+.swiper-wrapper {
+    display: flex;
+    overflow-x: hidden;
+    justify-content: center;
+    min-height: 94px;
+
+}
+
+.swiper-button-next img,
+.swiper-button-prev img {
+    width: 50px;
+    height: 50px;
+    background-color: rgba(0, 0, 0, 0.5);
+    ;
+}
+
+.swiper-button-next {
+    position: absolute;
+    transform: translate(578px, -66px);
+
+}
+
+.swiper-button-prev {
+    position: absolute;
+    transform: translateY(-66px);
+}
+
+.quantity-button {
+    width: 30px;
+    height: 30px;
+    cursor: pointer;
+    margin: 0;
+}
+
+.input-quantity {
+    width: 100px;
+    text-align: center;
+    margin: 0;
+}
+
+.desc-product {
+    margin-top: 30px;
+    padding: 20px;
+    border-radius: 10px;
+    min-height: 500px;
+    background-color: rgba(255, 255, 255, 0.85);
+}
+
+.review-product {
+    margin-top: 30px;
+    padding: 20px;
+    border-radius: 10px;
+    min-height: 500px;
+    position: relative;
+    background-color: rgba(255, 255, 255, 0.95);
+}
+
+.review-title {
+    min-height: 180px;
+    width: 100%;
+    border-radius: 5px;
+    margin-bottom: 20px;
+    display: flex;
+    background-color: rgba(252, 247, 243);
+}
+
+.star-rating {
+    background-color: rgba(255, 255, 255, 0.65);
+    padding-left: 10px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
+.rating {
+    text-align: center;
+    align-items: center;
+    display: flex;
+    justify-content: center;
+
+}
+
+.rating-left {
+    color: tomato;
+    font-size: 1.85rem;
+    padding-right: 5px;
+}
+
+.rating-right {
+    color: tomato;
+    font-size: 1.525rem;
+}
+
+.star-rating-display {
+    margin-top: 10px;
+    display: flex;
+    justify-content: center;
+}
+
+.filter-by-star {
+    background-color: rgba(255, 255, 255, 0.65);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.button-filter-star {
+    margin: 5px;
+    padding: 8px 16px;
+    border: none;
+    border-radius: 5px;
+    background-color: #ff8400;
+    color: white;
+    cursor: pointer;
+    font-size: 1.8rem;
+    transition: all 0.2s ease;
+    background-image: linear-gradient(to right, #66b9e9, #2a5792);
+    position: relative;
+    margin: 20px;
+}
+
+
+
+.button-filter-star:hover {
+    border-color: #aaa;
+}
+
+.button-filter-star.active {
+    border: 1px solid;
+    border-color: rgb(205, 112, 50);
+    box-shadow: 0 4px 10px rgba(118, 75, 162, 0.3);
+    color: rgb(6, 21, 70);
+}
+.comment-field {
+    margin-top: 30px;
+    padding: 20px;
+    border-radius: 10px;
+    min-height: 300px;
+    position: relative;
+    background-color: rgba(227, 242, 226, 0.95);
+}
+.groub-button-filter{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    margin: 0;
+    padding: 0;
+}
+.user-avatar{
+    width: 85px;
+    height: 85px;
+    border-radius: 50%;
+    background-color:#ff8400;
+    margin-left: 20px;
+    position: absolute;
+    top:0 ;
+    left: 0;
+}
+.comment-field{
+   
+
+}
+.user-review{
+    margin-left: 105px;
+}
+.review-display{
+    position: relative;
+    margin-top: 30px;
+    padding-bottom: 20px;
+    border-bottom:1px solid black ;
+}
+.review-info{
+    padding: 0;
+    margin: 0;
+}
+
+.pagination button.active {
+    background-color: #ffc107;
+    color: #000;
+    border-color: #ffc107;
+}
+
+.pagination button:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+.pagination-review{
+    display: flex;
+    justify-content: center;
+    margin-top: 20px;
+}

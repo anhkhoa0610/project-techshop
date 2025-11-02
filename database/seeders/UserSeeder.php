@@ -14,16 +14,15 @@ class UserSeeder extends Seeder
     /**
      * Run the database seeds.
      */
-
     public function run(): void
     {
         $faker = Factory::create('vi_VN');
         $emailDomains = ['@gmail.com', '@outlook.com', '@hotmail.com', '@mail.tdc.edu.vn'];
 
-        $ho = ['Nguyễn', 'Trần', 'Lê', 'Phạm', 'Hoàng', 'Võ', 'Đặng', 'Bùi', 'Đỗ', 'Lương', 'Lý', 'Lâm', 'Lê', 'Đinh'];
-        $ten = ['An', 'Bình', 'Chi', 'Dũng', 'Hằng', 'Khoa', 'Lan', 'Minh', 'Ngọc', 'Thảo', 'Tùng', 'Vân', 'Kiệt', 'Hùng', 'Hạnh', 'Yến', 'Hương', 'Hải', 'Huy'];
+        $ho = ['Nguyễn', 'Trần', 'Lê', 'Phạm', 'Hoàng', 'Võ', 'Đặng', 'Bùi', 'Đỗ', 'Lương', 'Lý', 'Lâm', 'Lê', 'Đinh', 'Đặng'];
+        $ten = ['An', 'Bình', 'Chi', 'Dũng', 'Hằng', 'Khoa', 'Lan', 'Minh', 'Ngọc', 'Thảo', 'Tùng', 'Vân', 'Kiệt', 'Hùng', 'Hạnh', 'Yến', 'Hương', 'Hải', 'Huy', 'Nhi', 'Như', 'Nguyệt', 'Ánh', 'Châu', 'Chương', 'Long', 'Uy'];
 
-        for ($i = 0; $i < 50; $i++) {
+        for ($i = 0; $i < 100; $i++) {
             $fullName = $faker->randomElement($ho) . ' ' . $faker->firstName . ' ' . $faker->randomElement($ten);
             $emailName = strtolower(str_replace(' ', '.', $faker->userName()));
             $domain = $faker->randomElement($emailDomains);
@@ -40,9 +39,12 @@ class UserSeeder extends Seeder
                 'role' => $faker->randomElement(['User', 'Admin']),
                 'birth' => $faker->date('Y-m-d', '2005-01-01'),
                 'is_tdc_student' => $isTDC,
+
+
             ]);
         }
+        $this->command->info('Users seeded successfully!');
     }
 }
-    
+
 

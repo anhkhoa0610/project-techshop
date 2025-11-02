@@ -94,9 +94,9 @@ class ProductController extends Controller
 
             $file->move(public_path('uploads'), $filename);
 
-            if ($product->cover_image && file_exists(public_path('uploads/' . $product->cover_image))) {
-                unlink(public_path('uploads/' . $product->cover_image));
-            }
+            // if ($product->cover_image && file_exists(public_path('uploads/' . $product->cover_image))) {
+            //     unlink(public_path('uploads/' . $product->cover_image));
+            // }
 
             $data['cover_image'] = $filename;
         }
@@ -132,12 +132,18 @@ class ProductController extends Controller
 
     public function filter(Request $request)
     {
-        $min = $request->input('min_price');
-        $max = $request->input('max_price');
-        $category = $request->input('category_id', 0);
-        $supplier = $request->input('supplier_id', 0);
-
-        $products = Product::filter($min, $max, $category, $supplier)->paginate(8);
+        $products = Product::withAvg('reviews', 'rating')
+            ->withCount('reviews')
+            ->filter(
+                $request->min_price,
+                $request->max_price,
+                $request->category_id,
+                $request->supplier_id,
+                $request->rating,
+                $request->stock,
+                $request->release_date
+            )
+            ->paginate(8);
 
         return response()->json([
             'success' => true,
@@ -145,7 +151,6 @@ class ProductController extends Controller
             'current_page' => $products->currentPage(),
             'last_page' => $products->lastPage(),
             'total' => $products->total(),
-            'per_page' => $products->perPage(),
         ]);
     }
 }

@@ -4,7 +4,6 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\OrderDetailRequest;
 use App\Models\OrderDetail;
-use Illuminate\Http\Request;
 use App\Models\Product;
 
 
@@ -13,47 +12,31 @@ class OrderDetailController extends Controller
 
     public function list($order_id)
     {
-        $query = OrderDetail::where('order_id', $order_id)
-            ->with('product');
+        $search = request('search');
+
+        $query = OrderDetail::ofOrder($order_id)
+            ->with('product')
+            ->search($search);
+
         $products = Product::all();
 
-        // Nếu có tham số tìm kiếm
-        if (request()->has('search') && request('search')) {
-            $search = request('search');
-            $query->whereRelation('product', 'product_name', 'like', '%' . $search . '%');
-        }
+        $orderDetails = $query->paginate(5)->appends(['search' => $search]);
 
-        $orderDetails = $query->paginate(5);
-        return view('crud-orderDetails.list', compact('orderDetails', 'order_id', 'products'));
+        return view('crud-orderDetails.list', compact('orderDetails', 'order_id', 'products', 'search'));
     }
     /**
      * Display a listing of the resource.
      */
     public function index($order_id)
     {
-        $query = OrderDetail::where('order_id', $order_id)
+        $orderDetails = OrderDetail::ofOrder($order_id)
             ->with('product');
-
-        // Nếu có tham số tìm kiếm
-        if (request()->has('search') && request('search')) {
-            $search = request('search');
-            $query->whereRelation('product', 'product_name', 'like', '%' . $search . '%');
-        }
-
-        $orderDetails = $query->paginate(5);
+            
         return response()->json([
             'success' => true,
             'message' => 'Danh sách chi tiết đơn hàng',
             'data' => $orderDetails
         ], 200);
-    }
-
-    /**
-     * Show the form for creating a new resource.
-     */
-    public function create()
-    {
-        //
     }
 
     /**
@@ -72,22 +55,6 @@ class OrderDetailController extends Controller
         if ($detail->order) {
             $detail->order->updateTotalPrice();
         }
-    }
-
-    /**
-     * Display the specified resource.
-     */
-    public function show(string $id)
-    {
-        //
-    }
-
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit(string $id)
-    {
-        //
     }
 
     /**

@@ -6,20 +6,12 @@
 
     <link rel="stylesheet" href="{{ asset('css/index.css') }}">
     <link rel="stylesheet" href="{{ asset('css/index-filter.css') }}">
+    <link rel="stylesheet" href="{{ asset('css/index-chatbot.css') }}">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css" />
+    <link rel="stylesheet" href="{{ asset('css/swiper.css') }}">
 
-    <!-- Sidebar -->
-
-
-    <!-- Nút mở sidebar -->
-    <!-- <button id="openSidebar" class="sidebar-toggle">
-                <span> <i class="bi bi-funnel me-1"></i> Lọc</span>
-            </button> -->
-
-
-    <!-- Hero Section -->
 
     <section class="hero">
-        <!-- moved hero-image ra trước container để video có thể phủ toàn section -->
         <div class="hero-image">
             <video class="hero-video" autoplay muted loop playsinline preload="metadata"
                 poster="{{ asset('images/place-holder.jpg') }}">
@@ -59,7 +51,6 @@
                         </div>
                     </div>
                 </div>
-                <!-- hero-image removed from here -->
             </div>
         </div>
     </section>
@@ -68,7 +59,7 @@
     <div class="background-overlay">
 
         <section class="categories">
-            <div class="container">
+            <div class="container-fluid categories-container">
                 <div class="section-header">
                     <h2 class="section-title">Danh mục nổi bật</h2>
                     <p class="section-subtitle">Khám phá các sản phẩm công nghệ hàng đầu</p>
@@ -127,16 +118,34 @@
                         <div class="product-info">
                             <h3 class="product-name"><?= $product->product_name; ?></h3>
                             <div class="product-rating">
-                                <span class="stars">⭐ 4.9</span>
-                                <span class="reviews">(156 đánh giá)</span>
+                                @php
+                                    $rating = round($product->reviews_avg_rating ?? 0, 1);
+                                    $count = $product->reviews_count ?? 0;
+                                @endphp
+
+                                <span class="stars">
+                                    @for ($i = 1; $i <= 5; $i++)
+                                        @if ($i <= $rating)
+                                            <i class="fa fa-star" style="color: #FFD700;"></i>
+                                        @elseif ($i - 0.5 <= $rating)
+                                            <i class="fa fa-star-half-o" style="color: #FFD700;"></i>
+                                        @else
+                                            <i class="fa fa-star-o" style="color: #FFD700;"></i>
+                                        @endif
+                                    @endfor
+                                    <span>{{ $rating }}</span>
+                                </span>
+
+                                <span class="reviews">({{ $count }} đánh giá)</span>
                             </div>
                             <div class="product-price">
                                 <span class="current-price"><?= number_format($product->price, 0, ',', '.'); ?>₫</span>
                                 <span
                                     class="original-price"><?= number_format($product->original_price, 0, ',', '.'); ?>₫</span>
                             </div>
-                            <button class="btn btn-primary full-width">🛒 Thêm vào giỏ</button>
                         </div>
+                        <button data-product-id="{{ $product->product_id }}" data-quantity="1"
+                            class="btn-add-cart btn btn-primary full-width">🛒 Thêm vào giỏ</button>
                     </div>
                     <?php endforeach; ?>
                 </div>
@@ -163,14 +172,32 @@
                         <div class="product-info">
                             <h3 class="product-name"><?= $product->product_name; ?></h3>
                             <div class="product-rating">
-                                <span class="stars">⭐ 4.9</span>
-                                <span class="reviews">(156 đánh giá)</span>
+                                @php
+                                    $rating = round($product->reviews_avg_rating ?? 0, 1);
+                                    $count = $product->reviews_count ?? 0;
+                                @endphp
+
+                                <span class="stars">
+                                    @for ($i = 1; $i <= 5; $i++)
+                                        @if ($i <= $rating)
+                                            <i class="fa fa-star" style="color: #FFD700;"></i>
+                                        @elseif ($i - 0.5 <= $rating)
+                                            <i class="fa fa-star-half-o" style="color: #FFD700;"></i>
+                                        @else
+                                            <i class="fa fa-star-o" style="color: #FFD700;"></i>
+                                        @endif
+                                    @endfor
+                                    <span>{{ $rating }}</span>
+                                </span>
+
+                                <span class="reviews">({{ $count }} đánh giá)</span>
                             </div>
                             <div class="product-price">
                                 <span class="current-price"><?= number_format($product->price, 0, ',', '.'); ?>₫</span>
                             </div>
-                            <button class="btn btn-primary full-width">🛒 Thêm vào giỏ</button>
                         </div>
+                        <button data-product-id="{{ $product->product_id }}" data-quantity="1"
+                            class="btn-add-cart btn btn-primary full-width">🛒 Thêm vào giỏ</button>
                     </div>
                     <?php endforeach; ?>
                 </div>
@@ -208,7 +235,7 @@
                                 <div class="mb-4">
                                     <label for="category" class="form-label fw-semibold">Danh mục</label>
                                     <select class="form-select" id="category" name="category_filter">
-                                        <option value="0">Tất cả</option>
+                                        <option value="">Tất cả</option>
                                         <option value="1">Laptop</option>
                                         <option value="2">Điện thoại</option>
                                         <option value="3">Phụ kiện</option>
@@ -220,7 +247,7 @@
                                 <div class="mb-4">
                                     <label for="supplier" class="form-label fw-semibold">Nhà phân phối</label>
                                     <select class="form-select" id="supplier" name="supplier_filter">
-                                        <option value="0">Tất cả</option>
+                                        <option value="">Tất cả</option>
                                         <option value="1">Apple</option>
                                         <option value="2">Samsung</option>
                                         <option value="3">ASUS</option>
@@ -232,8 +259,8 @@
 
                                 <div class="mb-4">
                                     <label for="rating" class="form-label fw-semibold">Đánh giá</label>
-                                    <select class="form-select" id="rating" name="rating">
-                                        <option value="all">Tất cả</option>
+                                    <select class="form-select" id="rating" name="rating_filter">
+                                        <option value="">Tất cả</option>
                                         <option value="5">⭐️⭐️⭐️⭐️⭐️</option>
                                         <option value="4">⭐️⭐️⭐️⭐️</option>
                                         <option value="3">⭐️⭐️⭐️</option>
@@ -245,22 +272,22 @@
                                 <!-- Tình trạng hàng -->
                                 <div class="mb-4">
                                     <label for="stock_status" class="form-label fw-semibold">Tình trạng hàng</label>
-                                    <select class="form-select" id="stock_status" name="stock_status">
-                                        <option value="all">Tất cả</option>
-                                        <option value="in_stock">Còn hàng</option>
-                                        <option value="out_of_stock">Hết hàng</option>
+                                    <select class="form-select" id="stock_status" name="stock_filter">
+                                        <option value="">Tất cả</option>
+                                        <option value="1">Còn hàng</option>
+                                        <option value="2">Hết hàng</option>
                                     </select>
                                 </div>
 
                                 <!-- Thời gian ra mắt -->
                                 <div class="mb-4">
                                     <label for="release_date" class="form-label fw-semibold">Thời gian ra mắt</label>
-                                    <select class="form-select" id="release_date" name="release_date">
-                                        <option value="all">Tất cả</option>
-                                        <option value="last_30_days">30 ngày qua</option>
-                                        <option value="last_90_days">90 ngày qua</option>
-                                        <option value="last_6_months">6 tháng qua</option>
-                                        <option value="last_1_year">1 năm qua</option>
+                                    <select class="form-select" id="release_date" name="release_filter">
+                                        <option value="">Tất cả</option>
+                                        <option value="30">30 ngày qua</option>
+                                        <option value="90">90 ngày qua</option>
+                                        <option value="180">6 tháng qua</option>
+                                        <option value="365">1 năm qua</option>
                                     </select>
                                 </div>
 
@@ -288,58 +315,83 @@
                 </div>
             </div>
         </section>
-    </div>
 
-    <!-- Deal of the Day -->
-    <section class="deal-section">
-        <div class="container">
-            <div class="deal-header">
-                <h2 class="deal-title">⚡ Deal of the Day</h2>
-                <p class="deal-subtitle">Ưu đãi có thời hạn - Nhanh tay kẻo lỡ!</p>
-            </div>
-            <div class="deal-card">
-                <div class="deal-image">
-                    <img src="https://www.apple.com/v/iphone-17-pro/a/images/overview/contrast/iphone_17_pro__dwccrdina7qu_large.jpg"
-                        alt="Xiaomi Deal">
-                    <div class="flash-badge">FLASH SALE</div>
+        <!-- Video Review -->
+        <section class="review-video">
+            <div class="container-fluid">
+                <div class="section-header">
+                    <h2 class="section-title">Video Review</h2>
+                    <p class="section-subtitle">Những sản phẩm được yêu thích nhất</p>
                 </div>
-                <div class="deal-content">
-                    <h3 class="deal-product-title">Xiaomi 13 Ultra 5G</h3>
-                    <div class="deal-rating">
-                        <span class="stars">⭐ 4.8</span>
-                        <span class="reviews">(234 đánh giá)</span>
-                    </div>
-                    <p class="deal-description">
-                        Camera Leica 50MP, chip Snapdragon 8 Gen 2, RAM 12GB,
-                        bộ nhớ 256GB. Trải nghiệm nhiếp ảnh chuyên nghiệp.
-                    </p>
-                    <div class="deal-pricing">
-                        <span class="deal-price">12,990,000₫</span>
-                        <span class="deal-original">18,990,000₫</span>
-                        <div class="savings">Tiết kiệm 6,000,000₫ (32% OFF)</div>
-                    </div>
-                    <div class="countdown">
-                        <div class="countdown-label">⏰ Thời gian còn lại:</div>
-                        <div class="countdown-timer">
-                            <div class="time-unit">
-                                <span id="hours">12</span>
-                                <label>Giờ</label>
+                <div class="video-grid">
+                    @foreach ($videoProducts as $product)
+                        <div class="video-card">
+                            <div class="video-thumb" onclick="playVideo(this)">
+                                <iframe src="{{ $product->embed_url_review }}?mute=1&playsinline=1&rel=0&modestbranding=1"
+                                    title="Video sản phẩm" frameborder="0" allow="autoplay; encrypted-media; picture-in-picture"
+                                    allowfullscreen>
+                                </iframe>
+                                <div class="overlay">
+                                    <div class="channel-info">
+                                        <img src="{{ asset('/images/logo.jpg') }}" alt="Channel" class="channel-logo">
+                                    </div>
+                                </div>
                             </div>
-                            <div class="time-unit">
-                                <span id="minutes">34</span>
-                                <label>Phút</label>
-                            </div>
-                            <div class="time-unit">
-                                <span id="seconds">56</span>
-                                <label>Giây</label>
+
+
+                            <div class="product-info">
+                                <img src="/uploads/{{ $product->cover_image }}" alt="Sản phẩm" class="product-thumb">
+                                <div class="product-name">{{ $product->product_name }}</div>
                             </div>
                         </div>
-                    </div>
-                    <button class="btn btn-deal">🛒 Mua ngay - Flash Sale</button>
+                    @endforeach
                 </div>
             </div>
-        </div>
-    </section>
+        </section>
+
+        <!-- Review -->
+        <section class="slider-container">
+            <div class="swiper mySwiper">
+                <div class="swiper-wrapper">
+                    @foreach ($reviews as $review)
+                        <div class="swiper-slide">
+                            <div class="testimonial-card">
+                                <div class="quote-icon">“</div>
+
+                                <p class="testimonial-text">
+                                    {{ $review->comment }}
+                                </p>
+
+                                <div class="author-info">
+                                    <img src="/uploads/{{ $review->product->cover_image }}" class="author-avatar">
+                                    <div class="author-details">
+                                        <div class="author-name">{{ $review->user->full_name }}</div>
+                                        <span class="author-title">
+                                            @for ($i = 1; $i <= 5; $i++)
+                                                @if ($i <= $review->rating)
+                                                    <i class="fa fa-star" style="color: #FFD700;"></i>
+                                                @elseif ($i - 0.5 <= $review->rating)
+                                                    <i class="fa fa-star-half-o" style="color: #FFD700;"></i>
+                                                @else
+                                                    <i class="fa fa-star-o" style="color: #FFD700;"></i>
+                                                @endif
+                                            @endfor
+                                            <span style="color: black;"><br>cho sản phẩm {{ $review->product->product_name }}</span>
+                                        </span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    @endforeach
+                </div>
+
+                <div class="swiper-pagination"></div>
+            </div>
+        </section>
+    </div>
+
+
+
 
     <!-- Chatbot Bubble -->
     <div class="chatbot-container">
@@ -347,8 +399,12 @@
 
         <div id="chatbot-window">
             <div class="chatbot-header">
-                <span>Chatbot hỗ trợ</span>
-                <button id="chatbot-close">&times;</button>
+                <div class="chat-avatar">F</div>
+                <div class="chat-info">
+                    <strong>Chatbot hỗ trợ</strong>
+                    <span>October 15, 2024</span>
+                </div>
+                <button class="chat-close" id="chatbot-close">&times;</button>
             </div>
             <div class="chatbot-body">
                 <div class="bot-message">Xin chào 👋! Tôi có thể giúp gì cho bạn?</div>
@@ -360,10 +416,13 @@
         </div>
     </div>
 
-
-
-
-    <script src="{{ asset('js/chatbot.js') }}"></script>
+    <script>
+        const USER_ID = {{ auth()->id() ?? 'null' }};
+        console.log("User ID:", USER_ID);
+    </script>
+    <script src="{{ asset('js/index-chatbot.js') }}"></script>
     <script src="{{ asset('js/index-filter.js') }}"></script>
     <script src="{{ asset('js/index.js') }}"></script>
+    <script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
+    <script src="{{ asset('js/swiper.js') }}"></script>
 @endsection

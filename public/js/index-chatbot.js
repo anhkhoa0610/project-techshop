@@ -23,24 +23,50 @@ chatbotInput.addEventListener("keypress", (e) => {
     if (e.key === "Enter") sendMessage();
 });
 
-function sendMessage() {
+
+async function sendMessage() {
     const text = chatbotInput.value.trim();
     if (!text) return;
 
+    // Hiển thị tin nhắn người dùng
     const userMsg = document.createElement("div");
     userMsg.classList.add("user-message");
     userMsg.textContent = text;
     chatbotBody.appendChild(userMsg);
     chatbotInput.value = "";
+    chatbotBody.scrollTop = chatbotBody.scrollHeight;
 
-    // Giả lập phản hồi bot
-    setTimeout(() => {
+    // Hiển thị bot đang gõ...
+    const typingMsg = document.createElement("div");
+    typingMsg.classList.add("bot-message");
+    typingMsg.textContent = "Đang xử lý...";
+    chatbotBody.appendChild(typingMsg);
+    chatbotBody.scrollTop = chatbotBody.scrollHeight;
+
+    try {
+        // Gọi API Laravel
+        console.log("Sending message to /api/chat:", text);
+        const response = await fetch("/api/chat", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+            },
+            body: JSON.stringify({ message: text }),
+        });
+
+        const data = await response.json();
+
+        // Xóa "Đang xử lý..."
+        chatbotBody.removeChild(typingMsg);
+
+        // Thêm tin nhắn bot
         const botMsg = document.createElement("div");
         botMsg.classList.add("bot-message");
-        botMsg.textContent = "Bot: Tôi đã nhận được tin nhắn của bạn!";
+        botMsg.textContent = data.reply || "Xin lỗi, tôi không thể hiểu yêu cầu của bạn.";
         chatbotBody.appendChild(botMsg);
         chatbotBody.scrollTop = chatbotBody.scrollHeight;
-    }, 500);
-
-    chatbotBody.scrollTop = chatbotBody.scrollHeight;
+    } catch (error) {
+        console.error(error);
+        typingMsg.textContent = "Lỗi kết nối máy chủ.";
+    }
 }
