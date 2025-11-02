@@ -14,12 +14,13 @@ class IndexController extends Controller
         $topProducts = Product::withAvg('reviews', 'rating')
             ->withCount('reviews')
             ->orderByDesc('volume_sold')
-            ->limit(4)
+            ->limit(8)
             ->get();
+            
         $newProducts = Product::withAvg('reviews', 'rating')
             ->withCount('reviews')
             ->orderByDesc('release_date')
-            ->limit(4)
+            ->limit(8)
             ->get();
 
         $allProducts = Product::withAvg('reviews', 'rating')->get();

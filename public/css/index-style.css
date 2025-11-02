@@ -1,4 +1,8 @@
 /* Reset and Base Styles */
+html {
+    margin: 0 !important;
+}
+
 * {
     margin: 0;
     padding: 0;
@@ -91,10 +95,10 @@ body {
 
 /* Header */
 .header {
-    background: transparent;
-    -webkit-backdrop-filter: blur(6px) saturate(120%);
-    backdrop-filter: blur(6px) saturate(120%);
-    border-bottom: 1px solid #e5e7eb;
+    background: rgba(255, 255, 255, 0.1);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.2);
     position: fixed;
     width: 100%;
     top: 0;

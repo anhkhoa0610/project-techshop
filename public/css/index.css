@@ -2,33 +2,38 @@
 .section-header {
     text-align: left;
     width: fit-content;
-    background-color: white;
-    padding: 40px;
+    padding: 40px 40px 0px 0px;
     margin-left: 5vw;
-    border-radius: 15px 15px 0 0;
+    border-radius: 15px;
+    margin-bottom: 10px;
+    position: relative;
+}
+
+.glass3d {
+    background: rgba(255, 255, 255, 0.1);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    border: 1px solid rgba(255, 255, 255, 0.2);
 }
 
 .section-subtitle {
     font-size: 1.125rem;
-    color: #d9dce4;
-    padding: 0px 20px 20px 0px;
+    color: white;
+    padding: 0px 20px 0px 0px;
 }
 
 
 /* Categories */
-.categories {
-    padding: 4rem 0;
-}
+
 
 .categories-grid {
     display: grid;
     grid-template-columns: 1fr;
     gap: 3.5rem;
     padding: 40px;
-    background-color: white;
     width: 90vw;
     margin-left: 5vw;
-    border-radius: 0 15px 15px 15px;
+    border-radius: 15px;
 }
 
 @media (min-width: 640px) {
@@ -140,20 +145,17 @@ input[type=number]::-webkit-outer-spin-button {
     margin: 0;
 }
 
-/* Đặt background và animation lên pseudo-element để transform không ảnh hưởng đến phần tử con */
+
 .background-overlay {
     position: relative !important;
     overflow: hidden !important;
-    /* bỏ background-image ở đây để tránh transform con */
     background-image: none !important;
 }
 
-/* Hình nền và hiệu ứng Ken Burns chỉ áp dụng cho ::before */
 .background-overlay::before {
     content: "" !important;
     position: absolute !important;
     inset: 0 !important;
-    /* top:0; right:0; bottom:0; left:0 */
     background-image: url('/images/background.jpg') !important;
     background-size: cover !important;
     background-repeat: no-repeat !important;
@@ -164,15 +166,19 @@ input[type=number]::-webkit-outer-spin-button {
     animation: kenburns 18s ease-in-out infinite alternate !important;
 }
 
+.background-overlay::after {
+    content: "" !important;
+    position: absolute !important;
+    inset: 0 !important;
+    background: rgba(0, 0, 0, 0.4) !important; 
+    z-index: 1 !important;
+}
 
-
-/* Đảm bảo các phần tử con hiển thị trên pseudo-elements */
 .background-overlay>* {
     position: relative !important;
     z-index: 2 !important;
 }
 
-/* Ken Burns animation (chỉ transform trên ::before) */
 @keyframes kenburns {
     0% {
         transform: scale(1) translate(0, 0);
@@ -230,13 +236,10 @@ input[type=number]::-webkit-outer-spin-button {
 .category-card {
     /* transparent blurred background */
     background: transparent;
-    -webkit-backdrop-filter: blur(6px) saturate(120%);
-    backdrop-filter: blur(6px) saturate(120%);
     padding: 1.25rem;
     border-radius: 1rem;
     width: 25rem;
     text-align: center;
-    border: 1px solid rgb(21, 117, 155);
     transition: all 0.5s cubic-bezier(0.25, 0.8, 0.25, 1);
     cursor: pointer;
     /* keep content above pseudo-elements / background overlays */
@@ -258,13 +261,8 @@ input[type=number]::-webkit-outer-spin-button {
 
 .product-card {
     background: transparent;
-    -webkit-backdrop-filter: blur(6px) saturate(120%);
-    backdrop-filter: blur(6px) saturate(120%);
-    border: 1px solid rgb(21, 117, 155);
-    color: inherit;
     border-radius: 1rem;
     overflow: hidden;
-    box-shadow: 0 6px 18px rgba(3, 8, 22, 0.06);
     display: flex;
     flex-direction: column;
     height: 35rem;
@@ -290,6 +288,15 @@ input[type=number]::-webkit-outer-spin-button {
     display: grid;
     grid-template-columns: 1fr;
     gap: 2rem;
+
+}
+
+.grid-custom {
+    padding: 40px;
+    background-color: white;
+    width: 90vw;
+    margin-left: 5vw;
+    border-radius: 0 15px 15px 15px;
 }
 
 
@@ -329,6 +336,7 @@ input[type=number]::-webkit-outer-spin-button {
 .product-card:hover {
     transform: scale(1.05);
     box-shadow: 0 10px 30px -10px rgba(14, 165, 233, 0.3);
+    cursor: pointer;
 }
 
 .product-image {
@@ -339,7 +347,7 @@ input[type=number]::-webkit-outer-spin-button {
 .product-image img {
     width: 100%;
     height: 16rem;
-    object-fit: cover;
+    object-fit: contain;
     transition: transform 0.5s ease;
 }
 
@@ -446,11 +454,85 @@ input[type=number]::-webkit-outer-spin-button {
 /* Section titles */
 
 .section-title {
-    font-size: 2rem;
-    font-weight: 800;
     margin-bottom: 1rem;
+    display: flex;
+    font-weight: 900;
     color: white;
-    text-shadow: 4px 4px 16px rgba(76, 128, 141, 0.9);
+    text-transform: uppercase;
+    font-family: 'Dosis', sans-serif;
+    font-size: 48px;
+    width: fit-content !important;
+}
+
+.section-title span {
+    margin-right: 0;
+    opacity: 0;
+    transform: translateY(10px);
+}
+
+.section-title.animation-effect span {
+  animation: fadeUp 0.4s forwards;
+}
+
+@keyframes fadeUp {
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.section-title:not(.animation-effect)::before,
+.section-title:not(.animation-effect)::after {
+  animation: none;
+  opacity: 0;
+}
+
+.section-title::before {
+    content: "";
+    position: absolute;
+    top: 20%;
+    bottom: -300%;
+    width: 3px;
+    left: -110px;
+    background: linear-gradient(to bottom, #ffffff, transparent);
+    transform: skewX(-20deg);
+    animation: line-head-bottom 1s 0.25s backwards;
+}
+
+.section-title::after {
+    content: "";
+    position: absolute;
+    right: 0%;
+    top: -55%;
+    bottom: 50%;
+    width: 3px;
+    background: linear-gradient(to top, #ffffff, transparent);
+    transform: skewX(-20deg);
+    animation: line-head-top 1s 0.25s backwards;
+}
+
+@keyframes line-head-bottom {
+    0% {
+        transform: translateX(-150px) translateY(100px) skewX(-20deg);
+        opacity: 0;
+    }
+
+    100% {
+        transform: translateX(0) translateY(0) skewX(-20deg);
+        opacity: 1;
+    }
+}
+
+@keyframes line-head-top {
+    0% {
+        transform: translateX(50px) translateY(-100px) skewX(-20deg);
+        opacity: 0;
+    }
+
+    100% {
+        transform: translateX(0) translateY(0) skewX(-20deg);
+        opacity: 1;
+    }
 }
 
 @media (min-width: 768px) {
@@ -553,7 +635,7 @@ input[type=number]::-webkit-outer-spin-button {
 
 .video-card {
     width: 380px;
-    background: #fff;
+    background: transparent;
     border-radius: 12px;
     overflow: hidden;
     font-family: sans-serif;
@@ -684,4 +766,8 @@ input[type=number]::-webkit-outer-spin-button {
 
 .product-meta strong {
     color: #d1cccc;
+}
+
+section {
+    margin-top: 15vh;
 }

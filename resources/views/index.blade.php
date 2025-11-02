@@ -9,7 +9,7 @@
     <link rel="stylesheet" href="{{ asset('css/index-chatbot.css') }}">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css" />
     <link rel="stylesheet" href="{{ asset('css/swiper.css') }}">
-
+    <link href="https://fonts.googleapis.com/css2?family=Dosis:wght@400;600&display=swap" rel="stylesheet">
 
     <section class="hero">
         <div class="hero-image">
@@ -59,12 +59,26 @@
     <div class="background-overlay">
 
         <section class="categories">
-            <div class="container-fluid categories-container">
+            <div class="container-fluid">
                 <div class="section-header">
-                    <h2 class="section-title">Danh mục nổi bật</h2>
-                    <p class="section-subtitle">Khám phá các sản phẩm công nghệ hàng đầu</p>
+                    <h2 class="section-title">
+                        <span>D</span>
+                        <span>a</span>
+                        <span>n</span>
+                        <span>h&nbsp;</span>
+                        <span>M</span>
+                        <span>ụ</span>
+                        <span>c&nbsp;</span>
+                        <span>n</span>
+                        <span>ổ</span>
+                        <span>i&nbsp;</span>
+                        <span>b</span>
+                        <span>ậ</span>
+                        <span>t</span>
+                    </h2>
+                    <p class="section-subtitle">Khám phá các sản phẩm hàng đầu</p>
                 </div>
-                <div class="categories-grid">
+                <div class="categories-grid glass3d">
                     <div class="category-card">
                         <div class="category-icon primary">📱</div>
                         <h3 class="category-title">The Best Smartphone</h3>
@@ -101,53 +115,75 @@
 
         <!-- Featured Products -->
         <section class="products sale-products">
-            <div class="container">
+            <div class="container-fluid">
                 <div class="section-header">
-                    <h2 class="section-title">Sản phẩm nổi bật</h2>
-                    <p class="section-subtitle">Những sản phẩm được yêu thích nhất</p>
+                    <h2 class="section-title">
+                        <span>S</span>
+                        <span>ả</span>
+                        <span>n&nbsp;</span>
+                        <span>p</span>
+                        <span>h</span>
+                        <span>ẩ</span>
+                        <span>m&nbsp;</span>
+                        <span>n</span>
+                        <span>ổ</span>
+                        <span>i&nbsp;</span>
+                        <span>b</span>
+                        <span>ậ</span>
+                        <span>t</span>
+                    </h2>
+                    <p class="section-subtitle">Những sản phẩm được bán chạy nhất</p>
                 </div>
-                <div class="products-grid">
-                    <?php foreach ($topProducts as $product): ?>
-                    <div class="product-card">
-                        <div class="product-image">
-                            <img src="{{ $product->cover_image ? asset('uploads/' . $product->cover_image) : asset('images/place-holder.jpg') }}"
-                                alt="{{ $product->product_name }}">
-                            <div class="product-badge">Bán chạy</div>
-                            <div class="product-discount">-13%</div>
-                        </div>
-                        <div class="product-info">
-                            <h3 class="product-name"><?= $product->product_name; ?></h3>
-                            <div class="product-rating">
-                                @php
-                                    $rating = round($product->reviews_avg_rating ?? 0, 1);
-                                    $count = $product->reviews_count ?? 0;
-                                @endphp
+                <div class="slider-container glass3d">
+                    <div class="swiper mySwiper">
+                        <div class="swiper-wrapper">
+                            <?php foreach ($topProducts as $product): ?>
+                            <div class="swiper-slide">
+                                <div class="product-card">
+                                    <div class="product-image">
+                                        <img src="{{ $product->cover_image ? asset('uploads/' . $product->cover_image) : asset('images/place-holder.jpg') }}"
+                                            alt="{{ $product->product_name }}">
+                                        <div class="product-badge">Bán chạy</div>
+                                        <div class="product-discount">-13%</div>
+                                    </div>
+                                    <div class="product-info">
+                                        <h3 class="product-name"><?= $product->product_name; ?></h3>
+                                        <div class="product-rating">
+                                            @php
+                                                $rating = round($product->reviews_avg_rating ?? 0, 1);
+                                                $count = $product->reviews_count ?? 0;
+                                            @endphp
 
-                                <span class="stars">
-                                    @for ($i = 1; $i <= 5; $i++)
-                                        @if ($i <= $rating)
-                                            <i class="fa fa-star" style="color: #FFD700;"></i>
-                                        @elseif ($i - 0.5 <= $rating)
-                                            <i class="fa fa-star-half-o" style="color: #FFD700;"></i>
-                                        @else
-                                            <i class="fa fa-star-o" style="color: #FFD700;"></i>
-                                        @endif
-                                    @endfor
-                                    <span>{{ $rating }}</span>
-                                </span>
+                                            <span class="stars">
+                                                @for ($i = 1; $i <= 5; $i++)
+                                                    @if ($i <= $rating)
+                                                        <i class="fa fa-star" style="color: #FFD700;"></i>
+                                                    @elseif ($i - 0.5 <= $rating)
+                                                        <i class="fa fa-star-half-o" style="color: #FFD700;"></i>
+                                                    @else
+                                                        <i class="fa fa-star-o" style="color: #FFD700;"></i>
+                                                    @endif
+                                                @endfor
+                                                <span>{{ $rating }}</span>
+                                            </span>
 
-                                <span class="reviews">({{ $count }} đánh giá)</span>
+                                            <span class="reviews">({{ $count }} đánh giá)</span>
+                                        </div>
+                                        <div class="product-price">
+                                            <span
+                                                class="current-price"><?= number_format($product->price, 0, ',', '.'); ?>₫</span>
+                                            <span
+                                                class="original-price"><?= number_format($product->original_price, 0, ',', '.'); ?>₫</span>
+                                        </div>
+                                    </div>
+                                    <button data-product-id="{{ $product->product_id }}" data-quantity="1"
+                                        class="btn-add-cart btn btn-primary full-width">🛒 Thêm vào giỏ</button>
+                                </div>
                             </div>
-                            <div class="product-price">
-                                <span class="current-price"><?= number_format($product->price, 0, ',', '.'); ?>₫</span>
-                                <span
-                                    class="original-price"><?= number_format($product->original_price, 0, ',', '.'); ?>₫</span>
-                            </div>
+
+                            <?php endforeach; ?>
                         </div>
-                        <button data-product-id="{{ $product->product_id }}" data-quantity="1"
-                            class="btn-add-cart btn btn-primary full-width">🛒 Thêm vào giỏ</button>
                     </div>
-                    <?php endforeach; ?>
                 </div>
             </div>
         </section>
@@ -155,51 +191,76 @@
 
         <!-- Featured Products -->
         <section class="products new-products">
-            <div class="container">
+            <div class="container-fluid">
                 <div class="section-header">
-                    <h2 class="section-title">Sản phẩm mới nhất</h2>
-                    <p class="section-subtitle">Những sản phẩm mới nhất</p>
+                    <h2 class="section-title">
+                        <span>S</span>
+                        <span>ả</span>
+                        <span>n&nbsp;</span>
+                        <span>p</span>
+                        <span>h</span>
+                        <span>ẩ</span>
+                        <span>m&nbsp;</span>
+                        <span>m</span>
+                        <span>ớ</span>
+                        <span>i&nbsp;</span>
+                        <span>n</span>
+                        <span>h</span>
+                        <span>ấ</span>
+                        <span>t</span>
+                    </h2>
+                    <p class="section-subtitle">Những sản phẩm mới được phát hành</p>
                 </div>
-                <div class="products-grid">
-                    <?php foreach ($newProducts as $product): ?>
-                    <div class="product-card">
-                        <div class="product-image">
-                            <img src="{{ $product->cover_image ? asset('uploads/' . $product->cover_image) : asset('images/place-holder.jpg') }}"
-                                alt="{{ $product->product_name }}">
-                            <div class="product-badge">Bán chạy</div>
-                            <div class="product-discount">-13%</div>
-                        </div>
-                        <div class="product-info">
-                            <h3 class="product-name"><?= $product->product_name; ?></h3>
-                            <div class="product-rating">
-                                @php
-                                    $rating = round($product->reviews_avg_rating ?? 0, 1);
-                                    $count = $product->reviews_count ?? 0;
-                                @endphp
+                <div class="slider-container glass3d">
+                    <div class="swiper mySwiper">
+                        <div class="swiper-wrapper">
+                            <?php foreach ($newProducts as $product): ?>
+                            <div class="swiper-slide">
+                                <div class="product-card">
+                                    <div class="product-image">
+                                        <img src="{{ $product->cover_image ? asset('uploads/' . $product->cover_image) : asset('images/place-holder.jpg') }}"
+                                            alt="{{ $product->product_name }}">
+                                        <div class="product-badge">Bán chạy</div>
+                                        <div class="product-discount">-13%</div>
+                                    </div>
+                                    <div class="product-info">
+                                        <h3 class="product-name"><?= $product->product_name; ?></h3>
+                                        <div class="product-rating">
+                                            @php
+                                                $rating = round($product->reviews_avg_rating ?? 0, 1);
+                                                $count = $product->reviews_count ?? 0;
+                                            @endphp
 
-                                <span class="stars">
-                                    @for ($i = 1; $i <= 5; $i++)
-                                        @if ($i <= $rating)
-                                            <i class="fa fa-star" style="color: #FFD700;"></i>
-                                        @elseif ($i - 0.5 <= $rating)
-                                            <i class="fa fa-star-half-o" style="color: #FFD700;"></i>
-                                        @else
-                                            <i class="fa fa-star-o" style="color: #FFD700;"></i>
-                                        @endif
-                                    @endfor
-                                    <span>{{ $rating }}</span>
-                                </span>
+                                            <span class="stars">
+                                                @for ($i = 1; $i <= 5; $i++)
+                                                    @if ($i <= $rating)
+                                                        <i class="fa fa-star" style="color: #FFD700;"></i>
+                                                    @elseif ($i - 0.5 <= $rating)
+                                                        <i class="fa fa-star-half-o" style="color: #FFD700;"></i>
+                                                    @else
+                                                        <i class="fa fa-star-o" style="color: #FFD700;"></i>
+                                                    @endif
+                                                @endfor
+                                                <span>{{ $rating }}</span>
+                                            </span>
 
-                                <span class="reviews">({{ $count }} đánh giá)</span>
+                                            <span class="reviews">({{ $count }} đánh giá)</span>
+                                        </div>
+                                        <div class="product-price">
+                                            <span
+                                                class="current-price"><?= number_format($product->price, 0, ',', '.'); ?>₫</span>
+                                            <span
+                                                class="original-price"><?= number_format($product->original_price, 0, ',', '.'); ?>₫</span>
+                                        </div>
+                                    </div>
+                                    <button data-product-id="{{ $product->product_id }}" data-quantity="1"
+                                        class="btn-add-cart btn btn-primary full-width">🛒 Thêm vào giỏ</button>
+                                </div>
                             </div>
-                            <div class="product-price">
-                                <span class="current-price"><?= number_format($product->price, 0, ',', '.'); ?>₫</span>
-                            </div>
+
+                            <?php endforeach; ?>
                         </div>
-                        <button data-product-id="{{ $product->product_id }}" data-quantity="1"
-                            class="btn-add-cart btn btn-primary full-width">🛒 Thêm vào giỏ</button>
                     </div>
-                    <?php endforeach; ?>
                 </div>
             </div>
         </section>
@@ -320,72 +381,109 @@
         <section class="review-video">
             <div class="container-fluid">
                 <div class="section-header">
-                    <h2 class="section-title">Video Review</h2>
-                    <p class="section-subtitle">Những sản phẩm được yêu thích nhất</p>
+                    <h2 class="section-title">
+                        <span>C</span>
+                        <span>l</span>
+                        <span>i</span>
+                        <span>p&nbsp;</span>
+                        <span>R</span>
+                        <span>e</span>
+                        <span>v</span>
+                        <span>i</span>
+                        <span>e</span>
+                        <span>w</span>
+                    </h2>
+                    <p class="section-subtitle">Review về sản phẩm</p>
                 </div>
-                <div class="video-grid">
-                    @foreach ($videoProducts as $product)
-                        <div class="video-card">
-                            <div class="video-thumb" onclick="playVideo(this)">
-                                <iframe src="{{ $product->embed_url_review }}?mute=1&playsinline=1&rel=0&modestbranding=1"
-                                    title="Video sản phẩm" frameborder="0" allow="autoplay; encrypted-media; picture-in-picture"
-                                    allowfullscreen>
-                                </iframe>
-                                <div class="overlay">
-                                    <div class="channel-info">
-                                        <img src="{{ asset('/images/logo.jpg') }}" alt="Channel" class="channel-logo">
+                <div class="slider-container glass3d">
+                    <div class="swiper mySwiper">
+                        <div class="swiper-wrapper">
+                            @foreach ($videoProducts as $product)
+                                <div class="swiper-slide">
+                                    <div class="video-card">
+                                        <div class="video-thumb" onclick="playVideo(this)">
+                                            <iframe
+                                                src="{{ $product->embed_url_review }}?mute=1&playsinline=1&rel=0&modestbranding=1"
+                                                title="Video sản phẩm" frameborder="0"
+                                                allow="autoplay; encrypted-media; picture-in-picture" allowfullscreen>
+                                            </iframe>
+                                            <div class="overlay">
+                                                <div class="channel-info">
+                                                    <img src="{{ asset('/images/logo.jpg') }}" alt="Channel"
+                                                        class="channel-logo">
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="product-info">
+                                            <img src="/uploads/{{ $product->cover_image }}" alt="Sản phẩm"
+                                                class="product-thumb">
+                                            <div class="product-name">{{ $product->product_name }}</div>
+                                        </div>
                                     </div>
                                 </div>
-                            </div>
-
-
-                            <div class="product-info">
-                                <img src="/uploads/{{ $product->cover_image }}" alt="Sản phẩm" class="product-thumb">
-                                <div class="product-name">{{ $product->product_name }}</div>
-                            </div>
+                            @endforeach
                         </div>
-                    @endforeach
+                    </div>
                 </div>
             </div>
         </section>
 
         <!-- Review -->
-        <section class="slider-container">
-            <div class="swiper mySwiper">
-                <div class="swiper-wrapper">
-                    @foreach ($reviews as $review)
-                        <div class="swiper-slide">
-                            <div class="testimonial-card">
-                                <div class="quote-icon">“</div>
 
-                                <p class="testimonial-text">
-                                    {{ $review->comment }}
-                                </p>
+        <section class="review-video">
+            <div class="container-fluid">
+                <div class="section-header">
+                    <h2 class="section-title">
+                        <span>C</span>
+                        <span>o</span>
+                        <span>m</span>
+                        <span>m</span>
+                        <span>e</span>
+                        <span>n</span>
+                        <span>t</span>
+                        <span>s</span>
+                    </h2>
+                    <p class="section-subtitle">Bình luận về sản phẩm</p>
+                </div>
+                <div class="slider-container glass3d">
+                    <div class="swiper mySwiper">
+                        <div class="swiper-wrapper">
+                            @foreach ($reviews as $review)
+                                <div class="swiper-slide">
+                                    <div class="testimonial-card">
+                                        <div class="quote-icon">“</div>
 
-                                <div class="author-info">
-                                    <img src="/uploads/{{ $review->product->cover_image }}" class="author-avatar">
-                                    <div class="author-details">
-                                        <div class="author-name">{{ $review->user->full_name }}</div>
-                                        <span class="author-title">
-                                            @for ($i = 1; $i <= 5; $i++)
-                                                @if ($i <= $review->rating)
-                                                    <i class="fa fa-star" style="color: #FFD700;"></i>
-                                                @elseif ($i - 0.5 <= $review->rating)
-                                                    <i class="fa fa-star-half-o" style="color: #FFD700;"></i>
-                                                @else
-                                                    <i class="fa fa-star-o" style="color: #FFD700;"></i>
-                                                @endif
-                                            @endfor
-                                            <span style="color: black;"><br>cho sản phẩm {{ $review->product->product_name }}</span>
-                                        </span>
+                                        <p class="testimonial-text">
+                                            {{ $review->comment }}
+                                        </p>
+
+                                        <div class="author-info">
+                                            <img src="/uploads/{{ $review->product->cover_image }}" class="author-avatar">
+                                            <div class="author-details">
+                                                <div class="author-name">{{ $review->user->full_name }}</div>
+                                                <span class="author-title">
+                                                    @for ($i = 1; $i <= 5; $i++)
+                                                        @if ($i <= $review->rating)
+                                                            <i class="fa fa-star" style="color: #FFD700;"></i>
+                                                        @elseif ($i - 0.5 <= $review->rating)
+                                                            <i class="fa fa-star-half-o" style="color: #FFD700;"></i>
+                                                        @else
+                                                            <i class="fa fa-star-o" style="color: #FFD700;"></i>
+                                                        @endif
+                                                    @endfor
+                                                    <span><br>cho sản phẩm
+                                                        {{ $review->product->product_name }}</span>
+                                                </span>
+                                            </div>
+                                        </div>
                                     </div>
                                 </div>
-                            </div>
+                            @endforeach
                         </div>
-                    @endforeach
-                </div>
 
-                <div class="swiper-pagination"></div>
+                        <div class="swiper-pagination"></div>
+                    </div>
+                </div>
             </div>
         </section>
     </div>

@@ -1,14 +1,14 @@
 
 // Khởi tạo Swiper
 var swiper = new Swiper(".mySwiper", {
-    slidesPerView: 3,       // Hiển thị 4 slide cùng lúc
+    slidesPerView: 4,       // Hiển thị 4 slide cùng lúc
     spaceBetween: 30,       // Khoảng cách giữa các slide là 30px
     loop: false,             // Cho phép lặp lại vô tận
 
     slidesPerGroup: 2,
 
     autoplay: {
-      delay: 2000, // 1000 milliseconds = 1 giây
+      delay: 4000, // 1000 milliseconds = 1 giây
       disableOnInteraction: false, // Giữ autoplay sau khi người dùng tương tác
       pauseOnMouseEnter: true, // Tạm dừng khi di chuột vào slider
     },
