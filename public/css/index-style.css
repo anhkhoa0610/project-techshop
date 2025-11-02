@@ -712,3 +712,14 @@ body {
     z-index: -1;
     pointer-events: none;
 }
+
+.result-rating {
+    font-size: 13px;
+    color: #f5a623;
+    margin: 2px 0;
+}
+.result-rating .reviews {
+    color: #666;
+    margin-left: 4px;
+    font-size: 12px;
+}
