@@ -1,3 +1,4 @@
+let totalPrice = totalAmount;
 // === Load API địa chỉ Việt Nam ===
 const host = "https://provinces.open-api.vn/api/";
 const citySelect = document.getElementById("city");
@@ -43,7 +44,49 @@ districtSelect.addEventListener("change", () => {
 loadCities();
 
 
-// === THANH TOÁN ===
+
+document.getElementById('vocher').addEventListener('click', function () {
+    const code = this.value.trim();
+    if (!code) return;
+    fetch('/api/voucher/check', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            'X-CSRF-TOKEN': csrfToken
+        },
+        body: JSON.stringify({ vocher: code })
+    })
+        .then(res => res.json())
+        .then(data => {
+            const totalPriceEl = document.getElementById('total-price');
+            const discountEl = document.getElementById('voucher-discount');
+            const discountAmountEl = document.getElementById('voucher-amount');
+            let total = parseInt(totalPriceEl.textContent.replace(/\D/g, ''));
+            let discount = 0;
+            if (data.valid) {
+                if (data.discount_type === 'percent') {
+                    discount = Math.round(total * data.discount_value / 100);
+                } else if (data.discount_type === 'amount') {
+                    discount = data.discount_value;
+                }
+                discountAmountEl.textContent = '-' + discount;
+                discountEl.style.display = '';
+                totalPriceEl.textContent = Number(total - discount);
+                totalPrice = Number(totalPriceEl.textContent);
+                console.log(totalPrice);
+            } else {
+                discountAmountEl.textContent = '-0₫';
+                discountEl.style.display = 'none';
+                totalPriceEl.textContent = total;
+                alert(data.message);
+            }
+        });
+});
+
+
+
+
+
 document.getElementById("payBtn").addEventListener("click", () => {
     const nameInput = document.getElementById("fname");
     const phoneInput = document.getElementById("phone");
@@ -109,7 +152,7 @@ document.getElementById("payBtn").addEventListener("click", () => {
     const totalInput = document.createElement('input');
     totalInput.type = 'hidden';
     totalInput.name = 'total';
-    totalInput.value = totalAmount;
+    totalInput.value = totalPrice;
     form.appendChild(totalInput);
 
     // Địa chỉ

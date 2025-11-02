@@ -63,26 +63,63 @@ class Product extends Model
             });
     }
 
-    public function scopeFilterByCategory($query, $category_id = 0)
+    public function scopeFilterByCategory($query, $category_id = null)
     {
-        return $query->when($category_id && $category_id != 0, function ($q) use ($category_id) {
+        return $query->when($category_id && $category_id != null, function ($q) use ($category_id) {
             $q->where('category_id', $category_id);
         });
     }
 
-    public function scopeFilterBySupplier($query, $supplier_id = 0)
+    public function scopeFilterBySupplier($query, $supplier_id = null)
     {
-        return $query->when($supplier_id && $supplier_id != 0, function ($q) use ($supplier_id) {
+        return $query->when($supplier_id && $supplier_id != null, function ($q) use ($supplier_id) {
             $q->where('supplier_id', $supplier_id);
         });
     }
 
-    public function scopeFilter($query, $min_price = null, $max_price = null, $category_id = 0, $supplier_id = 0)
+    public function scopeInStock($query, $status = 0)
+    {
+        return $query->when($status != 0, function ($q) use ($status) {
+            if ($status == 1) {
+                // Còn hàng
+                $q->where('stock_quantity', '>', 0);
+            } elseif ($status == 2) {
+                // Hết hàng
+                $q->where('stock_quantity', '<=', 0);
+            }
+        });
+    }
+
+    public function scopeReleasedWithin($query, $days = null)
+    {
+        return $query->when($days !== null, function ($q) use ($days) {
+            $q->where('release_date', '>=', now()->subDays($days));
+        });
+    }
+
+    public function scopeRating($query, $rating = null, $order = 'desc')
+{
+    if (!is_null($rating)) {
+        $min = $rating - 0.5;
+        $max = $rating + 0.4;
+
+        // chỉ thêm having, không withAvg ở đây
+        $query->havingRaw('reviews_avg_rating BETWEEN ? AND ?', [$min, $max]);
+    }
+
+    return $query->orderBy('reviews_avg_rating', $order);
+}
+
+
+    public function scopeFilter($query, $min_price = null, $max_price = null, $category_id = 0, $supplier_id = 0, $rating = null, $in_stock = null, $days = null)
     {
         return $query
             ->priceRange($min_price, $max_price)
             ->filterByCategory($category_id)
-            ->filterBySupplier($supplier_id);
+            ->filterBySupplier($supplier_id)
+            ->rating($rating)
+            ->inStock($in_stock)
+            ->releasedWithin($days);
     }
 
     public function scopeSearch($query, $keyword)
@@ -139,15 +176,4 @@ class Product extends Model
         $query = $this->reviews()->with('user')->latest();
         return $query->paginate(5);
     }
-
-
-
-
-
-
-
-
-
-
-
 }
