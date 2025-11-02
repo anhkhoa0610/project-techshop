@@ -31,52 +31,20 @@
                     <span class="cart-count">2</span>
                 </button>
                 <button class="user-btn">👤</button>
-                <span id="userInfo" class="me-3 d-none">
-                    Xin chào, <strong id="userName"></strong>
-                    <button class="btn btn-outline-danger btn-sm ms-2" onclick="logout()">Đăng xuất</button>
-                </span>
-
-                <button id="BtnLogin" class="login-btn desktop-only" data-bs-toggle="modal" data-bs-target="#loginModal">
-                    Đăng nhập
-                </button>
+                @if (Auth::check())
+                    <span class="me-3">
+                        Xin chào, <strong>{{ Auth::user()->full_name }}</strong>
+                        <form action="{{ route('logout') }}" method="POST" class="d-inline">
+                            @csrf
+                            <button type="submit" class="btn btn-outline-danger btn-sm ms-2">Đăng xuất</button>
+                        </form>
+                    </span>
+                @else
+                    <a href="{{ route('login') }}" style="text-decoration: none;">
+                        <button id="BtnLogin" class="login-btn desktop-only">Đăng nhập</button>
+                    </a>
+                @endif
             </div>
         </div>
     </div>
 </header>
-
-<script>
-document.addEventListener('DOMContentLoaded', () => {
-    updateUserUI();
-});
-
-function updateUserUI() {
-    const user = JSON.parse(localStorage.getItem('user'));
-    const userInfo = document.getElementById('userInfo');
-    const userName = document.getElementById('userName');
-    const loginBtn = document.getElementById('BtnLogin');
-
-    if (user) {
-        userInfo.classList.remove('d-none');
-        userName.textContent = user.full_name;
-        loginBtn.classList.add('d-none');
-    } else {
-        userInfo.classList.add('d-none');
-        loginBtn.classList.remove('d-none');
-    }
-}
-
-async function logout() {
-    const token = localStorage.getItem('api_token');
-    if (token) {
-        await fetch('/api/logout', {
-            method: 'POST',
-            headers: { 'Authorization': 'Bearer ' + token }
-        });
-    }
-
-    localStorage.removeItem('api_token');
-    localStorage.removeItem('user');
-    updateUserUI(); // Cập nhật lại giao diện ngay
-    showToast('Đã đăng xuất!', 'info');
-}
-</script>
