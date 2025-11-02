@@ -23,28 +23,31 @@ class LoginController extends Controller
             'email' => 'required|email',
             'password' => 'required|min:6',
         ], [
-            'email.required' => 'Email is required.',
-            'email.email' => 'Invalid email format.',
-            'password.required' => 'Password is required.',
-            'password.min' => 'Password must be at least 6 characters.',
+            'email.required' => 'Vui lòng nhập email.',
+            'email.email' => 'Email không đúng định dạng.',
+            'password.required' => 'Vui lòng nhập mật khẩu.',
+            'password.min' => 'Mật khẩu phải có ít nhất 6 ký tự.',
         ]);
 
-        $credentials = $request->only('email', 'password');
+        $credentials = [
+            'email' => strtolower($request->email),
+            'password' => $request->password,
+        ];
 
         if (Auth::attempt($credentials)) {
             // Đăng nhập thành công
-            return redirect()->route('index')->with('success', 'Logged in successfully.');
+            return redirect()->route('index')->with('success', 'Đăng nhập thành công.');
         }
 
         // Đăng nhập thất bại
-        return back()->withErrors(['login' => 'Invalid email or password.'])->withInput();
+        return back()->withErrors(['login' => 'Sai email hoặc mật khẩu.'])->withInput();
     }
 
     // Đăng xuất
     public function logout()
     {
         Auth::logout();
-        return redirect()->route('index')->with('success', 'Logged out successfully.');
+        return redirect()->route('index')->with('success', 'Đăng xuất thành công.');
     }
 
     public function showResetForm()
@@ -58,7 +61,7 @@ class LoginController extends Controller
             'email' => 'required|email',
             'old_password' => 'required|min:6',
             'new_password' => 'required|min:6|confirmed',
-            'new_password_confirmation' => 'required|min:6',    
+            'new_password_confirmation' => 'required|min:6',
         ], [
             'email.required' => 'Please enter your email.',
             'email.email' => 'The email format is invalid.',

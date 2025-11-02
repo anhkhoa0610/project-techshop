@@ -32,19 +32,37 @@
                     <h2>Đăng nhập</h2>
                     <form action="{{ route('user.authUser') }}" method="post">
                         @csrf
+                        @if ($errors->has('login'))
+                            <div class="alert alert-danger d-flex align-items-center" role="alert" style="border-radius: 8px;">
+                                <i class="fa fa-exclamation-circle me-2" style="font-size: 18px;"></i>
+                                <div>{{ $errors->first('login') }}</div>
+                            </div>
+                        @endif
+
                         <label for="email">Email</label>
-                        <input type="email" id="email" name="email" placeholder="Nhập email">
+                        <input type="email" id="email" name="email" value="{{ old('email') }}" placeholder="Nhập email">
+                        @if ($errors->has('email'))
+                            <span class="text-danger">{{ $errors->first('email') }}</span>
+                        @endif
 
                         <label for="password">Mật khẩu</label>
                         <input type="password" id="password" name="password" placeholder="Nhập mật khẩu">
+                        @if ($errors->has('password'))
+                            <span class="text-danger">{{ $errors->first('password') }}</span>
+                        @endif
 
                         <a href="{{ route('forgot.form') }}" class="forgot">Quên mật khẩu?</a>
 
                         <button type="submit">Đăng nhập</button>
 
-                        <div class="links">
-                            <a href="{{ route('register') }}" class="me-5">Tạo tài khoản mới</a>
-                            <a href="{{ route('index') }}" class="">Quay lại trang chủ</a>
+                        <div class="text-center mt-3">
+                            <p class="small">
+                                Chưa có tài khoản?
+                                <a href="{{ route('register') }}" class="text-primary fw-semibold text-decoration-none hover-underline">Đăng ký</a>
+                            </p>
+                            <a href="{{ route('index') }}" class="text-secondary small text-decoration-none hover-underline">
+                                <i class="fa fa-arrow-left me-1"></i> Quay lại trang chủ
+                            </a>
                         </div>
                     </form>
                 </div>

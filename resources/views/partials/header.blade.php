@@ -40,7 +40,7 @@
                         </form>
                     </span>
                 @else
-                    <a href="{{ route('login') }}">
+                    <a href="{{ route('login') }}" style="text-decoration: none;">
                         <button id="BtnLogin" class="login-btn desktop-only">Đăng nhập</button>
                     </a>
                 @endif
