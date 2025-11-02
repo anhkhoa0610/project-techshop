@@ -9,7 +9,6 @@
     <link rel="stylesheet" href="{{ asset('css/index-chatbot.css') }}">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css" />
     <link rel="stylesheet" href="{{ asset('css/swiper.css') }}">
-    <link href="https://fonts.googleapis.com/css2?family=Dosis:wght@400;600&display=swap" rel="stylesheet">
 
     <section class="hero">
         <div class="hero-image">
@@ -57,7 +56,6 @@
 
     <!-- Categories Section -->
     <div class="background-overlay">
-
         <section class="categories">
             <div class="container-fluid">
                 <div class="section-header">
@@ -177,7 +175,7 @@
                                         </div>
                                     </div>
                                     <button data-product-id="{{ $product->product_id }}" data-quantity="1"
-                                        class="btn-add-cart btn btn-primary full-width">🛒 Thêm vào giỏ</button>
+                                        class="btn-add-cart btn btn-primary full-width">Thêm vào giỏ 🛒 </button>
                                 </div>
                             </div>
 
@@ -254,7 +252,7 @@
                                         </div>
                                     </div>
                                     <button data-product-id="{{ $product->product_id }}" data-quantity="1"
-                                        class="btn-add-cart btn btn-primary full-width">🛒 Thêm vào giỏ</button>
+                                        class="btn-add-cart btn btn-primary full-width">Thêm vào giỏ 🛒 </button>
                                 </div>
                             </div>
 
@@ -266,15 +264,28 @@
         </section>
 
         <!-- Featured Products -->
-        <section class="products categories-products" style="display: none">
+        <section id="section-all-products" class="products categories-products" style="display: none">
             <div class="container-fluid">
                 <div class="section-header">
-                    <h2 class="section-title">Sản phẩm theo danh mục</h2>
-                    <p class="section-subtitle">Tất cả sản phẩm</p>
+                    <h2 class="section-title">
+                        <span>T</span>
+                        <span>ấ</span>
+                        <span>t&nbsp;</span>
+                        <span>c</span>
+                        <span>ả&nbsp;</span>
+                        <span>s</span>
+                        <span>ả</span>
+                        <span>n&nbsp;</span>
+                        <span>p</span>
+                        <span>h</span>
+                        <span>ẩ</span>
+                        <span>m</span>
+                    </h2>
+                    <p class="section-subtitle">Khám phá sản phẩm theo lựa chọn của bạn</p>
                 </div>
                 <div class="row">
                     <div class="col-md-3" style="color: white">
-                        <div class="sidebar">
+                        <div class="sidebar glass3d" id="sidebar">
                             <div class="sidebar-header">
                                 <span class="sidebar-title">Lọc sản phẩm</span>
                             </div>
@@ -365,7 +376,7 @@
                         </div>
                     </div>
                     <div class="col-md-9">
-                        <div class="products-grid show-by-category">
+                        <div class="products-grid show-by-category glass3d">
 
                         </div>
                     </div>

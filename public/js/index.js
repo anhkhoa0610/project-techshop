@@ -31,18 +31,22 @@ function renderProductsAndPagination(data, categoryId) {
                     <span class="current-price">${Number(product.price).toLocaleString('vi-VN')}₫</span>
                 </div>
             </div>
-            <button class="btn-add-cart btn btn-primary full-width" data-product-id="${product.product_id}" data-quantity="1">🛒 Thêm vào giỏ</button>
+            <button class="btn-add-cart btn btn-primary full-width" data-product-id="${product.product_id}" data-quantity="1">Thêm vào giỏ 🛒 </button>
         </div>
         `;
     });
     document.querySelector('.show-by-category').innerHTML = html;
-    document.querySelector('.categories-products').style.display = 'block';
-    document.querySelector('.new-products').style.display = 'none';
-    document.querySelector('.sale-products').style.display = 'none';
+
+    sidebar = document.querySelector('#sidebar');
+    if (!sidebar.classList.contains('sidebar-active')) {
+        requestAnimationFrame(() => {
+            sidebar.classList.add('sidebar-active');
+        });
+    }
 
     let pagination = '';
     if (data.last_page && data.last_page > 1) {
-        pagination += `<nav class="category-pagination flex items-center justify-center space-x-4">`;
+        pagination += `<nav class="category-pagination flex items-center justify-center space-x-4 glass3d">`;
 
         if (data.current_page > 1) {
             pagination += `<button class="mx-3 mb-2 page-btn btn btn-outline-dark" data-page="${data.current_page - 1}">Prev</button>`;
@@ -123,6 +127,14 @@ function loadProductsByCategory(categoryId, page = 1) {
 document.querySelectorAll('.category-card').forEach(function (card, idx) {
     card.addEventListener('click', function () {
         document.getElementById('filterForm').reset();
+        document.querySelector('.categories-products').style.display = 'block';
+        document.querySelector('.new-products').style.display = 'none';
+        document.querySelector('.sale-products').style.display = 'none';
+
+        const section = document.getElementById('section-all-products');
+        const y = section.getBoundingClientRect().top + window.scrollY;
+        window.scrollTo({ top: y, behavior: 'smooth' });
+
         const categoryIds = [1, 2, 3, 4, 5, 6]; // Sửa lại cho đúng với DB của bạn
         const categoryId = categoryIds[idx];
         loadProductsByCategory(categoryId, 1);

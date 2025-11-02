@@ -35,7 +35,7 @@ function renderProductsAndPaginationFilter(data, min_price, max_price, category_
                     </div>
                 </div>
             </div>
-            <button class="btn-add-cart btn btn-primary full-width" data-product-id="${product.product_id}" data-quantity="1">🛒 Thêm vào giỏ</button>
+            <button class="btn-add-cart btn btn-primary full-width" data-product-id="${product.product_id}" data-quantity="1">Thêm vào giỏ 🛒 </button>
         </div>
         `;
     });

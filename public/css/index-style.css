@@ -1,8 +1,8 @@
-/* Reset and Base Styles */
 html {
-    margin: 0 !important;
+    scroll-behavior: smooth !important;
 }
 
+/* Reset and Base Styles */
 * {
     margin: 0;
     padding: 0;
@@ -98,12 +98,11 @@ body {
     background: rgba(255, 255, 255, 0.1);
     backdrop-filter: blur(12px);
     -webkit-backdrop-filter: blur(12px);
-    border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+    border-bottom: 1px solid #e5e7eb;
     position: fixed;
     width: 100%;
     top: 0;
     z-index: 50;
-    color: white !important;
 }
 
 .header-content {
@@ -151,6 +150,7 @@ body {
 
 .nav-link {
     text-decoration: none;
+    font-family: 'Dosis', sans-serif;
     color: white !important;
     font-size: 1.4rem !important;
     font-weight: 500;
