@@ -29,7 +29,7 @@
 
             <div class="login-form">
                 <div class="login-inner">
-                    <h2>Đăng nhập</h2>
+                    <h2>Đăng Nhập</h2>
                     <form action="{{ route('user.authUser') }}" method="post">
                         @csrf
                         @if ($errors->has('login'))

@@ -1,118 +1,80 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="vi">
 
 <head>
     <meta charset="UTF-8">
-    <title>Reset Password</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="csrf-token" content="{{ csrf_token() }}">
+    <title>@yield('title', 'TechStore - Cửa hàng công nghệ hàng đầu Việt Nam')</title>
+    <meta name="description"
+        content="@yield('description', 'TechStore - Chuyên bán điện thoại, laptop, tai nghe chính hãng với giá tốt nhất. Bảo hành uy tín, giao hàng nhanh toàn quốc.')">
+
+    <link rel="stylesheet" href="{{ asset('css/index-style.css') }}">
+    <link rel="stylesheet" href="{{ asset('css/reset-password.css') }}">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css" />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap"
+        rel="stylesheet">
 </head>
-<style>
-    body {
-        font-family: Arial, sans-serif;
-        background-color: #f2f2f2;
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        height: 100vh;
-        margin: 0;
-    }
-
-    .container {
-        background-color: white;
-        padding: 20px;
-        border-radius: 8px;
-        box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-        width: 100%;
-        max-width: 300px;
-    }
-
-    label {
-        font-weight: bold;
-        display: block;
-        margin-bottom: 8px;
-    }
-
-    input[type="email"],
-    input[type="password"] {
-        width: 100%;
-        padding: 10px;
-        margin-bottom: 15px;
-        border: 1px solid #ddd;
-        border-radius: 4px;
-        box-sizing: border-box;
-    }
-
-    .psw a {
-        color: #0078d7;
-        text-decoration: none;
-        padding: 2px;
-    }
-
-    .psw a:hover {
-        text-decoration: underline;
-    }
-
-    .container h2 {
-        text-align: center;
-        color: #0078d7;
-    }
-
-    .psw {
-        text-align: center;
-        margin-top: 15px;
-    }
-
-    button {
-        background-color: #fff;
-        color: #000;
-        padding: 12px 20px;
-        border: 1px solid #4a16d0;
-        border-radius: 4px;
-        cursor: pointer;
-        width: 100%;
-        font-size: 16px;
-    }
-
-    button:hover {
-        background-color: #0078d7;
-        color: #fff;
-    }
-
-    .error-list {
-        color: red;
-        margin-bottom: 10px;
-    }
-</style>
 
 <body>
-    <form method="POST" action="{{ route('password.update') }}">
-        @csrf
-        <div class="container">
-            <h2>Reset Password</h2>
-            @if ($errors->any())
-                <div class="error-list">
-                    <ul>
-                        @foreach ($errors->all() as $error)
-                            <li>{{ $error }}</li>
-                        @endforeach
-                    </ul>
+    {{-- Header --}}
+    @include('partials.header')
+    <div class="reset-page">
+        <div class="reset-wrapper">
+            <div class="login-image">
+                <img src="{{ asset('images/forgot-panner.png') }}" alt="TechStore">
+            </div>
+            <div class="reset-form">
+                <div class="reset-inner">
+                    <form method="POST" action="{{ route('password.update') }}">
+                        @csrf
+                        <div class="container">
+                            <h2>Reset Password</h2>
+                            @if ($errors->any())
+                                <div class="error-list">
+                                    <ul>
+                                        @foreach ($errors->all() as $error)
+                                            <li>{{ $error }}</li>
+                                        @endforeach
+                                    </ul>
+                                </div>
+                            @endif
+                            <input type="hidden" name="token" value="{{ $token }}">
+                            <div class="mb-3">
+                                <label for="email">Địa chỉ email</label>
+                                <input type="email" name="email" value="{{ request('email') }}" readonly required>
+                                @error('email')
+                                    <div class="text-danger mt-1">{{ $message }}</div>
+                                @enderror
+                            </div>
+                            <div class="mb-3">
+                                <label for="password">Mật khẩu mới</label>
+                                <input type="password" name="password" required>
+                                @error('password')
+                                    <div class="text-danger mt-1">{{ $message }}</div>
+                                @enderror
+                            </div>
+                            <div class="mb-3">
+                                <label for="password_confirmation">nhập lại mật khẩu mới</label>
+                                <input type="password" name="password_confirmation" required>
+                                @error('password_confirmation')
+                                    <div class="text-danger mt-1">{{ $message }}</div>
+                                @enderror
+                            </div>
+                            <button type="submit">khôi phục mật khẩu</button>
+                            <div class="psw">
+                                <p><a href="{{ route('login') }}">Quay lại trang đăng nhập</a></p>
+                            </div>
+                        </div>
+                    </form>
                 </div>
-            @endif
-            <input type="hidden" name="token" value="{{ $token }}">
-            <label for="email">Email Address</label>
-            <input type="email" name="email" value="{{ request('email') }}" required>
-
-            <label for="password">New Password</label>
-            <input type="password" name="password" required>
-
-            <label for="password_confirmation">Confirm Password</label>
-            <input type="password" name="password_confirmation" required>
-
-            <button type="submit">Reset Password</button>
-            <div class="psw">
-                <p><a href="{{ route('login') }}">Back to Login</a></p>
             </div>
         </div>
-    </form>
+    </div>
 </body>
-
+    <script src="{{ asset('js/index-script.js') }}"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 </html>
