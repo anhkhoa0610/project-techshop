@@ -396,6 +396,7 @@
                     },
                     body: formData
                 });
+                console.log(Object.fromEntries(formData.entries()))
                 if (response.ok) {
                     Swal.fire('thành công', 'đánh giá của bạn đã được lưu lại', 'success');
 
@@ -432,7 +433,7 @@
                 }
             });
         });
-
+  
 
     </script>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
