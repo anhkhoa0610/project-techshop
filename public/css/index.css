@@ -751,7 +751,7 @@ input[type=number]::-webkit-outer-spin-button {
 }
 
 .product-meta {
-    margin-top: 8px;
+    margin-top: -10px;
     font-size: 0.9rem;
     color: #bbb8b8;
     line-height: 1.4;

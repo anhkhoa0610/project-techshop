@@ -30,6 +30,18 @@ function renderProductsAndPagination(data, categoryId) {
                 <div class="product-price">
                     <span class="current-price">${Number(product.price).toLocaleString('vi-VN')}₫</span>
                 </div>
+
+                <div class="product-meta">
+                    <div class="volume-sold">
+                        📅 <strong>Đã bán: </strong> ${product.volume_sold} sản phẩm
+                    </div>
+                    <div class="release-date">
+                        📅 <strong>Phát hành:</strong> ${product.release_date ? new Date(product.release_date).toLocaleDateString('vi-VN') : 'Chưa rõ'}
+                    </div>
+                    <div class="stock-info">
+                        📦 <strong>Tồn kho:</strong> ${product.stock_quantity > 0 ? product.stock_quantity + ' sản phẩm' : '<span style="color:red;">Hết hàng</span>'}
+                    </div>
+                </div>
             </div>
             <button class="btn-add-cart btn btn-primary full-width" data-product-id="${product.product_id}" data-quantity="1">Thêm vào giỏ 🛒 </button>
         </div>

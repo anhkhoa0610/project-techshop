@@ -6,12 +6,8 @@
     width: fit-content !important;
     margin: auto !important;
     margin-top: 15px !important;
-    border: 2px solid #888a8f;
     margin: auto !important;
     border-radius: 2rem !important;
-    background: transparent;
-    -webkit-backdrop-filter: blur(6px) saturate(120%);
-    backdrop-filter: blur(6px) saturate(120%);
     transition: all 0.5s cubic-bezier(0.25, 0.8, 0.25, 1);
 }
 

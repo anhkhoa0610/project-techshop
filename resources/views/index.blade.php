@@ -173,6 +173,23 @@
                                             <span
                                                 class="original-price"><?= number_format($product->original_price, 0, ',', '.'); ?>₫</span>
                                         </div>
+
+                                        <div class="product-meta">
+                                            <div class="volume-sold">
+                                                📅 <strong>Đã bán: </strong>{{ $product->volume_sold }} sản phẩm
+                                            </div>
+                                            <div class="release-date">
+                                                📅 <strong>Phát hành: </strong>{{ $product->release_date }}
+                                            </div>
+                                            <div class="stock-info">
+                                                📦 <strong>Còn lại:</strong>
+                                                @if ($product->stock_quantity > 0)
+                                                    {{ $product->stock_quantity }} sản phẩm
+                                                @else
+                                                    <span style="color:red;">Hết hàng</span>
+                                                @endif
+                                            </div>
+                                        </div>
                                     </div>
                                     <button data-product-id="{{ $product->product_id }}" data-quantity="1"
                                         class="btn-add-cart btn btn-primary full-width">Thêm vào giỏ 🛒 </button>
@@ -249,6 +266,23 @@
                                                 class="current-price"><?= number_format($product->price, 0, ',', '.'); ?>₫</span>
                                             <span
                                                 class="original-price"><?= number_format($product->original_price, 0, ',', '.'); ?>₫</span>
+                                        </div>
+
+                                        <div class="product-meta">
+                                            <div class="volume-sold">
+                                                📅 <strong>Đã bán: </strong>{{ $product->volume_sold }} sản phẩm
+                                            </div>
+                                            <div class="release-date">
+                                                📅 <strong>Phát hành: </strong>{{ $product->release_date }}
+                                            </div>
+                                            <div class="stock-info">
+                                                📦 <strong>Còn lại:</strong>
+                                                @if ($product->stock_quantity > 0)
+                                                    {{ $product->stock_quantity }} sản phẩm
+                                                @else
+                                                    <span style="color:red;">Hết hàng</span>
+                                                @endif
+                                            </div>
                                         </div>
                                     </div>
                                     <button data-product-id="{{ $product->product_id }}" data-quantity="1"
@@ -469,7 +503,7 @@
                                         </p>
 
                                         <div class="author-info">
-                                            <img src="/uploads/{{ $review->product->cover_image }}" class="author-avatar">
+                                            <img src="/images/messi.jpg" class="author-avatar">
                                             <div class="author-details">
                                                 <div class="author-name">{{ $review->user->full_name }}</div>
                                                 <span class="author-title">
