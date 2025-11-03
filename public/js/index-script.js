@@ -25,6 +25,12 @@ const handleSearch = function () {
             let html = '';
             if (data.status === 'success' && data.data.length) {
                 data.data.forEach(product => {
+                    const rating = product.reviews_avg_rating ? parseFloat(product.reviews_avg_rating) : 0;
+                    const reviewCount = product.reviews_count || 0;
+                    let starsHtml = '';
+                    for (let i = 1; i <= 5; i++) {
+                        starsHtml += i <= Math.round(rating) ? '⭐' : '';
+                    }
                     html += `
                     <div class="result-item" onclick="window.location.href='/products/${product.product_id}'">
                         <div class="result-thumb">
@@ -32,6 +38,11 @@ const handleSearch = function () {
                         </div>
                         <div class="result-info">
                             <div class="result-title">${product.product_name}</div>
+                            <div class="result-rating">
+                                <span class="stars">${starsHtml}</span>
+                                <span class="rating-score">${rating.toFixed(1)}</span>
+                                <span class="reviews">(${reviewCount})</span>
+                            </div>
                             <div class="result-price">${Number(product.price).toLocaleString('vi-VN')}₫</div>
                         </div>
                     </div>
@@ -92,12 +103,11 @@ async function handleAddToCart(button) {
             method: "POST",
             headers: {
                 "Content-Type": "application/json",
-                "Accept": "application/json" // 🔹 Quan trọng
+                "Accept": "application/json" 
             },
             body: JSON.stringify({ user_id: userId, product_id: productId, quantity })
         });
 
-        // Đọc text trước để tránh lỗi JSON parse
         const text = await response.text();
         console.log("Phản hồi từ server:", text);
 
@@ -123,7 +133,6 @@ async function handleAddToCart(button) {
                 showConfirmButton: false,
             });
         } else {
-            // 🔸 Gộp lỗi validation
             let errorMessages = "";
             if (data.errors) {
                 for (const key in data.errors) {

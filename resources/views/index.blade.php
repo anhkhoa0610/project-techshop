@@ -10,7 +10,6 @@
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css" />
     <link rel="stylesheet" href="{{ asset('css/swiper.css') }}">
 
-
     <section class="hero">
         <div class="hero-image">
             <video class="hero-video" autoplay muted loop playsinline preload="metadata"
@@ -57,14 +56,27 @@
 
     <!-- Categories Section -->
     <div class="background-overlay">
-
         <section class="categories">
-            <div class="container">
+            <div class="container-fluid">
                 <div class="section-header">
-                    <h2 class="section-title">Danh mục nổi bật</h2>
-                    <p class="section-subtitle">Khám phá các sản phẩm công nghệ hàng đầu</p>
+                    <h2 class="section-title">
+                        <span>D</span>
+                        <span>a</span>
+                        <span>n</span>
+                        <span>h&nbsp;</span>
+                        <span>M</span>
+                        <span>ụ</span>
+                        <span>c&nbsp;</span>
+                        <span>n</span>
+                        <span>ổ</span>
+                        <span>i&nbsp;</span>
+                        <span>b</span>
+                        <span>ậ</span>
+                        <span>t</span>
+                    </h2>
+                    <p class="section-subtitle">Khám phá các sản phẩm hàng đầu</p>
                 </div>
-                <div class="categories-grid">
+                <div class="categories-grid glass3d">
                     <div class="category-card">
                         <div class="category-icon primary">📱</div>
                         <h3 class="category-title">The Best Smartphone</h3>
@@ -101,36 +113,75 @@
 
         <!-- Featured Products -->
         <section class="products sale-products">
-            <div class="container">
+            <div class="container-fluid">
                 <div class="section-header">
-                    <h2 class="section-title">Sản phẩm nổi bật</h2>
-                    <p class="section-subtitle">Những sản phẩm được yêu thích nhất</p>
+                    <h2 class="section-title">
+                        <span>S</span>
+                        <span>ả</span>
+                        <span>n&nbsp;</span>
+                        <span>p</span>
+                        <span>h</span>
+                        <span>ẩ</span>
+                        <span>m&nbsp;</span>
+                        <span>n</span>
+                        <span>ổ</span>
+                        <span>i&nbsp;</span>
+                        <span>b</span>
+                        <span>ậ</span>
+                        <span>t</span>
+                    </h2>
+                    <p class="section-subtitle">Những sản phẩm được bán chạy nhất</p>
                 </div>
-                <div class="products-grid">
-                    <?php foreach ($topProducts as $product): ?>
-                    <div class="product-card">
-                        <div class="product-image">
-                            <img src="{{ $product->cover_image ? asset('uploads/' . $product->cover_image) : asset('images/place-holder.jpg') }}"
-                                alt="{{ $product->product_name }}">
-                            <div class="product-badge">Bán chạy</div>
-                            <div class="product-discount">-13%</div>
-                        </div>
-                        <div class="product-info">
-                            <h3 class="product-name"><?= $product->product_name; ?></h3>
-                            <div class="product-rating">
-                                <span class="stars">⭐ 4.9</span>
-                                <span class="reviews">(156 đánh giá)</span>
+                <div class="slider-container glass3d">
+                    <div class="swiper mySwiper">
+                        <div class="swiper-wrapper">
+                            <?php foreach ($topProducts as $product): ?>
+                            <div class="swiper-slide">
+                                <div class="product-card">
+                                    <div class="product-image">
+                                        <img src="{{ $product->cover_image ? asset('uploads/' . $product->cover_image) : asset('images/place-holder.jpg') }}"
+                                            alt="{{ $product->product_name }}">
+                                        <div class="product-badge">Bán chạy</div>
+                                        <div class="product-discount">-13%</div>
+                                    </div>
+                                    <div class="product-info">
+                                        <h3 class="product-name"><?= $product->product_name; ?></h3>
+                                        <div class="product-rating">
+                                            @php
+                                                $rating = round($product->reviews_avg_rating ?? 0, 1);
+                                                $count = $product->reviews_count ?? 0;
+                                            @endphp
+
+                                            <span class="stars">
+                                                @for ($i = 1; $i <= 5; $i++)
+                                                    @if ($i <= $rating)
+                                                        <i class="fa fa-star" style="color: #FFD700;"></i>
+                                                    @elseif ($i - 0.5 <= $rating)
+                                                        <i class="fa fa-star-half-o" style="color: #FFD700;"></i>
+                                                    @else
+                                                        <i class="fa fa-star-o" style="color: #FFD700;"></i>
+                                                    @endif
+                                                @endfor
+                                                <span>{{ $rating }}</span>
+                                            </span>
+
+                                            <span class="reviews">({{ $count }} đánh giá)</span>
+                                        </div>
+                                        <div class="product-price">
+                                            <span
+                                                class="current-price"><?= number_format($product->price, 0, ',', '.'); ?>₫</span>
+                                            <span
+                                                class="original-price"><?= number_format($product->original_price, 0, ',', '.'); ?>₫</span>
+                                        </div>
+                                    </div>
+                                    <button data-product-id="{{ $product->product_id }}" data-quantity="1"
+                                        class="btn-add-cart btn btn-primary full-width">Thêm vào giỏ 🛒 </button>
+                                </div>
                             </div>
-                            <div class="product-price">
-                                <span class="current-price"><?= number_format($product->price, 0, ',', '.'); ?>₫</span>
-                                <span
-                                    class="original-price"><?= number_format($product->original_price, 0, ',', '.'); ?>₫</span>
-                            </div>
+
+                            <?php endforeach; ?>
                         </div>
-                        <button data-product-id="{{ $product->product_id }}" data-quantity="1"
-                            class="btn-add-cart btn btn-primary full-width">🛒 Thêm vào giỏ</button>
                     </div>
-                    <?php endforeach; ?>
                 </div>
             </div>
         </section>
@@ -138,48 +189,103 @@
 
         <!-- Featured Products -->
         <section class="products new-products">
-            <div class="container">
+            <div class="container-fluid">
                 <div class="section-header">
-                    <h2 class="section-title">Sản phẩm mới nhất</h2>
-                    <p class="section-subtitle">Những sản phẩm mới nhất</p>
+                    <h2 class="section-title">
+                        <span>S</span>
+                        <span>ả</span>
+                        <span>n&nbsp;</span>
+                        <span>p</span>
+                        <span>h</span>
+                        <span>ẩ</span>
+                        <span>m&nbsp;</span>
+                        <span>m</span>
+                        <span>ớ</span>
+                        <span>i&nbsp;</span>
+                        <span>n</span>
+                        <span>h</span>
+                        <span>ấ</span>
+                        <span>t</span>
+                    </h2>
+                    <p class="section-subtitle">Những sản phẩm mới được phát hành</p>
                 </div>
-                <div class="products-grid">
-                    <?php foreach ($newProducts as $product): ?>
-                    <div class="product-card">
-                        <div class="product-image">
-                            <img src="{{ $product->cover_image ? asset('uploads/' . $product->cover_image) : asset('images/place-holder.jpg') }}"
-                                alt="{{ $product->product_name }}">
-                            <div class="product-badge">Bán chạy</div>
-                            <div class="product-discount">-13%</div>
-                        </div>
-                        <div class="product-info">
-                            <h3 class="product-name"><?= $product->product_name; ?></h3>
-                            <div class="product-rating">
-                                <span class="stars">⭐ 4.9</span>
-                                <span class="reviews">(156 đánh giá)</span>
+                <div class="slider-container glass3d">
+                    <div class="swiper mySwiper">
+                        <div class="swiper-wrapper">
+                            <?php foreach ($newProducts as $product): ?>
+                            <div class="swiper-slide">
+                                <div class="product-card">
+                                    <div class="product-image">
+                                        <img src="{{ $product->cover_image ? asset('uploads/' . $product->cover_image) : asset('images/place-holder.jpg') }}"
+                                            alt="{{ $product->product_name }}">
+                                        <div class="product-badge">Bán chạy</div>
+                                        <div class="product-discount">-13%</div>
+                                    </div>
+                                    <div class="product-info">
+                                        <h3 class="product-name"><?= $product->product_name; ?></h3>
+                                        <div class="product-rating">
+                                            @php
+                                                $rating = round($product->reviews_avg_rating ?? 0, 1);
+                                                $count = $product->reviews_count ?? 0;
+                                            @endphp
+
+                                            <span class="stars">
+                                                @for ($i = 1; $i <= 5; $i++)
+                                                    @if ($i <= $rating)
+                                                        <i class="fa fa-star" style="color: #FFD700;"></i>
+                                                    @elseif ($i - 0.5 <= $rating)
+                                                        <i class="fa fa-star-half-o" style="color: #FFD700;"></i>
+                                                    @else
+                                                        <i class="fa fa-star-o" style="color: #FFD700;"></i>
+                                                    @endif
+                                                @endfor
+                                                <span>{{ $rating }}</span>
+                                            </span>
+
+                                            <span class="reviews">({{ $count }} đánh giá)</span>
+                                        </div>
+                                        <div class="product-price">
+                                            <span
+                                                class="current-price"><?= number_format($product->price, 0, ',', '.'); ?>₫</span>
+                                            <span
+                                                class="original-price"><?= number_format($product->original_price, 0, ',', '.'); ?>₫</span>
+                                        </div>
+                                    </div>
+                                    <button data-product-id="{{ $product->product_id }}" data-quantity="1"
+                                        class="btn-add-cart btn btn-primary full-width">Thêm vào giỏ 🛒 </button>
+                                </div>
                             </div>
-                            <div class="product-price">
-                                <span class="current-price"><?= number_format($product->price, 0, ',', '.'); ?>₫</span>
-                            </div>
+
+                            <?php endforeach; ?>
                         </div>
-                        <button data-product-id="{{ $product->product_id }}" data-quantity="1"
-                            class="btn-add-cart btn btn-primary full-width">🛒 Thêm vào giỏ</button>
                     </div>
-                    <?php endforeach; ?>
                 </div>
             </div>
         </section>
 
         <!-- Featured Products -->
-        <section class="products categories-products" style="display: none">
+        <section id="section-all-products" class="products categories-products" style="display: none">
             <div class="container-fluid">
                 <div class="section-header">
-                    <h2 class="section-title">Sản phẩm theo danh mục</h2>
-                    <p class="section-subtitle">Tất cả sản phẩm</p>
+                    <h2 class="section-title">
+                        <span>T</span>
+                        <span>ấ</span>
+                        <span>t&nbsp;</span>
+                        <span>c</span>
+                        <span>ả&nbsp;</span>
+                        <span>s</span>
+                        <span>ả</span>
+                        <span>n&nbsp;</span>
+                        <span>p</span>
+                        <span>h</span>
+                        <span>ẩ</span>
+                        <span>m</span>
+                    </h2>
+                    <p class="section-subtitle">Khám phá sản phẩm theo lựa chọn của bạn</p>
                 </div>
                 <div class="row">
                     <div class="col-md-3" style="color: white">
-                        <div class="sidebar">
+                        <div class="sidebar glass3d" id="sidebar">
                             <div class="sidebar-header">
                                 <span class="sidebar-title">Lọc sản phẩm</span>
                             </div>
@@ -201,7 +307,7 @@
                                 <div class="mb-4">
                                     <label for="category" class="form-label fw-semibold">Danh mục</label>
                                     <select class="form-select" id="category" name="category_filter">
-                                        <option value="0">Tất cả</option>
+                                        <option value="">Tất cả</option>
                                         <option value="1">Laptop</option>
                                         <option value="2">Điện thoại</option>
                                         <option value="3">Phụ kiện</option>
@@ -213,7 +319,7 @@
                                 <div class="mb-4">
                                     <label for="supplier" class="form-label fw-semibold">Nhà phân phối</label>
                                     <select class="form-select" id="supplier" name="supplier_filter">
-                                        <option value="0">Tất cả</option>
+                                        <option value="">Tất cả</option>
                                         <option value="1">Apple</option>
                                         <option value="2">Samsung</option>
                                         <option value="3">ASUS</option>
@@ -225,8 +331,8 @@
 
                                 <div class="mb-4">
                                     <label for="rating" class="form-label fw-semibold">Đánh giá</label>
-                                    <select class="form-select" id="rating" name="rating">
-                                        <option value="all">Tất cả</option>
+                                    <select class="form-select" id="rating" name="rating_filter">
+                                        <option value="">Tất cả</option>
                                         <option value="5">⭐️⭐️⭐️⭐️⭐️</option>
                                         <option value="4">⭐️⭐️⭐️⭐️</option>
                                         <option value="3">⭐️⭐️⭐️</option>
@@ -238,22 +344,22 @@
                                 <!-- Tình trạng hàng -->
                                 <div class="mb-4">
                                     <label for="stock_status" class="form-label fw-semibold">Tình trạng hàng</label>
-                                    <select class="form-select" id="stock_status" name="stock_status">
-                                        <option value="all">Tất cả</option>
-                                        <option value="in_stock">Còn hàng</option>
-                                        <option value="out_of_stock">Hết hàng</option>
+                                    <select class="form-select" id="stock_status" name="stock_filter">
+                                        <option value="">Tất cả</option>
+                                        <option value="1">Còn hàng</option>
+                                        <option value="2">Hết hàng</option>
                                     </select>
                                 </div>
 
                                 <!-- Thời gian ra mắt -->
                                 <div class="mb-4">
                                     <label for="release_date" class="form-label fw-semibold">Thời gian ra mắt</label>
-                                    <select class="form-select" id="release_date" name="release_date">
-                                        <option value="all">Tất cả</option>
-                                        <option value="last_30_days">30 ngày qua</option>
-                                        <option value="last_90_days">90 ngày qua</option>
-                                        <option value="last_6_months">6 tháng qua</option>
-                                        <option value="last_1_year">1 năm qua</option>
+                                    <select class="form-select" id="release_date" name="release_filter">
+                                        <option value="">Tất cả</option>
+                                        <option value="30">30 ngày qua</option>
+                                        <option value="90">90 ngày qua</option>
+                                        <option value="180">6 tháng qua</option>
+                                        <option value="365">1 năm qua</option>
                                     </select>
                                 </div>
 
@@ -270,7 +376,7 @@
                         </div>
                     </div>
                     <div class="col-md-9">
-                        <div class="products-grid show-by-category">
+                        <div class="products-grid show-by-category glass3d">
 
                         </div>
                     </div>
@@ -286,160 +392,109 @@
         <section class="review-video">
             <div class="container-fluid">
                 <div class="section-header">
-                    <h2 class="section-title">Video Review</h2>
-                    <p class="section-subtitle">Những sản phẩm được yêu thích nhất</p>
+                    <h2 class="section-title">
+                        <span>C</span>
+                        <span>l</span>
+                        <span>i</span>
+                        <span>p&nbsp;</span>
+                        <span>R</span>
+                        <span>e</span>
+                        <span>v</span>
+                        <span>i</span>
+                        <span>e</span>
+                        <span>w</span>
+                    </h2>
+                    <p class="section-subtitle">Review về sản phẩm</p>
                 </div>
-                <div class="video-grid">
-                    @foreach ($videoProducts as $product)
-                        <div class="video-card">
-                            <div class="video-thumb" onclick="playVideo(this)">
-                                <iframe src="{{ $product->embed_url_review }}?mute=1&playsinline=1&rel=0&modestbranding=1"
-                                    title="Video sản phẩm" frameborder="0" allow="autoplay; encrypted-media; picture-in-picture"
-                                    allowfullscreen>
-                                </iframe>
-                                <div class="overlay">
-                                    <div class="channel-info">
-                                        <img src="{{ asset('/images/logo.jpg') }}" alt="Channel" class="channel-logo">
+                <div class="slider-container glass3d">
+                    <div class="swiper mySwiper">
+                        <div class="swiper-wrapper">
+                            @foreach ($videoProducts as $product)
+                                <div class="swiper-slide">
+                                    <div class="video-card">
+                                        <div class="video-thumb" onclick="playVideo(this)">
+                                            <iframe
+                                                src="{{ $product->embed_url_review }}?mute=1&playsinline=1&rel=0&modestbranding=1"
+                                                title="Video sản phẩm" frameborder="0"
+                                                allow="autoplay; encrypted-media; picture-in-picture" allowfullscreen>
+                                            </iframe>
+                                            <div class="overlay">
+                                                <div class="channel-info">
+                                                    <img src="{{ asset('/images/logo.jpg') }}" alt="Channel"
+                                                        class="channel-logo">
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="product-info">
+                                            <img src="/uploads/{{ $product->cover_image }}" alt="Sản phẩm"
+                                                class="product-thumb">
+                                            <div class="product-name">{{ $product->product_name }}</div>
+                                        </div>
                                     </div>
                                 </div>
-                            </div>
-
-
-                            <div class="product-info">
-                                <img src="/uploads/{{ $product->cover_image }}" alt="Sản phẩm" class="product-thumb">
-                                <div class="product-name">{{ $product->product_name }}</div>
-                            </div>
+                            @endforeach
                         </div>
-                    @endforeach
+                    </div>
                 </div>
             </div>
         </section>
 
         <!-- Review -->
-        <section class="slider-container">
-            <div class="swiper mySwiper">
-                <div class="swiper-wrapper">
-                    <div class="swiper-slide">
-                        <div class="testimonial-card">
-                            <div class="quote-icon">“</div>
 
-                            <p class="testimonial-text">
-                                Môi trường học tập tại FIT-TDC rất tốt, năng động, đây là điều kiện quan trọng nhất đối với
-                                quá trình học tập của SV. Thầy cô giỏi, thân thiện, quan tâm đến sinh viên. Giáo trình được
-                                cập nhật thường xuyên, phù hợp với yêu cầu của xã hội. Tôi tin chắc rằng bất cứ bạn SV nào
-                                đến với TDC đều sẽ được cung cấp một hành trang vững chắc để phục vụ cho công việc và phát
-                                triển sự nghiệp trong tương lai. Tôi cảm thấy rất hài lòng khi được học tập tại FIT.TDC.
-                            </p>
-
-                            <div class="author-info">
-                                <img src="https://i.pravatar.cc/150?u=a042581f4e29026704d" alt="Võ Mạnh Hùng Dương"
-                                    class="author-avatar">
-                                <div class="author-details">
-                                    <div class="author-name">Võ Mạnh Hùng Dương</div>
-                                    <div class="author-title">Senior Software Engineer, Cty TNHH Giải pháp phần mềm Việt Tin
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="swiper-slide">
-                        <div class="testimonial-card">
-                            <div class="quote-icon">“</div>
-
-                            <p class="testimonial-text">
-                                Môi trường học tập tại FIT-TDC rất tốt, năng động, đây là điều kiện quan trọng nhất đối với
-                                quá trình học tập của SV. Thầy cô giỏi, thân thiện, quan tâm đến sinh viên. Giáo trình được
-                                cập nhật thường xuyên, phù hợp với yêu cầu của xã hội. Tôi tin chắc rằng bất cứ bạn SV nào
-                                đến với TDC đều sẽ được cung cấp một hành trang vững chắc để phục vụ cho công việc và phát
-                                triển sự nghiệp trong tương lai. Tôi cảm thấy rất hài lòng khi được học tập tại FIT.TDC.
-                            </p>
-
-                            <div class="author-info">
-                                <img src="https://i.pravatar.cc/150?u=a042581f4e29026704d" alt="Võ Mạnh Hùng Dương"
-                                    class="author-avatar">
-                                <div class="author-details">
-                                    <div class="author-name">Võ Mạnh Hùng Dương</div>
-                                    <div class="author-title">Senior Software Engineer, Cty TNHH Giải pháp phần mềm Việt Tin
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="swiper-slide">
-                        <div class="testimonial-card">
-                            <div class="quote-icon">“</div>
-
-                            <p class="testimonial-text">
-                                Môi trường học tập tại FIT-TDC rất tốt, năng động, đây là điều kiện quan trọng nhất đối với
-                                quá trình học tập của SV. Thầy cô giỏi, thân thiện, quan tâm đến sinh viên. Giáo trình được
-                                cập nhật thường xuyên, phù hợp với yêu cầu của xã hội. Tôi tin chắc rằng bất cứ bạn SV nào
-                                đến với TDC đều sẽ được cung cấp một hành trang vững chắc để phục vụ cho công việc và phát
-                                triển sự nghiệp trong tương lai. Tôi cảm thấy rất hài lòng khi được học tập tại FIT.TDC.
-                            </p>
-
-                            <div class="author-info">
-                                <img src="https://i.pravatar.cc/150?u=a042581f4e29026704d" alt="Võ Mạnh Hùng Dương"
-                                    class="author-avatar">
-                                <div class="author-details">
-                                    <div class="author-name">Võ Mạnh Hùng Dương</div>
-                                    <div class="author-title">Senior Software Engineer, Cty TNHH Giải pháp phần mềm Việt Tin
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="swiper-slide">
-                        <div class="testimonial-card">
-                            <div class="quote-icon">“</div>
-
-                            <p class="testimonial-text">
-                                Môi trường học tập tại FIT-TDC rất tốt, năng động, đây là điều kiện quan trọng nhất đối với
-                                quá trình học tập của SV. Thầy cô giỏi, thân thiện, quan tâm đến sinh viên. Giáo trình được
-                                cập nhật thường xuyên, phù hợp với yêu cầu của xã hội. Tôi tin chắc rằng bất cứ bạn SV nào
-                                đến với TDC đều sẽ được cung cấp một hành trang vững chắc để phục vụ cho công việc và phát
-                                triển sự nghiệp trong tương lai. Tôi cảm thấy rất hài lòng khi được học tập tại FIT.TDC.
-                            </p>
-
-                            <div class="author-info">
-                                <img src="https://i.pravatar.cc/150?u=a042581f4e29026704d" alt="Võ Mạnh Hùng Dương"
-                                    class="author-avatar">
-                                <div class="author-details">
-                                    <div class="author-name">Võ Mạnh Hùng Dương</div>
-                                    <div class="author-title">Senior Software Engineer, Cty TNHH Giải pháp phần mềm Việt Tin
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="swiper-slide">
-                        <div class="testimonial-card">
-                            <div class="quote-icon">“</div>
-
-                            <p class="testimonial-text">
-                                Môi trường học tập tại FIT-TDC rất tốt, năng động, đây là điều kiện quan trọng nhất đối với
-                                quá trình học tập của SV. Thầy cô giỏi, thân thiện, quan tâm đến sinh viên. Giáo trình được
-                                cập nhật thường xuyên, phù hợp với yêu cầu của xã hội. Tôi tin chắc rằng bất cứ bạn SV nào
-                                đến với TDC đều sẽ được cung cấp một hành trang vững chắc để phục vụ cho công việc và phát
-                                triển sự nghiệp trong tương lai. Tôi cảm thấy rất hài lòng khi được học tập tại FIT.TDC.
-                            </p>
-
-                            <div class="author-info">
-                                <img src="https://i.pravatar.cc/150?u=a042581f4e29026704d" alt="Võ Mạnh Hùng Dương"
-                                    class="author-avatar">
-                                <div class="author-details">
-                                    <div class="author-name">Võ Mạnh Hùng Dương</div>
-                                    <div class="author-title">Senior Software Engineer, Cty TNHH Giải pháp phần mềm Việt Tin
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="swiper-slide">Phần tử 6</div>
-                    <div class="swiper-slide">Phần tử 7</div>
-                    <div class="swiper-slide">Phần tử 8</div>
+        <section class="review-video">
+            <div class="container-fluid">
+                <div class="section-header">
+                    <h2 class="section-title">
+                        <span>C</span>
+                        <span>o</span>
+                        <span>m</span>
+                        <span>m</span>
+                        <span>e</span>
+                        <span>n</span>
+                        <span>t</span>
+                        <span>s</span>
+                    </h2>
+                    <p class="section-subtitle">Bình luận về sản phẩm</p>
                 </div>
+                <div class="slider-container glass3d">
+                    <div class="swiper mySwiper">
+                        <div class="swiper-wrapper">
+                            @foreach ($reviews as $review)
+                                <div class="swiper-slide">
+                                    <div class="testimonial-card">
+                                        <div class="quote-icon">“</div>
 
-                <div class="swiper-pagination"></div>
+                                        <p class="testimonial-text">
+                                            {{ $review->comment }}
+                                        </p>
+
+                                        <div class="author-info">
+                                            <img src="/uploads/{{ $review->product->cover_image }}" class="author-avatar">
+                                            <div class="author-details">
+                                                <div class="author-name">{{ $review->user->full_name }}</div>
+                                                <span class="author-title">
+                                                    @for ($i = 1; $i <= 5; $i++)
+                                                        @if ($i <= $review->rating)
+                                                            <i class="fa fa-star" style="color: #FFD700;"></i>
+                                                        @elseif ($i - 0.5 <= $review->rating)
+                                                            <i class="fa fa-star-half-o" style="color: #FFD700;"></i>
+                                                        @else
+                                                            <i class="fa fa-star-o" style="color: #FFD700;"></i>
+                                                        @endif
+                                                    @endfor
+                                                    <span><br>cho sản phẩm
+                                                        {{ $review->product->product_name }}</span>
+                                                </span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            @endforeach
+                        </div>
+
+                        <div class="swiper-pagination"></div>
+                    </div>
+                </div>
             </div>
         </section>
     </div>

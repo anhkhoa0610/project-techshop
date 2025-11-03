@@ -30,53 +30,55 @@
                     🛒
                     <span class="cart-count">2</span>
                 </button>
-                <button class="user-btn">👤</button>
-                <span id="userInfo" class="me-3 d-none">
-                    Xin chào, <strong id="userName"></strong>
-                    <button class="btn btn-outline-danger btn-sm ms-2" onclick="logout()">Đăng xuất</button>
-                </span>
+                @if (Auth::check())
+                    <div class="user-dropdown">
+                        <button type="button" class="user-toggle" aria-haspopup="true" aria-expanded="false">
+                            <i class="fa-solid fa-user me-2"></i>
+                            <strong>{{ explode(' ', Auth::user()->full_name)[count(explode(' ', Auth::user()->full_name)) - 1] }}</strong>
+                            <i class="fa-solid fa-caret-down ms-2 small caret-icon"></i>
+                        </button>
 
-                <button id="BtnLogin" class="login-btn desktop-only" data-bs-toggle="modal" data-bs-target="#loginModal">
-                    Đăng nhập
-                </button>
+                        <div class="user-menu" role="menu" aria-hidden="true">
+                            <a href="" class="dropdown-item">
+                                <i class="fa-solid fa-id-card me-2"></i> Tài khoản của tôi
+                            </a>
+                            @if (Auth::user()->role === "Admin")
+                                <a href="{{ route('dashboard') }}" class="dropdown-item">
+                                    <i class="fa-solid fa-building me-2"></i> Trang quản trị
+                                </a>
+                            @endif
+                            <form action="{{ route('logout') }}" method="POST" class="dropdown-form" role="none">
+                                @csrf
+                                <button type="submit" class="dropdown-item logout-btn">
+                                    <i class="fa-solid fa-right-from-bracket me-2"></i> Đăng xuất
+                                </button>
+                            </form>
+
+                        </div>
+                    </div>
+
+                @else
+                    <a href="{{ route('register') }}" style="text-decoration: none;">
+                        <button id="BtnLogin" class="login-btn">Đăng ký</button>
+                    </a>
+                    <a href="{{ route('login') }}" style="text-decoration: none;">
+                        <button id="BtnLogin" class="login-btn desktop-only">Đăng nhập</button>
+                    </a>
+                @endif
             </div>
         </div>
     </div>
 </header>
 
 <script>
-document.addEventListener('DOMContentLoaded', () => {
-    updateUserUI();
-});
+    const dropdown = document.querySelector('.user-dropdown');
 
-function updateUserUI() {
-    const user = JSON.parse(localStorage.getItem('user'));
-    const userInfo = document.getElementById('userInfo');
-    const userName = document.getElementById('userName');
-    const loginBtn = document.getElementById('BtnLogin');
+    dropdown.addEventListener('mouseenter', () => {
+        dropdown.classList.add('open');
+    });
 
-    if (user) {
-        userInfo.classList.remove('d-none');
-        userName.textContent = user.full_name;
-        loginBtn.classList.add('d-none');
-    } else {
-        userInfo.classList.add('d-none');
-        loginBtn.classList.remove('d-none');
-    }
-}
+    dropdown.addEventListener('mouseleave', () => {
+        dropdown.classList.remove('open');
+    });
 
-async function logout() {
-    const token = localStorage.getItem('api_token');
-    if (token) {
-        await fetch('/api/logout', {
-            method: 'POST',
-            headers: { 'Authorization': 'Bearer ' + token }
-        });
-    }
-
-    localStorage.removeItem('api_token');
-    localStorage.removeItem('user');
-    updateUserUI(); // Cập nhật lại giao diện ngay
-    showToast('Đã đăng xuất!', 'info');
-}
 </script>
