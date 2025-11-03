@@ -3,6 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="csrf-token" content="{{ csrf_token() }}">
     <title>@yield('title', 'Dashboard')</title>
 
     {{-- Bootstrap, fonts, icons --}}
@@ -13,6 +14,11 @@
 
     {{-- Custom CSS --}}
     <link rel="stylesheet" href="{{ asset('css/dashboard.css') }}">
+    
+    {{-- jQuery and Bootstrap JS --}}
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/js/bootstrap.min.js"></script>
 </head>
 
 <body>
@@ -27,9 +33,17 @@
             <li><a href="{{ route('categories.list') }}"><i class="fa fa-list"></i> Quản Lý Danh Mục</a></li>
             <li><a href="{{ route('orders.list')}}"><i class="fa fa-shopping-bag"></i> Quản Lý Đơn Hàng</a></li>
             <li><a href="{{ route('supplier.list') }}"><i class="fa fa-truck"></i> Quản Lý Nhà Phân Phối</a></li>
-             <li><a href="{{ route('voucher.list') }}"><i class="fa fa-ticket"></i> Quản Lý Voucher</a></li>
-             <li><a href="{{ route('reviews.index') }}"><i class="fa fa-star"></i> Quản Lý Review</a></li>
-             <li><a href="#"><i class="fa fa-sign-out"></i> Đăng Xuất</a></li>
+            <li><a href="{{ route('voucher.list') }}"><i class="fa fa-ticket"></i> Quản Lý Voucher</a></li>
+            <li><a href="{{ route('reviews.index') }}"><i class="fa fa-star"></i> Quản Lý Review</a></li>
+            <li><a href="{{ route('index') }}"><i class="fa fa-home"></i> Trang chủ</a></li>
+            <li>
+                <form action="{{ route('logout') }}" method="POST">
+                   @csrf
+                   <button type="submit">
+                       <i class="fa fa-sign-out"></i> Đăng Xuất
+                   </button>
+               </form>
+            </li>
         </ul>
     </div>
 
@@ -60,5 +74,7 @@
             });
         });
     </script>
+    
+    @yield('scripts')
 </body>
 </html>
