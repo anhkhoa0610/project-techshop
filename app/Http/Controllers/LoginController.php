@@ -63,27 +63,27 @@ class LoginController extends Controller
             'new_password' => 'required|min:6|confirmed',
             'new_password_confirmation' => 'required|min:6',
         ], [
-            'email.required' => 'Please enter your email.',
-            'email.email' => 'The email format is invalid.',
-            'old_password.required' => 'Please enter your current password.',
-            'old_password.min' => 'The current password must be at least 6 characters.',
-            'new_password.required' => 'Please enter a new password.',
-            'new_password.min' => 'The new password must be at least 6 characters.',
-            'new_password.confirmed' => 'The new password confirmation does not match.',
-            'new_password_confirmation.required' => 'Please confirm your new password.',
-            'new_password_confirmation.min' => 'The new password confirmation must be at least 6 characters.',
+            'email.required' => 'Vui lòng nhập email của bạn.',
+            'email.email' => 'Định dạng email không hợp lệ.',
+            'old_password.required' => 'Vui lòng nhập mật khẩu hiện tại.',
+            'old_password.min' => 'Mật khẩu hiện tại phải có ít nhất 6 ký tự.',
+            'new_password.required' => 'Vui lòng nhập mật khẩu mới.',
+            'new_password.min' => 'Mật khẩu mới phải có ít nhất 6 ký tự.',
+            'new_password.confirmed' => 'Xác nhận mật khẩu mới không khớp.',
+            'new_password_confirmation.required' => 'Vui lòng xác nhận mật khẩu mới.',
+            'new_password_confirmation.min' => 'Xác nhận mật khẩu mới phải có ít nhất 6 ký tự.',
         ]);
 
         $user = User::where('email', $request->email)->first();
 
         if (!$user || !Hash::check($request->old_password, $user->password)) {
-            return back()->withErrors(['old_password' => 'Old password is incorrect or user not found.']);
+            return back()->withErrors(['old_password' => 'Mật khẩu cũ không chính xác hoặc không tìm thấy người dùng.']);
         }
 
         $user->password = Hash::make($request->new_password);
         $user->save();
 
-        return redirect()->route('login')->with('success', 'Password reset successfully.');
+        return redirect()->route('login')->with('success', 'Đặt lại mật khẩu thành công.');
     }
 
     public function showForgotForm()
@@ -105,9 +105,9 @@ class LoginController extends Controller
         );
 
         if ($status === Password::RESET_LINK_SENT) {
-            return back()->with('success', 'Reset link sent to your email.');
+            return back()->with('success', 'Liên kết đặt lại mật khẩu đã được gửi đến email của bạn.');
         } else {
-            return back()->withErrors(['email' => 'Email not found or error sending reset link.']);
+            return back()->withErrors(['email' => 'Không tìm thấy email hoặc có lỗi khi gửi liên kết đặt lại mật khẩu.']);
         }
     }
 
@@ -125,23 +125,26 @@ class LoginController extends Controller
             'address' => 'required|string|max:255',
             'dob' => 'required|date|before:today',
             'password' => 'required|min:6|confirmed',
+            'password_confirmation' => 'required|min:6',
         ], [
-            'full_name.required' => 'Please enter your full name.',
-            'email.required' => 'Please enter your email address.',
-            'email.email' => 'The email format is invalid.',
-            'email.unique' => 'This email is already in use.',
-            'phone.required' => 'Please enter your phone number.',
-            'phone.numeric' => 'Phone number must contain only numbers.',
-            'phone.digits_between' => 'Phone number must be between 9 and 15 digits.',
-            'phone.unique' => 'This phone number is already in use.',
-            'address.required' => 'Please enter your address.',
-            'address.string' => 'Address must be a valid string.',
-            'dob.required' => 'Please enter your date of birth.',
-            'dob.date' => 'Date of birth must be a valid date.',
-            'dob.before' => 'Date of birth must be in the past.',
-            'password.required' => 'Please enter a password.',
-            'password.min' => 'Password must be at least 6 characters long.',
-            'password.confirmed' => 'Password confirmation does not match.',
+            'full_name.required' => 'Vui lòng nhập họ và tên của bạn.',
+            'email.required' => 'Vui lòng nhập địa chỉ email.',
+            'email.email' => 'Định dạng email không hợp lệ.',
+            'email.unique' => 'Email này đã được sử dụng.',
+            'phone.required' => 'Vui lòng nhập số điện thoại.',
+            'phone.numeric' => 'Số điện thoại chỉ được chứa các chữ số.',
+            'phone.digits_between' => 'Số điện thoại phải có từ 9 đến 15 chữ số.',
+            'phone.unique' => 'Số điện thoại này đã được sử dụng.',
+            'address.required' => 'Vui lòng nhập địa chỉ của bạn.',
+            'address.string' => 'Địa chỉ phải là một chuỗi hợp lệ.',
+            'dob.required' => 'Vui lòng nhập ngày sinh.',
+            'dob.date' => 'Ngày sinh phải là một ngày hợp lệ.',
+            'dob.before' => 'Ngày sinh phải là ngày trong quá khứ.',
+            'password.required' => 'Vui lòng nhập mật khẩu.',
+            'password.min' => 'Mật khẩu phải có ít nhất 6 ký tự.',
+            'password.confirmed' => 'Xác nhận mật khẩu không khớp.',
+            'password_confirmation.required' => 'Vui lòng nhập mật khẩu.',
+            'password_confirmation.min' => 'Mật khẩu phải có ít nhất 6 ký tự.',
         ]);
 
         $user = new User();
@@ -153,6 +156,6 @@ class LoginController extends Controller
         $user->password = Hash::make($request->password);
         $user->save();
 
-        return redirect("login")->with('success', 'Registration successful. you can now login.');
+        return redirect("login")->with('success', 'Đăng ký thành công. Bạn có thể đăng nhập ngay bây giờ.');
     }
 }

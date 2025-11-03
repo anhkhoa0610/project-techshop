@@ -125,6 +125,15 @@ Route::post('reset-password', function (Illuminate\Http\Request $request) {
         'token' => 'required',
         'email' => 'required|email',
         'password' => 'required|min:6|confirmed',
+        'password_confirmation' => 'required|min:6',
+    ], [
+        'email.required' => 'Vui lòng nhập email của bạn.',
+        'email.email' => 'Định dạng email không hợp lệ.',
+        'password.required' => 'Vui lòng nhập mật khẩu mới.',
+        'password.min' => 'Mật khẩu mới phải có ít nhất 6 ký tự.',
+        'password.confirmed' => 'Xác nhận mật khẩu mới không khớp.',
+        'password_confirmation.required' => 'Vui lòng xác nhận mật khẩu mới.',
+        'password_confirmation.min' => 'Xác nhận mật khẩu mới phải có ít nhất 6 ký tự.',
     ]);
 
     $status = Password::reset(
@@ -136,7 +145,7 @@ Route::post('reset-password', function (Illuminate\Http\Request $request) {
     );
 
     return $status === Password::PASSWORD_RESET
-        ? redirect()->route('login')->with('success', 'Password reset successfully.')
+        ? redirect()->route('login')->with('success', 'Đặt lại mật khẩu thành công.')
         : back()->withErrors(['email' => [__($status)]]);
 })->name('password.update');
 
