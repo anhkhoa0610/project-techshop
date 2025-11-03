@@ -1,84 +1,96 @@
 /* 1. CSS cho thẻ <section> cha */
 .slider-container {
-    position: relative; /* Quan trọng: Tạo khung tham chiếu cho các nút */
-    width: 90%; /* Chiều rộng tổng thể của cả slider và các nút */
-    margin: 0 auto; /* Căn giữa section trên trang */
+  position: relative;
+  /* Quan trọng: Tạo khung tham chiếu cho các nút */
+  width: 90%;
+  /* Chiều rộng tổng thể của cả slider và các nút */
+  border-radius: 15px;
+  margin-left: 5vw;
+}
+
+.swiper-slide {
+  background-color: transparent !important;
+  padding-top: 45px !important;
 }
 
 /* 2. CSS cho div .swiper (chứa các slide) */
 .swiper {
-    /* Đảm bảo các slide thừa bị ẩn đi */
-    overflow: hidden; 
-    
-    /* Các thuộc tính cũ giữ nguyên */
-    width: 100%; /* Chiếm 100% chiều rộng của .slider-container */
-    height: fit-content;
-    padding-bottom: 40px; /* Giữ khoảng trống cho pagination */
+  /* Đảm bảo các slide thừa bị ẩn đi */
+  overflow: hidden;
+
+  /* Các thuộc tính cũ giữ nguyên */
+  width: 100%;
+  /* Chiếm 100% chiều rộng của .slider-container */
+  height: fit-content;
+  padding-bottom: 40px;
+  /* Giữ khoảng trống cho pagination */
 }
 
 /* 3. CSS cho các nút, giữ nguyên như cũ */
 .swiper-button-next,
 .swiper-button-prev {
-    color: #fff !important;
-    background-color: #007aff;
-    width: 40px;
-    height: 40px;
-    border-radius: 50%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    transition: background-color 0.3s ease;
-    box-shadow: 0 4px 10px rgba(0, 122, 255, 0.2);
-    top: var(--swiper-navigation-top-offset, 50%);
-    transform: translateY(-50%);
+  color: #fff !important;
+  background-color: #007aff;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background-color 0.3s ease;
+  box-shadow: 0 4px 10px rgba(0, 122, 255, 0.2);
+  top: var(--swiper-navigation-top-offset, 50%);
+  transform: translateY(-50%);
 }
 
 .swiper-button-next::after,
 .swiper-button-prev::after {
-    font-size: 18px !important;
-    font-weight: bold;
+  font-size: 18px !important;
+  font-weight: bold;
 }
 
 .swiper-button-next:hover,
 .swiper-button-prev:hover {
-    background-color: #0056b3;
+  background-color: #0056b3;
 }
 
 /* 4. Cập nhật vị trí của nút với giá trị âm */
 .swiper-button-prev {
-    left: -50px; /* Đẩy nút ra ngoài 20px về bên trái */
+  left: -50px;
+  /* Đẩy nút ra ngoài 20px về bên trái */
 }
 
 .swiper-button-next {
-    right: -50px; /* Đẩy nút ra ngoài 20px về bên phải */
+  right: -50px;
+  /* Đẩy nút ra ngoài 20px về bên phải */
 }
 
 /* ---- Các CSS khác cho pagination và slide giữ nguyên ---- */
 .swiper-pagination {
-    bottom: 5px !important;
+  bottom: 5px !important;
 }
 
 .swiper-pagination-bullet {
-    width: 20px;
-    height: 20px;
-    background-color: white;
-    opacity: 1 !important;
+  width: 20px;
+  height: 20px;
+  background-color: white;
+  opacity: 1 !important;
 }
 
 .swiper-pagination-bullet-active {
-    background-color: #007aff;
+  background-color: #007aff;
 }
 
 .swiper-slide {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    font-size: 24px;
-    color: white;
-    font-weight: bold;
-    background-color: #5a9bd5;
-    border-radius: 10px;
-    padding: 20px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 24px;
+  color: white;
+  font-weight: bold;
+  background-color: #5a9bd5;
+  border-radius: 10px;
+  padding: 20px;
 }
 
 /* --- Kiểu chung cho slide --- */
@@ -86,13 +98,17 @@
 
 /* --- Kiểu cho card nhận xét --- */
 .testimonial-card {
-  background-color: #f8f9fa; /* Màu nền xám nhạt */
+  background-color: transparent;
+  /* Màu nền xám nhạt */
   border-radius: 12px;
-  padding: 40px 30px 30px 30px; /* Tăng padding trên để có không gian cho icon */
-  max-width: 500px; /* Giới hạn chiều rộng của card */
+  padding: 40px 30px 30px 30px;
+  /* Tăng padding trên để có không gian cho icon */
+  max-width: 500px;
+  /* Giới hạn chiều rộng của card */
   position: relative;
   box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
-  font-family: Arial, sans-serif; /* Chọn font chữ phù hợp */
+  font-family: Arial, sans-serif;
+  /* Chọn font chữ phù hợp */
 }
 
 /* --- Kiểu cho icon ngoặc kép --- */
@@ -100,21 +116,25 @@
   position: absolute;
   top: -10px;
   left: 20px;
-  font-size: 100px; /* Kích thước lớn */
+  font-size: 100px;
+  /* Kích thước lớn */
   font-weight: bold;
-  color: #e9ecef; /* Màu rất nhạt */
+  color: #e9ecef;
+  /* Màu rất nhạt */
   line-height: 1;
-  z-index: 1; /* Nằm dưới text */
+  z-index: 1;
+  /* Nằm dưới text */
 }
 
 /* --- Kiểu cho nội dung text --- */
 .testimonial-card .testimonial-text {
   font-size: 16px;
-  color: #495057;
+  color: #c2baba;
   line-height: 1.6;
   margin-bottom: 25px;
   position: relative;
-  z-index: 2; /* Nằm trên icon */
+  z-index: 2;
+  /* Nằm trên icon */
 }
 
 /* --- Kiểu cho phần thông tin tác giả --- */
@@ -126,9 +146,11 @@
 .author-avatar {
   width: 60px;
   height: 60px;
-  border-radius: 50%; /* Bo tròn ảnh avatar */
+  border-radius: 50%;
+  /* Bo tròn ảnh avatar */
   margin-right: 15px;
-  object-fit: cover; /* Đảm bảo ảnh không bị méo */
+  object-fit: cover;
+  /* Đảm bảo ảnh không bị méo */
 }
 
 .author-details {
@@ -139,10 +161,10 @@
 .author-name {
   font-weight: bold;
   font-size: 18px;
-  color: #212529;
+  color: #c2baba;
 }
 
 .author-title {
   font-size: 14px;
-  color: #6c757d;
+  color: #c2baba;
 }

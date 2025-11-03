@@ -1,3 +1,7 @@
+html {
+    scroll-behavior: smooth !important;
+}
+
 /* Reset and Base Styles */
 * {
     margin: 0;
@@ -91,15 +95,14 @@ body {
 
 /* Header */
 .header {
-    background: transparent;
-    -webkit-backdrop-filter: blur(6px) saturate(120%);
-    backdrop-filter: blur(6px) saturate(120%);
+    background: rgba(255, 255, 255, 0.1);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
     border-bottom: 1px solid #e5e7eb;
     position: fixed;
     width: 100%;
     top: 0;
     z-index: 50;
-    color: white !important;
 }
 
 .header-content {
@@ -147,6 +150,7 @@ body {
 
 .nav-link {
     text-decoration: none;
+    font-family: 'Dosis', sans-serif;
     color: white !important;
     font-size: 1.4rem !important;
     font-weight: 500;
@@ -343,62 +347,6 @@ body {
 
 .phone-image:hover {
     transform: rotate(6deg);
-}
-
-/* Section Headers */
-.section-header {
-    text-align: center;
-    margin-bottom: 3rem;
-}
-
-
-
-/* Categories */
-.categories {
-    padding: 4rem 0;
-}
-
-.categories-grid {
-    display: grid;
-    grid-template-columns: 1fr;
-    gap: 1.5rem;
-}
-
-@media (min-width: 640px) {
-    .categories-grid {
-        grid-template-columns: repeat(2, 1fr);
-    }
-}
-
-@media (min-width: 1024px) {
-    .categories-grid {
-        grid-template-columns: repeat(3, 1fr);
-    }
-}
-
-
-
-.category-icon {
-    display: inline-flex;
-    padding: 1rem;
-    border-radius: 1rem;
-    margin-bottom: 1rem;
-    font-size: 2rem;
-    transition: transform 0.3s ease;
-}
-
-.category-card:hover .category-icon {
-    transform: scale(1.1);
-}
-
-.category-icon.primary {
-    background: #0ea5e9;
-    color: white;
-}
-
-.category-icon.accent {
-    background: #ea580c;
-    color: white;
 }
 
 /* Footer */

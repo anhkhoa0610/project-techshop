@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 use App\Models\Product;
+use App\Models\Review;
 use Illuminate\Http\Request;
 use App\Models\CartItem;
 use App\Http\Requests\CartRequest;
@@ -13,21 +14,24 @@ class IndexController extends Controller
         $topProducts = Product::withAvg('reviews', 'rating')
             ->withCount('reviews')
             ->orderByDesc('volume_sold')
-            ->limit(4)
+            ->limit(8)
             ->get();
+            
         $newProducts = Product::withAvg('reviews', 'rating')
             ->withCount('reviews')
             ->orderByDesc('release_date')
-            ->limit(4)
+            ->limit(8)
             ->get();
 
         $allProducts = Product::withAvg('reviews', 'rating')->get();
+
+        $reviews = Review::with('product', 'user')->orderBy('rating', 'desc')->limit(8)->get();
 
         $videoProducts = Product::withVideo()
             ->inRandomOrder()
             ->limit(4)
             ->get();
-        return view('index', compact('topProducts', 'newProducts', 'allProducts', 'videoProducts'));
+        return view('index', compact('topProducts', 'newProducts', 'allProducts', 'videoProducts', 'reviews'));
     }
 
     public function getProductsByCategory($categoryId)
