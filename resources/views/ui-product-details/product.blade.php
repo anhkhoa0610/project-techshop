@@ -21,6 +21,10 @@
                             class="prodcut-image" alt="Ảnh sản phẩm chính" id="mainImage">
                         <div class="swiper">
                             <div class="swiper-wrapper">
+                                <div class="swiper-slide">
+                                    <img src="{{isset($product->cover_image) ? asset('uploads/' . $product->cover_image) : asset('images/blank_product.png') }}"
+                                        alt="Ảnh chính" class="swiper-slide-img">
+                                </div>
                                 @if(isset($product->images) && $product->images->count() > 0)
                                     @foreach($product->images as $image)
                                         <div class="swiper-slide">
@@ -44,7 +48,8 @@
                 <div class="col-md-6">
                     <h3 class="fw-bold text-center">{{ $product->product_name ?? "Sản phẩm không tồn tại!!!"}}</h3>
                     <p class="text-warning mb-1 fs-3 text-center">
-                        ⭐ {{ number_format($avg, 1) ?? 0 }} | {{ $reviews_count ?? 0 }} đánh giá | Đã bán
+                        <span class="star filled text-warning fs-1">★</span>
+                        {{ number_format($avg, 1) ?? 0 }} | {{ $reviews_count ?? 0 }} đánh giá | Đã bán
                         {{ $product->volume_sold ?? 0 }}
                     </p>
 
@@ -108,32 +113,73 @@
                 <div class="col-md-9 filter-by-star">
                     <div class="groub-button-filter">
                         <button class="button-filter-star active" data-rating="">Tất cả</button>
-                        <p>Bình luận: ({{ $reviewSummary['all'] ?? 0 }})</p>
+                        <p>Bình luận: (<span class="review-count" data-rating="all">{{ $reviewSummary['all'] ?? 0 }}</span>)
+                        </p>
                     </div>
                     <div class="groub-button-filter">
                         <button class="button-filter-star" data-rating="1">1 sao</button>
-                        <p>Bình luận: ({{ $reviewSummary['1'] ?? 0 }})</p>
+                        <p>Bình luận: (<span class="review-count" data-rating="1">{{ $reviewSummary['1'] ?? 0 }}</span>)</p>
                     </div>
                     <div class="groub-button-filter">
                         <button class="button-filter-star " data-rating="2">2 sao</button>
-                        <p>Bình luận: ({{ $reviewSummary['2'] ?? 0 }})</p>
+                        <p>Bình luận: (<span class="review-count" data-rating="2">{{ $reviewSummary['2'] ?? 0 }})</span></p>
                     </div>
                     <div class="groub-button-filter">
                         <button class="button-filter-star " data-rating="3">3 sao</button>
-                        <p>Bình luận: ({{ $reviewSummary['3'] ?? 0 }})</p>
+                        <p>Bình luận: (<span class="review-count" data-rating="3">{{ $reviewSummary['3'] ?? 0 }})</span></p>
                     </div>
                     <div class="groub-button-filter">
                         <button class="button-filter-star " data-rating="4">4 sao</button>
-                        <p>Bình luận: ({{ $reviewSummary['4'] ?? 0 }})</p>
+                        <p>Bình luận: (<span class="review-count" data-rating="4">{{ $reviewSummary['4'] ?? 0 }})</span></p>
                     </div>
                     <div class="groub-button-filter">
                         <button class="button-filter-star " data-rating="5">5 sao</button>
-                        <p class="text-center">Bình luận: ({{ $reviewSummary['5'] ?? 0 }})</p>
+                        <p class="text-center">Bình luận: (<span class="review-count"
+                                data-rating="5">{{ $reviewSummary['5'] ?? 0 }}</span>)</p>
                     </div>
 
                 </div>
 
             </div>
+            <div class="post-review">
+                <div class="title-post bg-primary">
+                    <h3>Thêm đánh giá sản phẩm</h3>
+                </div>
+                <div class="post-form">
+                    <form id="form-post-review">
+                        @csrf
+                        <div class="mb-3">
+                            <label for="reviewRating" class="form-label">Đánh giá của bạn:</label>
+                            <input type="hidden" name="product_id" value="{{ $product->product_id }}">
+                            <input type="hidden" name="user_id" value="{{ auth()->id() }}">
+                            <select class="form-select" id="reviewRating" name="rating" required>
+                                <option value="" selected disabled>Chọn số sao đánh giá</option>
+                                <option class="text-warning" value="1">
+                                    <span class="star filled text-warning fs-1">★</span>
+                                </option>
+                                <option class="text-warning" value="2">
+                                    <span class="star filled text-warning fs-1">★★</span>
+                                </option>
+                                <option class="text-warning" value="3">
+                                    <span class="star filled text-warning fs-1">★★★</span>
+                                </option>
+                                <option class="text-warning" value="4">
+                                    <span class="star filled text-warning fs-1">★★★★</span>
+                                </option>
+                                <option class="text-warning" value="5">
+                                    <span class="star filled text-warning fs-1">★★★★★</span>
+                                </option>
+                            </select>
+                        </div>
+                        <div class="mb-3">
+                            <label for="reviewComment" class="form-label">Bình luận của bạn:</label>
+                            <textarea class="form-control" id="reviewComment" name="comment" rows="4" required></textarea>
+                        </div>
+                        <button type="submit" class="btn btn-primary">Gửi đánh giá</button>
+                    </form>
+                </div>
+            </div>
+
             {{-- Vùng hiển thị các đánh giá của user--}}
             <div class="container comment-field">
 
@@ -164,6 +210,8 @@
                 clearTimeout(hoverTimeout);
             });
         });
+
+
 
         const swiper_wrapper = document.querySelector('.swiper-wrapper');
         const swiper_button_prev = document.querySelector('.swiper-button-prev');
@@ -273,18 +321,18 @@
                                 });
 
                             return `
-                                    <div class="review-display border-bottom py-2">
-                                        <img class="user-avatar" src="/images/user-icon.jpg" alt="">
-                                        <div class="user-review">
-                                            <div class="d-flex">
-                                                <strong class="review-info">${review.user.full_name}</strong>
-                                                <p class="review-info ms-5">| ${formattedDate}</p>
-                                            </div>
-                                            <p class="review-info">${stars}</p>
-                                            <p class="review-info">${review.comment}</p>
-                                        </div>
-                                    </div>
-                                `;
+                         <div class="review-display border-bottom py-2">
+                             <img class="user-avatar" src="/images/user-icon.jpg" alt="">
+                             <div class="user-review">
+                                 <div class="d-flex">
+                                     <strong class="review-info">${review.user.full_name}</strong>
+                                     <p class="review-info ms-5">| ${formattedDate}</p>
+                                 </div>
+                                 <p class="review-info">${stars}</p>
+                                 <p class="review-info">${review.comment}</p>
+                            </div>
+                        </div>
+                                    `;
                         }).join('');
 
                         // Render thanh phân trang
@@ -295,14 +343,14 @@
                             const disabled = link.url === null ? 'disabled' : '';
 
                             return `
-                                    <button 
-                                        class="btn btn-sm btn-outline-secondary mx-1 ${activeClass}" 
-                                        ${disabled ? 'disabled' : ''} 
-                                        data-url="${link.url || '#'}"
-                                    >
-                                        ${label}
-                                    </button>
-                                `;
+                                        <button
+                                            class="btn btn-sm btn-outline-secondary mx-1 ${activeClass}"
+                                            ${disabled ? 'disabled' : ''}
+                                            data-url="${link.url || '#'}"
+                                        >
+                                            ${label}
+                                        </button>
+                                    `;
                         }).join('');
 
                         // Gán sự kiện click cho từng nút
@@ -335,12 +383,59 @@
 
             // Tải mặc định trang đầu tiên
             loadReviews(apiBase);
+
+            // xử lý submit form thêm đánh giá
+            document.getElementById('form-post-review').addEventListener('submit', async function (e) {
+                e.preventDefault();
+                const formData = new FormData(this);
+                const response = await fetch('/api/product/{{ $product->product_id }}/reviews', {
+                    method: 'POST',
+                    headers: {
+                        'Accept': 'application/json',
+                        'X-CSRF-TOKEN': '{{ csrf_token() }}',
+                    },
+                    body: formData
+                });
+                console.log(Object.fromEntries(formData.entries()))
+                if (response.ok) {
+                    Swal.fire('thành công', 'đánh giá của bạn đã được lưu lại', 'success');
+
+                    // Lấy rating từ form (nếu input có name="rating")
+                    const rating = formData.get('rating');
+
+                    // xử lý tăng số lượng đánh giá hiển thị ở từng mức sao
+                    const span = document.querySelector(`.review-count[data-rating="${rating}"]`);
+                    if (span) {
+                        span.textContent = parseInt(span.textContent) + 1; // tăng lên 1
+                    }
+
+                    // xử lý tăng số lượng đánh giá hiển thị ở phần tất cả
+                    const allSpan = document.querySelector('.review-count[data-rating=""]');
+                    if (allSpan) {
+                        allSpan.textContent = parseInt(allSpan.textContent) + 1;
+                    }
+
+                    // Cập nhật nút lọc sao đang active đúng với số sao mà user vừa đánh giá
+                    document.querySelectorAll('.button-filter-star').forEach(b => b.classList.remove('active'));
+                    const activeBtn = document.querySelector(`.button-filter-star[data-rating="${rating}"]`);
+                    if (activeBtn) activeBtn.classList.add('active');
+
+                    // Gọi callback hàm để load lại review 
+                    const apiBase = `/api/product/{{ $product->product_id }}/reviews`;
+                    const url = rating ? `${apiBase}?rating=${rating}` : apiBase;
+                    loadReviews(url);
+
+                    // Reset form
+                    this.reset();
+                } else {
+                    const errorData = await response.json();
+                    Swal.fire('Lỗi', 'Lỗi khi gửi đánh giá, vui lòng thử lại sau.', 'error');
+                }
+            });
         });
+  
 
     </script>
-
-
-
-
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
 @endsection

@@ -44,7 +44,6 @@
 .swiper-wrapper {
     display: flex;
     overflow-x: hidden;
-    justify-content: center;
     min-height: 94px;
 
 }
@@ -201,10 +200,7 @@
     top:0 ;
     left: 0;
 }
-.comment-field{
-   
 
-}
 .user-review{
     margin-left: 105px;
 }
@@ -233,4 +229,11 @@
     display: flex;
     justify-content: center;
     margin-top: 20px;
+}
+.post-review{
+    background-color: rgb(166, 180, 166);
+    min-height: 350px;
+}
+.post-form{
+    padding: 10px;
 }

@@ -161,7 +161,7 @@ class Product extends Model
     // Hàm lấy bình luận lọc theo số sao
     public function getFilteredReviews($rating = null)
     {
-        $query = $this->reviews()->with('user')->latest();
+        $query = $this->reviews()->with('user')->latest('review_date');
 
         if ($rating) {
             $query->where('rating', $rating);
@@ -176,4 +176,5 @@ class Product extends Model
         $query = $this->reviews()->with('user')->latest();
         return $query->paginate(5);
     }
+
 }

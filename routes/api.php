@@ -38,4 +38,7 @@ Route::get('/index/search', [IndexController::class, 'searchProductsAPI']);
 Route::post('/chat', [\App\Http\Controllers\DeepSeekChatController::class, 'chat']);
 
 Route::post('/index/add-to-cart', [IndexController::class, 'addToCart']);
+
 Route::get('/product/{id}/reviews', [UIProductDetailsController::class, 'index']);
+Route::post('/product/{id}/reviews', [UIProductDetailsController::class, 'store']);
+

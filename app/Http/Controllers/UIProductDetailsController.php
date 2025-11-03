@@ -2,8 +2,10 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\ReviewRequest;
 use Illuminate\Http\Request;
 use App\Models\Product;
+use App\Models\Review;
 
 class UIProductDetailsController extends Controller
 {
@@ -14,7 +16,7 @@ class UIProductDetailsController extends Controller
         $reviews_count = $product->reviews()->count();
         $reviewSummary = $product->getReviewSummary();
         $reviews = $product->getReviews();
-        
+
 
         // return response()->json([
         //     'success' => true,
@@ -36,5 +38,23 @@ class UIProductDetailsController extends Controller
             'message' => 'Danh sách đánh giá đã lọc',
             'data' => $reviews
         ]);
+    }
+    public function store(ReviewRequest $request)
+    {
+
+        $validated = $request->validated();
+        $review = Review::create([
+            'product_id' => $validated['product_id'],
+            'user_id' => $validated['user_id'],
+            'rating' => $validated['rating'],
+            'comment' => $validated['comment'] ?? null,
+            'review_date' => now(),
+        ]);
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Đánh giá đã được thêm thành công',
+            'data' => $review
+        ], 201);
     }
 }
