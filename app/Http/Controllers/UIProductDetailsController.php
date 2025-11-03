@@ -17,14 +17,6 @@ class UIProductDetailsController extends Controller
         $reviewSummary = $product->getReviewSummary();
         $reviews = $product->getReviews();
 
-
-        // return response()->json([
-        //     'success' => true,
-        //     'message' => 'Danh sách danh mục',
-        //     'data' => $reviewSummary
-        // ], 200);
-
-
         return view('ui-product-details.product', compact('product', 'avg', 'reviews_count', 'reviewSummary', 'reviews'));
     }
 
@@ -50,11 +42,16 @@ class UIProductDetailsController extends Controller
             'comment' => $validated['comment'] ?? null,
             'review_date' => now(),
         ]);
+        $product = Product::findOrFail($validated['product_id']);
+        $avg = $product->reviews()->avg('rating');
 
         return response()->json([
             'success' => true,
             'message' => 'Đánh giá đã được thêm thành công',
-            'data' => $review
+            'data' => [
+                'review' => $review,
+                'avg' => $avg
+            ]
         ], 201);
     }
 }
