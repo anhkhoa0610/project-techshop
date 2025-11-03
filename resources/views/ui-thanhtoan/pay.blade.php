@@ -89,9 +89,14 @@
                             </div>
                         </div>
                         <div class="section">
-                            <div style="margin-top:12px">
-                                <label for="vocher">Vocher</label>
-                                <input id="vocher" name="vocher" type="text" value="" placeholder="Nhập Vocher">
+                            <div class="two-col">
+                                <div style="margin-top:12px">
+                                    <label for="vocher">Vocher</label>
+                                    <input id="vocher" name="vocher" type="text" value="" placeholder="Nhập Vocher">
+                                </div>
+                                <div>
+                                      <button class="apply" type="button" id="applyBtn">Áp Dụng</button>
+                                </div>
                             </div>
                         </div>
 
@@ -172,7 +177,8 @@
                                     <div class="meta">Số lượng: {{ $item->quantity }}</div>
                                 </div>
                                 <div class="price">
-                                    {{ number_format($item->product->price * $item->quantity, 0, ',', '.') }}₫</div>
+                                    {{ number_format($item->product->price * $item->quantity, 0, ',', '.') }}₫
+                                </div>
                             </div>
                         @empty
                             <div class="item">
@@ -183,7 +189,7 @@
                     <div class="item-text" id="voucher-discount" style="display: none;">
                         <div style="font-weight: 600; color: white;">Giảm giá voucher</div>
                         <div id="voucher-amount" style="font-weight: 600; color: white;">-0₫</div>
-                        
+
                     </div>
                     @php
                         $total = 0;
