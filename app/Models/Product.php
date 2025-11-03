@@ -167,7 +167,7 @@ class Product extends Model
             $query->where('rating', $rating);
         }
 
-        return $query->paginate(5);
+       return $query->paginate(5)->appends(['rating' => $rating]);
     }
 
     // Hàm lấy thông tin review
