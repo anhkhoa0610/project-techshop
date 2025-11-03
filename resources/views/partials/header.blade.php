@@ -42,13 +42,18 @@
                             <a href="" class="dropdown-item">
                                 <i class="fa-solid fa-id-card me-2"></i> Tài khoản của tôi
                             </a>
-
+                            @if (Auth::user()->role === "Admin")
+                                <a href="{{ route('dashboard') }}" class="dropdown-item">
+                                    <i class="fa-solid fa-building me-2"></i> Trang quản trị
+                                </a>
+                            @endif
                             <form action="{{ route('logout') }}" method="POST" class="dropdown-form" role="none">
                                 @csrf
                                 <button type="submit" class="dropdown-item logout-btn">
                                     <i class="fa-solid fa-right-from-bracket me-2"></i> Đăng xuất
                                 </button>
                             </form>
+
                         </div>
                     </div>
 
