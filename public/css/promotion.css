@@ -1,0 +1,176 @@
+.promotion-wrapper {
+    /* padding-top: 50px;
+    padding-bottom: 50px; */
+    padding: 50px;
+    background-color: #333;
+}
+
+.promotion-page {
+    font-family: 'Inter', sans-serif;
+    background-color: #eee;
+    padding-left: 30px;
+    padding-right: 30px;
+    padding-top: 15px;
+    padding-bottom: 15px;
+}
+
+/* --- Banner --- */
+.promotion-page .carousel-inner img {
+    border-radius: 16px;
+    object-fit: cover;
+    height: 450px;
+    /* Banner thấp hơn */
+}
+
+/* --- Ưu đãi nổi bật --- */
+.promotion-page .row.text-center i {
+    font-size: 3rem;
+    transition: transform 0.3s ease;
+}
+
+.promotion-page .row.text-center i:hover {
+    transform: scale(1.15);
+}
+
+/* --- Danh mục khuyến mãi --- */
+.promotion-page .promo-categories {
+    margin-top: 25px;
+    display: flex;
+    justify-content: center;
+    flex-wrap: wrap;
+    gap: 14px;
+}
+
+.promotion-page .promo-btn {
+    font-size: 1.1rem;
+    padding: 14px 36px;
+    border-width: 2.5px;
+    border-radius: 50px;
+    font-weight: 600;
+    letter-spacing: 0.3px;
+    transition: all 0.3s ease;
+}
+
+.promotion-page .promo-btn:hover {
+    background-color: #dc3545;
+    color: #fff;
+    transform: translateY(-4px) scale(1.05);
+    box-shadow: 0 6px 14px rgba(220, 53, 69, 0.35);
+}
+
+/* --- Thẻ danh mục --- */
+.promotion-page .promo-item {
+    background-color: #fff;
+    cursor: pointer;
+    border: 1px solid #eee;
+    border-radius: 12px;
+    transition: all 0.3s ease;
+    padding: 20px;
+}
+
+.promotion-page .promo-item:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 8px 20px rgba(255, 82, 82, 0.15);
+    border-color: #ff5722;
+}
+
+.promotion-page .promo-item i {
+    color: #ff5722;
+    font-size: 2rem;
+}
+
+.promotion-page .promo-item p {
+    font-size: 1rem;
+    color: #333;
+    font-weight: 500;
+}
+
+/* --- Flash Sale --- */
+.promotion-page h4.text-danger {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-weight: 700;
+}
+
+.promotion-page .card {
+    transition: all 0.3s ease;
+    border-radius: 12px;
+    overflow: hidden;
+    border: none;
+}
+
+.promotion-page .card:hover {
+    transform: translateY(-6px);
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+}
+
+.promotion-page .card img {
+    height: 180px;
+    object-fit: cover;
+}
+
+.promotion-page .card-body {
+    background-color: #fff;
+    padding: 10px;
+}
+
+.promotion-page .card-title {
+    font-size: 0.95rem;
+    color: #222;
+    font-weight: 500;
+}
+
+.promotion-page .card .text-danger {
+    color: #ff3d00 !important;
+    font-size: 1rem;
+}
+
+.promotion-page .card .text-muted {
+    font-size: 0.8rem;
+}
+
+/* --- Hiệu ứng chung --- */
+.promotion-page .hover-scale {
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.promotion-page .hover-scale:hover {
+    transform: scale(1.05);
+    box-shadow: 0 6px 16px rgba(0, 0, 0, 0.1);
+}
+
+/* --- Responsive --- */
+@media (max-width: 992px) {
+    .promotion-page .carousel-inner img {
+        height: 240px;
+    }
+
+    .promotion-page .promo-btn {
+        font-size: 1rem;
+        padding: 12px 30px;
+    }
+
+    .promotion-page .promo-item i {
+        font-size: 1.6rem;
+    }
+}
+
+@media (max-width: 768px) {
+    .promotion-page .carousel-inner img {
+        height: 200px;
+    }
+
+    .promotion-page .card img {
+        height: 140px;
+    }
+
+    .promotion-page .promo-item p {
+        font-size: 0.9rem;
+    }
+
+    .promotion-page .promo-btn {
+        font-size: 0.9rem;
+        padding: 10px 24px;
+    }
+}
