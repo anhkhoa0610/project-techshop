@@ -175,7 +175,6 @@ document.addEventListener('DOMContentLoaded', function () {
 
             })
             .catch(error => {
-                console.error('Lỗi khi tải review:', error);
                 reviewContainer.innerHTML = '<p>Đã xảy ra lỗi khi tải đánh giá!</p>';
                 paginationContainer.innerHTML = '';
             });
@@ -201,11 +200,25 @@ document.addEventListener('DOMContentLoaded', function () {
 
     document.getElementById('form-post-review').addEventListener('submit', async function (e) {
         e.preventDefault();
+        // kiểm tra xem đã đăng nhập chưa
+        if (!check_user) {
+            Swal.fire({
+                icon: 'warning',
+                title: 'Vui lòng đăng nhập',
+                text: 'Bạn cần đăng nhập để gửi đánh giá sản phẩm.',
+                confirmButtonText: 'Đăng nhập ngay'
+            }).then(() => {
+                window.location.href = '/login'; 
+            });
+            return;
+        }
+
         const formData = new FormData(this);
-        const response = await fetch('/api/product/{{ $product->product_id }}/reviews', {
+        const response = await fetch(`/api/product/${productId}/reviews`, {
             method: 'POST',
             headers: {
                 'Accept': 'application/json',
+                'X-CSRF-TOKEN': window.csrfToken
             },
             body: formData
         });
@@ -223,7 +236,7 @@ document.addEventListener('DOMContentLoaded', function () {
             }
 
             // xử lý tăng số lượng đánh giá hiển thị ở phần tất cả
-            const allSpan = document.querySelector('.review-count[data-rating=""]');
+            const allSpan = document.querySelector('.review-count[data-rating="all"]');
             if (allSpan) {
                 allSpan.textContent = parseInt(allSpan.textContent) + 1;
             }

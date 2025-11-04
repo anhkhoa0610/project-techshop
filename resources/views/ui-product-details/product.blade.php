@@ -8,7 +8,7 @@
 
     <div class="content-container w-100">
         <div class="header-back-ground w-100"></div>
-        <div class="container-details container">
+        <div class="container-details container glass3d ">
             <div class="row">
                 <!-- Cột trái: Hình ảnh sản phẩm -->
                 <div class="col-md-6">
@@ -66,11 +66,11 @@
 
                     <div class="mt-4 d-flex align-items-center">
                         <strong class="me-2">Số lượng:</strong>
-                        <img class="quantity-button minus me-1" src="{{ asset('images/minus.png') }}" alt="">
+                        <i class="bi bi-dash quantity-button minus"></i>
                         <input type="number" class="input-quantity form-control text-center"
                             max="{{ isset($product->stock_quantity) ? $product->stock_quantity : 0 }}"
                             value="{{ isset($product->stock_quantity) ? 1 : 0 }}">
-                        <img class="quantity-button plus ms-1" src="{{ asset('images/plus.png') }}" alt="">
+                        <i class="bi bi-plus quantity-button plus"></i> 
                         <p class="mt-3 ms-3">
                             {{ isset($product->stock_quantity) ? $product->stock_quantity . ' sản phẩm có sẵn' : 'Hết hàng' }}
                         </p>
@@ -84,15 +84,15 @@
             </div>
         </div>
 
-        <div class="desc-product container">
+        <div class="desc-product container glass3d">
             <h2>Mô tả sản phẩm</h2>
             <p>{{ isset($product->description) ? $product->description : "Sản phẩm không có mô tả!!"}}</p>
         </div>
 
-        <div class="review-product container">
+        <div class="review-product container glass3d ">
             <h2>Đánh giá sản phẩm</h2>
-            <div class="review-title">
-                <div class="col-md-3 star-rating">
+            <div class="review-title glass3d">
+                <div class="col-md-3 star-rating  ">
                     <div class="rating">
                         <span class="rating-left">{{ number_format($avg, 1) ?? 0 }} </span>
                         <span class="rating-right"> trên 5 sao</span>
@@ -110,40 +110,41 @@
                 <div class="col-md-9 filter-by-star">
                     <div class="groub-button-filter">
                         <button class="button-filter-star active" data-rating="">Tất cả</button>
-                        <p>Bình luận: (<span class="review-count" data-rating="all">{{ $reviewSummary['all'] ?? 0 }}</span>)
+                        <p class="review-count" >Bình luận: (<span class="review-count" data-rating="all">{{ $reviewSummary['all'] ?? 0 }}</span>)
                         </p>
                     </div>
                     <div class="groub-button-filter">
                         <button class="button-filter-star" data-rating="1">1 sao</button>
-                        <p>Bình luận: (<span class="review-count" data-rating="1">{{ $reviewSummary['1'] ?? 0 }}</span>)</p>
+                        <p class="review-count" >Bình luận: (<span class="review-count" data-rating="1">{{ $reviewSummary['1'] ?? 0 }}</span>)</p>
                     </div>
                     <div class="groub-button-filter">
                         <button class="button-filter-star " data-rating="2">2 sao</button>
-                        <p>Bình luận: (<span class="review-count" data-rating="2">{{ $reviewSummary['2'] ?? 0 }}</span>)</p>
+                        <p class="review-count" >Bình luận: (<span class="review-count" data-rating="2">{{ $reviewSummary['2'] ?? 0 }}</span>)</p>
                     </div>
                     <div class="groub-button-filter">
                         <button class="button-filter-star " data-rating="3">3 sao</button>
-                        <p>Bình luận: (<span class="review-count" data-rating="3">{{ $reviewSummary['3'] ?? 0 }}</span>)</p>
+                        <p class="review-count" >Bình luận: (<span class="review-count" data-rating="3">{{ $reviewSummary['3'] ?? 0 }}</span>)</p>
                     </div>
                     <div class="groub-button-filter">
                         <button class="button-filter-star " data-rating="4">4 sao</button>
-                        <p>Bình luận: (<span class="review-count" data-rating="4">{{ $reviewSummary['4'] ?? 0 }}</span>)</p>
+                        <p class="review-count" >Bình luận: (<span class="review-count" data-rating="4">{{ $reviewSummary['4'] ?? 0 }}</span>)</p>
                     </div>
                     <div class="groub-button-filter">
                         <button class="button-filter-star " data-rating="5">5 sao</button>
-                        <p class="text-center">Bình luận: (<span class="review-count"
+                        <p class="review-count" >Bình luận: (<span class="review-count"
                                 data-rating="5">{{ $reviewSummary['5'] ?? 0 }}</span>)</p>
                     </div>
 
                 </div>
 
             </div>
-            <div class="post-review">
+            <div class="post-review glass3d">
                 <div class="title-post">
                     <h3>Thêm đánh giá sản phẩm</h3>
                 </div>
                 <div class="post-form">
                     <form id="form-post-review">
+                        @csrf
                         <div class="mb-3">
                             <label for="reviewRating" class="form-label">Đánh giá của bạn:</label>
                             <input type="hidden" name="product_id" value="{{ $product->product_id }}">
@@ -177,7 +178,7 @@
             </div>
 
             {{-- Vùng hiển thị các đánh giá của user--}}
-            <div class="container comment-field">
+            <div class="container comment-field glass3d ">
 
             </div>
 
@@ -187,6 +188,8 @@
         </div>
     </div>
     <script>
+        const check_user = {{ auth()->id() }}
+        window.csrfToken = "{{ csrf_token() }}";
         const productId = {{ $product->product_id }};
     </script>
     <script src="{{ asset('js/ui-product.js') }}"></script>
