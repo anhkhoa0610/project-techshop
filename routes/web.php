@@ -97,6 +97,7 @@ Route::prefix('users')->group(function () {
     Route::get('/{user}/edit', [UserController::class, 'edit'])->name('users.edit');
     Route::put('/{user}', [UserController::class, 'update'])->name('users.update');
     Route::get('/{user}/show', [UserController::class, 'show'])->name('users.show');
+    
     Route::delete('/{user}', [UserController::class, 'destroy'])->name('users.destroy');
     Route::get('/search/autocomplete', [UserController::class, 'search'])->name('users.search');
 });
