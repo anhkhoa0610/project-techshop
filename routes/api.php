@@ -46,3 +46,5 @@ Route::middleware('api.token')->post('/logout', [AuthController::class, 'logout'
 
 Route::post('/index/add-to-cart', [IndexController::class, 'addToCart']);
 Route::get('/product/{id}/reviews', [UIProductDetailsController::class, 'index']);
+
+Route::post('/voucher/check', [App\Http\Controllers\VoucherController::class, 'checkVoucher']);

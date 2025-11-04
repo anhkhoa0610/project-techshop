@@ -90,12 +90,13 @@
                         </div>
                         <div class="section">
                             <div class="two-col">
-                                <div style="margin-top:12px">
-                                    <label for="vocher">Vocher</label>
-                                    <input id="vocher" name="vocher" type="text" value="" placeholder="Nhập Vocher">
+                                <div class="input-voucher">
+                                    <label for="voucher">Voucher</label>
+                                    <input id="voucher" name="voucher" type="text" value="" placeholder="Nhập Voucher"
+                                        required>
                                 </div>
-                                <div>
-                                      <button class="apply" type="button" id="applyBtn">Áp Dụng</button>
+                                <div class="apply-btn">
+                                    <button type="button" class="apply" id="apply-btn">Áp Dụng</button>
                                 </div>
                             </div>
                         </div>
@@ -226,3 +227,4 @@
     const totalAmount = "{{ $total ?? 0 }}";
 </script>
 <script src="{{ asset('js/pay.js') }}"></script>
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>

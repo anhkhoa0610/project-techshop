@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\User;
+use Illuminate\Container\Attributes\Auth;
 use Illuminate\Http\Request;
 use App\Models\Momo;
 use App\Models\Order;
@@ -53,9 +55,9 @@ class MoMoController extends Controller
         $jsonResult = json_decode($result, true);  // decode json
 
         $shippingAddress = $request->input('shipping_address'); // hoặc $data['shipping_address']
-
+        
         $order = Order::create([
-            'user_id' => 1,
+            'user_id' => auth()->id(),
             'order_date' => now(),
             'status' => 'pending',
             'shipping_address' => $shippingAddress ?? 'chưa có địa chỉ',
@@ -66,7 +68,7 @@ class MoMoController extends Controller
         $orderId = $order->order_id; // Lấy id đơn hàng vừa tạo
 
         // Lấy giỏ hàng của user
-        $userId = 1; // hoặc Auth::id()
+        $userId = auth()->id();
         $cartItems = CartItem::where('user_id', $userId)->get();
 
         foreach ($cartItems as $item) {

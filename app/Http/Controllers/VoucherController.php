@@ -120,7 +120,7 @@ class VoucherController extends Controller
     // Kiểm tra mã voucher
     public function checkVoucher(Request $request)
     {
-        $code = $request->input('vocher');
+        $code = $request->input('voucher');
         $voucher = Voucher::where('code', $code)->first();
         if ($voucher && $voucher->status === 'active') {
             if($code == $voucher->code){
