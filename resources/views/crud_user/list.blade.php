@@ -98,7 +98,7 @@
                                         </span>
                                     </td>
                                     <td class="text-nowrap">
-                                        <a href="#" class="view" title="Xem" data-toggle="modal" data-target="#viewUserModal">
+                                        <a href="{{ route('users.show', $user->user_id)}}" class="view" title="Xem" data-target="#viewUserModal" data-url="{{ route('users.show', $user->user_id)}}">
                                             <i class="material-icons text-info">&#xE417;</i>
                                         </a>
                                         <a href="{{ route('users.edit', $user->user_id) }}" class="edit" title="Sửa">
