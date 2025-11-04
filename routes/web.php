@@ -14,7 +14,7 @@ use App\Http\Controllers\OrderDetailController;
 use App\Http\Controllers\IndexController;
 use App\Http\Controllers\VoucherController;
 use App\Http\Controllers\ReviewController;
-
+use App\Http\Controllers\PromotionController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\LoginController;
 use App\Http\Controllers\MomoController;
@@ -151,3 +151,5 @@ Route::post('reset-password', function (Illuminate\Http\Request $request) {
 
 
 Route::post('/api/voucher/check', [App\Http\Controllers\VoucherController::class, 'checkVoucher']);
+
+Route::get('/promotions', [PromotionController::class, 'index'])->name('promotion.index');

@@ -12,6 +12,7 @@ use App\Http\Controllers\AuthController;
 use App\Http\Controllers\UIProductDetailsController;
 use App\Http\Controllers\ProductController;
 use App\Http\Controllers\LoginController;
+use App\Http\Controllers\PromotionController;
 
 Route::post('/login', [LoginController::class, 'apiLogin']);
 Route::middleware(['auth:sanctum', 'checkrole:Admin'])->group(function () {
@@ -41,3 +42,5 @@ Route::post('/chat', [\App\Http\Controllers\DeepSeekChatController::class, 'chat
 
 Route::post('/index/add-to-cart', [IndexController::class, 'addToCart']);
 Route::get('/product/{id}/reviews', [UIProductDetailsController::class, 'index']);
+
+Route::get('/promotions', [PromotionController::class, 'apiIndex']);
