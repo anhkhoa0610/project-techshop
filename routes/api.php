@@ -11,8 +11,10 @@ use App\Http\Controllers\VoucherController;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\UIProductDetailsController;
 use App\Http\Controllers\ProductController;
+use App\Http\Controllers\LoginController;
 
-Route::middleware(['checkrole:Admin'])->group(function () {
+Route::post('/login', [LoginController::class, 'apiLogin']);
+Route::middleware(['auth:sanctum', 'checkrole:Admin'])->group(function () {
     Route::apiResource('categories', CategoryController::class);
 
     Route::apiResource('products', ProductController::class)->only(['show', 'store', 'update', 'index', 'destroy']);

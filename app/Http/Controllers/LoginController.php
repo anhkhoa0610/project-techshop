@@ -158,4 +158,26 @@ class LoginController extends Controller
 
         return redirect("login")->with('success', 'Đăng ký thành công. Bạn có thể đăng nhập ngay bây giờ.');
     }
+    public function apiLogin(Request $request)
+    {
+        $request->validate([
+            'email' => 'required|email',
+            'password' => 'required',
+        ]);
+
+        $user = \App\Models\User::where('email', $request->email)->first();
+
+        if (!$user || !\Hash::check($request->password, $user->password)) {
+            return response()->json(['message' => 'Email hoặc mật khẩu không chính xác'], 401);
+        }
+
+        // Tạo Sanctum token
+        $token = $user->createToken('api_token')->plainTextToken;
+
+        return response()->json([
+            'message' => 'Đăng nhập thành công',
+            'token' => $token,
+            'user' => $user->only(['id', 'full_name', 'email', 'role']),
+        ]);
+    }
 }
