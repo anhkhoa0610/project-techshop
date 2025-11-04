@@ -1,5 +1,31 @@
 @include('components.login-modal')
 <header class="header">
+    {{-- Toast thông báo --}}
+    @if(session('success') || session('error'))
+        <div class="toast-container position-fixed end-0 p-3" style="z-index: 2000; top:50px;">
+            @if(session('success'))
+                <div class="toast align-items-center text-bg-success border-0 show" role="alert" aria-live="assertive" aria-atomic="true">
+                    <div class="d-flex">
+                        <div class="toast-body">
+                            {{ session('success') }}
+                        </div>
+                        <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast" aria-label="Close"></button>
+                    </div>
+                </div>
+            @endif
+
+            @if(session('error'))
+                <div class="toast align-items-center text-bg-danger border-0 show" role="alert" aria-live="assertive" aria-atomic="true">
+                    <div class="d-flex">
+                        <div class="toast-body">
+                            {{ session('error') }}
+                        </div>
+                        <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast" aria-label="Close"></button>
+                    </div>
+                </div>
+            @endif
+        </div>
+    @endif
     <div class="header-container">
         <div class="header-content">
             <div class="header-left">
@@ -68,17 +94,27 @@
             </div>
         </div>
     </div>
+
 </header>
 
 <script>
-    const dropdown = document.querySelector('.user-dropdown');
 
-    dropdown.addEventListener('mouseenter', () => {
-        dropdown.classList.add('open');
-    });
+    document.addEventListener("DOMContentLoaded", () => {
+        // Khởi tạo tất cả toast có trên trang
+        const toastElList = [].slice.call(document.querySelectorAll('.toast'))
+        toastElList.map(function (toastEl) {
+            const toast = new bootstrap.Toast(toastEl, { delay: 2500 }) // tự ẩn sau 2 giây
+            toast.show()
+        })
 
-    dropdown.addEventListener('mouseleave', () => {
-        dropdown.classList.remove('open');
+        // Dropdown hover (giữ nguyên như trước)
+        const dropdown = document.querySelector('.user-dropdown');
+        if (dropdown) {
+            dropdown.addEventListener('mouseenter', () => dropdown.classList.add('open'));
+            dropdown.addEventListener('mouseleave', () => dropdown.classList.remove('open'));
+        }
     });
 
 </script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+

@@ -16,7 +16,13 @@ class CheckRole
 
     public function handle(Request $request, Closure $next, $role)
     {
-        if (!auth()->check() || auth()->user()->role !== $role) {
+        $user = $request->user(); // Sanctum tự hiểu nếu có Bearer token hoặc session
+
+        if (!$user || $user->role !== $role) {
+            if ($request->expectsJson() || $request->is('api/*')) {
+                return response()->json(['message' => 'Bạn không có quyền truy cập!'], 403);
+            }
+
             return redirect()->route('index')->with('error', 'Bạn không có quyền truy cập!');
         }
 

@@ -1,0 +1,138 @@
+/* Vùng tổng thể */
+.forgot-page {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    background: #f7f8fa;
+    font-family: 'Poppins', sans-serif;
+    background-image: url('/images/login-background.png');
+    background-size: cover;
+    background-repeat: no-repeat;
+    background-position: center center;
+}
+
+/* Khung bao 2 cột */
+.forgot-wrapper {
+    display: flex;
+    flex-direction: row;
+    background: #fff;
+    border-radius: 16px;
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.1);
+    overflow: hidden;
+    max-width: 900px;
+    width: 100%;
+}
+
+/* Cột hình ảnh */
+.login-image {
+    flex: 1;
+    background: #f0f2f5;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 40px;
+}
+
+.login-image img {
+    max-width: 100%;
+    height: auto;
+    object-fit: contain;
+}
+
+/* Cột form */
+.forgot-form {
+    flex: 1;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 40px;
+}
+
+.forgot-inner {
+    width: 100%;
+    max-width: 360px;
+}
+
+.forgot-inner h2 {
+    text-align: center;
+    margin-bottom: 24px;
+    font-size: 26px;
+    font-weight: 600;
+    color: #333;
+}
+
+/* Ô input và label */
+.forgot-inner label {
+    display: block;
+    margin-bottom: 6px;
+    font-weight: 500;
+    color: #555;
+}
+
+.forgot-inner input[type="email"] {
+    width: 100%;
+    padding: 10px 12px;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    font-size: 15px;
+    outline: none;
+    transition: all 0.3s ease;
+}
+
+.forgot-inner input[type="email"]:focus {
+    border-color: #007bff;
+    box-shadow: 0 0 0 3px rgba(0, 123, 255, 0.1);
+}
+
+/* Nút gửi */
+.forgot-inner button {
+    width: 100%;
+    margin-top: 16px;
+    padding: 12px;
+    background: #007bff;
+    color: #fff;
+    font-size: 16px;
+    font-weight: 500;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.forgot-inner button:hover {
+    background: #0056b3;
+}
+
+/* Link quay lại */
+.forgot-inner .psw {
+    text-align: center;
+    margin-top: 16px;
+}
+
+.forgot-inner .psw a {
+    color: #007bff;
+    text-decoration: none;
+    transition: color 0.3s ease;
+}
+
+.forgot-inner .psw a:hover {
+    color: #0056b3;
+    text-decoration: underline;
+}
+
+/* Mobile responsive */
+@media (max-width: 768px) {
+    .forgot-wrapper {
+        flex-direction: column;
+        max-width: 400px;
+    }
+
+    .login-image {
+        display: none;
+    }
+
+    .forgot-form {
+        padding: 30px 20px;
+    }
+}
