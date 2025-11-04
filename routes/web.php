@@ -52,6 +52,7 @@ Route::middleware(['checkrole:Admin'])->group(function () {
         Route::get('/create', [ReviewController::class, 'create'])->name('reviews.create');
         Route::post('/', [ReviewController::class, 'store'])->name('reviews.store');
         Route::get('/{reviewId}/edit', [ReviewController::class, 'edit'])->name('reviews.edit');
+        Route::get('/{reviewId}/view', [ReviewController::class, 'view'])->name('reviews.view');
         Route::put('/{reviewId}', [ReviewController::class, 'update'])->name('reviews.update');
         Route::delete('/{review_id}', [ReviewController::class, 'destroy'])->name('reviews.destroy');
     });
