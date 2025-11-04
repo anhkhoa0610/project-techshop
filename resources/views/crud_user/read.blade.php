@@ -31,7 +31,7 @@
                             </tr>
                             <tr>
                                 <th>Địa chỉ</th>
-                                <td>{{ $user->address ?? '—' }}</td>
+                                <td style="white-space: pre-wrap;">{{ $user->address ?? '—' }}</td>
                             </tr>
                             <tr>
                                 <th>Vai trò</th>
