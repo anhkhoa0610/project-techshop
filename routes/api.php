@@ -15,6 +15,7 @@ use App\Http\Controllers\LoginController;
 use App\Http\Controllers\PromotionController;
 
 Route::post('/login', [LoginController::class, 'apiLogin']);
+Route::middleware('auth:sanctum')->post('/logout', [LoginController::class, 'apiLogout']);
 Route::middleware(['auth:sanctum', 'checkrole:Admin'])->group(function () {
     Route::apiResource('categories', CategoryController::class);
 
