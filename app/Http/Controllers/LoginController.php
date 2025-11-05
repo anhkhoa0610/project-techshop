@@ -11,8 +11,11 @@ use Illuminate\Support\Facades\Password;
 class LoginController extends Controller
 {
     //
-    public function showLoginForm()
+    public function showLoginForm(Request $request)
     {
+        if (!Auth::check() && !$request->session()->has('url.intended')) {
+            $request->session()->put('url.intended', url()->previous());
+        }
         return view('login.login');
     }
 
@@ -36,7 +39,7 @@ class LoginController extends Controller
 
         if (Auth::attempt($credentials)) {
             // Đăng nhập thành công
-            return redirect()->route('index')->with('success', 'Đăng nhập thành công.');
+            return redirect()->intended(route('index'))->with('success', 'Đăng nhập thành công.');
         }
 
         // Đăng nhập thất bại
@@ -44,10 +47,15 @@ class LoginController extends Controller
     }
 
     // Đăng xuất
-    public function logout()
+    public function logout(Request $request)
     {
         Auth::logout();
-        return redirect()->route('index')->with('success', 'Đăng xuất thành công.');
+
+        // Xóa session đăng nhập
+        $request->session()->invalidate();
+        $request->session()->regenerateToken();
+
+        return redirect()->back()->with('success', 'Đăng xuất thành công.');
     }
 
     public function showResetForm()
