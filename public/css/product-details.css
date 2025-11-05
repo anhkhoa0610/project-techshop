@@ -262,3 +262,7 @@
 color:#171616;
 font-weight: 500;
 }
+
+.button-box{
+display: flex;
+}

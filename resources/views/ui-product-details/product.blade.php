@@ -84,8 +84,8 @@
                     </div> -->
 
                     <div class="mt-4">
-                        <button class="btn btn-danger me-2">Mua ngay</button>
-                        <button class="btn btn-outline-danger">Thêm vào giỏ hàng</button>
+                        <button class="btn btn-danger me-2 btn-buy-now">Mua ngay</button>
+                        <button class="btn btn-outline-danger btn-add-cart">Thêm vào giỏ hàng</button>
                     </div>
                 </div>
             </div>
