@@ -124,6 +124,11 @@ class ReviewController extends Controller
         return view('crud_review.edit', compact('review', 'users', 'products'));
     }
 
+    public function view($review_id)
+    {
+        $review = Review::findOrFail($review_id);
+        return view('crud_review.read', compact('review'));
+    }
     /**
      * Cập nhật đánh giá trong database
      */
