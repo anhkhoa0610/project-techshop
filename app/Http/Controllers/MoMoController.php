@@ -16,7 +16,20 @@ class MoMoController extends Controller
     public function momo_payment(Request $request)
     {
         $data = $request->all();
-
+        $userId = auth()->id();
+        $cartItems = CartItem::where('user_id', $userId)->get();
+        $shoppingAddress = $request->input('shipping_address', 'chưa có địa chỉ');
+        $voucher = $request->input('voucher_id', null);
+        $amount = $data['total'] ?? $cartItems->sum(fn($i) => $i->product->price * $i->quantity);
+        $order = Order::create([
+            'user_id' => auth()->id(),
+            'order_date' => now(),
+            'status' => 'pending',
+            'shipping_address' => $shoppingAddress ?? 'chưa có địa chỉ',
+            'payment_method' => 'momo',
+            'voucher_id' => $voucher ?? null,
+            'total_price' => $amount,
+        ]);
 
         $endpoint = "https://test-payment.momo.vn/v2/gateway/api/create";
         $partnerCode = 'MOMOBKUN20180529';
@@ -24,9 +37,9 @@ class MoMoController extends Controller
         $serectkey = 'at67qH6mk8w5Y1nAyMoYKMWACiEi2bsa';
         $orderInfo = "Thanh toán qua MoMo";
         $amount = $data['total']; // Default amount if not provided
-        $orderId = time() . ""; // Use provided order_id or generate one
-        $redirectUrl = "http://127.0.0.1:8000/index";
-        $ipnUrl = "http://127.0.0.1:8000/index";
+        $orderId = $order->order_id; // Use provided order_id or generate one
+        $redirectUrl = route('momo.return');
+        $ipnUrl = route('momo.ipn');
         $extraData = "";
 
         $requestId = time() . "";
@@ -54,8 +67,6 @@ class MoMoController extends Controller
             $this->execPostRequest($endpoint, json_encode($data));
         $jsonResult = json_decode($result, true);  // decode json
 
-        $shoppingAddress = $request->input('shipping_address', 'chưa có địa chỉ');
-        $voucher = $request->input('voucher_id', null);
 
 
         if (isset($jsonResult['payUrl'])) {
@@ -65,6 +76,41 @@ class MoMoController extends Controller
         }
 
 
+    }
+    public function momo_return(Request $request)
+    {
+        $data = $request->all();
+        dd($data);
+        if (($data['resultCode'] ?? 1) == 0) {
+            // ✅ Thanh toán thành công
+            $extraData = json_decode($data['extraData'] ?? '{}', true);
+            $orderId = $extraData['order_id'] ?? null;
+            $userId = $extraData['user_id'] ?? null;
+
+            $order = Order::find($orderId);
+            if ($order && $order->status === 'pending') {
+                $order->update(['status' => 'processing']);
+
+                // 🔹 Lưu chi tiết đơn hàng
+                $cartItems = CartItem::where('user_id', $userId)->get();
+                foreach ($cartItems as $item) {
+                    OrderDetail::create([
+                        'order_id' => $orderId,
+                        'product_id' => $item->product_id,
+                        'quantity' => $item->quantity,
+                        'unit_price' => $item->product->price * $item->quantity,
+                    ]);
+                }
+
+                // Xóa giỏ hàng
+                CartItem::where('user_id', $userId)->delete();
+            }
+
+            return redirect()->route('index')->with('success', 'Thanh toán MoMo thành công!');
+        }
+
+        // ❌ Nếu thanh toán thất bại
+        //return redirect()->route('cart')->with('error', 'Thanh toán MoMo thất bại!');
     }
     private function execPostRequest($url, $data)
     {
@@ -80,92 +126,7 @@ class MoMoController extends Controller
         curl_close($ch);
         return $result;
     }
-    // public function momo_return(Request $request)
-    // {
-    //     $data = $request->all();
 
-    //     if (($data['resultCode'] ?? 1) == 0) {
-    //         // ✅ Thanh toán thành công
-    //         $extraData = json_decode($data['extraData'] ?? '{}', true);
-    //         $shippingAddress = $extraData['shipping_address'] ?? 'chưa có địa chỉ';
-    //         $voucher = $extraData['voucher_id'] ?? null;
-    //         $amount = $data['amount'] ?? 0;
-
-    //         // 🔹 Tạo đơn hàng thật
-    //         $order = Order::create([
-    //             'user_id' => auth()->id(),
-    //             'order_date' => now(),
-    //             'status' => 'completed',
-    //             'shipping_address' => $shippingAddress,
-    //             'payment_method' => 'momo',
-    //             'voucher_id' => $voucher,
-    //             'total_price' => $amount,
-    //         ]);
-
-    //         $userId = auth()->id();
-    //         $cartItems = CartItem::where('user_id', $userId)->get();
-
-    //         foreach ($cartItems as $item) {
-    //             OrderDetail::create([
-    //                 'order_id' => $order->order_id,
-    //                 'product_id' => $item->product_id,
-    //                 'quantity' => $item->quantity,
-    //                 'unit_price' => $item->product->price * $item->quantity,
-    //             ]);
-    //         }
-
-    //         // Xoá giỏ hàng
-    //         CartItem::where('user_id', $userId)->delete();
-
-    //         return redirect()->route('index')->with('success', 'Thanh toán MoMo thành công!');
-    //     } else {
-    //         // ✅ Thanh toán thất bại
-    //         $extraData = json_decode($data['extraData'] ?? '{}', true);
-    //         $shippingAddress = $extraData['shipping_address'] ?? 'chưa có địa chỉ';
-    //         $voucher = $extraData['voucher_id'] ?? null;
-    //         $amount = $data['amount'] ?? 0;
-
-    //         // 🔹 Tạo đơn hàng thật
-    //         $order = Order::create([
-    //             'user_id' => auth()->id(),
-    //             'order_date' => now(),
-    //             'status' => 'cancelled',
-    //             'shipping_address' => $shippingAddress,
-    //             'payment_method' => 'momo',
-    //             'voucher_id' => $voucher,
-    //             'total_price' => $amount,
-    //         ]);
-    //         return redirect()->route('/cart')->with('success', 'Thanh toán MoMo thành công!');
-    //     }
-    // }
-
-    public function momo_return(Request $request)
-    {
-        $data = $request->all();
-        $userId = auth()->id();
-        $cartItems = CartItem::where('user_id', $userId)->get();
-        $order = CartItem::where('order_id', $data['oderId'])->first();
-        if (($data['resultCode'] ?? 1) == 0) {
-            $order->update([
-                'status' => 'processing',
-            ]);
-            foreach ($cartItems as $item) {
-                OrderDetail::create([
-                    'order_id' => $order->order_id,
-                    'product_id' => $item->product_id,
-                    'quantity' => $item->quantity,
-                    'unit_price' => $item->product->price * $item->quantity,
-                ]);
-            } // Xoá giỏ hàng 
-            CartItem::where('user_id', $userId)->delete();
-            return redirect()->route('index')->with('success', 'Thanh toán MoMo thành công!');
-        }
-
-        return redirect()->route('index')->with('error', 'Thanh toán MoMo không thành công!');
-
-
-
-    }
     public function momo_ipn(Request $request)
     {
         // Callback từ MoMo gửi về server
