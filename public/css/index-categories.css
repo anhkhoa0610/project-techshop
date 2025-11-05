@@ -1,0 +1,107 @@
+/* --- CSS CHO MÀN HÌNH LOADING --- */
+#loading-overlay {
+    /* Ẩn mặc định */
+    display: none; 
+    
+    /* Vị trí */
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    
+    /* Nền đen mờ */
+    background-color: rgba(0, 0, 0, 0.8); 
+    
+    /* Luôn ở trên cùng */
+    z-index: 9999; 
+    
+    /* Dùng Flexbox để căn giữa spinner */
+    justify-content: center;
+    align-items: center;
+}
+
+/* Spinner xoay vòng */
+.spinner {
+    width: 60px;
+    height: 60px;
+    border-radius: 50%;
+    border: 8px solid #f3f3f3; /* Màu nền của vòng xoay */
+    border-top: 8px solid #E50914; /* Màu của vòng xoay (tôi dùng màu đỏ) */
+    animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+
+
+.show-by-category {
+    padding: 40px;
+    border-radius: 15px;
+    margin-left: 5vw;
+    margin-right: 3vw;
+    margin-top: 25px;
+    overflow-x: auto;
+}
+
+.products-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 2rem;
+    justify-items: center;
+}
+
+/* Sidebar styles */
+.sidebar {
+    z-index: 1000;
+    transition: transform 0.3s cubic-bezier(.77, 0, .18, 1);
+    border-width: 1px;
+    border-style: solid;
+    display: flex;
+    flex-direction: column;
+    padding: 10px 15px;
+    border-radius: 15px;
+    color: white;
+    margin-left: 5vw;
+    margin-right: 3vw;
+    transition: all 1.2s cubic-bezier(0.25, 0.8, 0.25, 1);
+}
+
+/* .sidebar:hover {
+    transform: translateY(-6px) scale(1.02);
+    box-shadow:
+        0 0 15px 7px rgba(109, 142, 214, 0.8),
+        0 0 30px 15px rgba(67, 55, 136, 0.6),
+        0 15px 50px 0px rgba(3, 8, 22, 0.4),
+        0 30px 80px 0px rgba(3, 8, 22, 0.2);
+} */
+
+.sidebar-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 18px 20px 8px 0px;
+    border-bottom: 1px solid #eee;
+    margin-top: 1rem;
+}
+
+.sidebar-title {
+    font-weight: bold;
+    font-size: 1.5rem;
+}
+
+#filterForm .btn {
+    width: fit-content !important;
+    padding: 0.5rem 1rem;
+    margin-top: 1rem;
+}
+
+
+/* Responsive: ẩn sidebar trên mobile nếu muốn */
+@media (max-width: 600px) {
+    .sidebar {
+        width: 80vw;
+    }
+}

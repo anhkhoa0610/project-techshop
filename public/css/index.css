@@ -276,39 +276,24 @@ input[type=number]::-webkit-outer-spin-button {
     margin-left: 2rem;
 }
 
-.products {
-    padding: 0;
-}
-
-.products-grid {
-    display: grid;
-    grid-template-columns: 1fr;
-    gap: 2rem;
-
-}
-
-.grid-custom {
-    padding: 40px;
-}
-
-
-
 @media (min-width: 768px) {
-    .products-grid {
+    .video-grid {
         grid-template-columns: repeat(2, 1fr);
+
     }
 
-    .video-grid {
+    .products-grid {
+
         grid-template-columns: repeat(2, 1fr);
     }
 }
 
 @media (min-width: 1024px) {
-    .products-grid {
+    .video-grid {
         grid-template-columns: repeat(4, 1fr);
     }
 
-    .video-grid {
+    .products-grid {
         grid-template-columns: repeat(4, 1fr);
     }
 }
@@ -546,70 +531,6 @@ input[type=number]::-webkit-outer-spin-button {
     color: #6b7280;
 }
 
-
-/* Sidebar styles */
-.sidebar {
-    width: 25rem;
-    height: 55rem;
-    z-index: 1000;
-    transition: transform 0.3s cubic-bezier(.77, 0, .18, 1);
-    border-width: 1px 1px 1px 0;
-    border-style: solid;
-    display: flex;
-    flex-direction: column;
-    padding: 10px 15px;
-    border-radius: 0 15px 15px 0;
-    color: white;
-    transform: translateX(-100%);
-    opacity: 0;
-    /* Ẩn hoàn toàn */
-    transition: all 1.2s cubic-bezier(0.25, 0.8, 0.25, 1);
-}
-
-.sidebar.sidebar-active {
-    transform: translateX(0);
-    opacity: 1;
-}
-
-.sidebar:hover {
-    transform: translateY(-6px) scale(1.02);
-    box-shadow:
-        0 0 15px 7px rgba(109, 142, 214, 0.8),
-        0 0 30px 15px rgba(67, 55, 136, 0.6),
-        0 15px 50px 0px rgba(3, 8, 22, 0.4),
-        0 30px 80px 0px rgba(3, 8, 22, 0.2);
-}
-
-.sidebar-header {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    padding: 18px 20px 8px 0px;
-    border-bottom: 1px solid #eee;
-    margin-top: 1rem;
-}
-
-.sidebar-title {
-    font-weight: bold;
-    font-size: 1.5rem;
-}
-
-#filterForm .btn {
-    width: fit-content !important;
-    padding: 0.5rem 1rem;
-    margin-top: 1rem;
-}
-
-
-/* Responsive: ẩn sidebar trên mobile nếu muốn */
-@media (max-width: 600px) {
-    .sidebar {
-        width: 80vw;
-    }
-}
-
-
-
 .container-fluid {
     margin-left: 0;
     padding-left: 0;
@@ -729,26 +650,6 @@ input[type=number]::-webkit-outer-spin-button {
     object-fit: cover;
 }
 
-/* .product-name {
-    font-size: 13px;
-    font-weight: 500;
-    color: #333;
-} */
-
-
-
-.toggle-password {
-    position: absolute;
-    top: 50%;
-    right: 10px;
-    transform: translateY(-50%);
-    cursor: pointer;
-    z-index: 5;
-}
-
-.input-wrapper {
-    position: relative;
-}
 
 .product-meta {
     margin-top: -10px;
@@ -765,9 +666,4 @@ section.categories,
 section.products,
 section.review-video {
     margin-top: 15vh;
-}
-
-.show-by-category {
-    padding: 40px;
-    border-radius: 15px;
 }

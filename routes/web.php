@@ -24,7 +24,10 @@ Route::get('/', function () {
     return view('layouts.dashboard');
 });
 
-Route::get('/index', [IndexController::class, 'index'])->name('index');
+Route::prefix('index')->group(function () {
+    Route::get('/', [IndexController::class, 'index']);
+    Route::get('/categories',[IndexController::class, 'categories']);
+});
 
 Route::prefix('products')->group(function () {
     Route::get('/', [ProductController::class, 'list'])->name('products.list');

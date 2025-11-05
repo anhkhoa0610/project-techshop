@@ -129,28 +129,4 @@ class ProductController extends Controller
             'message' => 'Sản phẩm đã xóa thành công!',
         ]);
     }
-
-    public function filter(Request $request)
-    {
-        $products = Product::withAvg('reviews', 'rating')
-            ->withCount('reviews')
-            ->filter(
-                $request->min_price,
-                $request->max_price,
-                $request->category_id,
-                $request->supplier_id,
-                $request->rating,
-                $request->stock,
-                $request->release_date
-            )
-            ->paginate(8);
-
-        return response()->json([
-            'success' => true,
-            'data' => $products->items(),
-            'current_page' => $products->currentPage(),
-            'last_page' => $products->lastPage(),
-            'total' => $products->total(),
-        ]);
-    }
 }

@@ -1,0 +1,381 @@
+@extends('layouts.layouts')
+
+@section('title', 'TechStore - Trang chủ')
+
+@section('content')
+    <div id="loading-overlay">
+        <div class="spinner"></div>
+    </div>
+    <link rel="stylesheet" href="{{ asset('css/index-categories.css') }}">
+    <link rel="stylesheet" href="{{ asset('css/index.css') }}">
+    <link rel="stylesheet" href="{{ asset('css/index-filter.css') }}">
+    <link rel="stylesheet" href="{{ asset('css/index-chatbot.css') }}">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css" />
+    <link rel="stylesheet" href="{{ asset('css/swiper.css') }}">
+
+
+    <section class="hero">
+        <div class="hero-image">
+            <video class="hero-video" autoplay muted loop playsinline preload="metadata"
+                poster="{{ asset('images/place-holder.jpg') }}">
+                <source src="{{ asset('videos/banner.mp4') }}" type="video/mp4">
+                <img src="{{ asset('images/place-holder.jpg') }}" alt="Banner">
+            </video>
+        </div>
+
+        <div class="container">
+            <div class="hero-content">
+                <div class="hero-text">
+                    <span class="hero-badge">🔥 Khuyến mãi đặc biệt</span>
+                    <h1 class="hero-title">
+                        Sony Xperia
+                        <span class="hero-subtitle">Pro Series</span>
+                    </h1>
+                    <p class="hero-description">
+                        Trải nghiệm công nghệ đỉnh cao với camera chuyên nghiệp và hiệu suất vượt trội.
+                        Giảm giá lên đến 30% cho đơn hàng đầu tiên.
+                    </p>
+                    <div class="hero-buttons">
+                        <button class="btn btn-primary">Mua ngay</button>
+                        <button class="btn btn-outline">Xem chi tiết</button>
+                    </div>
+                    <div class="hero-specs">
+                        <div class="spec-item">
+                            <div class="spec-value">24MP</div>
+                            <div class="spec-label">Camera chính</div>
+                        </div>
+                        <div class="spec-item">
+                            <div class="spec-value">256GB</div>
+                            <div class="spec-label">Bộ nhớ</div>
+                        </div>
+                        <div class="spec-item">
+                            <div class="spec-value">5G</div>
+                            <div class="spec-label">Kết nối</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Categories Section -->
+    <div class="background-overlay">
+        <section class="categories">
+            <div class="container-fluid">
+                <div class="section-header">
+                    <h2 class="section-title">
+                        <span>D</span>
+                        <span>a</span>
+                        <span>n</span>
+                        <span>h&nbsp;</span>
+                        <span>M</span>
+                        <span>ụ</span>
+                        <span>c&nbsp;</span>
+                        <span>n</span>
+                        <span>ổ</span>
+                        <span>i&nbsp;</span>
+                        <span>b</span>
+                        <span>ậ</span>
+                        <span>t</span>
+                    </h2>
+                    <p class="section-subtitle">Khám phá các sản phẩm hàng đầu</p>
+                </div>
+                <div class="categories-grid glass3d">
+                    <div class="category-card">
+                        <div class="category-icon primary">📱</div>
+                        <h3 class="category-title">The Best Smartphone</h3>
+                        <p class="category-subtitle">Điện thoại cao cấp</p>
+                    </div>
+                    <div class="category-card">
+                        <div class="category-icon accent">💻</div>
+                        <h3 class="category-title">Gaming Laptop</h3>
+                        <p class="category-subtitle">Laptop chuyên game</p>
+                    </div>
+                    <div class="category-card">
+                        <div class="category-icon primary">🎧</div>
+                        <h3 class="category-title">Premium Headphone</h3>
+                        <p class="category-subtitle">Tai nghe chất lượng cao</p>
+                    </div>
+                    <div class="category-card">
+                        <div class="category-icon accent">📱</div>
+                        <h3 class="category-title">Tablet & iPad</h3>
+                        <p class="category-subtitle">Máy tính bảng</p>
+                    </div>
+                    <div class="category-card">
+                        <div class="category-icon primary">⌚</div>
+                        <h3 class="category-title">Smart Watch</h3>
+                        <p class="category-subtitle">Đồng hồ thông minh</p>
+                    </div>
+                    <div class="category-card">
+                        <div class="category-icon accent">📷</div>
+                        <h3 class="category-title">Camera & Photo</h3>
+                        <p class="category-subtitle">Máy ảnh chuyên nghiệp</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Featured Products -->
+        <section id="section-all-products" class="products categories-products">
+            <div class="container-fluid">
+                <div class="section-header">
+                    <h2 class="section-title">
+                        <span>T</span>
+                        <span>ấ</span>
+                        <span>t&nbsp;</span>
+                        <span>c</span>
+                        <span>ả&nbsp;</span>
+                        <span>s</span>
+                        <span>ả</span>
+                        <span>n&nbsp;</span>
+                        <span>p</span>
+                        <span>h</span>
+                        <span>ẩ</span>
+                        <span>m</span>
+                    </h2>
+                    <p class="section-subtitle">Khám phá sản phẩm theo lựa chọn của bạn</p>
+                </div>
+
+                <div class="sidebar glass3d" id="sidebar">
+                    <div class="sidebar-header">
+                        <span class="sidebar-title">Lọc sản phẩm</span>
+                    </div>
+                    <form id="filterForm" class="mt-4">
+                        <div class="row g-3">
+                            <div class="col-md-3">
+                                <label class="form-label fw-semibold">Giá tiền (VNĐ)</label>
+                                <div class="d-flex align-items-center gap-2">
+                                    <input type="number" class="form-control number-input" name="price_min" placeholder="Từ"
+                                        min="0" step="1000">
+                                    <span class="fw-bold" style="color: #ccc;">–</span> <input type="number"
+                                        class="form-control number-input" name="price_max" placeholder="Đến" min="0"
+                                        step="1000">
+                                </div>
+                            </div>
+
+                            <div class="col-md-3">
+                                <label for="category" class="form-label fw-semibold">Danh mục</label>
+                                <select class="form-select" id="category" name="category_filter">
+                                    <option value="">Tất cả</option>
+                                    <option value="1">Laptop</option>
+                                    <option value="2">Điện thoại</option>
+                                    <option value="3">Phụ kiện</option>
+                                    <option value="4">Máy tính bảng</option>
+                                </select>
+                            </div>
+
+                            <div class="col-md-3">
+                                <label for="supplier" class="form-label fw-semibold">Nhà phân phối</label>
+                                <select class="form-select" id="supplier" name="supplier_filter">
+                                    <option value="">Tất cả</option>
+                                    <option value="1">Apple</option>
+                                    <option value="2">Samsung</option>
+                                    <option value="3">ASUS</option>
+                                    <option value="4">Dell</option>
+                                </select>
+                            </div>
+
+                            <div class="col-md-3">
+                                <label for="rating" class="form-label fw-semibold">Đánh giá</label>
+                                <select class="form-select" id="rating" name="rating_filter">
+                                    <option value="">Tất cả</option>
+                                    <option value="5">⭐️⭐️⭐️⭐️⭐️</option>
+                                    <option value="4">⭐️⭐️⭐️⭐️</option>
+                                    <option value="3">⭐️⭐️⭐️</option>
+                                    <option value="2">⭐️⭐️</option>
+                                    <option value="1">⭐️</option>
+                                </select>
+                            </div>
+
+                            <div class="col-md-3">
+                                <label for="stock_status" class="form-label fw-semibold">Tình trạng hàng</label>
+                                <select class="form-select" id="stock_status" name="stock_filter">
+                                    <option value="">Tất cả</option>
+                                    <option value="1">Còn hàng</option>
+                                    <option value="2">Hết hàng</option>
+                                </select>
+                            </div>
+
+                            <div class="col-md-3">
+                                <label for="release_date" class="form-label fw-semibold">Thời gian ra mắt</label>
+                                <select class="form-select" id="release_date" name="release_filter">
+                                    <option value="">Tất cả</option>
+                                    <option value="30">30 ngày qua</option>
+                                    <option value="90">90 ngày qua</option>
+                                    <option value="180">6 tháng qua</option>
+                                    <option value="365">1 năm qua</option>
+                                </select>
+                            </div>
+
+                            <div class="col-md-3 d-flex align-items-end pb-2">
+                                <div class="form-check">
+                                    <input type="checkbox" class="form-check-input" id="on_sale" name="on_sale">
+                                    <label class="form-check-label fw-semibold" for="on_sale">Chỉ hiển thị sản phẩm đang
+                                        giảm giá</label>
+                                </div>
+                            </div>
+                            <div class="col-md-3 d-flex align-items-end">
+                                <button type="submit" class="btn btn-primary w-100">Áp dụng bộ lọc</button>
+                            </div>
+
+                        </div>
+                    </form>
+                </div>
+                <div class="products-grid show-by-category glass3d">
+
+                </div>
+                <div id="load-more-container" class="text-center my-4">
+                </div>
+            </div>
+
+
+
+        </section>
+
+        <!-- Video Review -->
+        <section class="review-video">
+            <div class="container-fluid">
+                <div class="section-header">
+                    <h2 class="section-title">
+                        <span>C</span>
+                        <span>l</span>
+                        <span>i</span>
+                        <span>p&nbsp;</span>
+                        <span>R</span>
+                        <span>e</span>
+                        <span>v</span>
+                        <span>i</span>
+                        <span>e</span>
+                        <span>w</span>
+                    </h2>
+                    <p class="section-subtitle">Review về sản phẩm</p>
+                </div>
+                <div class="slider-container glass3d">
+                    <div class="swiper mySwiper">
+                        <div class="swiper-wrapper">
+                            @foreach ($videoProducts as $product)
+                                <div class="swiper-slide">
+                                    <div class="video-card">
+                                        <div class="video-thumb" onclick="playVideo(this)">
+                                            <iframe
+                                                src="{{ $product->embed_url_review }}?mute=1&playsinline=1&rel=0&modestbranding=1"
+                                                title="Video sản phẩm" frameborder="0"
+                                                allow="autoplay; encrypted-media; picture-in-picture" allowfullscreen>
+                                            </iframe>
+                                            <div class="overlay">
+                                                <div class="channel-info">
+                                                    <img src="{{ asset('/images/logo.jpg') }}" alt="Channel"
+                                                        class="channel-logo">
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="product-info">
+                                            <img src="/uploads/{{ $product->cover_image }}" alt="Sản phẩm"
+                                                class="product-thumb">
+                                            <div class="product-name">{{ $product->product_name }}</div>
+                                        </div>
+                                    </div>
+                                </div>
+                            @endforeach
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Review -->
+
+        <section class="review-video">
+            <div class="container-fluid">
+                <div class="section-header">
+                    <h2 class="section-title">
+                        <span>C</span>
+                        <span>o</span>
+                        <span>m</span>
+                        <span>m</span>
+                        <span>e</span>
+                        <span>n</span>
+                        <span>t</span>
+                        <span>s</span>
+                    </h2>
+                    <p class="section-subtitle">Bình luận về sản phẩm</p>
+                </div>
+                <div class="slider-container glass3d">
+                    <div class="swiper mySwiper">
+                        <div class="swiper-wrapper">
+                            @foreach ($reviews as $review)
+                                <div class="swiper-slide">
+                                    <div class="testimonial-card">
+                                        <div class="quote-icon">“</div>
+
+                                        <p class="testimonial-text">
+                                            {{ $review->comment }}
+                                        </p>
+
+                                        <div class="author-info">
+                                            <img src="/images/messi.jpg" class="author-avatar">
+                                            <div class="author-details">
+                                                <div class="author-name">{{ $review->user->full_name }}</div>
+                                                <span class="author-title">
+                                                    @for ($i = 1; $i <= 5; $i++)
+                                                        @if ($i <= $review->rating)
+                                                            <i class="fa fa-star" style="color: #FFD700;"></i>
+                                                        @elseif ($i - 0.5 <= $review->rating)
+                                                            <i class="fa fa-star-half-o" style="color: #FFD700;"></i>
+                                                        @else
+                                                            <i class="fa fa-star-o" style="color: #FFD700;"></i>
+                                                        @endif
+                                                    @endfor
+                                                    <span><br>cho sản phẩm
+                                                        {{ $review->product->product_name }}</span>
+                                                </span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            @endforeach
+                        </div>
+
+                        <div class="swiper-pagination"></div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </div>
+
+
+
+
+    <!-- Chatbot Bubble -->
+    <div class="chatbot-container">
+        <div id="chatbot-button">💬</div>
+
+        <div id="chatbot-window">
+            <div class="chatbot-header">
+                <div class="chat-avatar">F</div>
+                <div class="chat-info">
+                    <strong>Chatbot hỗ trợ</strong>
+                    <span>October 15, 2024</span>
+                </div>
+                <button class="chat-close" id="chatbot-close">&times;</button>
+            </div>
+            <div class="chatbot-body">
+                <div class="bot-message">Xin chào 👋! Tôi có thể giúp gì cho bạn?</div>
+            </div>
+            <div class="chatbot-footer">
+                <input type="text" id="chatbot-input" placeholder="Nhập tin nhắn..." />
+                <button id="chatbot-send">Gửi</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const USER_ID = {{ auth()->id() ?? 'null' }};
+        console.log("User ID:", USER_ID);
+    </script>
+    <script src="{{ asset('js/index-chatbot.js') }}"></script>
+    <script src="{{ asset('js/categories-filter.js') }}"></script>
+    <script src="{{ asset('js/index.js') }}"></script>
+    <script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
+    <script src="{{ asset('js/swiper.js') }}"></script>
+@endsection

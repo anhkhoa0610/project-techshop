@@ -31,7 +31,7 @@ Route::apiResource('vouchers', VoucherController::class);
 Route::get('categories/{categoryId}/products', [IndexController::class, 'getProductsByCategory']);
 
 //product filter cho trang index
-Route::get('/index/filter', [ProductController::class, 'filter']);
+Route::get('/index/filter', [IndexController::class, 'filter']);
 
 // Tìm kiếm sản phẩm qua API
 Route::get('/index/search', [IndexController::class, 'searchProductsAPI']);

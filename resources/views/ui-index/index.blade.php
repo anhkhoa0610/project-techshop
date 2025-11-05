@@ -112,7 +112,7 @@
         </section>
 
         <!-- Featured Products -->
-        <section class="products sale-products">
+        <section class="sale-products">
             <div class="container-fluid">
                 <div class="section-header">
                     <h2 class="section-title">
@@ -205,7 +205,7 @@
 
 
         <!-- Featured Products -->
-        <section class="products new-products">
+        <section class="new-products">
             <div class="container-fluid">
                 <div class="section-header">
                     <h2 class="section-title">
@@ -293,131 +293,6 @@
                             <?php endforeach; ?>
                         </div>
                     </div>
-                </div>
-            </div>
-        </section>
-
-        <!-- Featured Products -->
-        <section id="section-all-products" class="products categories-products" style="display: none">
-            <div class="container-fluid">
-                <div class="section-header">
-                    <h2 class="section-title">
-                        <span>T</span>
-                        <span>ấ</span>
-                        <span>t&nbsp;</span>
-                        <span>c</span>
-                        <span>ả&nbsp;</span>
-                        <span>s</span>
-                        <span>ả</span>
-                        <span>n&nbsp;</span>
-                        <span>p</span>
-                        <span>h</span>
-                        <span>ẩ</span>
-                        <span>m</span>
-                    </h2>
-                    <p class="section-subtitle">Khám phá sản phẩm theo lựa chọn của bạn</p>
-                </div>
-                <div class="row">
-                    <div class="col-md-3" style="color: white">
-                        <div class="sidebar glass3d" id="sidebar">
-                            <div class="sidebar-header">
-                                <span class="sidebar-title">Lọc sản phẩm</span>
-                            </div>
-                            <form id="filterForm" class="mt-4">
-                                <!-- Giá tiền -->
-                                <div class="mb-4">
-                                    <label class="form-label fw-semibold">Giá tiền (VNĐ)</label>
-                                    <div class="d-flex align-items-center gap-2">
-                                        <input type="number" class="form-control number-input" name="price_min"
-                                            placeholder="" min="0" step="1000" style="max-width: 16rem;">
-                                        <span class="fw-bold">–</span>
-                                        <input type="number" class="form-control number-input" name="price_max"
-                                            placeholder="" min="0" step="1000" style="max-width: 16rem;">
-                                    </div>
-                                </div>
-
-
-                                <!-- Danh mục -->
-                                <div class="mb-4">
-                                    <label for="category" class="form-label fw-semibold">Danh mục</label>
-                                    <select class="form-select" id="category" name="category_filter">
-                                        <option value="">Tất cả</option>
-                                        <option value="1">Laptop</option>
-                                        <option value="2">Điện thoại</option>
-                                        <option value="3">Phụ kiện</option>
-                                        <option value="4">Máy tính bảng</option>
-                                    </select>
-                                </div>
-
-                                <!-- Nhà phân phối -->
-                                <div class="mb-4">
-                                    <label for="supplier" class="form-label fw-semibold">Nhà phân phối</label>
-                                    <select class="form-select" id="supplier" name="supplier_filter">
-                                        <option value="">Tất cả</option>
-                                        <option value="1">Apple</option>
-                                        <option value="2">Samsung</option>
-                                        <option value="3">ASUS</option>
-                                        <option value="4">Dell</option>
-                                    </select>
-                                </div>
-
-                                <!-- Rating -->
-
-                                <div class="mb-4">
-                                    <label for="rating" class="form-label fw-semibold">Đánh giá</label>
-                                    <select class="form-select" id="rating" name="rating_filter">
-                                        <option value="">Tất cả</option>
-                                        <option value="5">⭐️⭐️⭐️⭐️⭐️</option>
-                                        <option value="4">⭐️⭐️⭐️⭐️</option>
-                                        <option value="3">⭐️⭐️⭐️</option>
-                                        <option value="2">⭐️⭐️</option>
-                                        <option value="1">⭐️</option>
-                                    </select>
-                                </div>
-
-                                <!-- Tình trạng hàng -->
-                                <div class="mb-4">
-                                    <label for="stock_status" class="form-label fw-semibold">Tình trạng hàng</label>
-                                    <select class="form-select" id="stock_status" name="stock_filter">
-                                        <option value="">Tất cả</option>
-                                        <option value="1">Còn hàng</option>
-                                        <option value="2">Hết hàng</option>
-                                    </select>
-                                </div>
-
-                                <!-- Thời gian ra mắt -->
-                                <div class="mb-4">
-                                    <label for="release_date" class="form-label fw-semibold">Thời gian ra mắt</label>
-                                    <select class="form-select" id="release_date" name="release_filter">
-                                        <option value="">Tất cả</option>
-                                        <option value="30">30 ngày qua</option>
-                                        <option value="90">90 ngày qua</option>
-                                        <option value="180">6 tháng qua</option>
-                                        <option value="365">1 năm qua</option>
-                                    </select>
-                                </div>
-
-                                <!-- Đang giảm giá -->
-                                <div class="mb-4 form-check">
-                                    <input type="checkbox" class="form-check-input" id="on_sale" name="on_sale">
-                                    <label class="form-check-label fw-semibold" for="on_sale">Chỉ hiển thị sản phẩm đang
-                                        giảm giá</label>
-                                </div>
-
-                                <!-- Nút áp dụng -->
-                                <button type="submit" class="btn btn-primary w-100">Áp dụng bộ lọc</button>
-                            </form>
-                        </div>
-                    </div>
-                    <div class="col-md-9">
-                        <div class="products-grid show-by-category glass3d">
-
-                        </div>
-                    </div>
-                </div>
-
-                <div class="pagination mt-5">
-                    <!-- ... -->
                 </div>
             </div>
         </section>
