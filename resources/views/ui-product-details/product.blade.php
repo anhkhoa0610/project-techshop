@@ -45,7 +45,7 @@
                     <h3 class="fw-bold text-center">{{ $product->product_name ?? "Sản phẩm không tồn tại!!!"}}</h3>
                     <p class="text-warning mb-1 fs-3 text-center">
                         <span class="star filled text-warning fs-1">★</span>
-                        <span class="rating-star-title">{{ number_format($avg, 1) ?? 0 }}</span> | {{ $reviews_count ?? 0 }}
+                        <span class="rating-star-title">{{ number_format($avg, 1) ?? 0 }}</span> | <span class="total-review" >{{ $reviews_count ?? 0 }}</span>
                         đánh giá | Đã bán
                         {{ $product->volume_sold ?? 0 }}
                     </p>

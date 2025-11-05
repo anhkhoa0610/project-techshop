@@ -126,18 +126,18 @@ document.addEventListener('DOMContentLoaded', function () {
                         });
 
                     return `
-                                 <div class="review-display border-bottom py-2">
-                                     <img class="user-avatar" src="/images/user-icon.jpg" alt="">
-                                     <div class="user-review">
-                                         <div class="d-flex">
-                                             <strong class="review-info">${review.user.full_name}</strong>
-                                             <p class="review-info ms-5">| ${formattedDate}</p>
-                                         </div>
-                                         <p class="review-info">${stars}</p>
-                                         <p class="review-info">${review.comment}</p>
-                                    </div>
-                                </div>
-                                            `;
+                     <div class="review-display border-bottom py-2">
+                         <img class="user-avatar" src="/images/user-icon.jpg" alt="">
+                         <div class="user-review">
+                             <div class="d-flex">
+                                 <strong class="review-info">${review.user.full_name}</strong>
+                                 <p class="review-info ms-5">| ${formattedDate}</p>
+                             </div>
+                             <p class="review-info">${stars}</p>
+                             <p class="review-info">${review.comment}</p>
+                        </div>
+                    </div>
+                      `;
                 }).join('');
 
                 // Render thanh phân trang
@@ -148,14 +148,14 @@ document.addEventListener('DOMContentLoaded', function () {
                     const disabled = link.url === null ? 'disabled' : '';
 
                     return `
-                                 <button
-                                     class="btn btn-sm btn-outline-secondary mx-1 ${activeClass}"
-                                     ${disabled ? 'disabled' : ''}
-                                     data-url="${link.url || '#'}"
-                                 >
-                                     ${label}
-                                 </button>
-                                `;
+                     <button
+                         class="btn btn-sm btn-outline-secondary mx-1 ${activeClass}"
+                         ${disabled ? 'disabled' : ''}
+                         data-url="${link.url || '#'}"
+                     >
+                         ${label}
+                     </button>
+                         `;
                 }).join('');
 
                 // Gán sự kiện click cho từng nút
@@ -201,6 +201,7 @@ document.addEventListener('DOMContentLoaded', function () {
     document.getElementById('form-post-review').addEventListener('submit', async function (e) {
         e.preventDefault();
         // kiểm tra xem đã đăng nhập chưa
+        console.log(check_user)
         if (!check_user) {
             Swal.fire({
                 icon: 'warning',
@@ -212,8 +213,8 @@ document.addEventListener('DOMContentLoaded', function () {
             });
             return;
         }
-
-        const formData = new FormData(this);
+        else{
+            const formData = new FormData(this);
         const response = await fetch(`/api/product/${productId}/reviews`, {
             method: 'POST',
             headers: {
@@ -255,7 +256,9 @@ document.addEventListener('DOMContentLoaded', function () {
             if (rating_star_title) {
                 rating_star_title.textContent = avg;
             }
-
+            // cập nhật lại số tổng đánh giá trên title
+            const total_review = document.querySelector('.total-review');
+            total_review.textContent = parseInt(total_review.textContent) +1;
 
             // Cập nhật nút lọc sao đang active đúng với số sao mà user vừa đánh giá
             document.querySelectorAll('.button-filter-star').forEach(b => b.classList.remove('active'));
@@ -273,5 +276,8 @@ document.addEventListener('DOMContentLoaded', function () {
             const errorData = await response.json();
             Swal.fire('Lỗi', 'Lỗi khi gửi đánh giá, vui lòng thử lại sau.', 'error');
         }
+        }
+
+        
     });
 });
