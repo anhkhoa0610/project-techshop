@@ -83,7 +83,7 @@ Route::get('/momo/return', [MomoController::class, 'momo_return'])->name('momo.r
 // 🟣 MoMo gọi ngầm (server-to-server) để thông báo trạng thái thanh toán
 Route::post('/momo/ipn', [MomoController::class, 'momo_ipn'])->name('momo.ipn');
 
-
+Route::get('/vnpay/return', [VnpayController::class, 'vnpay_return'])->name('vnpay.return');
 
 Route::prefix('voucher')->group(function () {
     Route::get('/', [VoucherController::class, 'list'])->name('voucher.list');

@@ -44,14 +44,21 @@ async function deleteCartItem(cartId, elementToDelete) {
             method: 'DELETE',
             headers: { 'X-CSRF-TOKEN': csrfToken }
         });
-
         if (res.ok) {
+            const data = await res.json().catch(() => ({})); // thêm dòng này 👈
             elementToDelete.remove();
             cartpUpdateTotal?.();
-            alert('✅ Xóa thành công!');
-            setTimeout(() => location.reload(), 500);
+            Swal.fire({
+                icon: "success",
+                title: "Thành công!",
+                text: data.message || "Xóa sản phẩm thành công.",
+                timer: 2000,
+                showConfirmButton: false,
+            });
 
-        } else {
+            setTimeout(() => location.reload(), 500);
+        }
+        else {
             const data = await res.json().catch(() => ({}));
             alert(`❌ Lỗi xóa: ${data.message || 'Không rõ nguyên nhân'}`);
         }

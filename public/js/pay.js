@@ -141,6 +141,9 @@ document.getElementById('apply-btn').addEventListener('click', function () {
             let discount = 0;
 
             if (data.valid) {
+                const voucherId = data.voucher_id;
+                window.appliedVoucherId = voucherId;
+
                 if (data.discount_type === 'percent') {
                     discount = Math.round(total * data.discount_value / 100);
                 } else if (data.discount_type === 'amount') {
@@ -165,6 +168,7 @@ document.getElementById('apply-btn').addEventListener('click', function () {
                     timer: 2000,
                     showConfirmButton: false,
                 });
+                console.log(data)
 
             } else {
                 // ❌ Voucher không hợp lệ → reset về giá gốc
@@ -231,28 +235,48 @@ document.getElementById("payBtn").addEventListener("click", () => {
 
     // ✅ Kiểm tra nhập liệu
     if (!nameInput.value.trim() || !phoneInput.value.trim() || !emailInput.value.trim() || !addressInput.value.trim()) {
-        alert("⚠️ Vui lòng nhập đầy đủ thông tin!");
+          Swal.fire({
+                icon: "error",
+                title: "Lỗi!",
+                text: "Vui lòng nhập đầy đủ thông tin",
+            });
         [nameInput, phoneInput, emailInput, addressInput].forEach(i => {
             if (!i.value.trim()) i.classList.add("error");
         });
         return;
     }
     if (!phoneRegex.test(phoneInput.value)) {
-        alert("⚠️ Số điện thoại không hợp lệ!");
+        Swal.fire({
+                icon: "error",
+                title: "Lỗi!",
+                text: "Vui lòng nhập số điện thoại hợp lệ",
+            });
         phoneInput.classList.add("error");
         return;
     }
     if (!emailRegex.test(emailInput.value)) {
-        alert("⚠️ Email không hợp lệ!");
+        Swal.fire({
+                icon: "error",
+                title: "Lỗi!",
+                text: "Vui lòng nhập email hợp lệ",
+            });
         emailInput.classList.add("error");
         return;
     }
 
     // ✅ Lấy vị trí (Tỉnh / Huyện / Xã)
-    const cityText = citySelect.options[citySelect.selectedIndex]?.textContent || "";
-    const districtText = districtSelect.options[districtSelect.selectedIndex]?.textContent || "";
-    const wardText = wardSelect.options[wardSelect.selectedIndex]?.textContent || "";
+    const cityText = citySelect.options[citySelect.selectedIndex]?.textContent ;
+    const districtText = districtSelect.options[districtSelect.selectedIndex]?.textContent ;
+    const wardText = wardSelect.options[wardSelect.selectedIndex]?.textContent;
 
+    if(cityText === "Chọn tỉnh/thành" || districtText === "Chọn quận/huyện" || wardText === "Chọn phường/xã") {
+       Swal.fire({
+                icon: "error",
+                title: "Lỗi!",
+                text: "⚠️ Vui lòng chọn đầy đủ Tỉnh/Thành, Quận/Huyện, Phường/Xã!",
+            });
+        return;
+    }
     // ✅ Gộp địa chỉ đầy đủ
     const fullShippingAddress = `${addressInput.value.trim()}, ${wardText}, ${districtText}, ${cityText}`;
 
@@ -296,6 +320,16 @@ document.getElementById("payBtn").addEventListener("click", () => {
     redirectInput.name = 'redirect';
     redirectInput.value = '1';
     form.appendChild(redirectInput);
+
+    if(window.appliedVoucherId) {
+        const voucherInput = document.createElement('input');
+        voucherInput.type = 'hidden';
+        voucherInput.name = 'voucher_id';
+        voucherInput.value = window.appliedVoucherId;
+        form.appendChild(voucherInput);
+    }
+
+
 
     // Submit form
     document.body.appendChild(form);

@@ -134,6 +134,7 @@ class VoucherController extends Controller
             }
             return response()->json([
                 'valid' => true,
+                'voucher_id' => $voucher->voucher_id,
                 'discount_type' => $voucher->discount_type,
                 'discount_value' => $discount,
                 'message' => 'Voucher hợp lệ!'
