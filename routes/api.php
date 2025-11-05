@@ -12,6 +12,7 @@ use App\Http\Controllers\AuthController;
 use App\Http\Controllers\UIProductDetailsController;
 use App\Http\Controllers\ProductController;
 use App\Http\Controllers\LoginController;
+use App\Http\Controllers\PromotionController;
 
 Route::post('/login', [LoginController::class, 'apiLogin']);
 Route::middleware(['auth:sanctum', 'checkrole:Admin'])->group(function () {
@@ -44,3 +45,7 @@ Route::post('/index/add-to-cart', [IndexController::class, 'addToCart']);
 Route::get('/product/{id}/reviews', [UIProductDetailsController::class, 'index']);
 Route::post('/product/{id}/reviews', [UIProductDetailsController::class, 'store']);
 
+
+Route::get('/promotions', [PromotionController::class, 'apiIndex']);
+
+Route::post('/voucher/check', [App\Http\Controllers\VoucherController::class, 'checkVoucher']);

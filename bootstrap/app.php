@@ -14,14 +14,13 @@ return Application::configure(basePath: dirname(__DIR__))
     )
     ->withMiddleware(function (Middleware $middleware) {
 
-        // Nhóm middleware cho API
-        $middleware->group('api', [
-            EnsureFrontendRequestsAreStateful::class, // Cho phép frontend gửi cookie / token hợp lệ
-            \Illuminate\Routing\Middleware\SubstituteBindings::class,
-            \Illuminate\Auth\Middleware\Authenticate::class, // <- Quan trọng để dùng auth:sanctum
-        ]);
+        // Kích hoạt stateful API cho Sanctum (tự động thêm EnsureFrontendRequestsAreStateful vào group 'api')
+        $middleware->statefulApi();
 
-        // Đặt alias cho middleware tùy chỉnh
+        // Group 'api' giờ đã có: EnsureFrontendRequestsAreStateful + SubstituteBindings + ThrottleRequests (mặc định)
+        // Không cần thêm thủ công Authenticate, vì auth:sanctum sẽ xử lý
+    
+        // Đặt alias cho middleware tùy chỉnh (giữ nguyên)
         $middleware->alias([
             'checkrole' => \App\Http\Middleware\CheckRole::class,
             'api.token' => \App\Http\Middleware\CheckApiToken::class,

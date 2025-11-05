@@ -42,7 +42,7 @@
                 <a href="#" class="nav-link">Điện thoại</a>
                 <a href="#" class="nav-link">Laptop</a>
                 <a href="#" class="nav-link">Phụ kiện</a>
-                <a href="#" class="nav-link">Khuyến mãi</a>
+                <a href="{{ route('promotion.index') }}" class="nav-link">Khuyến mãi</a>
             </nav>
 
             <div class="header-actions">

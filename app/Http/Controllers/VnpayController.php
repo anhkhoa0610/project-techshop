@@ -110,7 +110,7 @@ class VnpayController extends Controller
         $data = $request->all();
         $code_cart = rand(00, 9999);
         $vnp_Url = "https://sandbox.vnpayment.vn/paymentv2/vpcpay.html";
-        $vnp_Returnurl = "http://127.0.0.1:8000/index";
+        $vnp_Returnurl = route('vnpay.return');
         ;
         $vnp_TmnCode = "1VYBIYQP"; //Mã website tại VNPAY 
         $vnp_HashSecret = "NOH6MBGNLQL9O9OMMFMZ2AX8NIEP50W1"; //Chuỗi bí mật
@@ -168,19 +168,21 @@ class VnpayController extends Controller
         }
         $shippingAddress = $request->input('shipping_address');
         $amount = $request->input('total', 5000);
+        $userId = auth()->id(); // hoặc Auth::id()
+        $voucher = $request->input('voucher_id');
 
         //Save transaction to database
         $order = Order::create([
-            'user_id' => 1,
+            'user_id' => $userId,
             'order_date' => now(),
             'status' => 'pending',
             'shipping_address' => $shippingAddress ?? 'chưa có địa chỉ',
             'payment_method' => 'vnpay',
-            'voucher_id' => null,
+            'voucher_id' => $voucher,
             'total_price' => $amount,
         ]);
         // Lấy giỏ hàng của user
-        $userId = 1; // hoặc Auth::id()
+
         $cartItems = CartItem::where('user_id', $userId)->get();
 
         foreach ($cartItems as $item) {
@@ -220,6 +222,40 @@ class VnpayController extends Controller
             die();
         } else {
             echo json_encode($returnData);
+        }
+    }
+
+    public function vnpay_return(Request $request)
+    {
+        $data = $request->all();
+
+        if (($data['vnp_ResponseCode'] ?? 1) == 0) {
+            // ✅ Thanh toán thành công
+            $order = Order::where('user_id', auth()->id())
+                ->where('status', 'pending')
+                ->latest()
+                ->first();
+
+            if ($order) {
+                $order->update([
+                    'status' => 'completed',
+                ]);
+            }
+
+            return redirect()->route('index')->with('success', 'Thanh toán VNPAY thành công!');
+        } else {
+            $order = Order::where('user_id', auth()->id())
+                ->where('status', 'pending')
+                ->latest()
+                ->first();
+
+            if ($order) {
+                $order->update([
+                    'status' => 'cancelled',
+                ]);
+            }
+
+            return redirect()->route('index')->with('error', 'Thanh toán VNPAY không thành công!');
         }
     }
 

@@ -390,3 +390,27 @@ select:focus {
     font-weight: 700;
     cursor: pointer;
 }
+.apply
+{
+    width: 50%;
+    padding: 12px 14px;
+    border-radius: 12px;
+    border: none;
+    height: 3rem;
+    font: 700 15px/1 sans-serif;
+    cursor: pointer;
+    background: linear-gradient(90deg, var(--accent-1), var(--accent-2));
+    color: white;
+    box-shadow: 0 8px 30px rgba(0, 123, 255, 0.18);
+}
+
+.apply-btn {
+    display: flex;
+    justify-content: end;
+    align-items: end;
+
+}
+.input-voucher
+{
+    width: 150%;
+}

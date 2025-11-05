@@ -14,7 +14,7 @@ use App\Http\Controllers\OrderDetailController;
 use App\Http\Controllers\IndexController;
 use App\Http\Controllers\VoucherController;
 use App\Http\Controllers\ReviewController;
-
+use App\Http\Controllers\PromotionController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\LoginController;
 use App\Http\Controllers\MomoController;
@@ -52,6 +52,7 @@ Route::middleware(['checkrole:Admin'])->group(function () {
         Route::get('/create', [ReviewController::class, 'create'])->name('reviews.create');
         Route::post('/', [ReviewController::class, 'store'])->name('reviews.store');
         Route::get('/{reviewId}/edit', [ReviewController::class, 'edit'])->name('reviews.edit');
+        Route::get('/{reviewId}/view', [ReviewController::class, 'view'])->name('reviews.view');
         Route::put('/{reviewId}', [ReviewController::class, 'update'])->name('reviews.update');
         Route::delete('/{review_id}', [ReviewController::class, 'destroy'])->name('reviews.destroy');
     });
@@ -91,12 +92,20 @@ Route::get('/momo/return', [MomoController::class, 'momo_return'])->name('momo.r
 // 🟣 MoMo gọi ngầm (server-to-server) để thông báo trạng thái thanh toán
 Route::post('/momo/ipn', [MomoController::class, 'momo_ipn'])->name('momo.ipn');
 
+Route::get('/vnpay/return', [VnpayController::class, 'vnpay_return'])->name('vnpay.return');
+
+Route::prefix('voucher')->group(function () {
+    Route::get('/', [VoucherController::class, 'list'])->name('voucher.list');
+});
+
+
 Route::prefix('users')->group(function () {
     Route::get('/', [UserController::class, 'index'])->name('users.index');
     Route::get('/create', [UserController::class, 'create'])->name('users.create');
     Route::post('/', [UserController::class, 'store'])->name('users.store');
     Route::get('/{user}/edit', [UserController::class, 'edit'])->name('users.edit');
     Route::put('/{user}', [UserController::class, 'update'])->name('users.update');
+    Route::get('/{user}/show', [UserController::class, 'show'])->name('users.show');
     Route::delete('/{user}', [UserController::class, 'destroy'])->name('users.destroy');
     Route::get('/search/autocomplete', [UserController::class, 'search'])->name('users.search');
 });
@@ -151,3 +160,14 @@ Route::post('reset-password', function (Illuminate\Http\Request $request) {
 
 
 Route::post('/api/voucher/check', [App\Http\Controllers\VoucherController::class, 'checkVoucher']);
+
+Route::get('/promotions', [PromotionController::class, 'index'])->name('promotion.index');
+Route::prefix('reviews')->group(function () {
+    Route::get('/', [ReviewController::class, 'index'])->name('reviews.index');
+    Route::get('/create', [ReviewController::class, 'create'])->name('reviews.create');
+    Route::post('/', [ReviewController::class, 'store'])->name('reviews.store');
+    Route::get('/{reviewId}/edit', [ReviewController::class, 'edit'])->name('reviews.edit');
+    Route::put('/{reviewId}', [ReviewController::class, 'update'])->name('reviews.update');
+    Route::delete('/{review_id}', [ReviewController::class, 'destroy'])->name('reviews.destroy');
+});
+ 

@@ -98,6 +98,10 @@ class UserController extends Controller
     {
         return view('crud_user.edit', compact('user'));
     }
+    public function show(User $user)
+    {
+        return view('crud_user.read', compact('user'));
+    }
 
     /**
      * Cập nhật người dùng.

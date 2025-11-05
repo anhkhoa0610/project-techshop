@@ -85,16 +85,13 @@
                                     <td>{{ $review->comment ? Str::limit($review->comment, 1000) : 'N/A' }}</td>
                                     <td>{{ $review->review_date ? $review->review_date->format('d/m/Y') : '—' }}</td>
                                     <td class="text-nowrap">
-                                        {{-- Nút Xem (Mở Modal View) --}}
-                                        <a href="#" class="view" title="Xem" data-toggle="modal" data-target="#viewReviewModal">
+                                         <a href="{{ route('reviews.view', $review->review_id)  }}" class="view" title="Xem">
                                             <i class="material-icons text-info">&#xE417;</i>
                                         </a>
-                                        {{-- Nút Sửa --}}
-                                        <a href="{{ route('reviews.edit', $review->review_id) }}" class="edit" title="Sửa">
+                                         <a href="{{ route('reviews.edit', $review->review_id) }}" class="edit" title="Sửa">
                                             <i class="material-icons text-warning">&#xE254;</i>
                                         </a>
-                                        {{-- Nút Xóa (Mở Modal Delete) --}}
-                                        <a href="#deleteReviewModal" class="delete" title="Xóa" data-toggle="modal"
+                                         <a href="#deleteReviewModal" class="delete" title="Xóa" data-toggle="modal"
                                             data-target="#deleteReviewModal"
                                             data-url="{{ route('reviews.destroy', $review->review_id) }}"
                                             data-name="Đánh giá của {{ $review->user->full_name ?? 'người dùng' }}">
@@ -120,29 +117,6 @@
         </div>
     </div>
 
-    <div class="modal fade" id="viewReviewModal" tabindex="-1" role="dialog" aria-labelledby="viewReviewModalLabel"
-        aria-hidden="true">
-        <div class="modal-dialog" role="document">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="viewReviewModalLabel">Chi Tiết Đánh Giá</h5>
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                        <span aria-hidden="true">&times;</span>
-                    </button>
-                </div>
-                <div class="modal-body">
-                    <p><strong>Sản phẩm:</strong> <span id="view_product"></span></p>
-                    <p><strong>Người đánh giá:</strong> <span id="view_user"></span></p>
-                    <p><strong>Đánh giá:</strong> <span id="view_rating"></span></p>
-                    <p><strong>Bình luận:</strong> <span id="view_comment"></span></p>
-                    <p><strong>Ngày đánh giá:</strong> <span id="view_date"></span></p>
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Đóng</button>
-                </div>
-            </div>
-        </div>
-    </div>
 
     <!-- Modal Xóa -->
     <div id="deleteReviewModal" class="modal fade" tabindex="-1" role="dialog">
