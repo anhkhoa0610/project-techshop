@@ -152,19 +152,8 @@
                                                 $count = $product->reviews_count ?? 0;
                                             @endphp
 
-                                            <span class="stars">
-                                                @for ($i = 1; $i <= 5; $i++)
-                                                    @if ($i <= $rating)
-                                                        <i class="fa fa-star" style="color: #FFD700;"></i>
-                                                    @elseif ($i - 0.5 <= $rating)
-                                                        <i class="fa fa-star-half-o" style="color: #FFD700;"></i>
-                                                    @else
-                                                        <i class="fa fa-star-o" style="color: #FFD700;"></i>
-                                                    @endif
-                                                @endfor
-                                                <span>{{ $rating }}</span>
-                                            </span>
-
+                                            <span class="stars" style="color: #ffc107;">⭐</span>
+                                            <span class="rating-score">{{ $rating }}</span>
                                             <span class="reviews">({{ $count }} đánh giá)</span>
                                         </div>
                                         <div class="product-price">
@@ -246,19 +235,8 @@
                                                 $count = $product->reviews_count ?? 0;
                                             @endphp
 
-                                            <span class="stars">
-                                                @for ($i = 1; $i <= 5; $i++)
-                                                    @if ($i <= $rating)
-                                                        <i class="fa fa-star" style="color: #FFD700;"></i>
-                                                    @elseif ($i - 0.5 <= $rating)
-                                                        <i class="fa fa-star-half-o" style="color: #FFD700;"></i>
-                                                    @else
-                                                        <i class="fa fa-star-o" style="color: #FFD700;"></i>
-                                                    @endif
-                                                @endfor
-                                                <span>{{ $rating }}</span>
-                                            </span>
-
+                                            <span class="stars" style="color: #ffc107;">⭐</span>
+                                            <span class="rating-score">{{ $rating }}</span>
                                             <span class="reviews">({{ $count }} đánh giá)</span>
                                         </div>
                                         <div class="product-price">

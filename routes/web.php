@@ -20,13 +20,10 @@ use App\Http\Controllers\LoginController;
 use App\Http\Controllers\MomoController;
 use App\Http\Controllers\VnpayController;
 
-Route::get('/', function () {
-    return view('layouts.dashboard');
-});
-
+//trang chủ của tui, đụng vào nhớ xin phép =))
 Route::prefix('index')->group(function () {
     Route::get('/', [IndexController::class, 'index']);
-    Route::get('/categories',[IndexController::class, 'categories']);
+    Route::get('/categories/{category_id?}',[IndexController::class, 'categories']);
 });
 
 Route::middleware(['checkrole:Admin'])->group(function () {

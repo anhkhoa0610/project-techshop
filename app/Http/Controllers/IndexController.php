@@ -1,6 +1,7 @@
 <?php
 
 namespace App\Http\Controllers;
+use App\Models\Category;
 use App\Models\Product;
 use App\Models\Review;
 use Illuminate\Http\Request;
@@ -119,28 +120,36 @@ class IndexController extends Controller
     ]);
 }
 
-    public function categories() {
-        $topProducts = Product::withAvg('reviews', 'rating')
-            ->withCount('reviews')
-            ->orderByDesc('volume_sold')
-            ->limit(8)
-            ->get();
+    public function categories(Request $request, $category_id = null)
+    {
+        // 1. Lấy TẤT CẢ danh mục để hiển thị trong combobox
+        $categories = Category::all();
+
+        // 2. Chuẩn bị query sản phẩm
+        $productQuery = Product::withAvg('reviews', 'rating')
+        ->withCount('reviews');
+        $currentCategory = null;
+
+        // 3. Lọc sản phẩm nếu có $category_id
+        if ($category_id) {
+            // Tìm category hiện tại để truyền ra view (để đánh dấu 'selected')
+            $currentCategory = Category::find($category_id);
             
-        $newProducts = Product::withAvg('reviews', 'rating')
-            ->withCount('reviews')
-            ->orderByDesc('release_date')
-            ->limit(8)
-            ->get();
+            // Nếu tìm thấy, lọc query
+            if ($currentCategory) {
+                $productQuery->where('category_id', $category_id);
+            }
+        }
 
-        $allProducts = Product::withAvg('reviews', 'rating')->get();
+        // 4. Lấy 8 sản phẩm (đã lọc hoặc chưa)
+        $allProducts = $productQuery->paginate(8);
 
-        $reviews = Review::with('product', 'user')->orderBy('rating', 'desc')->limit(8)->get();
-
-        $videoProducts = Product::withVideo()
-            ->inRandomOrder()
-            ->limit(4)
-            ->get();
-        return view('ui-index.categories', compact('topProducts', 'newProducts', 'allProducts', 'videoProducts', 'reviews'));
+        // 5. Trả về view CHỈ VỚI 3 BIẾN cần thiết
+        return view('ui-index.categories', compact(
+            'allProducts',      // 8 sản phẩm đầu tiên (đã phân trang)
+            'categories',       // TẤT CẢ categories (cho combobox)
+            'currentCategory'   // Category đang chọn (hoặc null)
+        ));
     }
 
 }

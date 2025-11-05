@@ -6,12 +6,14 @@
     <div id="loading-overlay">
         <div class="spinner"></div>
     </div>
-    <link rel="stylesheet" href="{{ asset('css/index-categories.css') }}">
+
     <link rel="stylesheet" href="{{ asset('css/index.css') }}">
     <link rel="stylesheet" href="{{ asset('css/index-filter.css') }}">
     <link rel="stylesheet" href="{{ asset('css/index-chatbot.css') }}">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css" />
     <link rel="stylesheet" href="{{ asset('css/swiper.css') }}">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/noUiSlider/15.7.1/nouislider.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="{{ asset('css/index-categories.css') }}">
 
 
     <section class="hero">
@@ -141,31 +143,36 @@
                         <span class="sidebar-title">Lọc sản phẩm</span>
                     </div>
                     <form id="filterForm" class="mt-4">
-                        <div class="row g-3">
+                        <div class="row">
+
                             <div class="col-md-3">
                                 <label class="form-label fw-semibold">Giá tiền (VNĐ)</label>
-                                <div class="d-flex align-items-center gap-2">
-                                    <input type="number" class="form-control number-input" name="price_min" placeholder="Từ"
-                                        min="0" step="1000">
-                                    <span class="fw-bold" style="color: #ccc;">–</span> <input type="number"
-                                        class="form-control number-input" name="price_max" placeholder="Đến" min="0"
-                                        step="1000">
-                                </div>
-                            </div>
 
+                                <div class="price-inputs d-flex align-items-center gap-2">
+                                    <input type="text" class="form-control number-input" id="min-price-display" readonly
+                                        placeholder="Từ">
+                                    <span class="fw-bold" style="color: #ccc;">–</span>
+                                    <input type="text" class="form-control number-input" id="max-price-display" readonly
+                                        placeholder="Đến">
+                                </div>
+
+                                <div id="price-slider"></div>
+
+                                <input type="hidden" name="price_min">
+                                <input type="hidden" name="price_max">
+                            </div>
                             <div class="col-md-3">
                                 <label for="category" class="form-label fw-semibold">Danh mục</label>
                                 <select class="form-select" id="category" name="category_filter">
                                     <option value="">Tất cả</option>
-                                    <option value="1">Laptop</option>
-                                    <option value="2">Điện thoại</option>
-                                    <option value="3">Phụ kiện</option>
-                                    <option value="4">Máy tính bảng</option>
+                                    @foreach ($categories as $category)
+                                        <option value="{{ $category->category_id }}" {{ ($currentCategory && $currentCategory->id == $category->id) ? 'selected' : '' }}>
+                                            {{ $category->category_name }}
+                                        </option>
+                                    @endforeach
                                 </select>
-                            </div>
 
-                            <div class="col-md-3">
-                                <label for="supplier" class="form-label fw-semibold">Nhà phân phối</label>
+                                <label for="supplier" class="form-label fw-semibold mt-3">Nhà phân phối</label>
                                 <select class="form-select" id="supplier" name="supplier_filter">
                                     <option value="">Tất cả</option>
                                     <option value="1">Apple</option>
@@ -185,10 +192,8 @@
                                     <option value="2">⭐️⭐️</option>
                                     <option value="1">⭐️</option>
                                 </select>
-                            </div>
 
-                            <div class="col-md-3">
-                                <label for="stock_status" class="form-label fw-semibold">Tình trạng hàng</label>
+                                <label for="stock_status" class="form-label fw-semibold mt-3">Tình trạng hàng</label>
                                 <select class="form-select" id="stock_status" name="stock_filter">
                                     <option value="">Tất cả</option>
                                     <option value="1">Còn hàng</option>
@@ -206,141 +211,74 @@
                                     <option value="365">1 năm qua</option>
                                 </select>
                             </div>
-
-                            <div class="col-md-3 d-flex align-items-end pb-2">
-                                <div class="form-check">
-                                    <input type="checkbox" class="form-check-input" id="on_sale" name="on_sale">
-                                    <label class="form-check-label fw-semibold" for="on_sale">Chỉ hiển thị sản phẩm đang
-                                        giảm giá</label>
-                                </div>
-                            </div>
-                            <div class="col-md-3 d-flex align-items-end">
-                                <button type="submit" class="btn btn-primary w-100">Áp dụng bộ lọc</button>
-                            </div>
-
                         </div>
+                        <button type="submit" class="btn btn-primary w-100">Áp dụng bộ lọc</button>
+                        <button type="button" class="btn-filter-reset btn btn-primary w-100 ms-2">Đặt lại bộ lọc</button>
                     </form>
                 </div>
                 <div class="products-grid show-by-category glass3d">
+                    @foreach ($allProducts as $product)
+                        <div class="product-card">
+                            <div class="product-image">
+                                <img src="{{ $product->cover_image ? asset('uploads/' . $product->cover_image) : asset('images/place-holder.jpg') }}"
+                                    alt="{{ $product->product_name }}">
+                                <div class="product-badge">Bán chạy</div>
+                                <div class="product-discount">-13%</div>
+                            </div>
+                            <div class="product-info">
+                                <h3 class="product-name"><?= $product->product_name; ?></h3>
+                                <div class="product-rating">
+                                    @php
+                                        $rating = round($product->reviews_avg_rating ?? 0, 1);
+                                        $count = $product->reviews_count ?? 0;
+                                    @endphp
+                                    <span class="stars" style="color: #ffc107;">⭐</span>
+                                    <span class="rating-score">{{ $rating }}</span>
+                                    <span class="reviews">({{ $count }} đánh giá)</span>
+                                </div>
+                                <div class="product-price">
+                                    <span class="current-price"><?= number_format($product->price, 0, ',', '.'); ?>₫</span>
+                                    <span
+                                        class="original-price"><?= number_format($product->original_price, 0, ',', '.'); ?>₫</span>
+                                </div>
 
+                                <div class="product-meta">
+                                    <div class="volume-sold">
+                                        📅 <strong>Đã bán: </strong>{{ $product->volume_sold }} sản phẩm
+                                    </div>
+                                    <div class="release-date">
+                                        📅 <strong>Phát hành: </strong>{{ $product->release_date }}
+                                    </div>
+                                    <div class="stock-info">
+                                        📦 <strong>Còn lại:</strong>
+                                        @if ($product->stock_quantity > 0)
+                                            {{ $product->stock_quantity }} sản phẩm
+                                        @else
+                                            <span style="color:red;">Hết hàng</span>
+                                        @endif
+                                    </div>
+                                </div>
+                            </div>
+                            <button data-product-id="{{ $product->product_id }}" data-quantity="1"
+                                class="btn-add-cart btn btn-primary full-width">Thêm vào giỏ 🛒 </button>
+                        </div>
+
+                    @endforeach
                 </div>
                 <div id="load-more-container" class="text-center my-4">
+                    @if ($allProducts->hasMorePages())
+                        @php
+                            $remaining = $allProducts->total() - $allProducts->count();
+                            $nextBatch = min($allProducts->perPage(), $remaining);
+                        @endphp
+                        <button id="btn-load-more" class="btn btn-outline-light btn-lg">
+                            Xem thêm {{ $nextBatch }} / {{ $remaining }} sản phẩm
+                        </button>
+                    @endif
                 </div>
             </div>
-
-
-
         </section>
-
         <!-- Video Review -->
-        <section class="review-video">
-            <div class="container-fluid">
-                <div class="section-header">
-                    <h2 class="section-title">
-                        <span>C</span>
-                        <span>l</span>
-                        <span>i</span>
-                        <span>p&nbsp;</span>
-                        <span>R</span>
-                        <span>e</span>
-                        <span>v</span>
-                        <span>i</span>
-                        <span>e</span>
-                        <span>w</span>
-                    </h2>
-                    <p class="section-subtitle">Review về sản phẩm</p>
-                </div>
-                <div class="slider-container glass3d">
-                    <div class="swiper mySwiper">
-                        <div class="swiper-wrapper">
-                            @foreach ($videoProducts as $product)
-                                <div class="swiper-slide">
-                                    <div class="video-card">
-                                        <div class="video-thumb" onclick="playVideo(this)">
-                                            <iframe
-                                                src="{{ $product->embed_url_review }}?mute=1&playsinline=1&rel=0&modestbranding=1"
-                                                title="Video sản phẩm" frameborder="0"
-                                                allow="autoplay; encrypted-media; picture-in-picture" allowfullscreen>
-                                            </iframe>
-                                            <div class="overlay">
-                                                <div class="channel-info">
-                                                    <img src="{{ asset('/images/logo.jpg') }}" alt="Channel"
-                                                        class="channel-logo">
-                                                </div>
-                                            </div>
-                                        </div>
-                                        <div class="product-info">
-                                            <img src="/uploads/{{ $product->cover_image }}" alt="Sản phẩm"
-                                                class="product-thumb">
-                                            <div class="product-name">{{ $product->product_name }}</div>
-                                        </div>
-                                    </div>
-                                </div>
-                            @endforeach
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </section>
-
-        <!-- Review -->
-
-        <section class="review-video">
-            <div class="container-fluid">
-                <div class="section-header">
-                    <h2 class="section-title">
-                        <span>C</span>
-                        <span>o</span>
-                        <span>m</span>
-                        <span>m</span>
-                        <span>e</span>
-                        <span>n</span>
-                        <span>t</span>
-                        <span>s</span>
-                    </h2>
-                    <p class="section-subtitle">Bình luận về sản phẩm</p>
-                </div>
-                <div class="slider-container glass3d">
-                    <div class="swiper mySwiper">
-                        <div class="swiper-wrapper">
-                            @foreach ($reviews as $review)
-                                <div class="swiper-slide">
-                                    <div class="testimonial-card">
-                                        <div class="quote-icon">“</div>
-
-                                        <p class="testimonial-text">
-                                            {{ $review->comment }}
-                                        </p>
-
-                                        <div class="author-info">
-                                            <img src="/images/messi.jpg" class="author-avatar">
-                                            <div class="author-details">
-                                                <div class="author-name">{{ $review->user->full_name }}</div>
-                                                <span class="author-title">
-                                                    @for ($i = 1; $i <= 5; $i++)
-                                                        @if ($i <= $review->rating)
-                                                            <i class="fa fa-star" style="color: #FFD700;"></i>
-                                                        @elseif ($i - 0.5 <= $review->rating)
-                                                            <i class="fa fa-star-half-o" style="color: #FFD700;"></i>
-                                                        @else
-                                                            <i class="fa fa-star-o" style="color: #FFD700;"></i>
-                                                        @endif
-                                                    @endfor
-                                                    <span><br>cho sản phẩm
-                                                        {{ $review->product->product_name }}</span>
-                                                </span>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            @endforeach
-                        </div>
-
-                        <div class="swiper-pagination"></div>
-                    </div>
-                </div>
-            </div>
-        </section>
     </div>
 
 
@@ -378,4 +316,7 @@
     <script src="{{ asset('js/index.js') }}"></script>
     <script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
     <script src="{{ asset('js/swiper.js') }}"></script>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/noUiSlider/15.7.1/nouislider.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/wnumb/1.2.0/wNumb.min.js"></script>
 @endsection

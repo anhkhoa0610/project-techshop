@@ -1,12 +1,22 @@
-// Chạy code khi tài liệu HTML đã được tải xong
 document.addEventListener('DOMContentLoaded', function () {
+    function updateCurrentFilterValues() {
+        if (!filterForm) return;
 
-    // --- Biến tham chiếu ---
+        currentFilterValues = {
+            min_price: document.querySelector('[name="price_min"]').value.trim(),
+            max_price: document.querySelector('[name="price_max"]').value.trim(),
+            category_id: document.querySelector('[name="category_filter"]').value,
+            supplier_id: document.querySelector('[name="supplier_filter"]').value,
+            stock: document.querySelector('[name="stock_filter"]').value,
+            rating: document.querySelector('[name="rating_filter"]').value,
+            release_date: document.querySelector('[name="release_filter"]').value,
+        };
+    }
+
     const loader = document.getElementById('loading-overlay');
     const productContainer = document.querySelector('.show-by-category');
     const loadMoreContainer = document.getElementById('load-more-container');
 
-    // --- Hàm điều khiển Loader ---
     function showLoader() {
         if (loader) loader.style.display = 'flex';
     }
@@ -14,20 +24,15 @@ document.addEventListener('DOMContentLoaded', function () {
         if (loader) loader.style.display = 'none';
     }
 
-    // ===== TRẠNG THÁI TOÀN CỤC =====
     let currentPage = 1;
     let isLoading = false;
     let hasMorePages = true;
     let currentFilterValues = {};
-    // ================================
 
-    /**
-     * Hàm render sản phẩm
-     */
     function renderProducts(data, isAppend = false) {
         let html = '';
 
-        if (!productContainer) return; // Dừng nếu không có container
+        if (!productContainer) return;
 
         // Hiển thị thông báo nếu không có sản phẩm
         if (!data.data || data.data.length === 0 && !isAppend) {
@@ -40,7 +45,7 @@ document.addEventListener('DOMContentLoaded', function () {
                 let starsHtml = `
                     <span class="stars" style="color: #ffc107;">⭐</span>
                     <span class="rating-score">${avgRating}</span>
-                    <span class="reviews">(${reviewCount})</span>
+                    <span class="reviews">(${reviewCount} reviews)</span>
                 `;
 
                 html += `
@@ -73,24 +78,8 @@ document.addEventListener('DOMContentLoaded', function () {
                 if (loadMoreContainer) loadMoreContainer.innerHTML = '';
             }
         }
-
-        // --- SỬA LỖI NULL REFERENCE ---
-        // Ẩn/hiện các khu vực khác (một cách an toàn)
-        const catProducts = document.querySelector('.categories-products');
-        if (catProducts) catProducts.style.display = 'block';
-
-        const newProducts = document.querySelector('.new-products');
-        if (newProducts) newProducts.style.display = 'none';
-
-        const saleProducts = document.querySelector('.sale-products');
-        if (saleProducts) saleProducts.style.display = 'none';
-        // --- KẾT THÚC SỬA LỖI ---
     }
 
-    /**
-     * Cập nhật hoặc tạo nút "Xem thêm"
-     * (Sử dụng data.to và data.per_page từ Controller)
-     */
     function updateLoadMoreButton(data) {
         if (!loadMoreContainer) return;
 
@@ -108,44 +97,29 @@ document.addEventListener('DOMContentLoaded', function () {
                     Xem thêm ${nextBatch} / ${remaining} sản phẩm
                 </button>
             `;
-            // Không gán listener ở đây để tránh lặp
         } else {
-            // Không còn trang nào, hoặc thiếu dữ liệu -> xóa nút
             loadMoreContainer.innerHTML = '';
         }
     }
 
-    /**
-     * Xử lý khi nhấp vào nút "Xem thêm"
-     */
     function handleLoadMoreClick() {
         if (!isLoading && hasMorePages) {
-            // Tải trang tiếp theo, nối vào (isAppend = true)
-            // Không bật overlay (showOverlay = false)
             loadProductsByFilter(currentPage + 1, true, true);
         }
     }
 
-    // --- SỬA LỖI EVENT LISTENER LẶP LẠI ---
-    // Gắn 1 trình nghe duy nhất cho container "Xem thêm"
     if (loadMoreContainer) {
         loadMoreContainer.addEventListener('click', function (event) {
-            // Chỉ chạy nếu click đúng vào nút có ID "btn-load-more"
             if (event.target && event.target.id === 'btn-load-more') {
                 handleLoadMoreClick();
             }
         });
     }
-    // --- KẾT THÚC SỬA LỖI ---
 
-    /**
-     * Hàm tải sản phẩm (ĐÃ CHỈNH SỬA)
-     */
     function loadProductsByFilter(page = 1, isAppend = false, showOverlay = false) {
         if (isLoading) return;
         isLoading = true;
 
-        // Vô hiệu hóa nút "Xem thêm" (nếu có) để tránh click đúp
         const btn = document.getElementById('btn-load-more');
         if (btn) btn.disabled = true;
 
@@ -156,7 +130,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
         fetch(`/api/index/filter?${params.toString()}`)
             .then(res => {
-                if (!res.ok) { // Kiểm tra nếu server trả về lỗi (404, 500...)
+                if (!res.ok) {
                     throw new Error('Network response was not ok');
                 }
                 return res.json();
@@ -167,12 +141,10 @@ document.addEventListener('DOMContentLoaded', function () {
                     currentPage = data.current_page;
                     hasMorePages = data.current_page < data.last_page;
 
-                    // Cập nhật nút sau khi render
                     updateLoadMoreButton(data);
                 } else {
-                    // Xử lý trường hợp data.success = false
                     if (!isAppend) {
-                         productContainer.innerHTML = '<p style="color: white; text-align: center;">Không tìm thấy sản phẩm nào phù hợp.</p>';
+                        productContainer.innerHTML = '<p style="color: white; text-align: center;">Không tìm thấy sản phẩm nào phù hợp.</p>';
                     }
                     if (loadMoreContainer) loadMoreContainer.innerHTML = '';
                 }
@@ -184,7 +156,6 @@ document.addEventListener('DOMContentLoaded', function () {
             .finally(() => {
                 isLoading = false;
                 if (showOverlay) hideLoader();
-                // Không cần kích hoạt lại nút, vì updateLoadMoreButton đã tạo nút mới
             });
     }
 
@@ -210,11 +181,64 @@ document.addEventListener('DOMContentLoaded', function () {
             // Reset trạng thái và tải lại từ đầu
             currentPage = 1;
             hasMorePages = true;
-            loadProductsByFilter(currentPage, false, true); // (page 1, không append, hiện loader)
+            loadProductsByFilter(currentPage, false, true); 
         });
     }
 
-    // XÓA BỎ TRÌNH NGHE SỰ KIỆN CUỘN
-    // window.addEventListener('scroll', ...)
+    const priceSlider = document.getElementById('price-slider');
 
+    if (priceSlider) {
+
+        const minPriceDisplay = document.getElementById('min-price-display');
+        const maxPriceDisplay = document.getElementById('max-price-display');
+
+        const minPriceHidden = document.querySelector('[name="price_min"]');
+        const maxPriceHidden = document.querySelector('[name="price_max"]');
+
+        const moneyFormat = wNumb({
+            decimals: 0,
+            thousand: '.',
+            suffix: 'đ'
+        });
+
+        const defaultMin = minPriceHidden.value || 0;
+        const defaultMax = maxPriceHidden.value || 50000000;
+
+        noUiSlider.create(priceSlider, {
+            start: [defaultMin, defaultMax],
+            connect: true,
+            step: 100000,
+            range: {
+                'min': 0,
+                'max': 50000000
+            }
+        });
+
+        priceSlider.noUiSlider.on('update', function (values, handle) {
+
+            let minVal = parseFloat(values[0]);
+            let maxVal = parseFloat(values[1]);
+
+            minPriceDisplay.value = moneyFormat.to(minVal);
+            maxPriceDisplay.value = moneyFormat.to(maxVal);
+
+            minPriceHidden.value = minVal;
+            maxPriceHidden.value = maxVal;
+        });
+    }
+
+    const resetButton = document.querySelector('.btn-filter-reset');
+
+    if (resetButton && filterForm) {
+        resetButton.addEventListener('click', () => {
+            filterForm.querySelectorAll('select').forEach(select => {
+                select.value = '';
+            });
+            if (priceSlider) {
+                priceSlider.noUiSlider.set([0, 50000000]);
+            }
+        });
+    }
+
+    updateCurrentFilterValues();
 }); // <- Đóng thẻ DOMContentLoaded

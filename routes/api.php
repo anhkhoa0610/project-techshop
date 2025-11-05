@@ -37,8 +37,8 @@ Route::get('/index/filter', [IndexController::class, 'filter']);
 // Tìm kiếm sản phẩm qua API
 Route::get('/index/search', [IndexController::class, 'searchProductsAPI']);
 
-// DeepSeek Chatbot API route
-Route::post('/chat', [\App\Http\Controllers\DeepSeekChatController::class, 'chat']);
+// Chatbot API route
+Route::post('/chat', [\App\Http\Controllers\ChatbotController::class, 'chat']);
 
 Route::post('/index/add-to-cart', [IndexController::class, 'addToCart']);
 
