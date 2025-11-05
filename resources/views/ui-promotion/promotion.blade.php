@@ -49,51 +49,48 @@
                     </div>
                 </div>
 
+                <section id="voucher-list" class="my-5 mx-5">
+                    <p class="modern-big-title text-center">
+                        Phiếu giảm giá có thời hạn – Mua sắm và tiết kiệm!
+                    </p>
+                    <div class="row g-4" id="voucher-container"></div>
+                    <div id="voucher-pagination" class="my-3 text-center"></div>
+                </section>
+
+                <div id="promoCarouselTwo" class="carousel slide mb-4" data-bs-ride="carousel">
+                    <div class="carousel-inner rounded-4 overflow-hidden shadow-sm">
+                        <div class="carousel-item active">
+                            <img src="{{ asset('images/banner-4.png') }}" class="d-block w-100" alt="Banner 1">
+                        </div>
+                        <div class="carousel-item">
+                            <img src="{{ asset('images/banner-1.png') }}" class="d-block w-100" alt="Banner 2">
+                        </div>
+                        <div class="carousel-item">
+                            <img src="{{ asset('images/banner-2.png') }}" class="d-block w-100" alt="Banner 3">
+                        </div>
+                    </div>
+                    <button class="carousel-control-prev" type="button" data-bs-target="#promoCarouselTwo" data-bs-slide="prev">
+                        <span class="carousel-control-prev-icon"></span>
+                    </button>
+                    <button class="carousel-control-next" type="button" data-bs-target="#promoCarouselTwo" data-bs-slide="next">
+                        <span class="carousel-control-next-icon"></span>
+                    </button>
+                </div>
                 {{-- Flash Sale Section --}}
                 <div class="mt-5">
-                    <h4 class="fw-bold mb-3 text-danger">FLASH SALE HÔM NAY</h4>
+                    <div class="flash-sale-wrapper my-4">
+                        <div class="flash-sale-banner d-flex align-items-center justify-content-center gap-3">
+                            <i class="fa-solid fa-bolt-lightning fs-2 lightning-icon"></i>
+                            <h4 class="fw-bold text-uppercase m-0 flash-sale-text">Flash Sale Hôm Nay</h4>
+                            <i class="fa-solid fa-clock fs-3 clock-icon"></i>
+                        </div>
+                    </div>
                         <div id="promotion-container" class="row g-3">
                         </div>
                 </div>
             </div>
         </div>
-<script>   
-        document.addEventListener("DOMContentLoaded", async () => {
-        try {
-            const response = await fetch("{{ url('/api/promotions') }}");
-            const result = await response.json();
-
-            if (result.status === "success") {
-                const { promotions, categories, products } = result;
-
-                const promoContainer = document.getElementById("promotion-container");
-
-                promoContainer.innerHTML = products.map(p => `
-                    <div class="col-6 col-md-4 col-lg-2">
-                        <div class="card h-100 border-0 shadow-sm hover-scale">
-                            <img src="/uploads/${p.cover_image ?? 'no-image.png'}" class="card-img-top" alt="${p.product_name ?? p.category_name ?? p.discount_type ?? 'Không rõ'}">
-                            <div class="card-body text-center">
-                                <p class="card-title small fw-semibold mb-1">
-                                    ${p.product_name ?? 'Không rõ'}
-                                </p>
-                                <span class="text-danger fw-bold">
-                                    ₫${(p.price * 90 / 100 ?? 00).toLocaleString('vi-VN')}
-                                </span>
-                                <p class="text-muted small text-decoration-line-through mb-0">
-                                    ₫${(p.price ?? 00).toLocaleString('vi-VN')}
-                                </p>
-                            </div>
-                        </div>
-                    </div>
-                `).join("");
-            }
-        } catch (error) {
-            console.error("Lỗi khi tải dữ liệu:", error);
-        }
-    });
-
-
-</script>
+    <script src="{{ asset('js/promotion.js') }}"></script>
 @endsection
 
     

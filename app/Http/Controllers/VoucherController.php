@@ -32,12 +32,12 @@ class VoucherController extends Controller
             $query->where('discount_type', request('discount_type_filter'));
         }
 
-        // 🗓️ Lọc theo Start Date
+        // Lọc theo Start Date
         if (request()->filled('start_date_filter')) {
             $query->whereDate('start_date', '>=', request('start_date_filter'));
         }
 
-        // 🗓️ Lọc theo End Date
+        // Lọc theo End Date
         if (request()->filled('end_date_filter')) {
             $query->whereDate('end_date', '<=', request('end_date_filter'));
         }
@@ -123,12 +123,12 @@ class VoucherController extends Controller
         $code = $request->input('voucher');
         $voucher = Voucher::where('code', $code)->first();
         if ($voucher && $voucher->status === 'active') {
-            if($code == $voucher->code){
-                if($voucher->discount_type == 'percent'){
+            if ($code == $voucher->code) {
+                if ($voucher->discount_type == 'percent') {
                     $discount = $voucher->discount_value; // Lấy giá trị phần trăm giảm giá
-                } elseif($voucher->discount_type == 'amount'){
+                } elseif ($voucher->discount_type == 'amount') {
                     $discount = $voucher->discount_value; // Lấy giá trị số tiền giảm giá
-                } else{
+                } else {
                     $discount = 0; // Trường hợp không xác định loại giảm giá
                 }
             }
@@ -145,5 +145,30 @@ class VoucherController extends Controller
                 'message' => 'Voucher không hợp lệ hoặc đã hết hạn.'
             ]);
         }
+    }
+
+    public function vouchers(Request $request)
+    {
+        // Lấy số phần tử mỗi trang
+        $perPage = $request->input('per_page', 3);
+
+        // Nếu có tìm kiếm
+        $query = Voucher::query();
+        if ($search = $request->input('search')) {
+            $query->where('code', 'like', "%{$search}%");
+        }
+
+        // Phân trang dữ liệu
+        $vouchers = $query->orderByDesc('created_at')->paginate($perPage);
+
+        // Trả về JSON chuẩn
+        return response()->json([
+            'status' => 'success',
+            'current_page' => $vouchers->currentPage(),
+            'last_page' => $vouchers->lastPage(),
+            'next_page_url' => $vouchers->nextPageUrl(),
+            'prev_page_url' => $vouchers->previousPageUrl(),
+            'data' => $vouchers->items(),
+        ]);
     }
 }
