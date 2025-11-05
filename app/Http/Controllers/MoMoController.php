@@ -57,15 +57,6 @@ class MoMoController extends Controller
         $shoppingAddress = $request->input('shipping_address', 'chưa có địa chỉ');
         $voucher = $request->input('voucher_id', null);
 
-        Order::create([
-            'user_id' => auth()->id(),
-            'order_date' => now(),
-            'status' => 'pending',
-            'shipping_address' => $shoppingAddress,
-            'payment_method' => 'momo',
-            'voucher_id' => $voucher,
-            'total_price' => $amount,
-        ]);
 
         if (isset($jsonResult['payUrl'])) {
             return redirect()->to($jsonResult['payUrl']);
@@ -151,11 +142,12 @@ class MoMoController extends Controller
     public function momo_return(Request $request)
     {
         $data = $request->all();
-        $userId = auth()->id(); $cartItems = CartItem::where('user_id', $userId)->get();
+        $userId = auth()->id();
+        $cartItems = CartItem::where('user_id', $userId)->get();
         $order = CartItem::where('order_id', $data['oderId'])->first();
         if (($data['resultCode'] ?? 1) == 0) {
             $order->update([
-                'status' => 'completed',
+                'status' => 'processing',
             ]);
             foreach ($cartItems as $item) {
                 OrderDetail::create([
@@ -168,13 +160,10 @@ class MoMoController extends Controller
             CartItem::where('user_id', $userId)->delete();
             return redirect()->route('index')->with('success', 'Thanh toán MoMo thành công!');
         }
-        else{
-               $order->update([
-                'status' => 'cancelled',
-            ]);
-            return redirect()->route('index')->with('error', 'Thanh toán MoMo không thành công!');
 
-        }
+        return redirect()->route('index')->with('error', 'Thanh toán MoMo không thành công!');
+
+
 
     }
     public function momo_ipn(Request $request)
