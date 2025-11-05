@@ -12,6 +12,7 @@ return new class extends Migration
             $table->id('category_id');
             $table->string('category_name', 255);
             $table->text('description')->nullable(false);
+            $table->string('cover_image')->nullable();
             $table->timestamps();
         });
     }

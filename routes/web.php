@@ -22,8 +22,8 @@ use App\Http\Controllers\VnpayController;
 
 //trang chủ của tui, đụng vào nhớ xin phép =))
 Route::prefix('index')->group(function () {
-    Route::get('/', [IndexController::class, 'index']);
-    Route::get('/categories/{category_id?}',[IndexController::class, 'categories']);
+    Route::get('/', [IndexController::class, 'index'])->name('index');
+    Route::get('/categories/{category_id?}',[IndexController::class, 'categories'])->name('index.categories');
 });
 
 Route::middleware(['checkrole:Admin'])->group(function () {

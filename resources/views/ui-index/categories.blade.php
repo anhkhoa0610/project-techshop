@@ -6,16 +6,11 @@
     <div id="loading-overlay">
         <div class="spinner"></div>
     </div>
-
-    <link rel="stylesheet" href="{{ asset('css/index.css') }}">
-    <link rel="stylesheet" href="{{ asset('css/index-filter.css') }}">
     <link rel="stylesheet" href="{{ asset('css/index-chatbot.css') }}">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css" />
     <link rel="stylesheet" href="{{ asset('css/swiper.css') }}">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/noUiSlider/15.7.1/nouislider.min.css" rel="stylesheet">
     <link rel="stylesheet" href="{{ asset('css/index-categories.css') }}">
-
-
     <section class="hero">
         <div class="hero-image">
             <video class="hero-video" autoplay muted loop playsinline preload="metadata"
@@ -83,36 +78,14 @@
                     <p class="section-subtitle">Khám phá các sản phẩm hàng đầu</p>
                 </div>
                 <div class="categories-grid glass3d">
-                    <div class="category-card">
-                        <div class="category-icon primary">📱</div>
-                        <h3 class="category-title">The Best Smartphone</h3>
-                        <p class="category-subtitle">Điện thoại cao cấp</p>
-                    </div>
-                    <div class="category-card">
-                        <div class="category-icon accent">💻</div>
-                        <h3 class="category-title">Gaming Laptop</h3>
-                        <p class="category-subtitle">Laptop chuyên game</p>
-                    </div>
-                    <div class="category-card">
-                        <div class="category-icon primary">🎧</div>
-                        <h3 class="category-title">Premium Headphone</h3>
-                        <p class="category-subtitle">Tai nghe chất lượng cao</p>
-                    </div>
-                    <div class="category-card">
-                        <div class="category-icon accent">📱</div>
-                        <h3 class="category-title">Tablet & iPad</h3>
-                        <p class="category-subtitle">Máy tính bảng</p>
-                    </div>
-                    <div class="category-card">
-                        <div class="category-icon primary">⌚</div>
-                        <h3 class="category-title">Smart Watch</h3>
-                        <p class="category-subtitle">Đồng hồ thông minh</p>
-                    </div>
-                    <div class="category-card">
-                        <div class="category-icon accent">📷</div>
-                        <h3 class="category-title">Camera & Photo</h3>
-                        <p class="category-subtitle">Máy ảnh chuyên nghiệp</p>
-                    </div>
+                    @foreach ($categories as $category)
+                        <a class="category-card" href="{{ route('index.categories', $category->category_id) }}">
+                            <div class="category-image" style="background-image: url('/uploads/{{ $category->cover_image }}');">
+                            </div>
+                            <h3 class="category-title">{{ $category->category_name }}</h3>
+                            <p class="category-subtitle">{{ $category->description }}</p>
+                        </a>
+                    @endforeach
                 </div>
             </div>
         </section>
@@ -166,7 +139,7 @@
                                 <select class="form-select" id="category" name="category_filter">
                                     <option value="">Tất cả</option>
                                     @foreach ($categories as $category)
-                                        <option value="{{ $category->category_id }}" {{ ($currentCategory && $currentCategory->id == $category->id) ? 'selected' : '' }}>
+                                        <option value="{{ $category->category_id }}" {{ ($currentCategory && $currentCategory->category_id == $category->category_id) ? 'selected' : '' }}>
                                             {{ $category->category_name }}
                                         </option>
                                     @endforeach

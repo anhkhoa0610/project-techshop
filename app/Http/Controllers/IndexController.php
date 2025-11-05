@@ -24,7 +24,7 @@ class IndexController extends Controller
             ->limit(8)
             ->get();
 
-        $allProducts = Product::withAvg('reviews', 'rating')->get();
+        $categories = Category::all();
 
         $reviews = Review::with('product', 'user')->orderBy('rating', 'desc')->limit(8)->get();
 
@@ -32,7 +32,7 @@ class IndexController extends Controller
             ->inRandomOrder()
             ->limit(4)
             ->get();
-        return view('ui-index.index', compact('topProducts', 'newProducts', 'allProducts', 'videoProducts', 'reviews'));
+        return view('ui-index.index', compact('topProducts', 'newProducts', 'videoProducts', 'reviews', 'categories'));
     }
 
     public function getProductsByCategory($categoryId)
@@ -102,7 +102,7 @@ class IndexController extends Controller
             $request->stock,
             $request->release_date
         )
-        ->paginate(8); // <-- Đã đúng, lấy 8 sản phẩm
+        ->paginate(8); 
 
     return response()->json([
         'success' => true,
@@ -110,45 +110,34 @@ class IndexController extends Controller
         'current_page' => $products->currentPage(),
         'last_page' => $products->lastPage(),
         'total' => $products->total(),
-        
-        // --- THÊM 2 DÒNG NÀY ---
         'per_page' => $products->perPage(),
-        'to' => $products->currentPage() * $products->perPage(), // Tính toán 'to'
-        // Hoặc an toàn hơn:
-        // 'to' => $products->firstItem() + $products->count() - 1,
-
+        'to' => $products->currentPage() * $products->perPage(), 
     ]);
 }
 
     public function categories(Request $request, $category_id = null)
     {
-        // 1. Lấy TẤT CẢ danh mục để hiển thị trong combobox
         $categories = Category::all();
 
-        // 2. Chuẩn bị query sản phẩm
         $productQuery = Product::withAvg('reviews', 'rating')
         ->withCount('reviews');
         $currentCategory = null;
 
-        // 3. Lọc sản phẩm nếu có $category_id
         if ($category_id) {
-            // Tìm category hiện tại để truyền ra view (để đánh dấu 'selected')
+
             $currentCategory = Category::find($category_id);
             
-            // Nếu tìm thấy, lọc query
             if ($currentCategory) {
                 $productQuery->where('category_id', $category_id);
             }
         }
 
-        // 4. Lấy 8 sản phẩm (đã lọc hoặc chưa)
         $allProducts = $productQuery->paginate(8);
 
-        // 5. Trả về view CHỈ VỚI 3 BIẾN cần thiết
         return view('ui-index.categories', compact(
-            'allProducts',      // 8 sản phẩm đầu tiên (đã phân trang)
-            'categories',       // TẤT CẢ categories (cho combobox)
-            'currentCategory'   // Category đang chọn (hoặc null)
+            'allProducts', 
+            'categories',  
+            'currentCategory'  
         ));
     }
 
