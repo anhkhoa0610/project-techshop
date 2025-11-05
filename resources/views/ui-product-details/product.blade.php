@@ -13,12 +13,12 @@
                 <!-- Cột trái: Hình ảnh sản phẩm -->
                 <div class="col-md-6">
                     <div class="product-images text-center">
-                        <img src="{{isset($product->cover_image) ? asset('uploads/' . $product->cover_image) : asset('images/blank_product.png') }}"
+                        <img src="{{! empty($product->cover_image) ? asset('uploads/' . $product->cover_image) : asset('images/blank_product.png') }}"
                             class="prodcut-image" alt="Ảnh sản phẩm chính" id="mainImage">
                         <div class="swiper">
                             <div class="swiper-wrapper">
                                 <div class="swiper-slide">
-                                    <img src="{{isset($product->cover_image) ? asset('uploads/' . $product->cover_image) : asset('images/blank_product.png') }}"
+                                    <img src="{{! empty($product->cover_image) ? asset('uploads/' . $product->cover_image) : asset('images/blank_product.png') }}"
                                         alt="Ảnh chính" class="swiper-slide-img">
                                 </div>
                                 @if(isset($product->images) && $product->images->count() > 0)
@@ -45,7 +45,8 @@
                     <h3 class="fw-bold text-center">{{ $product->product_name ?? "Sản phẩm không tồn tại!!!"}}</h3>
                     <p class="text-warning mb-1 fs-3 text-center">
                         <span class="star filled text-warning fs-1">★</span>
-                        <span class="rating-star-title">{{ number_format($avg, 1) ?? 0 }}</span> | <span class="total-review" >{{ $reviews_count ?? 0 }}</span>
+                        <span class="rating-star-title">{{ number_format($avg, 1) ?? 0 }}</span> | <span
+                            class="total-review">{{ $reviews_count ?? 0 }}</span>
                         đánh giá | Đã bán
                         {{ $product->volume_sold ?? 0 }}
                     </p>
@@ -70,11 +71,17 @@
                         <input type="number" class="input-quantity form-control text-center"
                             max="{{ isset($product->stock_quantity) ? $product->stock_quantity : 0 }}"
                             value="{{ isset($product->stock_quantity) ? 1 : 0 }}">
-                        <i class="bi bi-plus quantity-button plus"></i> 
+                        <i class="bi bi-plus quantity-button plus"></i>
                         <p class="mt-3 ms-3">
                             {{ isset($product->stock_quantity) ? $product->stock_quantity . ' sản phẩm có sẵn' : 'Hết hàng' }}
                         </p>
                     </div>
+
+                    <!-- <div class="policy-icons">
+                        <p>✅ Hàng chính hãng 100%</p>
+                        <p>🔄 1 đổi 1 trong 7 ngày</p>
+                        <p>🚚 Giao hàng nhanh 2h</p>
+                    </div> -->
 
                     <div class="mt-4">
                         <button class="btn btn-danger me-2">Mua ngay</button>
@@ -110,28 +117,33 @@
                 <div class="col-md-9 filter-by-star">
                     <div class="groub-button-filter">
                         <button class="button-filter-star active" data-rating="">Tất cả</button>
-                        <p class="review-count" >Bình luận: (<span class="review-count" data-rating="all">{{ $reviewSummary['all'] ?? 0 }}</span>)
+                        <p class="review-count">Bình luận: (<span class="review-count"
+                                data-rating="all">{{ $reviewSummary['all'] ?? 0 }}</span>)
                         </p>
                     </div>
                     <div class="groub-button-filter">
                         <button class="button-filter-star" data-rating="1">1 sao</button>
-                        <p class="review-count" >Bình luận: (<span class="review-count" data-rating="1">{{ $reviewSummary['1'] ?? 0 }}</span>)</p>
+                        <p class="review-count">Bình luận: (<span class="review-count"
+                                data-rating="1">{{ $reviewSummary['1'] ?? 0 }}</span>)</p>
                     </div>
                     <div class="groub-button-filter">
                         <button class="button-filter-star " data-rating="2">2 sao</button>
-                        <p class="review-count" >Bình luận: (<span class="review-count" data-rating="2">{{ $reviewSummary['2'] ?? 0 }}</span>)</p>
+                        <p class="review-count">Bình luận: (<span class="review-count"
+                                data-rating="2">{{ $reviewSummary['2'] ?? 0 }}</span>)</p>
                     </div>
                     <div class="groub-button-filter">
                         <button class="button-filter-star " data-rating="3">3 sao</button>
-                        <p class="review-count" >Bình luận: (<span class="review-count" data-rating="3">{{ $reviewSummary['3'] ?? 0 }}</span>)</p>
+                        <p class="review-count">Bình luận: (<span class="review-count"
+                                data-rating="3">{{ $reviewSummary['3'] ?? 0 }}</span>)</p>
                     </div>
                     <div class="groub-button-filter">
                         <button class="button-filter-star " data-rating="4">4 sao</button>
-                        <p class="review-count" >Bình luận: (<span class="review-count" data-rating="4">{{ $reviewSummary['4'] ?? 0 }}</span>)</p>
+                        <p class="review-count">Bình luận: (<span class="review-count"
+                                data-rating="4">{{ $reviewSummary['4'] ?? 0 }}</span>)</p>
                     </div>
                     <div class="groub-button-filter">
                         <button class="button-filter-star " data-rating="5">5 sao</button>
-                        <p class="review-count" >Bình luận: (<span class="review-count"
+                        <p class="review-count">Bình luận: (<span class="review-count"
                                 data-rating="5">{{ $reviewSummary['5'] ?? 0 }}</span>)</p>
                     </div>
 
@@ -170,7 +182,7 @@
                         </div>
                         <div class="mb-3">
                             <label for="reviewComment" class="form-label">Bình luận của bạn:</label>
-                            <textarea class="form-control" id="reviewComment" name="comment" rows="4" required></textarea>
+                            <textarea class="form-control" id="reviewComment" name="comment" rows="4"></textarea>
                         </div>
                         <button type="submit" class="btn btn-primary">Gửi đánh giá</button>
                     </form>
@@ -188,7 +200,8 @@
         </div>
     </div>
     <script>
-        const check_user = {{ auth()->id() }}
+        const check_user = {{ auth()->check() ? 'true' : 'false' }};
+        const user_id = {{ auth()->id() ?? 'null' }};
         window.csrfToken = "{{ csrf_token() }}";
         const productId = {{ $product->product_id }};
     </script>

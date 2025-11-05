@@ -134,7 +134,7 @@ document.addEventListener('DOMContentLoaded', function () {
                                  <p class="review-info ms-5">| ${formattedDate}</p>
                              </div>
                              <p class="review-info">${stars}</p>
-                             <p class="review-info">${review.comment}</p>
+                             <p class="review-info">${review.comment??""}</p>
                         </div>
                     </div>
                       `;
@@ -201,7 +201,7 @@ document.addEventListener('DOMContentLoaded', function () {
     document.getElementById('form-post-review').addEventListener('submit', async function (e) {
         e.preventDefault();
         // kiểm tra xem đã đăng nhập chưa
-        console.log(check_user)
+    
         if (!check_user) {
             Swal.fire({
                 icon: 'warning',
