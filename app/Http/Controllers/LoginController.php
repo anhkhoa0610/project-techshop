@@ -180,4 +180,14 @@ class LoginController extends Controller
             'user' => $user->only(['id', 'full_name', 'email', 'role']),
         ]);
     }
+
+    public function apiLogout(Request $request)
+    {
+        // Xóa token hiện tại (token đang dùng để gọi API)
+        $request->user()->currentAccessToken()->delete();
+
+        return response()->json([
+            'message' => 'Đăng xuất thành công',
+        ]);
+    }
 }

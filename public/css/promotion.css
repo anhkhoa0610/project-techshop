@@ -52,7 +52,7 @@
 }
 
 .promotion-page .promo-btn:hover {
-    background-color: #dc3545;
+    background-color: #358edc;
     color: #fff;
     transform: translateY(-4px) scale(1.05);
     box-shadow: 0 6px 14px rgba(220, 53, 69, 0.35);
