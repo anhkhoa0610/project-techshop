@@ -98,6 +98,10 @@ class UserController extends Controller
     {
         return view('crud_user.edit', compact('user'));
     }
+    public function show(User $user)
+    {
+        return view('crud_user.read', compact('user'));
+    }
 
     /**
      * Cập nhật người dùng.
@@ -152,18 +156,22 @@ class UserController extends Controller
     /**
      * Xóa người dùng.
      */
-    public function destroy(User $user)
+
+    public function destroy($user_id)
     {
         try {
+            $user = User::findOrFail($user_id);
             $user->delete();
+
             return response()->json([
                 'success' => true,
-                'message' => 'Xóa người dùng thành công!'
+                'message' => 'User đã được xóa thành công.'
             ]);
+
         } catch (\Exception $e) {
             return response()->json([
                 'success' => false,
-                'message' => 'Có lỗi xảy ra khi xóa người dùng!'
+                'message' => 'Lỗi khi xóa User: ' . $e->getMessage()
             ], 500);
         }
     }

@@ -11,16 +11,21 @@ class CartController extends Controller
     public function index()
     {
         // Giả lập user_id = 1 tạm thời
-        $user_Id = 1;
+        if (!Auth::check()) {
+            return redirect()->route('login');
+        } else {
+            $user_Id = auth()->id(); 
+        }
 
         $cartItems = CartItem::with('product')
             ->where('user_id', $user_Id)
             ->get();
 
-        return view('ui-giohang.cart', ['cartItems' => $cartItems 
+        return view('ui-giohang.cart', [
+            'cartItems' => $cartItems
         ]);
     }
-   
+
 
     public function destroy($cart_id)
     {

@@ -19,7 +19,7 @@ class ReviewController extends Controller
         $query = Review::with(['user', 'product']);
         $search = $request->input('search');
 
-       if ($request->has('search')) {
+        if ($request->has('search')) {
             $search = $request->search;
             $query->where(function ($q) use ($search) {
                 $q->whereHas('user', function ($q) use ($search) {
@@ -115,21 +115,26 @@ class ReviewController extends Controller
     /**
      * Hiển thị form chỉnh sửa đánh giá
      */
-    public function edit($reviewId)
+    public function edit($review_id)
     {
-        $review = Review::findOrFail($reviewId);
+        $review = Review::findOrFail($review_id);
         $users = User::all();
         $products = Product::all();
 
         return view('crud_review.edit', compact('review', 'users', 'products'));
     }
 
+    public function view($review_id)
+    {
+        $review = Review::findOrFail($review_id);
+        return view('crud_review.read', compact('review'));
+    }
     /**
      * Cập nhật đánh giá trong database
      */
-    public function update(Request $request, $reviewId)
+    public function update(Request $request, $review_id)
     {
-        $review = Review::findOrFail($reviewId);
+        $review = Review::findOrFail($review_id);
 
         $request->validate([
             'product_id' => 'required|exists:products,product_id',
@@ -156,7 +161,7 @@ class ReviewController extends Controller
         if ($review->product_id != $request->product_id || $review->user_id != $request->user_id) {
             $existingReview = Review::where('product_id', $request->product_id)
                 ->where('user_id', $request->user_id)
-                ->where('review_id', '!=', $reviewId)
+                ->where('review_id', '!=', $review_id)
                 ->first();
 
             if ($existingReview) {
@@ -179,23 +184,23 @@ class ReviewController extends Controller
             ->with('success', 'Đánh giá đã được cập nhật thành công.');
     }
 
-    /**
-     * Xóa đánh giá từ database
-     */
-    public function destroy($reviewId)
-    {
-        $review = Review::findOrFail($reviewId);
-        $review->delete();
 
-        if (request()->ajax()) {
+    public function destroy($review_id)
+    {
+        try {
+            $review = Review::findOrFail($review_id);
+            $review->delete();
+
             return response()->json([
                 'success' => true,
                 'message' => 'Đánh giá đã được xóa thành công.'
             ]);
-        }
 
-        return redirect()
-            ->route('crud_review.index')
-            ->with('success', 'Đánh giá đã được xóa thành công.');
+        } catch (\Exception $e) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Lỗi khi xóa đánh giá: ' . $e->getMessage()
+            ], 500);
+        }
     }
 }

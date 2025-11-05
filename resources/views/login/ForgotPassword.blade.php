@@ -1,108 +1,60 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="vi">
 
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Forgot Password</title>
+    <meta name="csrf-token" content="{{ csrf_token() }}">
+    <title>@yield('title', 'TechStore - Cửa hàng công nghệ hàng đầu Việt Nam')</title>
+    <meta name="description"
+        content="@yield('description', 'TechStore - Chuyên bán điện thoại, laptop, tai nghe chính hãng với giá tốt nhất. Bảo hành uy tín, giao hàng nhanh toàn quốc.')">
+
+    <link rel="stylesheet" href="{{ asset('css/index-style.css') }}">
+    <link rel="stylesheet" href="{{ asset('css/forgot-blade.css') }}">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css" />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap"
+        rel="stylesheet">
 </head>
-<style>
-    body {
-        font-family: Arial, sans-serif;
-        background-color: #f2f2f2;
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        height: 100vh;
-        margin: 0;
-    }
-
-    .container {
-        background-color: white;
-        padding: 20px;
-        border-radius: 8px;
-        box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-        width: 100%;
-        width: 400px;
-    }
-
-    label {
-        font-weight: bold;
-        display: block;
-        margin-bottom: 8px;
-    }
-
-    input[type="email"] {
-        width: 100%;
-        padding: 10px;
-        margin-bottom: 15px;
-        border: 1px solid #ddd;
-        border-radius: 4px;
-        box-sizing: border-box;
-    }
-
-    .psw a {
-        color: #0078d7;
-        text-decoration: none;
-        padding: 2px;
-    }
-
-    .psw a:hover {
-        text-decoration: underline;
-    }
-
-    .container h2 {
-        text-align: center;
-        color: #0078d7;
-        margin-bottom: 15px;
-    }
-
-    .psw {
-        text-align: center;
-        margin-top: 15px;
-    }
-
-    button {
-        background-color: #fff;
-        color: #000;
-        padding: 12px 20px;
-        border: 1px solid #4a16d0;
-        border-radius: 4px;
-        cursor: pointer;
-        width: 100%;
-        font-size: 16px;
-    }
-
-    button:hover {
-        background-color: #0078d7;
-        color: #fff;
-    }
-</style>
 
 <body>
-    <form action="{{ route('forgot') }}" method="post">
-        @csrf
-        <div class="container">
-            <h2>Forgot Password</h2>
-            <div class="mb-3">
-                <label for="email"><b>Email Address</b></label>
-                <input type="email" placeholder="Enter your email" name="email" required>
-                @error('email')
-                    <div class="text-danger mt-1">{{ $message }}</div>
-                @enderror
-                @if (session('status'))
-                    <div class="text-success mt-1">{{ session('status') }}</div>
-                @endif
+    {{-- Header --}}
+    @include('partials.header')
+    <div class="forgot-page">
+        <div class="forgot-wrapper">
+            <div class="login-image">
+                <img src="{{ asset('images/forgot-panner.png') }}" alt="TechStore">
             </div>
+            <div class="forgot-form">
+                <div class="forgot-inner">
+                    <form action="{{ route('forgot') }}" method="post">
+                        @csrf
+                        <div class="container">
+                            <h2>Quên Mật Khẩu</h2>
+                            <div class="mb-3">
+                                <label for="email"><b>Nhập Email</b></label>
+                                <input type="email" placeholder="Nhập email của bạn" name="email" required>
+                                @error('email')
+                                    <div class="text-danger mt-1">{{ $message }}</div>
+                                @enderror
+                                @if (session('status'))
+                                    <div class="text-success mt-1">{{ session('status') }}</div>
+                                @endif
+                            </div>
 
-            <button type="submit">Send Reset Link</button>
-            <div class="psw">
-                <p><a href="{{ route('login') }}">Back to Login</a></p>
+                            <button type="submit">Gửi đường dẫn khôi phục mật khẩu</button>
+                            <div class="psw">
+                                <p><a href="{{ route('login') }}">Quay lại trang đăng nhập</a></p>
+                            </div>
+                        </div>
+                    </form>
+                </div>
             </div>
         </div>
-    </form>
+    </div>
+    </body>
+    <script src="{{ asset('js/index-script.js') }}"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
-</body>
-
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 </html>

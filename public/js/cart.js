@@ -44,13 +44,21 @@ async function deleteCartItem(cartId, elementToDelete) {
             method: 'DELETE',
             headers: { 'X-CSRF-TOKEN': csrfToken }
         });
-
         if (res.ok) {
+            const data = await res.json().catch(() => ({})); // thêm dòng này 👈
             elementToDelete.remove();
             cartpUpdateTotal?.();
-            console.log('✅ Xóa thành công');
+            Swal.fire({
+                icon: "success",
+                title: "Thành công!",
+                text: data.message || "Xóa sản phẩm thành công.",
+                timer: 2000,
+                showConfirmButton: false,
+            });
+
             setTimeout(() => location.reload(), 500);
-        } else {
+        }
+        else {
             const data = await res.json().catch(() => ({}));
             alert(`❌ Lỗi xóa: ${data.message || 'Không rõ nguyên nhân'}`);
         }
@@ -80,6 +88,22 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     });
 
+    // bắt dữ liệu input
+    document.querySelectorAll('.cartp-qty-input').forEach(input => {
+        input.addEventListener('input', function () {
+            const value = parseInt(this.value);
+            const max = parseInt(this.max);
+            const min = parseInt(this.min);
+            if (value > max) {
+                this.value = max;
+
+            }
+            if (isNaN(value) || value < min) {
+                this.value = min;
+            }
+
+        });
+    });
 
 
     // Thanh toán
@@ -113,8 +137,8 @@ document.addEventListener('DOMContentLoaded', () => {
         document.body.appendChild(form);
         form.submit();
     });
-    
-   
+
+
     // Tính toán tổng tiền khi trang vừa load
     cartpUpdateTotal();
 });

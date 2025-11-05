@@ -10,24 +10,25 @@ use App\Http\Controllers\SupplierController;
 use App\Http\Controllers\VoucherController;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\UIProductDetailsController;
-
-
-Route::apiResource('categories', CategoryController::class);
 use App\Http\Controllers\ProductController;
+use App\Http\Controllers\LoginController;
+use App\Http\Controllers\PromotionController;
 
-Route::apiResource('products', ProductController::class)->only(['show', 'store', 'update', 'index', 'destroy']);
+Route::post('/login', [LoginController::class, 'apiLogin']);
+Route::middleware(['auth:sanctum', 'checkrole:Admin'])->group(function () {
+    Route::apiResource('categories', CategoryController::class);
 
-Route::apiResource('orders', OrderController::class);
+    Route::apiResource('products', ProductController::class)->only(['show', 'store', 'update', 'index', 'destroy']);
 
-Route::apiResource('orderDetails', OrderDetailController::class);
+    Route::apiResource('orders', OrderController::class);
 
+    Route::apiResource('orderDetails', OrderDetailController::class);
 
-// supplier
-Route::apiResource('suppliers', SupplierController::class);
+    Route::apiResource('suppliers', SupplierController::class);
 
-Route::apiResource('vouchers', VoucherController::class);
+    Route::apiResource('vouchers', VoucherController::class);
+});
 
-// Lấy sản phẩm theo danh mục
 Route::get('categories/{categoryId}/products', [IndexController::class, 'getProductsByCategory']);
 
 //product filter cho trang index
@@ -39,10 +40,12 @@ Route::get('/index/search', [IndexController::class, 'searchProductsAPI']);
 // DeepSeek Chatbot API route
 Route::post('/chat', [\App\Http\Controllers\DeepSeekChatController::class, 'chat']);
 
-Route::post('/login', [AuthController::class, 'login']);
-Route::middleware('api.token')->get('/me', [AuthController::class, 'me']);
-Route::middleware('api.token')->post('/logout', [AuthController::class, 'logout']);
-
-
 Route::post('/index/add-to-cart', [IndexController::class, 'addToCart']);
+
 Route::get('/product/{id}/reviews', [UIProductDetailsController::class, 'index']);
+Route::post('/product/{id}/reviews', [UIProductDetailsController::class, 'store']);
+
+
+Route::get('/promotions', [PromotionController::class, 'apiIndex']);
+
+Route::post('/voucher/check', [App\Http\Controllers\VoucherController::class, 'checkVoucher']);
