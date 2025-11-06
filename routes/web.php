@@ -19,8 +19,15 @@ use App\Http\Controllers\UserController;
 use App\Http\Controllers\LoginController;
 use App\Http\Controllers\MomoController;
 use App\Http\Controllers\VnpayController;
+use App\Http\Controllers\PostController;
 
-Route::get('/index', [IndexController::class, 'index'])->name('index');
+
+//trang chủ của tui, đụng vào nhớ xin phép =))
+Route::prefix('index')->group(function () {
+    Route::get('/', [IndexController::class, 'index'])->name('index');
+    Route::get('/categories/{category_id?}',[IndexController::class, 'categories'])->name('index.categories');
+});
+
 Route::middleware(['checkrole:Admin'])->group(function () {
     Route::get('/', function () {
         return view('layouts.dashboard');
@@ -140,3 +147,8 @@ Route::prefix('reviews')->group(function () {
     Route::delete('/{review_id}', [ReviewController::class, 'destroy'])->name('reviews.destroy');
 });
  
+// Route cho trang danh sách tin tức
+Route::get('/tin-tuc', [PostController::class, 'index'])->name('posts.index');
+
+// Route cho trang chi tiết (ví dụ: /tin-tuc/123)
+Route::get('/tin-tuc/{post}', [PostController::class, 'show'])->name('posts.show');

@@ -177,4 +177,9 @@ class Product extends Model
         return $query->paginate(5);
     }
 
+    public function specs()
+    {
+        return $this->hasMany(Spec::class);
+    }
+
 }

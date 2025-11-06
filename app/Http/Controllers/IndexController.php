@@ -1,6 +1,7 @@
 <?php
 
 namespace App\Http\Controllers;
+use App\Models\Category;
 use App\Models\Product;
 use App\Models\Review;
 use Illuminate\Http\Request;
@@ -23,7 +24,7 @@ class IndexController extends Controller
             ->limit(8)
             ->get();
 
-        $allProducts = Product::withAvg('reviews', 'rating')->get();
+        $categories = Category::all();
 
         $reviews = Review::with('product', 'user')->orderBy('rating', 'desc')->limit(8)->get();
 
@@ -31,7 +32,7 @@ class IndexController extends Controller
             ->inRandomOrder()
             ->limit(4)
             ->get();
-        return view('index', compact('topProducts', 'newProducts', 'allProducts', 'videoProducts', 'reviews'));
+        return view('ui-index.index', compact('topProducts', 'newProducts', 'videoProducts', 'reviews', 'categories'));
     }
 
     public function getProductsByCategory($categoryId)
@@ -86,6 +87,58 @@ class IndexController extends Controller
         return response()->json([
             'message' => 'Added to cart successfully!'
         ]);
+    }
+
+    public function filter(Request $request)
+{
+    $products = Product::withAvg('reviews', 'rating')
+        ->withCount('reviews')
+        ->filter(
+            $request->min_price,
+            $request->max_price,
+            $request->category_id,
+            $request->supplier_id,
+            $request->rating,
+            $request->stock,
+            $request->release_date
+        )
+        ->paginate(8); 
+
+    return response()->json([
+        'success' => true,
+        'data' => $products->items(),
+        'current_page' => $products->currentPage(),
+        'last_page' => $products->lastPage(),
+        'total' => $products->total(),
+        'per_page' => $products->perPage(),
+        'to' => $products->currentPage() * $products->perPage(), 
+    ]);
+}
+
+    public function categories(Request $request, $category_id = null)
+    {
+        $categories = Category::all();
+
+        $productQuery = Product::withAvg('reviews', 'rating')
+        ->withCount('reviews');
+        $currentCategory = null;
+
+        if ($category_id) {
+
+            $currentCategory = Category::find($category_id);
+            
+            if ($currentCategory) {
+                $productQuery->where('category_id', $category_id);
+            }
+        }
+
+        $allProducts = $productQuery->paginate(8);
+
+        return view('ui-index.categories', compact(
+            'allProducts', 
+            'categories',  
+            'currentCategory'  
+        ));
     }
 
 }
