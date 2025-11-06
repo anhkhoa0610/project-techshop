@@ -19,6 +19,8 @@ use App\Http\Controllers\UserController;
 use App\Http\Controllers\LoginController;
 use App\Http\Controllers\MomoController;
 use App\Http\Controllers\VnpayController;
+use App\Http\Controllers\PostController;
+
 
 //trang chủ của tui, đụng vào nhớ xin phép =))
 Route::prefix('index')->group(function () {
@@ -176,3 +178,8 @@ Route::prefix('reviews')->group(function () {
     Route::delete('/{review_id}', [ReviewController::class, 'destroy'])->name('reviews.destroy');
 });
  
+// Route cho trang danh sách tin tức
+Route::get('/tin-tuc', [PostController::class, 'index'])->name('posts.index');
+
+// Route cho trang chi tiết (ví dụ: /tin-tuc/123)
+Route::get('/tin-tuc/{post}', [PostController::class, 'show'])->name('posts.show');
