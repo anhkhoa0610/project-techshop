@@ -16,7 +16,7 @@ class CrawlRssCommand extends Command
 
     public function handle()
     {
-        $limit = 5; // <-- Chỉ crawl 5 bài đầu tiên
+        $limit = 30; // <-- Chỉ crawl 5 bài đầu tiên
 
         $feedUrl = 'https://tuoitre.vn/rss/cong-nghe.rss';
         $this->info("Fetching RSS from: $feedUrl (Limit: $limit posts)");

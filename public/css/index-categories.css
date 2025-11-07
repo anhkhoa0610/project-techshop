@@ -164,8 +164,10 @@
     margin: 0px auto 10px;
 
     /* CSS cho ảnh nền */
-    background-size: cover;     /* Đảm bảo ảnh lấp đầy div */
-    background-position: center; /* Căn ảnh vào giữa */
+    background-size: cover;
+    /* Đảm bảo ảnh lấp đầy div */
+    background-position: center;
+    /* Căn ảnh vào giữa */
 }
 
 
@@ -177,7 +179,7 @@
     overflow: hidden;
     display: flex;
     flex-direction: column;
-    height: 35rem;
+    height: 40rem;
     width: 300px;
     position: relative;
     transition: all 0.5s cubic-bezier(0.25, 0.8, 0.25, 1);
@@ -190,6 +192,20 @@
     width: fit-content;
     margin-bottom: 10px;
     margin-left: 2rem;
+}
+
+#btn-load-more {
+    color: white;
+    transition: all 0.5s cubic-bezier(0.25, 0.8, 0.25, 1);
+}
+
+#btn-load-more:hover {
+    transform: translateY(-6px) scale(1.03) !important;
+    box-shadow:
+        0 0 15px 7px rgba(109, 142, 214, 0.8),
+        0 0 30px 15px rgba(67, 55, 136, 0.6),
+        0 15px 50px 0px rgba(3, 8, 22, 0.4),
+        0 30px 80px 0px rgba(3, 8, 22, 0.2);
 }
 
 
@@ -231,7 +247,7 @@
     position: absolute;
     top: 1rem;
     left: 1rem;
-    background: #ea580c;
+    background: linear-gradient(135deg, #6eb5b8, #072246);
     color: white;
     padding: 0.25rem 0.75rem;
     border-radius: 9999px;
@@ -251,7 +267,7 @@
     position: absolute;
     top: 1rem;
     right: 1rem;
-    background: linear-gradient(135deg, #ea580c, #dc2626);
+    background: linear-gradient(135deg, #6eb5b8, #072246);
     color: white;
     padding: 0.25rem 0.5rem;
     border-radius: 9999px;
@@ -268,6 +284,10 @@
     font-weight: 600;
     margin-bottom: 0.5rem;
     transition: color 0.3s ease;
+    color: white;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
 }
 
 .product-card:hover .product-name {
@@ -279,6 +299,7 @@
     align-items: center;
     gap: 5px;
     margin: 8px 0;
+    color: white;
 }
 
 .product-rating .stars i {
@@ -292,32 +313,6 @@
 
 .product-price {
     margin-bottom: 1rem;
-}
-
-
-.product-thumb {
-    width: 35px;
-    height: 35px;
-    border-radius: 6px;
-    object-fit: cover;
-}
-
-
-.product-meta {
-    margin-top: -10px;
-    font-size: 0.9rem;
-    color: #bbb8b8;
-    line-height: 1.4;
-}
-
-.product-meta strong {
-    color: #d1cccc;
-}
-
-section.categories,
-section.products,
-section.review-video {
-    margin-top: 15vh;
 }
 
 .current-price {
@@ -347,6 +342,32 @@ section.review-video {
         0 0 30px 15px rgba(67, 55, 136, 0.6),
         0 15px 50px 0px rgba(3, 8, 22, 0.4),
         0 30px 80px 0px rgba(3, 8, 22, 0.2);
+}
+
+
+.product-thumb {
+    width: 35px;
+    height: 35px;
+    border-radius: 6px;
+    object-fit: cover;
+}
+
+
+.product-meta {
+    margin-top: -10px;
+    font-size: 0.9rem;
+    color: #bbb8b8;
+    line-height: 1.4;
+}
+
+.product-meta strong {
+    color: #d1cccc;
+}
+
+section.categories,
+section.products,
+section.review-video {
+    margin-top: 15vh;
 }
 
 /* Section titles */
@@ -607,4 +628,216 @@ section.review-video {
     .products-grid {
         grid-template-columns: repeat(4, 1fr);
     }
+}
+
+/* Container lưới 2 cột như bạn yêu cầu */
+.specs-grid-container {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 6px;
+    /* Khoảng cách giữa các ô */
+    margin-top: 5px;
+}
+
+
+.spec-grid-item {
+    display: flex;
+    align-items: center;
+    gap: 3px;
+    overflow: hidden;
+}
+
+
+.spec-grid-icon {
+    width: 24px;
+    height: 24px;
+    flex-shrink: 0;
+    color: white !important;
+    margin-right: 2px;
+}
+
+.spec-grid-text {
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+}
+
+.spec-grid-name {
+    font-size: 0.8rem;
+    color: #6c757d;
+    text-transform: uppercase;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    overflow: hidden;
+}
+
+.spec-grid-value {
+    font-size: 0.8rem;
+    font-weight: 600;
+    color: #6c757d;
+    ;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    overflow: hidden;
+}
+
+section.faq {
+    font-family: Arial, sans-serif;
+    padding: 40px;
+    border-radius: 15px;
+    margin-left: 5vw;
+    margin-right: 3vw;
+    min-height: 100vh;
+}
+
+.faq-news-grid {
+    display: grid;
+    grid-template-columns: 2fr 1fr;
+    gap: 32px;
+}
+
+@media (max-width: 992px) {
+    .faq-news-grid {
+        grid-template-columns: 1fr;
+    }
+}
+
+.faq-column h2 {
+    font-size: 1.5rem;
+    margin-bottom: 20px;
+}
+
+.accordion-item {
+    background: transparent;
+    border: none !important;
+}
+
+.accordion-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 18px 20px;
+    font-size: 1rem;
+    font-weight: 600;
+    cursor: pointer;
+    list-style: none;
+    color: #dbdbdb !important;
+
+}
+
+.accordion-header::-webkit-details-marker {
+    display: none;
+}
+
+
+.accordion-header::after {
+    content: '❯';
+    font-size: 1rem;
+    transition: transform 0.2s ease;
+    flex-shrink: 0;
+    margin-left: 16px;
+}
+
+details[open]>.accordion-header::after {
+    transform: rotate(90deg);
+}
+
+.accordion {
+    border-radius: 15px;
+    transition: all 0.5s cubic-bezier(0.25, 0.8, 0.25, 1);
+}
+
+.accordion:hover {
+    transform: translateY(-6px) scale(1.03) !important;
+    box-shadow:
+        0 0 15px 7px rgba(109, 142, 214, 0.8),
+        0 0 30px 15px rgba(67, 55, 136, 0.6),
+        0 15px 50px 0px rgba(3, 8, 22, 0.4),
+        0 30px 80px 0px rgba(3, 8, 22, 0.2);
+}
+
+.accordion-content {
+    padding: 0 20px 20px 20px;
+    font-size: 0.95rem;
+    line-height: 1.6;
+    border: none !important;
+    color: #dbdbdb !important;
+}
+
+.news-column {
+    padding: 20px;
+    border-radius: 8px;
+    align-self: start;
+    transition: all 0.5s cubic-bezier(0.25, 0.8, 0.25, 1);
+}
+
+.news-column:hover {
+    transform: translateY(-6px) scale(1.03) !important;
+    box-shadow:
+        0 0 15px 7px rgba(109, 142, 214, 0.8),
+        0 0 30px 15px rgba(67, 55, 136, 0.6),
+        0 15px 50px 0px rgba(3, 8, 22, 0.4),
+        0 30px 80px 0px rgba(3, 8, 22, 0.2);
+}
+
+.news-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+}
+
+.news-header h2 {
+    font-size: 1.5rem;
+    margin: 0;
+}
+
+.news-header .see-all-link {
+    font-size: 0.9rem;
+    color: white;
+    text-decoration: none;
+    font-weight: 600;
+}
+
+.news-list-sidebar {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+.news-item-sidebar a {
+    display: flex;
+    gap: 16px;
+    text-decoration: none;
+    color: #b3b0b0;
+    transition: opacity 0.2s ease;
+}
+
+.news-item-sidebar a:hover {
+    opacity: 0.8;
+}
+
+.news-item-sidebar img {
+    width: 80px;
+    height: 80px;
+    object-fit: cover;
+    border-radius: 6px;
+    flex-shrink: 0;
+}
+
+.news-item-sidebar h3 {
+    margin: 0;
+    font-size: 0.95rem;
+    line-height: 1.4;
+    display: -webkit-box;
+    line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+}
+
+.faq-column .section-title::before,
+.faq-column .section-title::after,
+.news-header .section-title::before,
+.news-header .section-title::after {
+    display: none !important;
 }

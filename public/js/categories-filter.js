@@ -48,23 +48,66 @@ document.addEventListener('DOMContentLoaded', function () {
                     <span class="reviews">(${reviewCount} reviews)</span>
                 `;
 
+                const iconPaths = {
+                    'CPU': '/images/icons/cpu.svg',
+                    'RAM': '/images/icons/ram.svg',
+                    'GPU': '/images/icons/gpu.svg',
+                    'Dung lượng': '/images/icons/storage.svg'
+                };
+
+                const findSpecValue = (specs, keywords) => {
+                    if (!specs) return null;
+                    const spec = specs.find(s =>
+                        keywords.some(k => s.name.toLowerCase().includes(k))
+                    );
+                    return spec ? spec.value : null;
+                };
+
+                const coreSpecsData = [
+                    { name: 'CPU', value: findSpecValue(product.specs, ['cpu', 'chip']), iconPath: iconPaths['CPU'] },
+                    { name: 'RAM', value: findSpecValue(product.specs, ['ram']), iconPath: iconPaths['RAM'] },
+                    { name: 'GPU', value: findSpecValue(product.specs, ['gpu', 'đồ họa']), iconPath: iconPaths['GPU'] },
+                    { name: 'STORAGE', value: findSpecValue(product.specs, ['dung lượng', 'ssd', 'hdd']), iconPath: iconPaths['Dung lượng'] }
+                ];
+
+                let specsHtml = '';
+                coreSpecsData.forEach(spec => {
+                    if (spec.value) { 
+                        specsHtml += `
+                            <div class="spec-grid-item">
+                                <img src="${spec.iconPath}" alt="${spec.name} icon" class="spec-grid-icon">
+                                
+                                <div class="spec-grid-text">
+                                    <span class="spec-grid-name">${spec.name}</span>
+                                    <strong class="spec-grid-value">${spec.value}</strong>
+                                </div>
+                            </div>
+                            `;
+                    }
+                });
+
+                // Bọc các item vào container grid
+                if (specsHtml) {
+                    specsHtml = `<div class="specs-grid-container">${specsHtml}</div>`;
+                }
+
                 html += `
                 <div class="product-card">
                     <div class="product-image">
                         <img src="${product.cover_image ? '/uploads/' + product.cover_image : '/images/place-holder.jpg'}" alt="${product.product_name}">
                     </div>
-                    <div class="product-info">
+                    <a class="product-info" href="/product-details/${product.product_id}">
                         <h3 class="product-name">${product.product_name}</h3>
+                        ${specsHtml}
                         <div class="product-rating">${starsHtml}</div>
                         <div class="product-price">
                             <span class="current-price">${Number(product.price).toLocaleString('vi-VN')}₫</span>
                         </div>
                         <div class="product-meta">
-                            <div class="volume-sold">📅 <strong>Đã bán: </strong> ${product.volume_sold || 0} sản phẩm</div>
                             <div class="release-date">📅 <strong>Phát hành:</strong> ${product.release_date ? new Date(product.release_date).toLocaleDateString('vi-VN') : 'Chưa rõ'}</div>
                             <div class="stock-info">📦 <strong>Tồn kho:</strong> ${product.stock_quantity > 0 ? product.stock_quantity + ' sản phẩm' : '<span style="color:red;">Hết hàng</span>'}</div>
                         </div>
-                    </div>
+                    </a>
                     <button class="btn-add-cart btn btn-primary full-width" data-product-id="${product.product_id}" data-quantity="1">Thêm vào giỏ 🛒 </button>
                 </div>
                 `;
@@ -93,7 +136,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
             // Tạo nút
             loadMoreContainer.innerHTML = `
-                <button id="btn-load-more" class="btn btn-outline-light btn-lg">
+                <button id="btn-load-more" class="btn btn-lg glass3d">
                     Xem thêm ${nextBatch} / ${remaining} sản phẩm
                 </button>
             `;
@@ -181,7 +224,7 @@ document.addEventListener('DOMContentLoaded', function () {
             // Reset trạng thái và tải lại từ đầu
             currentPage = 1;
             hasMorePages = true;
-            loadProductsByFilter(currentPage, false, true); 
+            loadProductsByFilter(currentPage, false, true);
         });
     }
 
