@@ -56,8 +56,10 @@
     margin: 0px auto 10px;
 
     /* CSS cho ảnh nền */
-    background-size: cover;     /* Đảm bảo ảnh lấp đầy div */
-    background-position: center; /* Căn ảnh vào giữa */
+    background-size: cover;
+    /* Đảm bảo ảnh lấp đầy div */
+    background-position: center;
+    /* Căn ảnh vào giữa */
 }
 
 
@@ -201,7 +203,7 @@
     overflow: hidden;
     display: flex;
     flex-direction: column;
-    height: 35rem;
+    height: 40rem;
     width: 300px;
     position: relative;
     transition: all 0.5s cubic-bezier(0.25, 0.8, 0.25, 1);
@@ -276,7 +278,7 @@
     position: absolute;
     top: 1rem;
     left: 1rem;
-    background: #ea580c;
+    background: linear-gradient(135deg, #6eb5b8, #072246);
     color: white;
     padding: 0.25rem 0.75rem;
     border-radius: 9999px;
@@ -296,7 +298,7 @@
     position: absolute;
     top: 1rem;
     right: 1rem;
-    background: linear-gradient(135deg, #ea580c, #dc2626);
+    background: linear-gradient(135deg, #6eb5b8, #072246);
     color: white;
     padding: 0.25rem 0.5rem;
     border-radius: 9999px;
@@ -313,6 +315,10 @@
     font-weight: 600;
     margin-bottom: 0.5rem;
     transition: color 0.3s ease;
+    color: white;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
 }
 
 .product-card:hover .product-name {
@@ -324,6 +330,7 @@
     align-items: center;
     gap: 5px;
     margin: 8px 0;
+    color: white;
 }
 
 .product-rating .stars i {
@@ -575,14 +582,6 @@
     pointer-events: none;
 }
 
-/* .product-info {
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    padding: 10px;
-    background: #fafafa;
-} */
-
 .product-thumb {
     width: 35px;
     height: 35px;
@@ -606,4 +605,170 @@ section.categories,
 section.products,
 section.review-video {
     margin-top: 15vh;
+}
+
+.specs-grid-container {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 6px;
+    margin-top: 5px;
+}
+
+
+.spec-grid-item {
+    display: flex;
+    align-items: center;
+    gap: 3px;
+    overflow: hidden;
+}
+
+
+.spec-grid-icon {
+    width: 24px;
+    height: 24px;
+    flex-shrink: 0;
+    color: white !important;
+    margin-right: 2px;
+}
+
+.spec-grid-text {
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+}
+
+.spec-grid-name {
+    font-size: 0.8rem;
+    color: #6c757d;
+    text-transform: uppercase;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    overflow: hidden;
+}
+
+.spec-grid-value {
+    font-size: 0.8rem;
+    font-weight: 600;
+    color: #6c757d;
+    ;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    overflow: hidden;
+}
+
+/*news*/
+
+.news-list {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 28px;
+    padding: 40px;
+    width: 90vw;
+    margin-left: 5vw;
+    border-radius: 15px;
+}
+
+.news-item {
+    display: flex;
+    border-radius: 12px;
+    overflow: hidden;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    position: relative;
+}
+
+.news-item:hover {
+    transform: translateY(-4px);
+    box-shadow:
+        0 0 15px 7px rgba(109, 142, 214, 0.8),
+        0 0 30px 15px rgba(67, 55, 136, 0.6),
+        0 15px 50px 0px rgba(3, 8, 22, 0.4),
+        0 30px 80px 0px rgba(3, 8, 22, 0.2);
+}
+
+.news-item img {
+    width: 40%;
+    height: auto;
+    object-fit: cover;
+    transition: transform 0.4s ease;
+}
+
+.news-content {
+    padding: 16px 20px;
+    position: relative;
+    flex: 1;
+}
+
+.news-content h2 a {
+    color: white !important;
+}
+
+.news-content .date {
+    font-size: 13px;
+    color: #6b7280 !important;
+    margin-bottom: 6px;
+}
+
+.news-content h3 {
+    font-size: 17px;
+    font-weight: 600;
+    margin: 0 0 8px;
+    color: #c0c0c0;
+    line-height: 1.4;
+}
+
+.news-content p {
+    font-size: 14px;
+    color: #c0c0c0;
+    line-height: 1.5;
+    margin: 0 0 20px;
+}
+
+.arrow {
+    position: absolute;
+    bottom: 16px;
+    right: 20px;
+    width: 22px;
+    height: 22px;
+    color: #c0c0c0;
+    transition: transform 0.2s ease, color 0.2s ease;
+}
+
+
+
+/* Responsive cho mobile */
+@media (max-width: 768px) {
+    .news-list {
+        grid-template-columns: 1fr;
+    }
+
+    .news-item {
+        flex-direction: column;
+    }
+
+    .news-item img {
+        width: 100%;
+        height: 220px;
+    }
+}
+
+
+/* Container để căn giữa nút */
+.see-more-container {
+    text-align: end;
+    margin-top: 24px;
+    width: 100%;
+}
+
+/* Kiểu dáng cho nút */
+.btn-see-more {
+    color: white;
+    text-decoration: none;
+    font-weight: 600;
+    transition: all 0.3s ease;
+    border: none;
+    cursor: pointer;
+}
+
+.btn-see-more:hover {
+    color: #0ea5e9;
 }

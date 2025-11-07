@@ -24,7 +24,8 @@ class SpecSeeder extends Seeder
 
         $rams = ['8GB', '16GB', '32GB'];
         $cpus = ['AMD Ryzen 5', 'AMD Ryzen 7', 'i7-14650HX'];
-        $storages = ['1TB', '2TB', '3TB'];
+        $storages = ['1TB SSD', '2TB SSD', '3TB SSD'];
+        $gpu = ['RTX 3060', 'Intel Iris', 'RTX 4060', 'AMD Radeon'];
 
         foreach ($products as $product) {
             
@@ -44,6 +45,12 @@ class SpecSeeder extends Seeder
                 'product_id' => $product->product_id,
                 'name' => 'Dung lượng',
                 'value' => fake()->randomElement($storages) 
+            ]);
+
+            Spec::factory()->create([
+                'product_id' => $product->product_id,
+                'name' => 'GPU',
+                'value' => fake()->randomElement($gpu) 
             ]);
         }
     }

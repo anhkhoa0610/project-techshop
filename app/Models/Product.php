@@ -98,17 +98,17 @@ class Product extends Model
     }
 
     public function scopeRating($query, $rating = null, $order = 'desc')
-{
-    if (!is_null($rating)) {
-        $min = $rating - 0.5;
-        $max = $rating + 0.4;
+    {
+        if (!is_null($rating)) {
+            $min = $rating - 0.5;
+            $max = $rating + 0.4;
 
-        // chỉ thêm having, không withAvg ở đây
-        $query->havingRaw('reviews_avg_rating BETWEEN ? AND ?', [$min, $max]);
+            // chỉ thêm having, không withAvg ở đây
+            $query->havingRaw('reviews_avg_rating BETWEEN ? AND ?', [$min, $max]);
+        }
+
+        return $query->orderBy('reviews_avg_rating', $order);
     }
-
-    return $query->orderBy('reviews_avg_rating', $order);
-}
 
 
     public function scopeFilter($query, $min_price = null, $max_price = null, $category_id = 0, $supplier_id = 0, $rating = null, $in_stock = null, $days = null)
@@ -167,7 +167,7 @@ class Product extends Model
             $query->where('rating', $rating);
         }
 
-       return $query->paginate(5)->appends(['rating' => $rating]);
+        return $query->paginate(5)->appends(['rating' => $rating]);
     }
 
     // Hàm lấy thông tin review
@@ -179,7 +179,7 @@ class Product extends Model
 
     public function specs()
     {
-        return $this->hasMany(Spec::class);
+        return $this->hasMany(Spec::class, 'product_id');
     }
 
 }

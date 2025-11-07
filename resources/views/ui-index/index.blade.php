@@ -9,6 +9,8 @@
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css" />
     <link rel="stylesheet" href="{{ asset('css/swiper.css') }}">
 
+
+
     <section class="hero">
         <div class="hero-image">
             <video class="hero-video" autoplay muted loop playsinline preload="metadata"
@@ -119,10 +121,45 @@
                                         <img src="{{ $product->cover_image ? asset('uploads/' . $product->cover_image) : asset('images/place-holder.jpg') }}"
                                             alt="{{ $product->product_name }}">
                                         <div class="product-badge">Bán chạy</div>
-                                        <div class="product-discount">-13%</div>
+                                        <div class="product-discount">Trả góp 0%</div>
                                     </div>
-                                    <div class="product-info">
+                                    <a class="product-info" href="{{ route('product.details', $product->product_id) }}">
                                         <h3 class="product-name"><?= $product->product_name; ?></h3>
+
+                                        @php
+                                            $specsMap = $product->specs->pluck('value', 'name');
+                                            $coreSpecsData = [
+                                                'CPU' => $specsMap->first(fn($v, $k) => Str::contains(strtolower($k), ['cpu', 'chip', 'vi xử lý'])),
+                                                'RAM' => $specsMap->first(fn($v, $k) => Str::contains(strtolower($k), 'ram')),
+                                                'GPU' => $specsMap->first(fn($v, $k) => Str::contains(strtolower($k), ['gpu', 'đồ họa', 'vga'])),
+                                                'Storage' => $specsMap->first(fn($v, $k) => Str::contains(strtolower($k), ['dung lượng', 'storage', 'ssd', 'hdd'])),
+                                            ];
+                                            $specIconFiles = [
+                                                'CPU' => asset('images/icons/cpu.svg'),
+                                                'RAM' => asset('images/icons/ram.svg'),
+                                                'GPU' => asset('images/icons/gpu.svg'),
+                                                'Storage' => asset('images/icons/storage.svg'),
+                                            ];
+                                        @endphp
+
+                                        <div class="specs-grid-container">
+                                            @foreach ($coreSpecsData as $name => $value)
+
+                                                @if ($value)
+                                                    <div class="spec-grid-item">
+                                                        <img src="{{ $specIconFiles[$name] }}" alt="{{ $name }} icon"
+                                                            class="spec-grid-icon">
+
+                                                        <div class="spec-grid-text">
+                                                            <span class="spec-grid-name">{{ $name }}</span>
+                                                            <strong class="spec-grid-value">{{ $value }}</strong>
+                                                        </div>
+                                                    </div>
+                                                @endif
+
+                                            @endforeach
+                                        </div>
+
                                         <div class="product-rating">
                                             @php
                                                 $rating = round($product->reviews_avg_rating ?? 0, 1);
@@ -136,16 +173,11 @@
                                         <div class="product-price">
                                             <span
                                                 class="current-price"><?= number_format($product->price, 0, ',', '.'); ?>₫</span>
-                                            <span
-                                                class="original-price"><?= number_format($product->original_price, 0, ',', '.'); ?>₫</span>
                                         </div>
 
                                         <div class="product-meta">
                                             <div class="volume-sold">
                                                 📅 <strong>Đã bán: </strong>{{ $product->volume_sold }} sản phẩm
-                                            </div>
-                                            <div class="release-date">
-                                                📅 <strong>Phát hành: </strong>{{ $product->release_date }}
                                             </div>
                                             <div class="stock-info">
                                                 📦 <strong>Còn lại:</strong>
@@ -156,7 +188,7 @@
                                                 @endif
                                             </div>
                                         </div>
-                                    </div>
+                                    </a>
                                     <button data-product-id="{{ $product->product_id }}" data-quantity="1"
                                         class="btn-add-cart btn btn-primary full-width">Thêm vào giỏ 🛒 </button>
                                 </div>
@@ -201,11 +233,46 @@
                                     <div class="product-image">
                                         <img src="{{ $product->cover_image ? asset('uploads/' . $product->cover_image) : asset('images/place-holder.jpg') }}"
                                             alt="{{ $product->product_name }}">
-                                        <div class="product-badge">Bán chạy</div>
-                                        <div class="product-discount">-13%</div>
+                                        <div class="product-badge">Hàng mới</div>
+                                        <div class="product-discount">Trả góp 0%</div>
                                     </div>
-                                    <div class="product-info">
+                                    <a class="product-info" href="{{ route('product.details', $product->product_id) }}">
                                         <h3 class="product-name"><?= $product->product_name; ?></h3>
+
+                                        @php
+                                            $specsMap = $product->specs->pluck('value', 'name');
+                                            $coreSpecsData = [
+                                                'CPU' => $specsMap->first(fn($v, $k) => Str::contains(strtolower($k), ['cpu', 'chip', 'vi xử lý'])),
+                                                'RAM' => $specsMap->first(fn($v, $k) => Str::contains(strtolower($k), 'ram')),
+                                                'GPU' => $specsMap->first(fn($v, $k) => Str::contains(strtolower($k), ['gpu', 'đồ họa', 'vga'])),
+                                                'Storage' => $specsMap->first(fn($v, $k) => Str::contains(strtolower($k), ['dung lượng', 'storage', 'ssd', 'hdd'])),
+                                            ];
+                                            $specIconFiles = [
+                                                'CPU' => asset('images/icons/cpu.svg'),
+                                                'RAM' => asset('images/icons/ram.svg'),
+                                                'GPU' => asset('images/icons/gpu.svg'),
+                                                'Storage' => asset('images/icons/storage.svg'),
+                                            ];
+                                        @endphp
+
+                                        <div class="specs-grid-container">
+                                            @foreach ($coreSpecsData as $name => $value)
+
+                                                @if ($value)
+                                                    <div class="spec-grid-item">
+                                                        <img src="{{ $specIconFiles[$name] }}" alt="{{ $name }} icon"
+                                                            class="spec-grid-icon">
+
+                                                        <div class="spec-grid-text">
+                                                            <span class="spec-grid-name">{{ $name }}</span>
+                                                            <strong class="spec-grid-value">{{ $value }}</strong>
+                                                        </div>
+                                                    </div>
+                                                @endif
+
+                                            @endforeach
+                                        </div>
+
                                         <div class="product-rating">
                                             @php
                                                 $rating = round($product->reviews_avg_rating ?? 0, 1);
@@ -219,14 +286,9 @@
                                         <div class="product-price">
                                             <span
                                                 class="current-price"><?= number_format($product->price, 0, ',', '.'); ?>₫</span>
-                                            <span
-                                                class="original-price"><?= number_format($product->original_price, 0, ',', '.'); ?>₫</span>
                                         </div>
 
                                         <div class="product-meta">
-                                            <div class="volume-sold">
-                                                📅 <strong>Đã bán: </strong>{{ $product->volume_sold }} sản phẩm
-                                            </div>
                                             <div class="release-date">
                                                 📅 <strong>Phát hành: </strong>{{ $product->release_date }}
                                             </div>
@@ -239,7 +301,7 @@
                                                 @endif
                                             </div>
                                         </div>
-                                    </div>
+                                    </a>
                                     <button data-product-id="{{ $product->product_id }}" data-quantity="1"
                                         class="btn-add-cart btn btn-primary full-width">Thêm vào giỏ 🛒 </button>
                                 </div>
@@ -249,6 +311,56 @@
                         </div>
                     </div>
                 </div>
+            </div>
+        </section>
+
+        <section class="news">
+            <div class="container-fluid">
+                <div class="section-header">
+                    <h2 class="section-title">
+                        <span>T</span>
+                        <span>i</span>
+                        <span>n&nbsp;</span>
+                        <span>T</span>
+                        <span>ứ</span>
+                        <span>c</span>
+                    </h2>
+                    <p class="section-subtitle">Thông tin công nghệ mới nhất</p>
+                </div>
+                <div class="news-list glass3d">
+                    @foreach ($posts as $post)
+                        <article class="news-item">
+                            <div class="news-content">
+                                <h2>
+                                    <a href="{{ route('posts.show', $post->id) }}">
+                                        {{ $post->title }}
+                                    </a>
+                                </h2>
+                                <p>{{ $post->description }}</p>
+                                <span class="arrow">
+                                    <svg fill="currentColor" viewBox="0 0 23 24" xmlns="http://www.w3.org/2000/svg" class="w-5">
+                                        <path clip-rule="evenodd"
+                                            d="M0 3.2V0.5H18H20.5H23V3V5.5V23.5H20.3L20.5 5.5191H19.8881L1.96094 23.4462L0.0308727 21.5514L17.9578 3.62444V3.2H0Z"
+                                            fill-rule="evenodd"></path>
+                                    </svg>
+                                </span>
+                                <small class="date">Cập nhật lúc: {{ $post->updated_at->format('d/m/Y H:i') }}</small>
+                            </div>
+                            @if ($post->cover_image)
+                                <img src="{{ $post->cover_image }}" alt="{{ $post->title }}"
+                                    style="max-width: 300px; height: auto;">
+                            @endif
+                        </article>
+                    @endforeach
+                    <div class="">
+
+                    </div>
+                    <div class="see-more-container">
+                    <a href="{{ route('posts.index') }}" class="btn-see-more">
+                        Xem tất cả tin tức >                   
+                    </a>
+                </div>
+                </div>        
             </div>
         </section>
 
