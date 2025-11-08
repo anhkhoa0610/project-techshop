@@ -27,6 +27,9 @@ function renderProductsAndPaginationFilter(data, min_price, max_price, category_
                 </div>
 
                 <div class="product-meta">
+                    <div class="volume-sold">
+                        📅 <strong>Đã bán: </strong> ${product.volume_sold} sản phẩm
+                    </div>
                     <div class="release-date">
                         📅 <strong>Phát hành:</strong> ${product.release_date ? new Date(product.release_date).toLocaleDateString('vi-VN') : 'Chưa rõ'}
                     </div>
@@ -47,7 +50,7 @@ function renderProductsAndPaginationFilter(data, min_price, max_price, category_
     let filter_pagination = '';
     if (data.last_page && data.last_page > 1) {
         // Sử dụng flex để căn giữa các nút và số trang
-        filter_pagination += `<nav class="filter-pagination flex items-center justify-center space-x-4">`;
+        filter_pagination += `<nav class="filter-pagination flex items-center justify-center space-x-4 glass3d">`;
 
         // 1. Nút "Trước" (Prev)
         if (data.current_page > 1) {

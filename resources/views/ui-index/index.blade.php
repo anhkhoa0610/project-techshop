@@ -5,10 +5,11 @@
 @section('content')
 
     <link rel="stylesheet" href="{{ asset('css/index.css') }}">
-    <link rel="stylesheet" href="{{ asset('css/index-filter.css') }}">
     <link rel="stylesheet" href="{{ asset('css/index-chatbot.css') }}">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css" />
     <link rel="stylesheet" href="{{ asset('css/swiper.css') }}">
+
+
 
     <section class="hero">
         <div class="hero-image">
@@ -77,42 +78,20 @@
                     <p class="section-subtitle">Khám phá các sản phẩm hàng đầu</p>
                 </div>
                 <div class="categories-grid glass3d">
-                    <div class="category-card">
-                        <div class="category-icon primary">📱</div>
-                        <h3 class="category-title">The Best Smartphone</h3>
-                        <p class="category-subtitle">Điện thoại cao cấp</p>
-                    </div>
-                    <div class="category-card">
-                        <div class="category-icon accent">💻</div>
-                        <h3 class="category-title">Gaming Laptop</h3>
-                        <p class="category-subtitle">Laptop chuyên game</p>
-                    </div>
-                    <div class="category-card">
-                        <div class="category-icon primary">🎧</div>
-                        <h3 class="category-title">Premium Headphone</h3>
-                        <p class="category-subtitle">Tai nghe chất lượng cao</p>
-                    </div>
-                    <div class="category-card">
-                        <div class="category-icon accent">📱</div>
-                        <h3 class="category-title">Tablet & iPad</h3>
-                        <p class="category-subtitle">Máy tính bảng</p>
-                    </div>
-                    <div class="category-card">
-                        <div class="category-icon primary">⌚</div>
-                        <h3 class="category-title">Smart Watch</h3>
-                        <p class="category-subtitle">Đồng hồ thông minh</p>
-                    </div>
-                    <div class="category-card">
-                        <div class="category-icon accent">📷</div>
-                        <h3 class="category-title">Camera & Photo</h3>
-                        <p class="category-subtitle">Máy ảnh chuyên nghiệp</p>
-                    </div>
+                    @foreach ($categories as $category)
+                        <a class="category-card" href="{{ route('index.categories', $category->category_id) }}">
+                            <div class="category-image" style="background-image: url('/uploads/{{ $category->cover_image }}');">
+                            </div>
+                            <h3 class="category-title">{{ $category->category_name }}</h3>
+                            <p class="category-subtitle">{{ $category->description }}</p>
+                        </a>
+                    @endforeach
                 </div>
             </div>
         </section>
 
         <!-- Featured Products -->
-        <section class="products sale-products">
+        <section class="sale-products">
             <div class="container-fluid">
                 <div class="section-header">
                     <h2 class="section-title">
@@ -142,38 +121,74 @@
                                         <img src="{{ $product->cover_image ? asset('uploads/' . $product->cover_image) : asset('images/place-holder.jpg') }}"
                                             alt="{{ $product->product_name }}">
                                         <div class="product-badge">Bán chạy</div>
-                                        <div class="product-discount">-13%</div>
+                                        <div class="product-discount">Trả góp 0%</div>
                                     </div>
-                                    <div class="product-info">
+                                    <a class="product-info" href="{{ route('product.details', $product->product_id) }}">
                                         <h3 class="product-name"><?= $product->product_name; ?></h3>
+
+                                        @php
+                                            $specsMap = $product->specs->pluck('value', 'name');
+                                            $coreSpecsData = [
+                                                'CPU' => $specsMap->first(fn($v, $k) => Str::contains(strtolower($k), ['cpu', 'chip', 'vi xử lý'])),
+                                                'RAM' => $specsMap->first(fn($v, $k) => Str::contains(strtolower($k), 'ram')),
+                                                'GPU' => $specsMap->first(fn($v, $k) => Str::contains(strtolower($k), ['gpu', 'đồ họa', 'vga'])),
+                                                'Storage' => $specsMap->first(fn($v, $k) => Str::contains(strtolower($k), ['dung lượng', 'storage', 'ssd', 'hdd'])),
+                                            ];
+                                            $specIconFiles = [
+                                                'CPU' => asset('images/icons/cpu.svg'),
+                                                'RAM' => asset('images/icons/ram.svg'),
+                                                'GPU' => asset('images/icons/gpu.svg'),
+                                                'Storage' => asset('images/icons/storage.svg'),
+                                            ];
+                                        @endphp
+
+                                        <div class="specs-grid-container">
+                                            @foreach ($coreSpecsData as $name => $value)
+
+                                                @if ($value)
+                                                    <div class="spec-grid-item">
+                                                        <img src="{{ $specIconFiles[$name] }}" alt="{{ $name }} icon"
+                                                            class="spec-grid-icon">
+
+                                                        <div class="spec-grid-text">
+                                                            <span class="spec-grid-name">{{ $name }}</span>
+                                                            <strong class="spec-grid-value">{{ $value }}</strong>
+                                                        </div>
+                                                    </div>
+                                                @endif
+
+                                            @endforeach
+                                        </div>
+
                                         <div class="product-rating">
                                             @php
                                                 $rating = round($product->reviews_avg_rating ?? 0, 1);
                                                 $count = $product->reviews_count ?? 0;
                                             @endphp
 
-                                            <span class="stars">
-                                                @for ($i = 1; $i <= 5; $i++)
-                                                    @if ($i <= $rating)
-                                                        <i class="fa fa-star" style="color: #FFD700;"></i>
-                                                    @elseif ($i - 0.5 <= $rating)
-                                                        <i class="fa fa-star-half-o" style="color: #FFD700;"></i>
-                                                    @else
-                                                        <i class="fa fa-star-o" style="color: #FFD700;"></i>
-                                                    @endif
-                                                @endfor
-                                                <span>{{ $rating }}</span>
-                                            </span>
-
+                                            <span class="stars" style="color: #ffc107;">⭐</span>
+                                            <span class="rating-score">{{ $rating }}</span>
                                             <span class="reviews">({{ $count }} đánh giá)</span>
                                         </div>
                                         <div class="product-price">
                                             <span
                                                 class="current-price"><?= number_format($product->price, 0, ',', '.'); ?>₫</span>
-                                            <span
-                                                class="original-price"><?= number_format($product->original_price, 0, ',', '.'); ?>₫</span>
                                         </div>
-                                    </div>
+
+                                        <div class="product-meta">
+                                            <div class="volume-sold">
+                                                📅 <strong>Đã bán: </strong>{{ $product->volume_sold }} sản phẩm
+                                            </div>
+                                            <div class="stock-info">
+                                                📦 <strong>Còn lại:</strong>
+                                                @if ($product->stock_quantity > 0)
+                                                    {{ $product->stock_quantity }} sản phẩm
+                                                @else
+                                                    <span style="color:red;">Hết hàng</span>
+                                                @endif
+                                            </div>
+                                        </div>
+                                    </a>
                                     <button data-product-id="{{ $product->product_id }}" data-quantity="1"
                                         class="btn-add-cart btn btn-primary full-width">Thêm vào giỏ 🛒 </button>
                                 </div>
@@ -188,7 +203,7 @@
 
 
         <!-- Featured Products -->
-        <section class="products new-products">
+        <section class="new-products">
             <div class="container-fluid">
                 <div class="section-header">
                     <h2 class="section-title">
@@ -218,39 +233,75 @@
                                     <div class="product-image">
                                         <img src="{{ $product->cover_image ? asset('uploads/' . $product->cover_image) : asset('images/place-holder.jpg') }}"
                                             alt="{{ $product->product_name }}">
-                                        <div class="product-badge">Bán chạy</div>
-                                        <div class="product-discount">-13%</div>
+                                        <div class="product-badge">Hàng mới</div>
+                                        <div class="product-discount">Trả góp 0%</div>
                                     </div>
-                                    <div class="product-info">
+                                    <a class="product-info" href="{{ route('product.details', $product->product_id) }}">
                                         <h3 class="product-name"><?= $product->product_name; ?></h3>
+
+                                        @php
+                                            $specsMap = $product->specs->pluck('value', 'name');
+                                            $coreSpecsData = [
+                                                'CPU' => $specsMap->first(fn($v, $k) => Str::contains(strtolower($k), ['cpu', 'chip', 'vi xử lý'])),
+                                                'RAM' => $specsMap->first(fn($v, $k) => Str::contains(strtolower($k), 'ram')),
+                                                'GPU' => $specsMap->first(fn($v, $k) => Str::contains(strtolower($k), ['gpu', 'đồ họa', 'vga'])),
+                                                'Storage' => $specsMap->first(fn($v, $k) => Str::contains(strtolower($k), ['dung lượng', 'storage', 'ssd', 'hdd'])),
+                                            ];
+                                            $specIconFiles = [
+                                                'CPU' => asset('images/icons/cpu.svg'),
+                                                'RAM' => asset('images/icons/ram.svg'),
+                                                'GPU' => asset('images/icons/gpu.svg'),
+                                                'Storage' => asset('images/icons/storage.svg'),
+                                            ];
+                                        @endphp
+
+                                        <div class="specs-grid-container">
+                                            @foreach ($coreSpecsData as $name => $value)
+
+                                                @if ($value)
+                                                    <div class="spec-grid-item">
+                                                        <img src="{{ $specIconFiles[$name] }}" alt="{{ $name }} icon"
+                                                            class="spec-grid-icon">
+
+                                                        <div class="spec-grid-text">
+                                                            <span class="spec-grid-name">{{ $name }}</span>
+                                                            <strong class="spec-grid-value">{{ $value }}</strong>
+                                                        </div>
+                                                    </div>
+                                                @endif
+
+                                            @endforeach
+                                        </div>
+
                                         <div class="product-rating">
                                             @php
                                                 $rating = round($product->reviews_avg_rating ?? 0, 1);
                                                 $count = $product->reviews_count ?? 0;
                                             @endphp
 
-                                            <span class="stars">
-                                                @for ($i = 1; $i <= 5; $i++)
-                                                    @if ($i <= $rating)
-                                                        <i class="fa fa-star" style="color: #FFD700;"></i>
-                                                    @elseif ($i - 0.5 <= $rating)
-                                                        <i class="fa fa-star-half-o" style="color: #FFD700;"></i>
-                                                    @else
-                                                        <i class="fa fa-star-o" style="color: #FFD700;"></i>
-                                                    @endif
-                                                @endfor
-                                                <span>{{ $rating }}</span>
-                                            </span>
-
+                                            <span class="stars" style="color: #ffc107;">⭐</span>
+                                            <span class="rating-score">{{ $rating }}</span>
                                             <span class="reviews">({{ $count }} đánh giá)</span>
                                         </div>
                                         <div class="product-price">
                                             <span
                                                 class="current-price"><?= number_format($product->price, 0, ',', '.'); ?>₫</span>
-                                            <span
-                                                class="original-price"><?= number_format($product->original_price, 0, ',', '.'); ?>₫</span>
                                         </div>
-                                    </div>
+
+                                        <div class="product-meta">
+                                            <div class="release-date">
+                                                📅 <strong>Phát hành: </strong>{{ $product->release_date }}
+                                            </div>
+                                            <div class="stock-info">
+                                                📦 <strong>Còn lại:</strong>
+                                                @if ($product->stock_quantity > 0)
+                                                    {{ $product->stock_quantity }} sản phẩm
+                                                @else
+                                                    <span style="color:red;">Hết hàng</span>
+                                                @endif
+                                            </div>
+                                        </div>
+                                    </a>
                                     <button data-product-id="{{ $product->product_id }}" data-quantity="1"
                                         class="btn-add-cart btn btn-primary full-width">Thêm vào giỏ 🛒 </button>
                                 </div>
@@ -263,128 +314,53 @@
             </div>
         </section>
 
-        <!-- Featured Products -->
-        <section id="section-all-products" class="products categories-products" style="display: none">
+        <section class="news">
             <div class="container-fluid">
                 <div class="section-header">
                     <h2 class="section-title">
                         <span>T</span>
-                        <span>ấ</span>
-                        <span>t&nbsp;</span>
-                        <span>c</span>
-                        <span>ả&nbsp;</span>
-                        <span>s</span>
-                        <span>ả</span>
+                        <span>i</span>
                         <span>n&nbsp;</span>
-                        <span>p</span>
-                        <span>h</span>
-                        <span>ẩ</span>
-                        <span>m</span>
+                        <span>T</span>
+                        <span>ứ</span>
+                        <span>c</span>
                     </h2>
-                    <p class="section-subtitle">Khám phá sản phẩm theo lựa chọn của bạn</p>
+                    <p class="section-subtitle">Thông tin công nghệ mới nhất</p>
                 </div>
-                <div class="row">
-                    <div class="col-md-3" style="color: white">
-                        <div class="sidebar glass3d" id="sidebar">
-                            <div class="sidebar-header">
-                                <span class="sidebar-title">Lọc sản phẩm</span>
+                <div class="news-list glass3d">
+                    @foreach ($posts as $post)
+                        <article class="news-item">
+                            <div class="news-content">
+                                <h2>
+                                    <a href="{{ route('posts.show', $post->id) }}">
+                                        {{ $post->title }}
+                                    </a>
+                                </h2>
+                                <p>{{ $post->description }}</p>
+                                <span class="arrow">
+                                    <svg fill="currentColor" viewBox="0 0 23 24" xmlns="http://www.w3.org/2000/svg" class="w-5">
+                                        <path clip-rule="evenodd"
+                                            d="M0 3.2V0.5H18H20.5H23V3V5.5V23.5H20.3L20.5 5.5191H19.8881L1.96094 23.4462L0.0308727 21.5514L17.9578 3.62444V3.2H0Z"
+                                            fill-rule="evenodd"></path>
+                                    </svg>
+                                </span>
+                                <small class="date">Cập nhật lúc: {{ $post->updated_at->format('d/m/Y H:i') }}</small>
                             </div>
-                            <form id="filterForm" class="mt-4">
-                                <!-- Giá tiền -->
-                                <div class="mb-4">
-                                    <label class="form-label fw-semibold">Giá tiền (VNĐ)</label>
-                                    <div class="d-flex align-items-center gap-2">
-                                        <input type="number" class="form-control number-input" name="price_min"
-                                            placeholder="" min="0" step="1000" style="max-width: 16rem;">
-                                        <span class="fw-bold">–</span>
-                                        <input type="number" class="form-control number-input" name="price_max"
-                                            placeholder="" min="0" step="1000" style="max-width: 16rem;">
-                                    </div>
-                                </div>
+                            @if ($post->cover_image)
+                                <img src="{{ $post->cover_image }}" alt="{{ $post->title }}"
+                                    style="max-width: 300px; height: auto;">
+                            @endif
+                        </article>
+                    @endforeach
+                    <div class="">
 
-
-                                <!-- Danh mục -->
-                                <div class="mb-4">
-                                    <label for="category" class="form-label fw-semibold">Danh mục</label>
-                                    <select class="form-select" id="category" name="category_filter">
-                                        <option value="">Tất cả</option>
-                                        <option value="1">Laptop</option>
-                                        <option value="2">Điện thoại</option>
-                                        <option value="3">Phụ kiện</option>
-                                        <option value="4">Máy tính bảng</option>
-                                    </select>
-                                </div>
-
-                                <!-- Nhà phân phối -->
-                                <div class="mb-4">
-                                    <label for="supplier" class="form-label fw-semibold">Nhà phân phối</label>
-                                    <select class="form-select" id="supplier" name="supplier_filter">
-                                        <option value="">Tất cả</option>
-                                        <option value="1">Apple</option>
-                                        <option value="2">Samsung</option>
-                                        <option value="3">ASUS</option>
-                                        <option value="4">Dell</option>
-                                    </select>
-                                </div>
-
-                                <!-- Rating -->
-
-                                <div class="mb-4">
-                                    <label for="rating" class="form-label fw-semibold">Đánh giá</label>
-                                    <select class="form-select" id="rating" name="rating_filter">
-                                        <option value="">Tất cả</option>
-                                        <option value="5">⭐️⭐️⭐️⭐️⭐️</option>
-                                        <option value="4">⭐️⭐️⭐️⭐️</option>
-                                        <option value="3">⭐️⭐️⭐️</option>
-                                        <option value="2">⭐️⭐️</option>
-                                        <option value="1">⭐️</option>
-                                    </select>
-                                </div>
-
-                                <!-- Tình trạng hàng -->
-                                <div class="mb-4">
-                                    <label for="stock_status" class="form-label fw-semibold">Tình trạng hàng</label>
-                                    <select class="form-select" id="stock_status" name="stock_filter">
-                                        <option value="">Tất cả</option>
-                                        <option value="1">Còn hàng</option>
-                                        <option value="2">Hết hàng</option>
-                                    </select>
-                                </div>
-
-                                <!-- Thời gian ra mắt -->
-                                <div class="mb-4">
-                                    <label for="release_date" class="form-label fw-semibold">Thời gian ra mắt</label>
-                                    <select class="form-select" id="release_date" name="release_filter">
-                                        <option value="">Tất cả</option>
-                                        <option value="30">30 ngày qua</option>
-                                        <option value="90">90 ngày qua</option>
-                                        <option value="180">6 tháng qua</option>
-                                        <option value="365">1 năm qua</option>
-                                    </select>
-                                </div>
-
-                                <!-- Đang giảm giá -->
-                                <div class="mb-4 form-check">
-                                    <input type="checkbox" class="form-check-input" id="on_sale" name="on_sale">
-                                    <label class="form-check-label fw-semibold" for="on_sale">Chỉ hiển thị sản phẩm đang
-                                        giảm giá</label>
-                                </div>
-
-                                <!-- Nút áp dụng -->
-                                <button type="submit" class="btn btn-primary w-100">Áp dụng bộ lọc</button>
-                            </form>
-                        </div>
                     </div>
-                    <div class="col-md-9">
-                        <div class="products-grid show-by-category glass3d">
-
-                        </div>
-                    </div>
+                    <div class="see-more-container">
+                    <a href="{{ route('posts.index') }}" class="btn-see-more">
+                        Xem tất cả tin tức >                   
+                    </a>
                 </div>
-
-                <div class="pagination mt-5">
-                    <!-- ... -->
-                </div>
+                </div>        
             </div>
         </section>
 
@@ -469,7 +445,7 @@
                                         </p>
 
                                         <div class="author-info">
-                                            <img src="/uploads/{{ $review->product->cover_image }}" class="author-avatar">
+                                            <img src="/images/messi.jpg" class="author-avatar">
                                             <div class="author-details">
                                                 <div class="author-name">{{ $review->user->full_name }}</div>
                                                 <span class="author-title">
@@ -530,7 +506,6 @@
         console.log("User ID:", USER_ID);
     </script>
     <script src="{{ asset('js/index-chatbot.js') }}"></script>
-    <script src="{{ asset('js/index-filter.js') }}"></script>
     <script src="{{ asset('js/index.js') }}"></script>
     <script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
     <script src="{{ asset('js/swiper.js') }}"></script>

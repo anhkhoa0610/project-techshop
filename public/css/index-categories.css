@@ -1,4 +1,3 @@
-/* Section Headers */
 .section-header {
     text-align: left;
     width: fit-content;
@@ -39,41 +38,6 @@
     .categories-grid {
         grid-template-columns: repeat(3, 1fr);
     }
-}
-
-
-
-.category-image {
-    width: 200px;
-    height: 120px;
-    margin: 0px auto 10px;
-
-    /* CSS cho ảnh nền */
-    background-size: cover;
-    /* Đảm bảo ảnh lấp đầy div */
-    background-position: center;
-    /* Căn ảnh vào giữa */
-}
-
-
-
-.category-pagination {
-    padding: 20px;
-    width: fit-content !important;
-    margin: auto !important;
-    margin-top: 15px !important;
-    margin: auto !important;
-    border-radius: 2rem !important;
-    transition: all 0.5s cubic-bezier(0.25, 0.8, 0.25, 1);
-}
-
-.category-pagination:hover {
-    transform: translateY(-6px) scale(1.02);
-    box-shadow:
-        0 0 15px 7px rgba(109, 142, 214, 0.8),
-        0 0 30px 15px rgba(67, 55, 136, 0.6),
-        0 15px 50px 0px rgba(3, 8, 22, 0.4),
-        0 30px 80px 0px rgba(3, 8, 22, 0.2);
 }
 
 
@@ -187,6 +151,18 @@
         0 30px 80px 0px rgba(3, 8, 22, 0.2);
 }
 
+.category-image {
+    width: 200px;
+    height: 120px;
+    margin: 0px auto 10px;
+
+    /* CSS cho ảnh nền */
+    background-size: cover;
+    /* Đảm bảo ảnh lấp đầy div */
+    background-position: center;
+    /* Căn ảnh vào giữa */
+}
+
 
 /* Products */
 
@@ -211,27 +187,20 @@
     margin-left: 2rem;
 }
 
-@media (min-width: 768px) {
-    .video-grid {
-        grid-template-columns: repeat(2, 1fr);
-
-    }
-
-    .products-grid {
-
-        grid-template-columns: repeat(2, 1fr);
-    }
+#btn-load-more {
+    color: white;
+    transition: all 0.5s cubic-bezier(0.25, 0.8, 0.25, 1);
 }
 
-@media (min-width: 1024px) {
-    .video-grid {
-        grid-template-columns: repeat(4, 1fr);
-    }
-
-    .products-grid {
-        grid-template-columns: repeat(4, 1fr);
-    }
+#btn-load-more:hover {
+    transform: translateY(-6px) scale(1.03) !important;
+    box-shadow:
+        0 0 15px 7px rgba(109, 142, 214, 0.8),
+        0 0 30px 15px rgba(67, 55, 136, 0.6),
+        0 15px 50px 0px rgba(3, 8, 22, 0.4),
+        0 30px 80px 0px rgba(3, 8, 22, 0.2);
 }
+
 
 .product-info {
     flex: 1 1 auto;
@@ -368,6 +337,32 @@
         0 30px 80px 0px rgba(3, 8, 22, 0.2);
 }
 
+
+.product-thumb {
+    width: 35px;
+    height: 35px;
+    border-radius: 6px;
+    object-fit: cover;
+}
+
+
+.product-meta {
+    margin-top: -10px;
+    font-size: 0.9rem;
+    color: #bbb8b8;
+    line-height: 1.4;
+}
+
+.product-meta strong {
+    color: #d1cccc;
+}
+
+section.categories,
+section.products,
+section.review-video {
+    margin-top: 15vh;
+}
+
 /* Section titles */
 
 .section-title {
@@ -477,133 +472,153 @@
     margin-bottom: 2rem;
 }
 
-/* Videos */
 
-.video-grid {
-    display: grid;
-    grid-template-columns: repeat(4, 1fr);
-    gap: 20px;
-    justify-items: center !important;
-    padding: 0px;
-}
-
-.video-card {
-    width: 380px;
-    background: transparent;
-    border-radius: 12px;
-    overflow: hidden;
-    font-family: sans-serif;
-    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
-    transition: transform 0.2s, box-shadow 0.2s;
-}
-
-.video-card:hover {
-    transform: translateY(-5px);
-    box-shadow: 0 6px 18px rgba(0, 0, 0, 0.2);
-}
-
-.video-thumb {
-    position: relative;
-    width: 100%;
-    aspect-ratio: 9/16;
-    overflow: hidden;
-    background: #000;
-}
-
-
-.video-thumb iframe {
+#loading-overlay {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
     width: 100%;
     height: 100%;
-    border: none;
+    background-color: rgba(0, 0, 0, 0.8);
+    z-index: 9999;
+    justify-content: center;
+    align-items: center;
 }
 
-.overlay {
-    position: absolute;
-    inset: 0;
-    background: rgba(0, 0, 0, 0.35);
-    color: #fff;
+/* Spinner xoay vòng */
+.spinner {
+    width: 60px;
+    height: 60px;
+    border-radius: 50%;
+    border: 8px solid #f3f3f3;
+    border-top: 8px solid #E50914;
+    animation: spin 1s linear infinite;
+    margin: 0;
+}
+
+@keyframes spin {
+    0% {
+        transform: rotate(0deg);
+    }
+
+    100% {
+        transform: rotate(360deg);
+    }
+}
+
+
+.show-by-category {
+    padding: 40px;
+    border-radius: 15px;
+    margin-left: 5vw;
+    margin-right: 3vw;
+    margin-top: 25px;
+    overflow-x: auto;
+}
+
+.products-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 2rem;
+    justify-items: center;
+}
+
+/* Sidebar styles */
+.sidebar {
+    z-index: 1000;
+    transition: transform 0.3s cubic-bezier(.77, 0, .18, 1);
+    border-width: 1px;
+    border-style: solid;
     display: flex;
     flex-direction: column;
-    justify-content: flex-end;
-    padding: 10px;
-    transition: background 0.3s;
+    padding: 10px 15px;
+    border-radius: 15px;
+    color: white;
+    margin-left: 5vw;
+    margin-right: 3vw;
+    transition: all 1.2s cubic-bezier(0.25, 0.8, 0.25, 1);
 }
 
-.video-thumb:hover .overlay {
-    background: rgba(0, 0, 0, 0.55);
-}
+/* .sidebar:hover {
+    transform: translateY(-6px) scale(1.02);
+    box-shadow:
+        0 0 15px 7px rgba(109, 142, 214, 0.8),
+        0 0 30px 15px rgba(67, 55, 136, 0.6),
+        0 15px 50px 0px rgba(3, 8, 22, 0.4),
+        0 30px 80px 0px rgba(3, 8, 22, 0.2);
+} */
 
-.channel-info {
+.sidebar-header {
     display: flex;
     align-items: center;
-    gap: 6px;
-    font-size: 13px;
+    justify-content: space-between;
+    padding: 18px 20px 8px 0px;
+    border-bottom: 1px solid #eee;
+    margin-top: 1rem;
 }
 
-.channel-logo {
-    width: 80px;
-    height: 80px;
-    border-radius: 50%;
+.sidebar-title {
+    font-weight: bold;
+    font-size: 1.5rem;
 }
 
-.btn-subscribe {
-    background: #ff0000;
-    border: none;
-    color: #fff;
-    font-size: 12px;
-    border-radius: 4px;
-    padding: 2px 6px;
-    cursor: pointer;
-}
-
-.video-title {
-    font-weight: 600;
-    font-size: 14px;
-    line-height: 1.2;
-    margin-top: auto;
-    padding-bottom: 6px;
-}
-
-.play-button {
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    font-size: 48px;
-    opacity: 0.85;
-    text-shadow: 0 0 10px rgba(0, 0, 0, 0.8);
-    pointer-events: none;
-}
-
-.product-thumb {
-    width: 35px;
-    height: 35px;
-    border-radius: 6px;
-    object-fit: cover;
+#filterForm .btn {
+    width: fit-content !important;
+    padding: 0.5rem 1rem;
+    margin-top: 1rem;
 }
 
 
-.product-meta {
-    margin-top: -10px;
-    font-size: 0.9rem;
-    color: #bbb8b8;
-    line-height: 1.4;
+/* Responsive: ẩn sidebar trên mobile nếu muốn */
+@media (max-width: 600px) {
+    .sidebar {
+        width: 80vw;
+    }
 }
 
-.product-meta strong {
-    color: #d1cccc;
+/*slider*/
+.price-inputs input[type="text"] {
+    font-weight: bold;
+    text-align: center;
+    font-size: 1.1rem;
+    border: 1px solid #ddd;
+    background-color: #f8f9fa;
+    /* Màu nền xám nhạt */
 }
 
-section.categories,
-section.products,
-section.review-video {
-    margin-top: 15vh;
+#price-slider {
+    margin: 55px 10px 0px 10px;
 }
 
+.noUi-connect {
+    background: #0d6efd;
+}
+
+.noUi-handle {
+    background: #FFF;
+    border: 1px solid #0d6efd;
+}
+
+@media (min-width: 768px) {
+    .products-grid {
+
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+
+@media (min-width: 1024px) {
+    .products-grid {
+        grid-template-columns: repeat(4, 1fr);
+    }
+}
+
+/* Container lưới 2 cột như bạn yêu cầu */
 .specs-grid-container {
     display: grid;
     grid-template-columns: repeat(2, 1fr);
     gap: 6px;
+    /* Khoảng cách giữa các ô */
     margin-top: 5px;
 }
 
@@ -649,28 +664,74 @@ section.review-video {
     overflow: hidden;
 }
 
-/*news*/
-
-.news-list {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 28px;
+section.faq {
+    font-family: Arial, sans-serif;
     padding: 40px;
-    width: 90vw;
-    margin-left: 5vw;
     border-radius: 15px;
+    margin-left: 5vw;
+    margin-right: 3vw;
+    min-height: 100vh;
 }
 
-.news-item {
+.faq-news-grid {
+    display: grid;
+    grid-template-columns: 2fr 1fr;
+    gap: 32px;
+}
+
+@media (max-width: 992px) {
+    .faq-news-grid {
+        grid-template-columns: 1fr;
+    }
+}
+
+.faq-column h2 {
+    font-size: 1.5rem;
+    margin-bottom: 20px;
+}
+
+.accordion-item {
+    background: transparent;
+    border: none !important;
+}
+
+.accordion-header {
     display: flex;
-    border-radius: 12px;
-    overflow: hidden;
-    transition: transform 0.3s ease, box-shadow 0.3s ease;
-    position: relative;
+    justify-content: space-between;
+    align-items: center;
+    padding: 18px 20px;
+    font-size: 1rem;
+    font-weight: 600;
+    cursor: pointer;
+    list-style: none;
+    color: #dbdbdb !important;
+
 }
 
-.news-item:hover {
-    transform: translateY(-4px);
+.accordion-header::-webkit-details-marker {
+    display: none;
+}
+
+
+.accordion-header::after {
+    content: '❯';
+    font-size: 1rem;
+    transition: transform 0.2s ease;
+    flex-shrink: 0;
+    margin-left: 16px;
+}
+
+details[open]>.accordion-header::after {
+    transform: rotate(90deg);
+}
+
+.accordion {
+    border-radius: 15px;
+    transition: all 0.5s cubic-bezier(0.25, 0.8, 0.25, 1);
+}
+
+.accordion:hover {
+    transform: translateY(-6px) scale(1.03) !important;
     box-shadow:
         0 0 15px 7px rgba(109, 142, 214, 0.8),
         0 0 30px 15px rgba(67, 55, 136, 0.6),
@@ -678,90 +739,88 @@ section.review-video {
         0 30px 80px 0px rgba(3, 8, 22, 0.2);
 }
 
-.news-item img {
-    width: 40%;
-    height: auto;
-    object-fit: cover;
-    transition: transform 0.4s ease;
+.accordion-content {
+    padding: 0 20px 20px 20px;
+    font-size: 0.95rem;
+    line-height: 1.6;
+    border: none !important;
+    color: #dbdbdb !important;
 }
 
-.news-content {
-    padding: 16px 20px;
-    position: relative;
-    flex: 1;
+.news-column {
+    padding: 20px;
+    border-radius: 8px;
+    align-self: start;
+    transition: all 0.5s cubic-bezier(0.25, 0.8, 0.25, 1);
 }
 
-.news-content h2 a {
-    color: white !important;
+.news-column:hover {
+    transform: translateY(-6px) scale(1.03) !important;
+    box-shadow:
+        0 0 15px 7px rgba(109, 142, 214, 0.8),
+        0 0 30px 15px rgba(67, 55, 136, 0.6),
+        0 15px 50px 0px rgba(3, 8, 22, 0.4),
+        0 30px 80px 0px rgba(3, 8, 22, 0.2);
 }
 
-.news-content .date {
-    font-size: 13px;
-    color: #6b7280 !important;
-    margin-bottom: 6px;
+.news-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
 }
 
-.news-content h3 {
-    font-size: 17px;
-    font-weight: 600;
-    margin: 0 0 8px;
-    color: #c0c0c0;
-    line-height: 1.4;
+.news-header h2 {
+    font-size: 1.5rem;
+    margin: 0;
 }
 
-.news-content p {
-    font-size: 14px;
-    color: #c0c0c0;
-    line-height: 1.5;
-    margin: 0 0 20px;
-}
-
-.arrow {
-    position: absolute;
-    bottom: 16px;
-    right: 20px;
-    width: 22px;
-    height: 22px;
-    color: #c0c0c0;
-    transition: transform 0.2s ease, color 0.2s ease;
-}
-
-
-
-/* Responsive cho mobile */
-@media (max-width: 768px) {
-    .news-list {
-        grid-template-columns: 1fr;
-    }
-
-    .news-item {
-        flex-direction: column;
-    }
-
-    .news-item img {
-        width: 100%;
-        height: 220px;
-    }
-}
-
-
-/* Container để căn giữa nút */
-.see-more-container {
-    text-align: end;
-    margin-top: 24px;
-    width: 100%;
-}
-
-/* Kiểu dáng cho nút */
-.btn-see-more {
+.news-header .see-all-link {
+    font-size: 0.9rem;
     color: white;
     text-decoration: none;
     font-weight: 600;
-    transition: all 0.3s ease;
-    border: none;
-    cursor: pointer;
 }
 
-.btn-see-more:hover {
-    color: #0ea5e9;
+.news-list-sidebar {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+.news-item-sidebar a {
+    display: flex;
+    gap: 16px;
+    text-decoration: none;
+    color: #b3b0b0;
+    transition: opacity 0.2s ease;
+}
+
+.news-item-sidebar a:hover {
+    opacity: 0.8;
+}
+
+.news-item-sidebar img {
+    width: 80px;
+    height: 80px;
+    object-fit: cover;
+    border-radius: 6px;
+    flex-shrink: 0;
+}
+
+.news-item-sidebar h3 {
+    margin: 0;
+    font-size: 0.95rem;
+    line-height: 1.4;
+    display: -webkit-box;
+    line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+}
+
+.faq-column .section-title::before,
+.faq-column .section-title::after,
+.news-header .section-title::before,
+.news-header .section-title::after {
+    display: none !important;
 }
