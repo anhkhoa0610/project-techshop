@@ -179,6 +179,6 @@ class UserController extends Controller
     //ui user profile
     public function showProfile()
     {
-        return view('user.profile');
+        return view('ui-user.profile');
     }
 }
