@@ -65,7 +65,7 @@
                         </button>
 
                         <div class="user-menu" role="menu" aria-hidden="true">
-                            <a href="" class="dropdown-item">
+                            <a href="{{ asset('/user/profile') }}" class="dropdown-item">
                                 <i class="fa-solid fa-id-card me-2"></i> Tài khoản của tôi
                             </a>
                             @if (Auth::user()->role === "Admin")

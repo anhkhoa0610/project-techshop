@@ -21,7 +21,7 @@ class ReviewSeeder extends Seeder
 
         $faker = \Faker\Factory::create();
 
-        for ($i = 0; $i < 100; $i++) {
+        for ($i = 0; $i < 50; $i++) {
             Review::create([
                 'product_id' => $products->random()->product_id,
                 'user_id' => $users->random()->user_id,
