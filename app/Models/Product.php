@@ -177,6 +177,11 @@ class Product extends Model
         return $query->paginate(5);
     }
 
+
+
+
+
+    
     // sản phẩm cùng danh mục hoặc nhà phân phối 
     public function getFilteredProducts($categoryId = null, $supplierId = null)
     {
