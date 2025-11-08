@@ -36,7 +36,7 @@ class UserSeeder extends Seeder
                 'phone' => '09' . rand(10000000, 99999999),
                 'password' => Hash::make('123456'),
                 'address' => $faker->address(),
-                'role' => $faker->randomElement(['User', 'Admin']),
+                'role' => 'User',
                 'birth' => $faker->date('Y-m-d', '2005-01-01'),
                 'is_tdc_student' => $isTDC,
 
@@ -50,6 +50,36 @@ class UserSeeder extends Seeder
             'password' => Hash::make('123456'),
             'address' => $faker->address(),
             'role' => 'Admin',
+            'birth' => $faker->date('Y-m-d', '2005-01-01'),
+            'is_tdc_student' => 'false',
+        ]);
+        User::create([
+            'full_name' => 'Admin1',
+            'email' => 'admin1@gmail.com',
+            'phone' => '09' . rand(10000000, 99999999),
+            'password' => Hash::make('123456'),
+            'address' => $faker->address(),
+            'role' => 'Admin',
+            'birth' => $faker->date('Y-m-d', '2005-01-01'),
+            'is_tdc_student' => 'false',
+        ]);
+        User::create([
+            'full_name' => 'User',
+            'email' => 'user@gmail.com',
+            'phone' => '09' . rand(10000000, 99999999),
+            'password' => Hash::make('123456'),
+            'address' => $faker->address(),
+            'role' => 'User',
+            'birth' => $faker->date('Y-m-d', '2005-01-01'),
+            'is_tdc_student' => 'false',
+        ]);
+        User::create([
+            'full_name' => 'User1',
+            'email' => 'user1@gmail.com',
+            'phone' => '09' . rand(10000000, 99999999),
+            'password' => Hash::make('123456'),
+            'address' => $faker->address(),
+            'role' => 'User',
             'birth' => $faker->date('Y-m-d', '2005-01-01'),
             'is_tdc_student' => 'false',
         ]);
