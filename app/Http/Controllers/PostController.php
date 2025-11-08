@@ -13,23 +13,30 @@ class PostController extends Controller
      */
     public function index()
     {
-        // Lấy tất cả bài viết, sắp xếp mới nhất lên đầu, và phân trang
-        $posts = Post::latest()->paginate(10); // Ví dụ: 10 bài mỗi trang
+        $posts = Post::latest()->paginate(10); 
 
-        // Trả về view 'posts.index' và truyền biến $posts vào đó
         return view('posts.index', [
             'posts' => $posts,
         ]);
     }
 
-    /**
-     * Hiển thị chi tiết một bài viết.
-     */
-    public function show(Post $post) // Dùng Route Model Binding
+    public function show(Post $post) 
     {
-        // Laravel sẽ tự động tìm Post dựa trên ID trên URL
         return view('posts.show', [
             'post' => $post,
+        ]);
+    }
+
+    public function loadPostsApi(Request $request)
+    {
+        $posts = Post::latest()->paginate(5); 
+        return response()->json([
+            'success' => true,
+            'data' => $posts->items(),
+            'current_page' => $posts->currentPage(),
+            'last_page' => $posts->lastPage(),
+            'total' => $posts->total(),
+            'per_page' => $posts->perPage(),
         ]);
     }
 }

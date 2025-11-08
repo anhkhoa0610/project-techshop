@@ -8,13 +8,6 @@
     position: relative;
 }
 
-.glass3d {
-    background: rgba(255, 255, 255, 0.1);
-    backdrop-filter: blur(12px);
-    -webkit-backdrop-filter: blur(12px);
-    border: 1px solid rgba(255, 255, 255, 0.2);
-}
-
 .section-subtitle {
     font-size: 1.125rem;
     color: white;
@@ -481,23 +474,14 @@ section.review-video {
 
 
 #loading-overlay {
-    /* Ẩn mặc định */
     display: none;
-
-    /* Vị trí */
     position: fixed;
     top: 0;
     left: 0;
     width: 100%;
     height: 100%;
-
-    /* Nền đen mờ */
     background-color: rgba(0, 0, 0, 0.8);
-
-    /* Luôn ở trên cùng */
     z-index: 9999;
-
-    /* Dùng Flexbox để căn giữa spinner */
     justify-content: center;
     align-items: center;
 }
@@ -508,10 +492,9 @@ section.review-video {
     height: 60px;
     border-radius: 50%;
     border: 8px solid #f3f3f3;
-    /* Màu nền của vòng xoay */
     border-top: 8px solid #E50914;
-    /* Màu của vòng xoay (tôi dùng màu đỏ) */
     animation: spin 1s linear infinite;
+    margin: 0;
 }
 
 @keyframes spin {

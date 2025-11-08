@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\IndexController;
 use App\Http\Controllers\OrderController;
+use App\Http\Controllers\PostController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\CategoryController;
@@ -50,3 +51,5 @@ Route::post('/product/{id}/reviews', [UIProductDetailsController::class, 'store'
 Route::get('/promotions', [PromotionController::class, 'apiIndex']);
 
 Route::post('/voucher/check', [App\Http\Controllers\VoucherController::class, 'checkVoucher']);
+
+Route::get('/posts', [PostController::class,'loadPostsApi']);
