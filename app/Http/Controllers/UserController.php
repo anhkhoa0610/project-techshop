@@ -19,18 +19,18 @@ class UserController extends Controller
         $search = $request->input('search');
         $roleFilter = $request->input('role');
 
-        $users = User::when($search, function($query) use ($search) {
+        $users = User::when($search, function ($query) use ($search) {
             return $query->where('full_name', 'like', "%$search%")
-                        ->orWhere('email', 'like', "%$search%")
-                        ->orWhere('phone', 'like', "%$search%")
-                        ->orWhere('address', 'like', "%$search%");
+                ->orWhere('email', 'like', "%$search%")
+                ->orWhere('phone', 'like', "%$search%")
+                ->orWhere('address', 'like', "%$search%");
         })
-        ->when($roleFilter, function($query) use ($roleFilter) {
-            return $query->where('role', $roleFilter);
-        })
-        ->orderBy('user_id', 'desc')
-        ->latest()
-        ->paginate(10);
+            ->when($roleFilter, function ($query) use ($roleFilter) {
+                return $query->where('role', $roleFilter);
+            })
+            ->orderBy('user_id', 'desc')
+            ->latest()
+            ->paginate(10);
 
 
 
@@ -174,5 +174,11 @@ class UserController extends Controller
                 'message' => 'Lỗi khi xóa User: ' . $e->getMessage()
             ], 500);
         }
+    }
+
+    //ui user profile
+    public function showProfile()
+    {
+        return view('user.profile');
     }
 }
