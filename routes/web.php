@@ -156,6 +156,8 @@ Route::get('/tin-tuc/{post}', [PostController::class, 'show'])->name('posts.show
 // Route cho trang profile
 Route::middleware(['auth'])->group(function () {
     Route::get('/user/profile', [UserController::class, 'showProfile'])->name('user.profile');
-   Route::get('/user/change-password', [UserController::class, 'showChangePassword'])->name('user.changePassword');
+    Route::get('/user/edit', [UserController::class, 'showEditProfile'])->name('user.editProfile');
+    Route::put('/user/edit', [UserController::class, 'updateProfile'])->name('user.updateProfile');
+    Route::get('/user/change-password', [UserController::class, 'showChangePassword'])->name('user.changePassword');
     Route::put('/user/change-password', [UserController::class, 'updatePassword'])->name('user.updatePassword');
 });
