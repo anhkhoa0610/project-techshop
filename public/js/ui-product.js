@@ -126,18 +126,18 @@ document.addEventListener('DOMContentLoaded', function () {
                         });
 
                     return `
-                                 <div class="review-display border-bottom py-2">
-                                     <img class="user-avatar" src="/images/user-icon.jpg" alt="">
-                                     <div class="user-review">
-                                         <div class="d-flex">
-                                             <strong class="review-info">${review.user.full_name}</strong>
-                                             <p class="review-info ms-5">| ${formattedDate}</p>
-                                         </div>
-                                         <p class="review-info">${stars}</p>
-                                         <p class="review-info">${review.comment}</p>
-                                    </div>
-                                </div>
-                                            `;
+                     <div class="review-display border-bottom py-2">
+                         <img class="user-avatar" src="/images/user-icon.jpg" alt="">
+                         <div class="user-review">
+                             <div class="d-flex">
+                                 <strong class="review-info">${review.user.full_name}</strong>
+                                 <p class="review-info ms-5">| ${formattedDate}</p>
+                             </div>
+                             <p class="review-info">${stars}</p>
+                             <p class="review-info">${review.comment ?? ""}</p>
+                        </div>
+                    </div>
+                      `;
                 }).join('');
 
                 // Render thanh phân trang
@@ -148,14 +148,14 @@ document.addEventListener('DOMContentLoaded', function () {
                     const disabled = link.url === null ? 'disabled' : '';
 
                     return `
-                                 <button
-                                     class="btn btn-sm btn-outline-secondary mx-1 ${activeClass}"
-                                     ${disabled ? 'disabled' : ''}
-                                     data-url="${link.url || '#'}"
-                                 >
-                                     ${label}
-                                 </button>
-                                `;
+                     <button
+                         class="btn btn-sm btn-outline-secondary mx-1 ${activeClass}"
+                         ${disabled ? 'disabled' : ''}
+                         data-url="${link.url || '#'}"
+                     >
+                         ${label}
+                     </button>
+                         `;
                 }).join('');
 
                 // Gán sự kiện click cho từng nút
@@ -175,7 +175,6 @@ document.addEventListener('DOMContentLoaded', function () {
 
             })
             .catch(error => {
-                console.error('Lỗi khi tải review:', error);
                 reviewContainer.innerHTML = '<p>Đã xảy ra lỗi khi tải đánh giá!</p>';
                 paginationContainer.innerHTML = '';
             });
@@ -201,64 +200,243 @@ document.addEventListener('DOMContentLoaded', function () {
 
     document.getElementById('form-post-review').addEventListener('submit', async function (e) {
         e.preventDefault();
-        const formData = new FormData(this);
-        const response = await fetch('/api/product/{{ $product->product_id }}/reviews', {
-            method: 'POST',
-            headers: {
-                'Accept': 'application/json',
-            },
-            body: formData
-        });
+        // kiểm tra xem đã đăng nhập chưa
 
-        if (response.ok) {
-            Swal.fire('Thành công', 'đánh giá của bạn đã được lưu lại', 'success');
-
-            // Lấy rating từ form (nếu input có name="rating")
-            const rating = formData.get('rating');
-
-            // xử lý tăng số lượng đánh giá hiển thị ở từng mức sao
-            const span = document.querySelector(`.review-count[data-rating="${rating}"]`);
-            if (span) {
-                span.textContent = parseInt(span.textContent) + 1; // tăng lên 1
-            }
-
-            // xử lý tăng số lượng đánh giá hiển thị ở phần tất cả
-            const allSpan = document.querySelector('.review-count[data-rating=""]');
-            if (allSpan) {
-                allSpan.textContent = parseInt(allSpan.textContent) + 1;
-            }
-            // xử lý hiển thị lại số sao trung bình
-            const data = await response.json();
-            const rating_left = document.querySelector('.rating-left');
-            const rating_star_title = document.querySelector('.rating-star-title');
-
-            let avg;
-            if (data.data.avg) {
-                avg = parseFloat(data.data.avg).toFixed(1);
-            }
-            if (rating_left) {
-                rating_left.textContent = avg;
-            }
-            if (rating_star_title) {
-                rating_star_title.textContent = avg;
-            }
-
-
-            // Cập nhật nút lọc sao đang active đúng với số sao mà user vừa đánh giá
-            document.querySelectorAll('.button-filter-star').forEach(b => b.classList.remove('active'));
-            const activeBtn = document.querySelector(`.button-filter-star[data-rating="${rating}"]`);
-            if (activeBtn) activeBtn.classList.add('active');
-
-            // Gọi callback hàm để load lại review 
-            const apiBase = `/api/product/${productId}/reviews`;
-            const url = rating ? `${apiBase}?rating=${rating}` : apiBase;
-            loadReviews(url);
-
-            // Reset form
-            this.reset();
-        } else {
-            const errorData = await response.json();
-            Swal.fire('Lỗi', 'Lỗi khi gửi đánh giá, vui lòng thử lại sau.', 'error');
+        if (!check_user) {
+            Swal.fire({
+                icon: 'warning',
+                title: 'Vui lòng đăng nhập',
+                text: 'Bạn cần đăng nhập để gửi đánh giá sản phẩm.',
+                confirmButtonText: 'Đăng nhập ngay'
+            }).then(() => {
+                window.location.href = '/login';
+            });
+            return;
         }
+        else {
+            const formData = new FormData(this);
+            const response = await fetch(`/api/product/${productId}/reviews`, {
+                method: 'POST',
+                headers: {
+                    'Accept': 'application/json',
+                    'X-CSRF-TOKEN': window.csrfToken
+                },
+                body: formData
+            });
+
+            if (response.ok) {
+                Swal.fire('Thành công', 'đánh giá của bạn đã được lưu lại', 'success');
+
+                // Lấy rating từ form (nếu input có name="rating")
+                const rating = formData.get('rating');
+
+                // xử lý tăng số lượng đánh giá hiển thị ở từng mức sao
+                const span = document.querySelector(`.review-count[data-rating="${rating}"]`);
+                if (span) {
+                    span.textContent = parseInt(span.textContent) + 1; // tăng lên 1
+                }
+
+                // xử lý tăng số lượng đánh giá hiển thị ở phần tất cả
+                const allSpan = document.querySelector('.review-count[data-rating="all"]');
+                if (allSpan) {
+                    allSpan.textContent = parseInt(allSpan.textContent) + 1;
+                }
+                // xử lý hiển thị lại số sao trung bình
+                const data = await response.json();
+                const rating_left = document.querySelector('.rating-left');
+                const rating_star_title = document.querySelector('.rating-star-title');
+
+                let avg;
+                if (data.data.avg) {
+                    avg = parseFloat(data.data.avg).toFixed(1);
+                }
+                if (rating_left) {
+                    rating_left.textContent = avg;
+                }
+                if (rating_star_title) {
+                    rating_star_title.textContent = avg;
+                }
+                // cập nhật lại số tổng đánh giá trên title
+                const total_review = document.querySelector('.total-review');
+                total_review.textContent = parseInt(total_review.textContent) + 1;
+
+                // Cập nhật nút lọc sao đang active đúng với số sao mà user vừa đánh giá
+                document.querySelectorAll('.button-filter-star').forEach(b => b.classList.remove('active'));
+                const activeBtn = document.querySelector(`.button-filter-star[data-rating="${rating}"]`);
+                if (activeBtn) activeBtn.classList.add('active');
+
+                // Gọi callback hàm để load lại review 
+                const apiBase = `/api/product/${productId}/reviews`;
+                const url = rating ? `${apiBase}?rating=${rating}` : apiBase;
+                loadReviews(url);
+
+                // Reset form
+                this.reset();
+            } else {
+                const errorData = await response.json();
+                Swal.fire('Lỗi', 'Lỗi khi gửi đánh giá, vui lòng thử lại sau.', 'error');
+            }
+        }
+
     });
+    // xử lý thêm vào giỏ hàng và mua ngay
+    const btnAddCart = document.querySelector('.btn-add-cart');
+    const btnBuyNow = document.querySelector('.btn-buy-now');
+    const inputQuantity = document.querySelector('.input-quantity');
+    const csrfToken = document.querySelector('meta[name="csrf-token"]').content;
+    if (btnAddCart) {
+        btnAddCart.addEventListener('click', async () => {
+            const quantity = parseInt(inputQuantity.value) || 1;
+
+            console.log(`🛒 Thêm sản phẩm #${productId} với số lượng ${quantity}`);
+
+            try {
+                const response = await fetch('/cart/add', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Accept': 'application/json',
+                        'X-CSRF-TOKEN': csrfToken
+                    },
+                    body: JSON.stringify({
+                        product_id: productId,
+                        quantity: quantity
+                    })
+                });
+
+                // Nếu phản hồi không phải JSON, đọc text để debug
+                const text = await response.text();
+                let data;
+
+                try {
+                    data = JSON.parse(text);
+                } catch (e) {
+                    console.error('⚠️ Server trả HTML thay vì JSON:\n', text);
+                    alert('❌ Lỗi máy chủ: phản hồi không hợp lệ (HTML thay vì JSON).');
+                    return;
+                }
+
+                if (data.success) {
+                    alert(data.message);
+                } else {
+                    alert(data.message || "⚠️ Có lỗi xảy ra khi thêm vào giỏ hàng!");
+                }
+
+            } catch (err) {
+                console.error('❌ Lỗi fetch hoặc kết nối:', err);
+                alert("Không thể kết nối tới máy chủ!");
+            }
+        });
+    }
+
+    // =========== MUA NGAY ===========
+    if (btnBuyNow) {
+        btnBuyNow.addEventListener('click', async () => {
+            const quantity = parseInt(inputQuantity.value) || 1;
+
+            try {
+                const response = await fetch('/cart/add', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Accept': 'application/json',
+                        'X-CSRF-TOKEN': csrfToken
+                    },
+                    body: JSON.stringify({
+                        product_id: productId,
+                        quantity: quantity
+                    })
+                });
+
+                const text = await response.text();
+                let data;
+
+                try {
+                    data = JSON.parse(text);
+                } catch (e) {
+                    console.error('⚠️ Server trả HTML thay vì JSON:\n', text);
+                    alert('❌ Lỗi máy chủ: phản hồi không hợp lệ (HTML thay vì JSON).');
+                    return;
+                }
+
+                if (data.success) {
+                    window.location.href = '/checkout';
+                } else {
+                    alert(data.message || "Không thể mua ngay, thử lại sau!");
+                }
+
+            } catch (err) {
+                console.error('❌ Lỗi fetch hoặc kết nối:', err);
+                alert("Không thể kết nối tới máy chủ!");
+            }
+        });
+    }
+
+    const categoryBtn = document.querySelector('.category-button');
+    const supplierBtn = document.querySelector('.supplier-button');
+    const display = document.querySelector('.related-display');
+
+    // Hàm load sản phẩm
+    function loadProducts(type, id) {
+        let url = `${window.location.origin}/api/products/filter`;
+        if (type === 'category') {
+            url += `?category_id=${id}`;
+        } else if (type === 'supplier') {
+            url += `?supplier_id=${id}`;
+        }
+
+        // Gọi API
+        fetch(url)
+            .then(response => response.json())
+            .then(data => {
+                if (data.success && data.data.length > 0) {
+                    renderProducts(data.data);
+                } else {
+                    display.innerHTML = `<p class="text-center text-muted py-4">Không có sản phẩm phù hợp.</p>`;
+                }
+            })
+            .catch(err => {
+                console.error('Lỗi khi tải sản phẩm:', err);
+                display.innerHTML = `<p class="text-center text-danger py-4">Đã xảy ra lỗi khi tải sản phẩm.</p>`;
+            });
+    }
+
+    // Hàm render sản phẩm
+    function renderProducts(products) {
+        display.innerHTML = ''; // xoá sản phẩm cũ
+        products.forEach(prod => {
+            const imageUrl = prod.cover_image
+                ? `/uploads/${prod.cover_image}`
+                : `/images/blank_product.png`;
+
+            const productHtml = `
+                <div class="col-md-3 mb-4 d-inline-block">
+                    <div class="card h-100 shadow-sm">
+                        <a href="http://127.0.0.1:8000/product-details/${prod.product_id}">
+                            <img src="${imageUrl}" class="card-img-top" alt="${prod.product_name}">
+                        </a>
+                        <div class="card-body text-center">
+                            <h6 class="fw-bold">${prod.product_name}</h6>
+                            <p class="text-danger mb-0">${prod.price ? prod.price.toLocaleString('vi-VN') + ' ₫' : 'Liên hệ'}</p>
+                        </div>
+                    </div>
+                </div>
+            `;
+            display.insertAdjacentHTML('beforeend', productHtml);
+        });
+    }
+
+    // Bắt sự kiện click nút Danh mục
+    categoryBtn.addEventListener('click', function () {
+        const categoryId = this.dataset.category_id;
+        loadProducts('category', categoryId);
+    });
+
+    // Bắt sự kiện click nút Nhà phân phối
+    supplierBtn.addEventListener('click', function () {
+        const supplierId = this.dataset.supplier_id;
+        loadProducts('supplier', supplierId);
+    });
+
+
 });
