@@ -34,7 +34,7 @@
             </div>
 
             <div class="profile-actions">
-                <a href="#" class="btn btn-edit">Chỉnh sửa</a>
+                <a href="{{ route('user.editProfile') }}" class="btn btn-edit">Chỉnh sửa</a>
                 <a href="{{ route('user.changePassword') }}" class="btn btn-password">Thay mật khẩu</a>
                 <!-- <form action="#" method="POST" onsubmit="return confirm('Bạn có chắc muốn xóa tài khoản này không?');">
                     @csrf

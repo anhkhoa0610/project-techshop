@@ -182,38 +182,69 @@ class UserController extends Controller
         return view('ui-user.profile');
     }
     //ui user changePassword
-    public function showChangePassword(){
+    public function showChangePassword()
+    {
         return view('ui-user.change-password');
     }
 
     public function updatePassword(Request $request)
-{
-    $request->validate([
-        'current_password' => 'required',
-        'new_password' => [
-            'required',
-            'min:6',
-            'regex:/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[^A-Za-z\d]).{8,}$/',
-            'confirmed'
-        ],
-    ], [
-        'current_password.required' => 'Vui lòng nhập mật khẩu hiện tại.',
-        'new_password.required' => 'Vui lòng nhập mật khẩu mới.',
-        'new_password.min' => 'Mật khẩu mới phải có ít nhất 8 ký tự.',
-        'new_password.regex' => 'Mật khẩu mới phải chứa chữ hoa, chữ thường, số và ký tự đặc biệt.',
-        'new_password.confirmed' => 'Xác nhận mật khẩu mới không khớp.',
-    ]);
+    {
+        $request->validate([
+            'current_password' => 'required',
+            'new_password' => [
+                'required',
+                'min:6',
+                'regex:/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[^A-Za-z\d]).{8,}$/',
+                'confirmed'
+            ],
+        ], [
+            'current_password.required' => 'Vui lòng nhập mật khẩu hiện tại.',
+            'new_password.required' => 'Vui lòng nhập mật khẩu mới.',
+            'new_password.min' => 'Mật khẩu mới phải có ít nhất 8 ký tự.',
+            'new_password.regex' => 'Mật khẩu mới phải chứa chữ hoa, chữ thường, số và ký tự đặc biệt.',
+            'new_password.confirmed' => 'Xác nhận mật khẩu mới không khớp.',
+        ]);
 
-    $user = auth()->user();
+        $user = auth()->user();
 
-    if (!\Hash::check($request->current_password, $user->password)) {
-        return back()->withErrors(['current_password' => 'Mật khẩu hiện tại không chính xác.']);
+        if (!\Hash::check($request->current_password, $user->password)) {
+            return back()->withErrors(['current_password' => 'Mật khẩu hiện tại không chính xác.']);
+        }
+
+        $user->update([
+            'password' => Hash::make($request->new_password),
+        ]);
+
+        return redirect()->route('user.profile')->with('success', 'Đổi mật khẩu thành công!');
+    }
+    public function showEditProfile()
+    {
+        return view('ui-user.edit-profile');
     }
 
-    $user->update([
-        'password' => Hash::make($request->new_password),
-    ]);
+    public function updateProfile(Request $request)
+    {
+        $user = auth()->user();
 
-    return redirect()->route('user.profile')->with('success', 'Đổi mật khẩu thành công!');
-}
+        $validated = $request->validate([
+            'full_name' => 'required|string|max:100',
+            'email' => 'required|string|email|max:100|unique:users,email,' . $user->user_id . ',user_id',
+            'phone' => 'nullable|string|max:10',
+            'address' => 'nullable|string|max:255',
+            'birth' => 'required|date|before_or_equal:today|after:1900-01-01',
+        ], [
+            'full_name.required' => 'Vui lòng nhập họ tên.',
+            'email.required' => 'Vui lòng nhập email.',
+            'email.email' => 'Email không hợp lệ.',
+            'email.unique' => 'Email này đã được sử dụng.',
+            'birth.before_or_equal' => 'Ngày sinh không thể ở tương lai.',
+            'birth.after' => 'Ngày sinh không hợp lệ (phải sau 1900).'
+        ]);
+
+        $validated['is_tdc_student'] = str_ends_with($request->email, '@mail.tdc.edu.vn') ? 'true' : 'false';
+
+        $user->update($validated);
+
+        return redirect()->route('user.profile')->with('success', 'Cập nhật thông tin cá nhân thành công!');
+    }
 }
