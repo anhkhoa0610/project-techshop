@@ -4,6 +4,7 @@
 
 @section('content')
     <div id="loading-overlay">
+        <div class="logo"></div>
         <div class="spinner"></div>
     </div>
     <link rel="stylesheet" href="{{ asset('css/index-chatbot.css') }}">
@@ -57,6 +58,11 @@
 
     <!-- Categories Section -->
     <div class="background-overlay">
+        <div class="breadcrumb-container" style="margin-left: 5vw">
+            <x-breadcrumb :items="[
+            ['title' => $currentCategory?->category_name ?? 'Toàn bộ sản phẩm']
+        ]" />
+        </div>
         <section class="categories">
             <div class="container-fluid">
                 <div class="section-header">
@@ -201,20 +207,20 @@
                                             </h3>
 
                                             <?php
-                                                $specsMap = $product->specs->pluck('value', 'name');
-                                                $coreSpecsData = [
-                                                    'CPU' => $specsMap->first(fn($v, $k) => Str::contains(strtolower($k), ['cpu', 'chip', 'vi xử lý'])),
-                                                    'RAM' => $specsMap->first(fn($v, $k) => Str::contains(strtolower($k), 'ram')),
-                                                    'GPU' => $specsMap->first(fn($v, $k) => Str::contains(strtolower($k), ['gpu', 'đồ họa', 'vga'])),
-                                                    'Storage' => $specsMap->first(fn($v, $k) => Str::contains(strtolower($k), ['dung lượng', 'storage', 'ssd', 'hdd'])),
-                                                ];
-                                                $specIconFiles = [
-                                                    'CPU' => asset('images/icons/cpu.svg'),
-                                                    'RAM' => asset('images/icons/ram.svg'),
-                                                    'GPU' => asset('images/icons/gpu.svg'),
-                                                    'Storage' => asset('images/icons/storage.svg'),
-                                                ];
-                                            ?>
+                        $specsMap = $product->specs->pluck('value', 'name');
+                        $coreSpecsData = [
+                            'CPU' => $specsMap->first(fn($v, $k) => Str::contains(strtolower($k), ['cpu', 'chip', 'vi xử lý'])),
+                            'RAM' => $specsMap->first(fn($v, $k) => Str::contains(strtolower($k), 'ram')),
+                            'GPU' => $specsMap->first(fn($v, $k) => Str::contains(strtolower($k), ['gpu', 'đồ họa', 'vga'])),
+                            'Storage' => $specsMap->first(fn($v, $k) => Str::contains(strtolower($k), ['dung lượng', 'storage', 'ssd', 'hdd'])),
+                        ];
+                        $specIconFiles = [
+                            'CPU' => asset('images/icons/cpu.svg'),
+                            'RAM' => asset('images/icons/ram.svg'),
+                            'GPU' => asset('images/icons/gpu.svg'),
+                            'Storage' => asset('images/icons/storage.svg'),
+                        ];
+                                                                                    ?>
 
                                             <div class="specs-grid-container">
                                                 @foreach ($coreSpecsData as $name => $value)
@@ -235,9 +241,9 @@
 
                                             <div class="product-rating">
                                                 <?php
-                                                    $rating = round($product->reviews_avg_rating ?? 0, 1);
-                                                    $count = $product->reviews_count ?? 0;
-                                                ?>
+                        $rating = round($product->reviews_avg_rating ?? 0, 1);
+                        $count = $product->reviews_count ?? 0;
+                                                                                        ?>
                                                 <span class="stars" style="color: #ffc107;">⭐</span>
                                                 <span class="rating-score">{{ $rating }}</span>
                                                 <span class="reviews">({{ $count }} đánh giá)</span>
@@ -268,13 +274,13 @@
                 </div>
                 <div id="load-more-container" class="text-center my-4">
                     @if ($allProducts->hasMorePages())
-                        <?php
-                            $remaining = $allProducts->total() - $allProducts->count();
-                            $nextBatch = min($allProducts->perPage(), $remaining);
-                        ?>
-                        <button id="btn-load-more" class="btn btn-lg glass3d">
-                            Xem thêm {{ $nextBatch }} / {{ $remaining }} sản phẩm
-                        </button>
+                                    <?php
+                        $remaining = $allProducts->total() - $allProducts->count();
+                        $nextBatch = min($allProducts->perPage(), $remaining);
+                                                                ?>
+                                    <button id="btn-load-more" class="btn btn-lg glass3d">
+                                        Xem thêm {{ $nextBatch }} / {{ $remaining }} sản phẩm
+                                    </button>
                     @endif
                 </div>
             </div>
@@ -351,10 +357,10 @@
                                 </summary>
                                 <div class="accordion-content">
                                     <p>Tại Techshop, bạn có thể thanh toán bằng nhiều hình thức khác nhau như:
-                                        <ul>
-                                            <li>VNPAY</li>
-                                            <li>Momo</li>
-                                        </ul>
+                                    <ul>
+                                        <li>VNPAY</li>
+                                        <li>Momo</li>
+                                    </ul>
                                     </p>
                                 </div>
                             </details>
@@ -364,34 +370,34 @@
                     <div class="news-column glass3d">
                         <div class="news-header">
                             <h2 class="section-title">
-                            <span>T</span>
-                            <span>i</span>
-                            <span>n&nbsp;</span>
-                            <span>t</span>
-                            <span>ứ</span>
-                            <span>c&nbsp;</span>
-                            <span>c</span>
-                            <span>ô</span>
-                            <span>n</span>
-                            <span>g&nbsp;</span>
-                            <span>n</span>
-                            <span>g</span>
-                            <span>h</span>
-                            <span>ệ</span>
-                        </h2>
+                                <span>T</span>
+                                <span>i</span>
+                                <span>n&nbsp;</span>
+                                <span>t</span>
+                                <span>ứ</span>
+                                <span>c&nbsp;</span>
+                                <span>c</span>
+                                <span>ô</span>
+                                <span>n</span>
+                                <span>g&nbsp;</span>
+                                <span>n</span>
+                                <span>g</span>
+                                <span>h</span>
+                                <span>ệ</span>
+                            </h2>
                             <a href="{{ route('posts.index') }}" class="see-all-link">Xem tất cả ></a>
                         </div>
 
                         <div class="news-list-sidebar">
                             @foreach($posts as $post)
-                            <article class="news-item-sidebar">
-                                <a href="{{ route('posts.show', $post->id) }}">
-                                    <img src="{{ $post->cover_image }}" alt="">
-                                    <div>
-                                        <h3>{{ $post->title }}</h3>
-                                    </div>
-                                </a>
-                            </article>
+                                <article class="news-item-sidebar">
+                                    <a href="{{ route('posts.show', $post->id) }}">
+                                        <img src="{{ $post->cover_image }}" alt="">
+                                        <div>
+                                            <h3>{{ $post->title }}</h3>
+                                        </div>
+                                    </a>
+                                </article>
                             @endforeach
                         </div>
                     </div>
