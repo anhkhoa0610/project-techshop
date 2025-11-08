@@ -372,5 +372,71 @@ document.addEventListener('DOMContentLoaded', function () {
         });
     }
 
+    const categoryBtn = document.querySelector('.category-button');
+    const supplierBtn = document.querySelector('.supplier-button');
+    const display = document.querySelector('.related-display');
+
+    // Hàm load sản phẩm
+    function loadProducts(type, id) {
+        let url = `${window.location.origin}/api/products/filter`;
+        if (type === 'category') {
+            url += `?category_id=${id}`;
+        } else if (type === 'supplier') {
+            url += `?supplier_id=${id}`;
+        }
+
+        // Gọi API
+        fetch(url)
+            .then(response => response.json())
+            .then(data => {
+                if (data.success && data.data.length > 0) {
+                    renderProducts(data.data);
+                } else {
+                    display.innerHTML = `<p class="text-center text-muted py-4">Không có sản phẩm phù hợp.</p>`;
+                }
+            })
+            .catch(err => {
+                console.error('Lỗi khi tải sản phẩm:', err);
+                display.innerHTML = `<p class="text-center text-danger py-4">Đã xảy ra lỗi khi tải sản phẩm.</p>`;
+            });
+    }
+
+    // Hàm render sản phẩm
+    function renderProducts(products) {
+        display.innerHTML = ''; // xoá sản phẩm cũ
+        products.forEach(prod => {
+            const imageUrl = prod.cover_image
+                ? `/uploads/${prod.cover_image}`
+                : `/images/blank_product.png`;
+
+            const productHtml = `
+                <div class="col-md-3 mb-4 d-inline-block">
+                    <div class="card h-100 shadow-sm">
+                        <a href="http://127.0.0.1:8000/product-details/${prod.product_id}">
+                            <img src="${imageUrl}" class="card-img-top" alt="${prod.product_name}">
+                        </a>
+                        <div class="card-body text-center">
+                            <h6 class="fw-bold">${prod.product_name}</h6>
+                            <p class="text-danger mb-0">${prod.price ? prod.price.toLocaleString('vi-VN') + ' ₫' : 'Liên hệ'}</p>
+                        </div>
+                    </div>
+                </div>
+            `;
+            display.insertAdjacentHTML('beforeend', productHtml);
+        });
+    }
+
+    // Bắt sự kiện click nút Danh mục
+    categoryBtn.addEventListener('click', function () {
+        const categoryId = this.dataset.category_id;
+        loadProducts('category', categoryId);
+    });
+
+    // Bắt sự kiện click nút Nhà phân phối
+    supplierBtn.addEventListener('click', function () {
+        const supplierId = this.dataset.supplier_id;
+        loadProducts('supplier', supplierId);
+    });
+
 
 });

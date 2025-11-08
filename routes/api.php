@@ -50,3 +50,5 @@ Route::post('/product/{id}/reviews', [UIProductDetailsController::class, 'store'
 Route::get('/promotions', [PromotionController::class, 'apiIndex']);
 
 Route::post('/voucher/check', [App\Http\Controllers\VoucherController::class, 'checkVoucher']);
+
+Route::get('/products/filter', [UIProductDetailsController::class, 'filterProducts']);

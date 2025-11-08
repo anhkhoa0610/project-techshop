@@ -194,9 +194,19 @@
 
             </div>
 
-            {{-- Hiển thị nút phân trang --}}
+            {{-- Hiển thị nút phân trang của đánh giá--}}
             <div class="pagination mt-3 text-center pagination-review "></div>
 
+        </div>
+        <div class="container glass3d related-product">
+            <div class="title-button" >
+                <h2 class="related-title" > Sản phẩm liên quan </h2>
+                <div class="related-button">
+                    <button class="category-button btn btn-primary" data-category_id="{{ $product->category_id }}" >Danh mục</button>
+                    <button class="supplier-button btn btn-primary" data-supplier_id="{{ $product->supplier_id }}" >Nhà phân phối</button>
+                </div>
+            </div>
+            <div class="related-display container "></div>
         </div>
     </div>
     <script>

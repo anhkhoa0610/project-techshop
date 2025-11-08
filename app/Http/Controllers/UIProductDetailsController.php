@@ -54,4 +54,18 @@ class UIProductDetailsController extends Controller
             ]
         ], 201);
     }
+
+    public function filterProducts(Request $request)
+    {
+        $categoryId = $request->input('category_id');
+        $supplierId = $request->input('supplier_id');
+
+        $products = (new Product)->getFilteredProducts($categoryId, $supplierId);
+
+        return response()->json([
+            'success' => true,
+            'data' => $products
+        ]);
+    }
+
 }
