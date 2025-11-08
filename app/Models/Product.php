@@ -182,4 +182,20 @@ class Product extends Model
         return $this->hasMany(Spec::class, 'product_id');
     }
 
+    // sản phẩm cùng danh mục hoặc nhà phân phối 
+    public function getFilteredProducts($categoryId = null, $supplierId = null)
+    {
+        $query = self::query()->with(['category', 'supplier'])->latest('created_at');
+
+        if ($categoryId) {
+            $query->where('category_id', $categoryId);
+        }
+
+        if ($supplierId) {
+            $query->where('supplier_id', $supplierId);
+        }
+
+        return $query->take(8)->get();
+    }
+
 }
