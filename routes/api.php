@@ -54,3 +54,4 @@ Route::post('/voucher/check', [App\Http\Controllers\VoucherController::class, 'c
 
 Route::get('/posts', [PostController::class,'loadPostsApi']);
 Route::get('/products/filter', [UIProductDetailsController::class, 'filterProducts']);
+Route::get('/vouchers', [VoucherController::class, 'vouchers']);

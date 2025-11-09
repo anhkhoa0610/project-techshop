@@ -181,5 +181,10 @@ class Product extends Model
     {
         return $this->hasMany(Spec::class, 'product_id');
     }
+    
+    public function discounts()
+    {
+        return $this->hasMany(ProductDiscount::class, 'product_id', 'product_id');
+    }
 
 }
