@@ -1,3 +1,4 @@
+const csrfToken = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
 
 // Debounce function
 function debounce(fn, delay) {
@@ -103,7 +104,8 @@ async function handleAddToCart(button) {
             method: "POST",
             headers: {
                 "Content-Type": "application/json",
-                "Accept": "application/json" 
+                "Accept": "application/json",
+                "X-CSRF-TOKEN": csrfToken
             },
             body: JSON.stringify({ user_id: userId, product_id: productId, quantity })
         });

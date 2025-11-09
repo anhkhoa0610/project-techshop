@@ -34,7 +34,7 @@
                     <span></span>
                     <span></span>
                 </button>
-                <div class="logo">TechStore</div>
+                <div class="logo"></div>
             </div>
 
             <nav class="nav desktop-only">
@@ -49,7 +49,7 @@
                 <div class="search-box desktop-only">
                     <input type="search" id="header-search-input" placeholder="Tìm kiếm sản phẩm..." class="search-input">
                     <button class="search-btn" id="header-search-btn">🔍</button>
-                    <div id="search-results" class="search-results"></div>
+                    <div id="search-results" class="search-results glass3d"></div>
 
                 </div>
                 <button class="cart-btn" onclick="window.location.href='{{ route('cart.index') }}'">
@@ -65,7 +65,7 @@
                         </button>
 
                         <div class="user-menu" role="menu" aria-hidden="true">
-                            <a href="" class="dropdown-item">
+                            <a href="{{ asset('/user/profile') }}" class="dropdown-item">
                                 <i class="fa-solid fa-id-card me-2"></i> Tài khoản của tôi
                             </a>
                             @if (Auth::user()->role === "Admin")

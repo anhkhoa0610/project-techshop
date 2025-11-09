@@ -15,6 +15,7 @@ class Category extends Model
     protected $fillable = [
         'category_name',
         'description',
+        'cover_image',
     ];
 
     // Một danh mục có thể có nhiều sản phẩm

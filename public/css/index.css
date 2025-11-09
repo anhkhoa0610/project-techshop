@@ -9,13 +9,6 @@
     position: relative;
 }
 
-.glass3d {
-    background: rgba(255, 255, 255, 0.1);
-    backdrop-filter: blur(12px);
-    -webkit-backdrop-filter: blur(12px);
-    border: 1px solid rgba(255, 255, 255, 0.2);
-}
-
 .section-subtitle {
     font-size: 1.125rem;
     color: white;
@@ -50,28 +43,18 @@
 
 
 
-.category-icon {
-    display: inline-flex;
-    padding: 1rem;
-    border-radius: 1rem;
-    margin-bottom: 1rem;
-    font-size: 2rem;
-    transition: transform 0.3s ease;
+.category-image {
+    width: 200px;
+    height: 120px;
+    margin: 0px auto 10px;
+
+    /* CSS cho ảnh nền */
+    background-size: cover;
+    /* Đảm bảo ảnh lấp đầy div */
+    background-position: center;
+    /* Căn ảnh vào giữa */
 }
 
-.category-card:hover .category-icon {
-    transform: scale(1.1);
-}
-
-.category-icon.primary {
-    background: #0ea5e9;
-    color: white;
-}
-
-.category-icon.accent {
-    background: #ea580c;
-    color: white;
-}
 
 
 .category-pagination {
@@ -91,54 +74,6 @@
         0 0 30px 15px rgba(67, 55, 136, 0.6),
         0 15px 50px 0px rgba(3, 8, 22, 0.4),
         0 30px 80px 0px rgba(3, 8, 22, 0.2);
-}
-
-#page-input {
-    width: 50px;
-    height: 40px;
-    text-align: center;
-    border: 2px solid #9CA3AF;
-    border-radius: 0.5rem;
-    margin: 0 8px;
-    font-weight: 600;
-    transition: border-color 0.15s, box-shadow 0.15s;
-    background: #f8fafc;
-    color: #333;
-}
-
-#page-input:focus {
-    border-color: #0d6efd;
-    box-shadow: 0 0 0 2px rgba(13, 110, 253, 0.15);
-    outline: none;
-    background: #fff;
-}
-
-#page-input:hover {
-    border-color: #0d6efd;
-}
-
-.page-btn {
-    border-radius: 0.5rem;
-    border: none;
-    background: #0d6efd;
-    color: #fff;
-    font-weight: 600;
-    cursor: pointer;
-    transition: background 0.15s, box-shadow 0.15s;
-}
-
-.page-btn:hover,
-.page-btn:focus {
-    background: #0056b3;
-    box-shadow: 0 2px 8px rgba(13, 110, 253, 0.12);
-    outline: none;
-}
-
-
-input[type=number]::-webkit-inner-spin-button,
-input[type=number]::-webkit-outer-spin-button {
-    -webkit-appearance: none;
-    margin: 0;
 }
 
 
@@ -261,7 +196,7 @@ input[type=number]::-webkit-outer-spin-button {
     overflow: hidden;
     display: flex;
     flex-direction: column;
-    height: 35rem;
+    height: 40rem;
     width: 300px;
     position: relative;
     transition: all 0.5s cubic-bezier(0.25, 0.8, 0.25, 1);
@@ -276,39 +211,24 @@ input[type=number]::-webkit-outer-spin-button {
     margin-left: 2rem;
 }
 
-.products {
-    padding: 0;
-}
-
-.products-grid {
-    display: grid;
-    grid-template-columns: 1fr;
-    gap: 2rem;
-
-}
-
-.grid-custom {
-    padding: 40px;
-}
-
-
-
 @media (min-width: 768px) {
-    .products-grid {
+    .video-grid {
         grid-template-columns: repeat(2, 1fr);
+
     }
 
-    .video-grid {
+    .products-grid {
+
         grid-template-columns: repeat(2, 1fr);
     }
 }
 
 @media (min-width: 1024px) {
-    .products-grid {
+    .video-grid {
         grid-template-columns: repeat(4, 1fr);
     }
 
-    .video-grid {
+    .products-grid {
         grid-template-columns: repeat(4, 1fr);
     }
 }
@@ -351,7 +271,7 @@ input[type=number]::-webkit-outer-spin-button {
     position: absolute;
     top: 1rem;
     left: 1rem;
-    background: #ea580c;
+    background: linear-gradient(135deg, #6eb5b8, #072246);
     color: white;
     padding: 0.25rem 0.75rem;
     border-radius: 9999px;
@@ -371,7 +291,7 @@ input[type=number]::-webkit-outer-spin-button {
     position: absolute;
     top: 1rem;
     right: 1rem;
-    background: linear-gradient(135deg, #ea580c, #dc2626);
+    background: linear-gradient(135deg, #6eb5b8, #072246);
     color: white;
     padding: 0.25rem 0.5rem;
     border-radius: 9999px;
@@ -388,6 +308,10 @@ input[type=number]::-webkit-outer-spin-button {
     font-weight: 600;
     margin-bottom: 0.5rem;
     transition: color 0.3s ease;
+    color: white;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
 }
 
 .product-card:hover .product-name {
@@ -399,6 +323,7 @@ input[type=number]::-webkit-outer-spin-button {
     align-items: center;
     gap: 5px;
     margin: 8px 0;
+    color: white;
 }
 
 .product-rating .stars i {
@@ -546,70 +471,6 @@ input[type=number]::-webkit-outer-spin-button {
     color: #6b7280;
 }
 
-
-/* Sidebar styles */
-.sidebar {
-    width: 25rem;
-    height: 55rem;
-    z-index: 1000;
-    transition: transform 0.3s cubic-bezier(.77, 0, .18, 1);
-    border-width: 1px 1px 1px 0;
-    border-style: solid;
-    display: flex;
-    flex-direction: column;
-    padding: 10px 15px;
-    border-radius: 0 15px 15px 0;
-    color: white;
-    transform: translateX(-100%);
-    opacity: 0;
-    /* Ẩn hoàn toàn */
-    transition: all 1.2s cubic-bezier(0.25, 0.8, 0.25, 1);
-}
-
-.sidebar.sidebar-active {
-    transform: translateX(0);
-    opacity: 1;
-}
-
-.sidebar:hover {
-    transform: translateY(-6px) scale(1.02);
-    box-shadow:
-        0 0 15px 7px rgba(109, 142, 214, 0.8),
-        0 0 30px 15px rgba(67, 55, 136, 0.6),
-        0 15px 50px 0px rgba(3, 8, 22, 0.4),
-        0 30px 80px 0px rgba(3, 8, 22, 0.2);
-}
-
-.sidebar-header {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    padding: 18px 20px 8px 0px;
-    border-bottom: 1px solid #eee;
-    margin-top: 1rem;
-}
-
-.sidebar-title {
-    font-weight: bold;
-    font-size: 1.5rem;
-}
-
-#filterForm .btn {
-    width: fit-content !important;
-    padding: 0.5rem 1rem;
-    margin-top: 1rem;
-}
-
-
-/* Responsive: ẩn sidebar trên mobile nếu muốn */
-@media (max-width: 600px) {
-    .sidebar {
-        width: 80vw;
-    }
-}
-
-
-
 .container-fluid {
     margin-left: 0;
     padding-left: 0;
@@ -714,14 +575,6 @@ input[type=number]::-webkit-outer-spin-button {
     pointer-events: none;
 }
 
-/* .product-info {
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    padding: 10px;
-    background: #fafafa;
-} */
-
 .product-thumb {
     width: 35px;
     height: 35px;
@@ -729,29 +582,9 @@ input[type=number]::-webkit-outer-spin-button {
     object-fit: cover;
 }
 
-/* .product-name {
-    font-size: 13px;
-    font-weight: 500;
-    color: #333;
-} */
-
-
-
-.toggle-password {
-    position: absolute;
-    top: 50%;
-    right: 10px;
-    transform: translateY(-50%);
-    cursor: pointer;
-    z-index: 5;
-}
-
-.input-wrapper {
-    position: relative;
-}
 
 .product-meta {
-    margin-top: 8px;
+    margin-top: -10px;
     font-size: 0.9rem;
     color: #bbb8b8;
     line-height: 1.4;
@@ -767,7 +600,168 @@ section.review-video {
     margin-top: 15vh;
 }
 
-.show-by-category {
+.specs-grid-container {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 6px;
+    margin-top: 5px;
+}
+
+
+.spec-grid-item {
+    display: flex;
+    align-items: center;
+    gap: 3px;
+    overflow: hidden;
+}
+
+
+.spec-grid-icon {
+    width: 24px;
+    height: 24px;
+    flex-shrink: 0;
+    color: white !important;
+    margin-right: 2px;
+}
+
+.spec-grid-text {
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+}
+
+.spec-grid-name {
+    font-size: 0.8rem;
+    color: #6c757d;
+    text-transform: uppercase;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    overflow: hidden;
+}
+
+.spec-grid-value {
+    font-size: 0.8rem;
+    font-weight: 600;
+    color: #6c757d;
+    ;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    overflow: hidden;
+}
+
+/*news*/
+
+.news-list {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 28px;
     padding: 40px;
+    width: 90vw;
+    margin-left: 5vw;
     border-radius: 15px;
+}
+
+.news-item {
+    display: flex;
+    border-radius: 12px;
+    overflow: hidden;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    position: relative;
+}
+
+.news-item:hover {
+    transform: translateY(-4px);
+    box-shadow:
+        0 0 15px 7px rgba(109, 142, 214, 0.8),
+        0 0 30px 15px rgba(67, 55, 136, 0.6),
+        0 15px 50px 0px rgba(3, 8, 22, 0.4),
+        0 30px 80px 0px rgba(3, 8, 22, 0.2);
+}
+
+.news-item img {
+    width: 40%;
+    height: auto;
+    object-fit: cover;
+    transition: transform 0.4s ease;
+}
+
+.news-content {
+    padding: 16px 20px;
+    position: relative;
+    flex: 1;
+}
+
+.news-content h2 a {
+    color: white !important;
+}
+
+.news-content .date {
+    font-size: 13px;
+    color: #6b7280 !important;
+    margin-bottom: 6px;
+}
+
+.news-content h3 {
+    font-size: 17px;
+    font-weight: 600;
+    margin: 0 0 8px;
+    color: #c0c0c0;
+    line-height: 1.4;
+}
+
+.news-content p {
+    font-size: 14px;
+    color: #c0c0c0;
+    line-height: 1.5;
+    margin: 0 0 20px;
+}
+
+.arrow {
+    position: absolute;
+    bottom: 16px;
+    right: 20px;
+    width: 22px;
+    height: 22px;
+    color: #c0c0c0;
+    transition: transform 0.2s ease, color 0.2s ease;
+}
+
+
+
+/* Responsive cho mobile */
+@media (max-width: 768px) {
+    .news-list {
+        grid-template-columns: 1fr;
+    }
+
+    .news-item {
+        flex-direction: column;
+    }
+
+    .news-item img {
+        width: 100%;
+        height: 220px;
+    }
+}
+
+
+/* Container để căn giữa nút */
+.see-more-container {
+    text-align: end;
+    margin-top: 24px;
+    width: 100%;
+}
+
+/* Kiểu dáng cho nút */
+.btn-see-more {
+    color: white;
+    text-decoration: none;
+    font-weight: 600;
+    transition: all 0.3s ease;
+    border: none;
+    cursor: pointer;
+}
+
+.btn-see-more:hover {
+    color: #0ea5e9;
 }

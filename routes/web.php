@@ -19,8 +19,15 @@ use App\Http\Controllers\UserController;
 use App\Http\Controllers\LoginController;
 use App\Http\Controllers\MomoController;
 use App\Http\Controllers\VnpayController;
+use App\Http\Controllers\PostController;
 
-Route::get('/index', [IndexController::class, 'index'])->name('index');
+
+//trang chủ của tui, đụng vào nhớ xin phép =))
+Route::prefix('index')->group(function () {
+    Route::get('/', [IndexController::class, 'index'])->name('index');
+    Route::get('/categories/{category_id?}', [IndexController::class, 'categories'])->name('index.categories');
+});
+
 Route::middleware(['checkrole:Admin'])->group(function () {
     Route::get('/', function () {
         return view('layouts.dashboard');
@@ -55,6 +62,18 @@ Route::middleware(['checkrole:Admin'])->group(function () {
         Route::get('/{reviewId}/view', [ReviewController::class, 'view'])->name('reviews.view');
         Route::put('/{reviewId}', [ReviewController::class, 'update'])->name('reviews.update');
         Route::delete('/{review_id}', [ReviewController::class, 'destroy'])->name('reviews.destroy');
+    });
+
+    Route::prefix('users')->group(function () {
+        Route::get('/', [UserController::class, 'index'])->name('users.index');
+        Route::get('/create', [UserController::class, 'create'])->name('users.create');
+        Route::post('/', [UserController::class, 'store'])->name('users.store');
+        Route::get('/search/autocomplete', [UserController::class, 'search'])->name('users.search');
+        Route::get('/{user}/edit', [UserController::class, 'edit'])->name('users.edit');
+        Route::put('/{user}', [UserController::class, 'update'])->name('users.update');
+        Route::get('/{user}/show', [UserController::class, 'show'])->name('users.show');
+        Route::delete('/{user}', [UserController::class, 'destroy'])->name('users.destroy');
+
     });
 });
 
@@ -98,18 +117,6 @@ Route::prefix('voucher')->group(function () {
     Route::get('/', [VoucherController::class, 'list'])->name('voucher.list');
 });
 
-
-Route::prefix('users')->group(function () {
-    Route::get('/', [UserController::class, 'index'])->name('users.index');
-    Route::get('/create', [UserController::class, 'create'])->name('users.create');
-    Route::post('/', [UserController::class, 'store'])->name('users.store');
-    Route::get('/{user}/edit', [UserController::class, 'edit'])->name('users.edit');
-    Route::put('/{user}', [UserController::class, 'update'])->name('users.update');
-    Route::get('/{user}/show', [UserController::class, 'show'])->name('users.show');
-    Route::delete('/{user}', [UserController::class, 'destroy'])->name('users.destroy');
-    Route::get('/search/autocomplete', [UserController::class, 'search'])->name('users.search');
-});
-
 // login routes //
 Route::get('login', [LoginController::class, 'showLoginForm'])->name('login');
 Route::post('login', [LoginController::class, 'login'])->name('user.authUser');
@@ -131,12 +138,26 @@ Route::post('reset-password', [LoginController::class, 'resetPassword'])->name('
 Route::post('/api/voucher/check', [App\Http\Controllers\VoucherController::class, 'checkVoucher']);
 
 Route::get('/promotions', [PromotionController::class, 'index'])->name('promotion.index');
-Route::prefix('reviews')->group(function () {
-    Route::get('/', [ReviewController::class, 'index'])->name('reviews.index');
-    Route::get('/create', [ReviewController::class, 'create'])->name('reviews.create');
-    Route::post('/', [ReviewController::class, 'store'])->name('reviews.store');
-    Route::get('/{reviewId}/edit', [ReviewController::class, 'edit'])->name('reviews.edit');
-    Route::put('/{reviewId}', [ReviewController::class, 'update'])->name('reviews.update');
-    Route::delete('/{review_id}', [ReviewController::class, 'destroy'])->name('reviews.destroy');
+// Route::prefix('reviews')->group(function () {
+//     Route::get('/', [ReviewController::class, 'index'])->name('reviews.index');
+//     Route::get('/create', [ReviewController::class, 'create'])->name('reviews.create');
+//     Route::post('/', [ReviewController::class, 'store'])->name('reviews.store');
+//     Route::get('/{reviewId}/edit', [ReviewController::class, 'edit'])->name('reviews.edit');
+//     Route::put('/{reviewId}', [ReviewController::class, 'update'])->name('reviews.update');
+//     Route::delete('/{review_id}', [ReviewController::class, 'destroy'])->name('reviews.destroy');
+// });
+
+// Route cho trang danh sách tin tức
+Route::get('/tin-tuc', [PostController::class, 'index'])->name('posts.index');
+
+// Route cho trang chi tiết (ví dụ: /tin-tuc/123)
+Route::get('/tin-tuc/{post}', [PostController::class, 'show'])->name('posts.show');
+
+// Route cho trang profile
+Route::middleware(['auth'])->group(function () {
+    Route::get('/user/profile', [UserController::class, 'showProfile'])->name('user.profile');
+    Route::get('/user/edit', [UserController::class, 'showEditProfile'])->name('user.editProfile');
+    Route::put('/user/edit', [UserController::class, 'updateProfile'])->name('user.updateProfile');
+    Route::get('/user/change-password', [UserController::class, 'showChangePassword'])->name('user.changePassword');
+    Route::put('/user/change-password', [UserController::class, 'updatePassword'])->name('user.updatePassword');
 });
- 

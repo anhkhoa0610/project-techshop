@@ -177,6 +177,11 @@ class Product extends Model
         return $query->paginate(5);
     }
 
+    public function specs()
+    {
+        return $this->hasMany(Spec::class, 'product_id');
+    }
+    
     public function discounts()
     {
         return $this->hasMany(ProductDiscount::class, 'product_id', 'product_id');

@@ -12,7 +12,7 @@
     border-radius: 10px;
     position: relative;
     margin-top: 30px;
-    background-color: rgba(255, 255, 255, 0.65);
+    color: #ddd;
 }
 
 .header-back-ground {
@@ -72,20 +72,27 @@
     height: 30px;
     cursor: pointer;
     margin: 0;
+    border: #ddd solid 1px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 2em;
 }
 
 .input-quantity {
     width: 100px;
     text-align: center;
-    margin: 0;
+    margin-left: 10px;
+    margin-right: 10px;
+    
 }
 
 .desc-product {
     margin-top: 30px;
     padding: 20px;
     border-radius: 10px;
-    min-height: 500px;
-    background-color: rgba(255, 255, 255, 0.85);
+    min-height: 300px;
+    color: #ddd;
 }
 
 .review-product {
@@ -94,7 +101,8 @@
     border-radius: 10px;
     min-height: 500px;
     position: relative;
-    background-color: rgba(255, 255, 255, 0.95);
+    color: #ddd;
+    
 }
 
 .review-title {
@@ -107,12 +115,12 @@
 }
 
 .star-rating {
-    background-color: rgba(255, 255, 255, 0.65);
     padding-left: 10px;
     display: flex;
     flex-direction: column;
     justify-content: center;
     align-items: center;
+    font-weight: 500;
 }
 
 .rating {
@@ -141,7 +149,6 @@
 }
 
 .filter-by-star {
-    background-color: rgba(255, 255, 255, 0.65);
     display: flex;
     align-items: center;
     justify-content: center;
@@ -169,8 +176,8 @@
 }
 
 .button-filter-star.active {
-    border: 1px solid;
-    border-color: rgb(205, 112, 50);
+    border: 3px solid;
+    border-color: rgb(205, 205, 50);
     box-shadow: 0 4px 10px rgba(118, 75, 162, 0.3);
     color: rgb(6, 21, 70);
 }
@@ -180,7 +187,7 @@
     border-radius: 10px;
     min-height: 300px;
     position: relative;
-    background-color: rgba(227, 242, 226, 0.95);
+   
 }
 .groub-button-filter{
     display: flex;
@@ -209,6 +216,7 @@
     margin-top: 30px;
     padding-bottom: 20px;
     border-bottom:1px solid black ;
+    font-weight: 500;
 }
 .review-info{
     padding: 0;
@@ -236,4 +244,51 @@
 }
 .post-form{
     padding: 10px;
+}
+
+.glass3d {
+    background: rgba(255, 255, 255, 0.1);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+}
+.glass3d-child {
+    background: rgba(255, 255, 255,0.4);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(20px);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+}
+.review-count{
+color:#171616;
+font-weight: 500;
+}
+
+.button-box{
+display: flex;
+}
+
+.related-product{
+    margin-top: 30px;
+}
+
+.related-title{
+color: #ddd;
+text-align: start;
+background: #66b9e9;
+}
+
+.title-button{
+    display: flex;
+    justify-content: space-between;
+}
+
+.related-button button {
+    margin-left: 25px;
+    padding: 10px 20px;
+    border-radius: 6px;
+}
+
+.related-display{
+    min-height: 200px;
+    background-color: #2a5792;
 }

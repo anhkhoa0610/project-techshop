@@ -1,8 +1,8 @@
 .promotion-wrapper {
-    /* padding-top: 50px;
-    padding-bottom: 50px; */
     padding: 50px;
     background-color: #333;
+    display: flex;
+    justify-content: center;
 }
 
 .promotion-page {
@@ -12,6 +12,7 @@
     padding-right: 30px;
     padding-top: 15px;
     padding-bottom: 15px;
+    max-width: 90%;
 }
 
 /* --- Banner --- */

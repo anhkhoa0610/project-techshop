@@ -7,7 +7,7 @@
 @section('content')
         <link rel="stylesheet" href="{{ asset('css/promotion.css') }}">
         <div class="promotion-wrapper">
-            <div class="promotion-page container mt-4">
+            <div class="promotion-page mt-4">
 
                 {{-- Banner khuyến mãi --}}
                 <div id="promoCarousel" class="carousel slide mb-4" data-bs-ride="carousel">

@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\IndexController;
 use App\Http\Controllers\OrderController;
+use App\Http\Controllers\PostController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\CategoryController;
@@ -33,13 +34,13 @@ Route::middleware(['auth:sanctum', 'checkrole:Admin'])->group(function () {
 Route::get('categories/{categoryId}/products', [IndexController::class, 'getProductsByCategory']);
 
 //product filter cho trang index
-Route::get('/index/filter', [ProductController::class, 'filter']);
+Route::get('/index/filter', [IndexController::class, 'filter']);
 
 // Tìm kiếm sản phẩm qua API
 Route::get('/index/search', [IndexController::class, 'searchProductsAPI']);
 
-// DeepSeek Chatbot API route
-Route::post('/chat', [\App\Http\Controllers\DeepSeekChatController::class, 'chat']);
+// Chatbot API route
+Route::post('/chat', [\App\Http\Controllers\ChatbotController::class, 'chat']);
 
 Route::post('/index/add-to-cart', [IndexController::class, 'addToCart']);
 
@@ -51,4 +52,6 @@ Route::get('/promotions', [PromotionController::class, 'apiIndex']);
 
 Route::post('/voucher/check', [App\Http\Controllers\VoucherController::class, 'checkVoucher']);
 
+Route::get('/posts', [PostController::class,'loadPostsApi']);
+Route::get('/products/filter', [UIProductDetailsController::class, 'filterProducts']);
 Route::get('/vouchers', [VoucherController::class, 'vouchers']);
