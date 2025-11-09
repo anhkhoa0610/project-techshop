@@ -247,4 +247,27 @@ class UserController extends Controller
 
         return redirect()->route('user.profile')->with('success', 'Cập nhật thông tin cá nhân thành công!');
     }
+
+  public function destroyProfile(Request $request)
+{
+    try {
+        $user = $request->user();
+        $user->delete();
+
+        $request->session()->invalidate();
+        $request->session()->regenerateToken();
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Tài khoản của bạn đã được xóa thành công!',
+            'redirect' => route('index')
+        ]);
+    } catch (\Exception $e) {
+        return response()->json([
+            'success' => false,
+            'message' => 'Lỗi khi xóa tài khoản: ' . $e->getMessage()
+        ], 500);
+    }
+}
+    
 }
