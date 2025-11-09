@@ -21,32 +21,40 @@ class PromotionController extends Controller
     {
         // Lấy danh sách voucher còn hạn
         $vouchers = Voucher::where(function ($query) {
-                $query->whereNull('end_date')
-                      ->orWhere('end_date', '>', now());
-            })
-            ->get();
+            $query->whereNull('end_date')
+                ->orWhere('end_date', '>', now());
+        })->get();
 
         // Danh mục sản phẩm
         $categories = Category::all();
 
         // Lấy sản phẩm có khuyến mãi đang còn hiệu lực
-        $products = Product::with(['discounts' => function ($query) {
+        $products = Product::with([
+            'discounts' => function ($query) {
                 $query->active();
-            }])
+            }
+        ])
             ->whereHas('discounts', function ($query) {
                 $query->active();
             })
-            ->take(12)
-            ->get();
+            ->paginate(8)
+            ->withQueryString();
 
-        // Trả dữ liệu JSON về frontend
+        // Chỉ gửi mảng dữ liệu sản phẩm, không gửi toàn bộ paginator
         return response()->json([
             'status' => 'success',
             'data' => [
                 'promotions' => $vouchers,
                 'categories' => $categories,
-                'products' => $products,
+                'products' => $products->items(), // <-- đây mới là array sản phẩm
+                'pagination' => [
+                    'current_page' => $products->currentPage(),
+                    'last_page' => $products->lastPage(),
+                    'per_page' => $products->perPage(),
+                    'total' => $products->total(),
+                ],
             ],
         ]);
     }
+
 }

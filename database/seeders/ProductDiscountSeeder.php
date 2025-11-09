@@ -11,8 +11,7 @@ class ProductDiscountSeeder extends Seeder
 {
     public function run(): void
     {
-        // Lấy 9 sản phẩm đầu tiên
-        $products = Product::take(12)->get();
+        $products = Product::take(24)->get();
 
         foreach ($products as $product) {
             // Giảm giá ngẫu nhiên 10–30%

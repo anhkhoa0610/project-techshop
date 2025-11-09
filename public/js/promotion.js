@@ -34,30 +34,30 @@ async function loadVouchers(page = 1) {
             const isActive = voucher.status === "active";
 
             html += `
-        <div class="col-md-4 col-sm-6 mb-4" style="padding:10px;">
-          <div class="voucher-card">
-            <div class="voucher-header">
-              <div class="discount">${discountText}</div>
-              <i class="fa-solid fa-ticket fa-lg"></i>
-            </div>
-            <div class="voucher-body">
-              <div class="code-box">
-                <span class="code-label"><i class="fa-solid fa-tags"></i> Mã:</span>
-                <span class="code">${voucher.code}</span>
-                <button class="copy-btn" data-code="${voucher.code}">
-                  <i class="fa-regular fa-copy"></i> Copy
-                </button>
-              </div>
-              <div class="date">
-                <i class="far fa-calendar-alt"></i>
-                Hiệu lực: ${voucher.start_date} - ${voucher.end_date}
-              </div>
-              <span class="voucher-status ${isActive ? "active" : "inactive"}">
-                ${isActive ? "Còn hiệu lực" : "Hết hiệu lực"}
-              </span>
-            </div>
-          </div>
-        </div>`;
+                <div class="col-md-4 col-sm-6 mb-4" style="padding:10px;">
+                <div class="voucher-card">
+                    <div class="voucher-header">
+                    <div class="discount">${discountText}</div>
+                    <i class="fa-solid fa-ticket fa-lg"></i>
+                    </div>
+                    <div class="voucher-body">
+                    <div class="code-box">
+                        <span class="code-label"><i class="fa-solid fa-tags"></i> Mã:</span>
+                        <span class="code">${voucher.code}</span>
+                        <button class="copy-btn" data-code="${voucher.code}">
+                        <i class="fa-regular fa-copy"></i> Copy
+                        </button>
+                    </div>
+                    <div class="date">
+                        <i class="far fa-calendar-alt"></i>
+                        Hiệu lực: ${voucher.start_date} - ${voucher.end_date}
+                    </div>
+                    <span class="voucher-status ${isActive ? "active" : "inactive"}">
+                        ${isActive ? "Có hiệu lực" : "không hiệu lực"}
+                    </span>
+                    </div>
+                </div>
+                </div>`;
         });
 
         container.innerHTML = html;
@@ -152,89 +152,127 @@ function renderPagination(result, pagination) {
 // Gọi khi trang load
 document.addEventListener('DOMContentLoaded', () => loadVouchers());
 
-document.addEventListener("DOMContentLoaded", async () => {
-    try {
-        const response = await fetch("/api/promotions");
-        const result = await response.json();
+document.addEventListener("DOMContentLoaded", () => {
+    const promoContainer = document.getElementById("promotion-container");
+    let currentPage = 1;
+    const perPage = 8;
+    let lastPage = 1; // sẽ cập nhật từ API
 
-        if (result.status !== "success") {
-            console.error("Không thể tải dữ liệu khuyến mãi");
-            return;
-        }
+    // Tạo nút Xem thêm
+    const xemThemBtn = document.createElement('div');
+    xemThemBtn.className = "text-center my-3";
+    xemThemBtn.innerHTML = `
+        <button class="btn btn-outline-primary btn-lg rounded-pill px-4 btn-load-more">
+            <span class="btn-text">Xem thêm</span>
+            <span class="spinner-border spinner-border-sm ms-2 d-none" role="status"></span>
+        </button>
+    `;
+    promoContainer.parentNode.appendChild(xemThemBtn);
 
-        const products = result.data.products || [];
-        const promoContainer = document.getElementById("promotion-container");
+    // Hàm load sản phẩm
+    async function loadProducts(page = 1) {
+        try {
+            const btn = xemThemBtn.querySelector(".btn-load-more");
+            const spinner = btn.querySelector(".spinner-border");
+            const btnText = btn.querySelector(".btn-text");
 
-        if (!promoContainer) return;
+            // Hiển thị spinner
+            btn.disabled = true;
+            spinner.classList.remove("d-none");
+            btnText.textContent = "Đang tải...";
 
-        // Nếu không có sản phẩm giảm giá
-        if (products.length === 0) {
-            promoContainer.innerHTML = `
-                <div class="col-12 text-center text-muted py-4">
-                    Hiện tại chưa có sản phẩm Flash Sale nào.
-                </div>
-            `;
-            return;
-        }
-        
-        // Tạo HTML cho mỗi sản phẩm
-        let html = "";
-        products.forEach(product => {
-            const discount = product.discounts?.[0];
-            const originalPrice = discount?.original_price || product.price;
-            const salePrice = discount?.sale_price || product.price;
-            const discountPercent = discount?.discount_percent || 0;
-            const endDate = discount?.end_date || null; // lấy ngày kết thúc
+            const response = await fetch(`/api/promotions?page=${page}&limit=${perPage}`);
+            const result = await response.json();
 
-            html += `
-                <div class="col-6 col-md-4 col-lg-3">
-                    <div class="card shadow-sm border-0 rounded-4 h-100">
-                        <div class="position-relative">
-                            <img src="${product.cover_image ? `/uploads/${product.cover_image}` : '/images/no-image.png'}"
-                                class="card-img-top rounded-top-4" alt="${product.product_name}">
-                            ${discountPercent > 0
-                            ? `<span class="badge bg-danger position-absolute top-0 start-0 m-2 p-2">
-                                        -${discountPercent}%
-                                </span>`
-                            : ""
-                        }
-                        </div>
-                        <div class="card-body text-center">
-                            <h6 class="fw-bold mb-2">${product.product_name}</h6>
-                            <div>
-                                <span class="text-danger fw-bold fs-6">
-                                    ${formatCurrency(salePrice)}
-                                </span>
-                                ${salePrice < originalPrice
-                            ? `<br><small class="text-muted text-decoration-line-through">
-                                            ${formatCurrency(originalPrice)}
-                                    </small>`
-                            : ""
-                        }
+            if (result.status !== "success") {
+                console.error("Không thể tải dữ liệu khuyến mãi");
+                return;
+            }
+
+            const products = result.data.products || [];
+            lastPage = result.data.pagination?.last_page || 1;
+
+            if (products.length === 0 && page === 1) {
+                promoContainer.innerHTML = `
+                    <div class="col-12 text-center text-muted py-4">
+                        Hiện tại chưa có sản phẩm Flash Sale nào.
+                    </div>
+                `;
+                xemThemBtn.style.display = "none";
+                return;
+            }
+
+            let html = "";
+            products.forEach(product => {
+                const discount = product.discounts?.[0];
+                const originalPrice = discount?.original_price || product.price;
+                const salePrice = discount?.sale_price || product.price;
+                const discountPercent = discount?.discount_percent || 0;
+                const endDate = discount?.end_date || null;
+                const imageUrl = product.cover_image ? `/uploads/${product.cover_image}` : '/images/no-image.png';
+
+                html += `
+                    <div class="col-6 col-md-4 col-lg-3">
+                        <div class="card product-card shadow-sm border-0 rounded-4 h-100">
+                            <a href="/product/${product.id}" class="text-decoration-none text-dark d-block h-100">
+                                <div class="position-relative">
+                                    <img src="${imageUrl}" class="card-img-top rounded-top-4" alt="${product.product_name}">
+                                    ${discountPercent > 0 ? `<span class="sale-badge position-absolute top-0 start-0 m-2">-${discountPercent}%</span>` : ""}
+                                </div>
+                                <div class="card-body text-center">
+                                    <h6 class="fw-bold mb-2">${product.product_name}</h6>
+                                    <div>
+                                        <span class="text-danger fw-bold fs-6">${formatCurrency(salePrice)}</span>
+                                        <br><small class="text-muted text-decoration-line-through">${formatCurrency(originalPrice)}</small>}
+                                    </div>
+                                    ${endDate ? `<div class="countdown mt-2 text-secondary small" data-end="${endDate}">Đang tính...</div>` : ""}
+                                </div>
+                            </a>
+                            <div class="card-footer bg-transparent border-0 text-center">
+                                <button class="btn btn-sm btn-buy rounded-pill px-3 add-to-cart-btn" data-product-id="${product.id}">Mua ngay</button>
                             </div>
-                            ${endDate
-                            ? `<div class="countdown mt-2 text-secondary small" data-end="${endDate}">Đang tính...</div>`
-                            : ""
-                        }
-                        </div>
-                        <div class="card-footer bg-transparent border-0 text-center">
-                            <button class="btn btn-sm btn-outline-danger rounded-pill px-3">
-                                Mua ngay
-                            </button>
                         </div>
                     </div>
-                </div>
-            `;
-        });
+                `;
+            });
 
-        promoContainer.innerHTML = html;
-        startCountdown();
+            // Append sản phẩm mới
+            if (page === 1) {
+                promoContainer.innerHTML = html;
+            } else {
+                promoContainer.insertAdjacentHTML("beforeend", html);
+            }
 
+            startCountdown();
 
-    } catch (error) {
-        console.error("Lỗi khi tải Flash Sale:", error);
+            // Ẩn nút Xem thêm nếu hết trang
+            if (currentPage >= lastPage) {
+                xemThemBtn.style.display = "none";
+            } else {
+                xemThemBtn.style.display = "block";
+            }
+
+            // Ẩn spinner, reset text
+            btn.disabled = false;
+            spinner.classList.add("d-none");
+            btnText.textContent = "Xem thêm";
+
+        } catch (error) {
+            console.error("Lỗi khi tải Flash Sale:", error);
+        }
     }
+
+    // Click “Xem thêm”
+    xemThemBtn.querySelector(".btn-load-more").addEventListener("click", () => {
+        currentPage++;
+        loadProducts(currentPage);
+    });
+
+    // Load trang đầu tiên
+    loadProducts(currentPage);
 });
+
+
 
 function startCountdown() {
     const countdownElements = document.querySelectorAll('.countdown');
