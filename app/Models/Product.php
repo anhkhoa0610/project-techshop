@@ -185,7 +185,9 @@ class Product extends Model
     // sản phẩm cùng danh mục hoặc nhà phân phối 
     public function getFilteredProducts($categoryId = null, $supplierId = null)
     {
-        $query = self::query()->with(['category', 'supplier'])->latest('created_at');
+        $query = self::query()
+            ->with(['category', 'supplier', 'specs']) 
+            ->latest('created_at');
 
         if ($categoryId) {
             $query->where('category_id', $categoryId);
