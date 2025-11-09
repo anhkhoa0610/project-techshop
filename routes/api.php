@@ -53,11 +53,6 @@ Route::get('/promotions', [PromotionController::class, 'apiIndex']);
 Route::post('/voucher/check', [App\Http\Controllers\VoucherController::class, 'checkVoucher']);
 
 Route::get('/posts', [PostController::class,'loadPostsApi']);
-<<<<<<< HEAD
-Route::get('/products/filter', [UIProductDetailsController::class, 'filterProducts']);
 Route::get('/vouchers', [VoucherController::class, 'vouchers']);
-=======
 Route::get('/product-details/filter', [UIProductDetailsController::class, 'filterProducts']);
-
 Route::post('/product-details/cart/add', [UIProductDetailsController::class, 'addToCart']);
->>>>>>> anh-huy/UI-product-detail
