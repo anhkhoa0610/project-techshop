@@ -158,6 +158,8 @@ class VoucherController extends Controller
             $query->where('code', 'like', "%{$search}%");
         }
 
+        $query->where('status', 'active');
+
         // Phân trang dữ liệu
         $vouchers = $query->orderByDesc('created_at')->paginate($perPage);
 
