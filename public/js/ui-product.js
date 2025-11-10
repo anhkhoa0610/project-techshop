@@ -76,6 +76,20 @@ plusButton.addEventListener('click', () => {
     }
 });
 
+// hàm cập nhật số sao bình luận
+const star_rating_display = document.querySelector('.star-rating-display');
+function updateStarDisplay(avg) {
+
+    let starsHtml = '';
+    for (let i = 1; i <= 5; i++) {
+        if (i <= avg) {
+            starsHtml += `<span class="star filled text-warning fs-1">★</span>`;
+        } else {
+            starsHtml += `<span class="star text-warning fs-1">☆</span>`;
+        }
+    }
+    star_rating_display.innerHTML = starsHtml;
+}
 
 // xử lý hiển thị đánh giá và phân trang đánh giá bằng API
 document.addEventListener('DOMContentLoaded', function () {
@@ -102,7 +116,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
                 // Nếu không có review
                 if (!reviews.length) {
-                    reviewContainer.innerHTML = '<p>Chưa có đánh giá nào cho mức sao này.</p>';
+                    reviewContainer.innerHTML = '<p>Chưa có đánh giá.</p>';
                     paginationContainer.innerHTML = '';
                     return;
                 }
@@ -206,10 +220,14 @@ document.addEventListener('DOMContentLoaded', function () {
             Swal.fire({
                 icon: 'warning',
                 title: 'Vui lòng đăng nhập',
-                text: 'Bạn cần đăng nhập để gửi đánh giá sản phẩm.',
-                confirmButtonText: 'Đăng nhập ngay'
-            }).then(() => {
-                window.location.href = '/login';
+                text: 'Bạn cần đăng nhập để sử dụng chức năng này.',
+                showCancelButton: true,
+                confirmButtonText: 'Đăng nhập ngay',
+                cancelButtonText: 'Hủy bỏ'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    window.location.href = '/login';
+                }
             });
             return;
         }
@@ -246,10 +264,14 @@ document.addEventListener('DOMContentLoaded', function () {
                 const rating_left = document.querySelector('.rating-left');
                 const rating_star_title = document.querySelector('.rating-star-title');
 
+                // xử lý cập nhật số sao bình luận
+                updateStarDisplay(data.data.avg);
+                
                 let avg;
                 if (data.data.avg) {
                     avg = parseFloat(data.data.avg).toFixed(1);
                 }
+                
                 if (rating_left) {
                     rating_left.textContent = avg;
                 }
@@ -279,96 +301,152 @@ document.addEventListener('DOMContentLoaded', function () {
         }
 
     });
+
     // xử lý thêm vào giỏ hàng và mua ngay
-    const btnAddCart = document.querySelector('.btn-add-cart');
+    const btnAddCart = document.querySelector('.btn-add-cart-main');
     const btnBuyNow = document.querySelector('.btn-buy-now');
     const inputQuantity = document.querySelector('.input-quantity');
     const csrfToken = document.querySelector('meta[name="csrf-token"]').content;
     if (btnAddCart) {
         btnAddCart.addEventListener('click', async () => {
-            const quantity = parseInt(inputQuantity.value) || 1;
-
-            console.log(`🛒 Thêm sản phẩm #${productId} với số lượng ${quantity}`);
-
-            try {
-                const response = await fetch('/cart/add', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                        'Accept': 'application/json',
-                        'X-CSRF-TOKEN': csrfToken
-                    },
-                    body: JSON.stringify({
-                        product_id: productId,
-                        quantity: quantity
-                    })
+            // Kiểm tra đăng nhập trước khi xử lý thêm vào giỏ hàng
+            if (!check_user) {
+                Swal.fire({
+                    icon: 'warning',
+                    title: 'Vui lòng đăng nhập',
+                    text: 'Bạn cần đăng nhập để sử dụng chức năng này.',
+                    showCancelButton: true,
+                    confirmButtonText: 'Đăng nhập ngay',
+                    cancelButtonText: 'Hủy bỏ'
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        window.location.href = '/login';
+                    }
                 });
-
-                // Nếu phản hồi không phải JSON, đọc text để debug
-                const text = await response.text();
-                let data;
+                return;
+            }
+            else {
+                const quantity = parseInt(inputQuantity?.value);
 
                 try {
-                    data = JSON.parse(text);
-                } catch (e) {
-                    console.error('⚠️ Server trả HTML thay vì JSON:\n', text);
-                    alert('❌ Lỗi máy chủ: phản hồi không hợp lệ (HTML thay vì JSON).');
-                    return;
-                }
+                    const response = await fetch('/api/product-details/cart/add', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'Accept': 'application/json',
+                            'X-CSRF-TOKEN': csrfToken
+                        },
+                        body: JSON.stringify({
+                            user_id: user_id,
+                            product_id: productId,
+                            quantity: quantity
+                        })
+                    });
 
-                if (data.success) {
-                    alert(data.message);
-                } else {
-                    alert(data.message || "⚠️ Có lỗi xảy ra khi thêm vào giỏ hàng!");
-                }
+                    const text = await response.text();
+                    let data;
 
-            } catch (err) {
-                console.error('❌ Lỗi fetch hoặc kết nối:', err);
-                alert("Không thể kết nối tới máy chủ!");
+                    try {
+                        data = JSON.parse(text);
+                    } catch {
+                        throw new Error(`Lỗi máy chủ (${response.status})`);
+                    }
+
+                    if (!response.ok) {
+                        let msg = 'Có lỗi xảy ra!';
+                        if (response.status === 422 && data.errors) {
+                            msg = Object.values(data.errors).flat().join('\n');
+                        } else if (data.message) {
+                            msg = data.message;
+                        }
+                        Swal.fire({ icon: 'error', text: msg });
+                        return;
+                    }
+
+                    if (data.success) {
+                        Swal.fire({ icon: 'success', text: data.message, timer: 1500, showConfirmButton: false });
+                    } else {
+                        Swal.fire({ icon: 'warning', text: data.message || 'Không thể thêm vào giỏ hàng!' });
+                    }
+
+                } catch (err) {
+                    Swal.fire({ icon: 'error', text: err.message || 'Lỗi kết nối!' });
+                }
             }
+
         });
     }
 
     // =========== MUA NGAY ===========
     if (btnBuyNow) {
         btnBuyNow.addEventListener('click', async () => {
-            const quantity = parseInt(inputQuantity.value) || 1;
 
-            try {
-                const response = await fetch('/cart/add', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                        'Accept': 'application/json',
-                        'X-CSRF-TOKEN': csrfToken
-                    },
-                    body: JSON.stringify({
-                        product_id: productId,
-                        quantity: quantity
-                    })
+            if (!check_user) {
+                Swal.fire({
+                    icon: 'warning',
+                    title: 'Vui lòng đăng nhập',
+                    text: 'Bạn cần đăng nhập để sử dụng chức năng này.',
+                    showCancelButton: true,
+                    confirmButtonText: 'Đăng nhập ngay',
+                    cancelButtonText: 'Hủy bỏ'
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        window.location.href = '/login';
+                    }
+
                 });
-
-                const text = await response.text();
-                let data;
+                return;
+            }
+            else {
+                const quantity = parseInt(inputQuantity?.value);
 
                 try {
-                    data = JSON.parse(text);
-                } catch (e) {
-                    console.error('⚠️ Server trả HTML thay vì JSON:\n', text);
-                    alert('❌ Lỗi máy chủ: phản hồi không hợp lệ (HTML thay vì JSON).');
-                    return;
-                }
+                    const response = await fetch('/api/product-details/cart/add', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'Accept': 'application/json',
+                            'X-CSRF-TOKEN': csrfToken
+                        },
+                        body: JSON.stringify({
+                            user_id: user_id,
+                            product_id: productId,
+                            quantity: quantity
+                        })
+                    });
 
-                if (data.success) {
-                    window.location.href = '/checkout';
-                } else {
-                    alert(data.message || "Không thể mua ngay, thử lại sau!");
-                }
+                    const text = await response.text();
+                    let data;
 
-            } catch (err) {
-                console.error('❌ Lỗi fetch hoặc kết nối:', err);
-                alert("Không thể kết nối tới máy chủ!");
+                    try {
+                        data = JSON.parse(text);
+                    } catch {
+                        throw new Error(`Lỗi máy chủ (${response.status})`);
+                    }
+
+                    if (!response.ok) {
+                        let msg = 'Có lỗi xảy ra!';
+                        if (response.status === 422 && data.errors) {
+                            msg = Object.values(data.errors).flat().join('\n');
+                        } else if (data.message) {
+                            msg = data.message;
+                        }
+                        Swal.fire({ icon: 'error', text: msg });
+                        return;
+                    }
+
+                    if (data.success) {
+                        // Chuyển sang trang giỏ hàng khi thêm thành công
+                        window.location.href = '/cart';
+                    } else {
+                        Swal.fire({ icon: 'warning', text: data.message || 'Không thể thêm vào giỏ hàng!' });
+                    }
+
+                } catch (err) {
+                    Swal.fire({ icon: 'error', text: err.message || 'Lỗi kết nối!' });
+                }
             }
+
         });
     }
 
@@ -378,7 +456,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
     // Hàm load sản phẩm
     function loadProducts(type, id) {
-        let url = `${window.location.origin}/api/products/filter`;
+        let url = `${window.location.origin}/api/product-details/filter`;
         if (type === 'category') {
             url += `?category_id=${id}`;
         } else if (type === 'supplier') {
@@ -391,6 +469,7 @@ document.addEventListener('DOMContentLoaded', function () {
             .then(data => {
                 if (data.success && data.data.length > 0) {
                     renderProducts(data.data);
+                    console.log("Thành công!!");
                 } else {
                     display.innerHTML = `<p class="text-center text-muted py-4">Không có sản phẩm phù hợp.</p>`;
                 }
@@ -403,6 +482,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
     // Hàm render sản phẩm
     function renderProducts(products) {
+
         display.innerHTML = ''; // xoá sản phẩm cũ
         products.forEach(prod => {
             const imageUrl = prod.cover_image
@@ -410,33 +490,113 @@ document.addEventListener('DOMContentLoaded', function () {
                 : `/images/blank_product.png`;
 
             const productHtml = `
-                <div class="col-md-3 mb-4 d-inline-block">
-                    <div class="card h-100 shadow-sm">
-                        <a href="http://127.0.0.1:8000/product-details/${prod.product_id}">
-                            <img src="${imageUrl}" class="card-img-top" alt="${prod.product_name}">
-                        </a>
-                        <div class="card-body text-center">
-                            <h6 class="fw-bold">${prod.product_name}</h6>
-                            <p class="text-danger mb-0">${prod.price ? prod.price.toLocaleString('vi-VN') + ' ₫' : 'Liên hệ'}</p>
+                <div class=" mb-4 mt-5 d-inline-block related-container">
+                    <div class="product-card">
+                        <div class="product-image">
+                            <img src="${prod.cover_image
+                    ? '/uploads/' + prod.cover_image
+                    : '/images/place-holder.jpg'}" 
+                                alt="${prod.product_name}">
+                            <div class="product-badge">Hàng mới</div>
+                            <div class="product-discount">Trả góp 0%</div>
                         </div>
+
+                        <a class="product-info" href="/product-details/${prod.product_id}">
+                            <h3 class="product-name">${prod.product_name}</h3>
+
+                            <div class="specs-grid-container">
+                            ${prod.specs
+                    ? prod.specs
+                        .map((spec) => {
+                            const nameLower = spec.name ? spec.name.toLowerCase() : "";
+
+                            let iconFile = "cpu.svg"; // mặc định
+                            if (nameLower.includes("ram")) iconFile = "ram.svg";
+                            else if (nameLower.includes("gpu") || nameLower.includes("đồ họa") || nameLower.includes("vga"))
+                                iconFile = "gpu.svg";
+                            else if (
+                                nameLower.includes("dung lượng") ||
+                                nameLower.includes("ssd") ||
+                                nameLower.includes("hdd") ||
+                                nameLower.includes("storage")
+                            )
+                                iconFile = "storage.svg";
+
+                            return `
+                                        <div class="spec-grid-item">
+                                        <img src="/images/icons/${iconFile}" alt="${spec.name} icon" class="spec-grid-icon">
+                                        <div class="spec-grid-text">
+                                            <span class="spec-grid-name">${spec.name}</span>
+                                            <strong class="spec-grid-value">${spec.value}</strong>
+                                        </div>
+                                        </div>
+                                    `;
+                        })
+                        .join("")
+                    : ""}
+                            </div>
+
+                            <div class="product-rating">
+                                <span class="stars" style="color:#ffc107;">⭐</span>
+                                <span class="rating-score">${prod.reviews_avg_rating ? prod.reviews_avg_rating.toFixed(1) : '0.0'}</span>
+                                <span class="reviews">(${prod.reviews_count || 0} đánh giá)</span>
+                            </div>
+
+                            <div class="product-price">
+                                <span class="current-price">${prod.price
+                    ? prod.price.toLocaleString('vi-VN') + '₫'
+                    : 'Liên hệ'}</span>
+                            </div>
+
+                            <div class="product-meta">
+                                <div class="release-date">
+                                    📅 <strong>Phát hành:</strong> ${prod.release_date || 'Đang cập nhật'}
+                                </div>
+                                <div class="stock-info">
+                                    📦 <strong>Còn lại:</strong> 
+                                    ${prod.stock_quantity > 0
+                    ? `${prod.stock_quantity} sản phẩm`
+                    : '<span style="color:red;">Hết hàng</span>'}
+                                </div>
+                            </div>
+                        </a>
+
+                        <button data-product-id="${prod.product_id}" data-quantity="1"
+                            class="btn-add-cart btn btn-primary full-width">Thêm vào giỏ 🛒</button>
                     </div>
                 </div>
-            `;
+                `;
             display.insertAdjacentHTML('beforeend', productHtml);
         });
     }
 
-    // Bắt sự kiện click nút Danh mục
+    // Sự kiện click nút
     categoryBtn.addEventListener('click', function () {
+        const related_title_type = document.querySelector('.related-title-type');
+        related_title_type.textContent = "Cùng danh mục"
+        this.classList.add('active');
+        supplierBtn.classList.remove('active');
         const categoryId = this.dataset.category_id;
         loadProducts('category', categoryId);
     });
 
-    // Bắt sự kiện click nút Nhà phân phối
     supplierBtn.addEventListener('click', function () {
+        const related_title_type = document.querySelector('.related-title-type');
+        related_title_type.textContent = "Cùng nhà phân phối"
+        this.classList.add('active');
+        categoryBtn.classList.remove('active');
         const supplierId = this.dataset.supplier_id;
         loadProducts('supplier', supplierId);
     });
+
+
+    if (categoryBtn.classList.contains('active')) {
+        const categoryId = categoryBtn.dataset.category_id;
+        loadProducts('category', categoryId);
+    } else if (supplierBtn.classList.contains('active')) {
+        const supplierId = supplierBtn.dataset.supplier_id;
+        loadProducts('supplier', supplierId);
+    }
 
 
 });

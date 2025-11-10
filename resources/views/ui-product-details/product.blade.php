@@ -13,12 +13,12 @@
                 <!-- Cột trái: Hình ảnh sản phẩm -->
                 <div class="col-md-6">
                     <div class="product-images text-center">
-                        <img src="{{! empty($product->cover_image) ? asset('uploads/' . $product->cover_image) : asset('images/blank_product.png') }}"
+                        <img src="{{!empty($product->cover_image) ? asset('uploads/' . $product->cover_image) : asset('images/blank_product.png') }}"
                             class="prodcut-image" alt="Ảnh sản phẩm chính" id="mainImage">
                         <div class="swiper">
                             <div class="swiper-wrapper">
                                 <div class="swiper-slide">
-                                    <img src="{{! empty($product->cover_image) ? asset('uploads/' . $product->cover_image) : asset('images/blank_product.png') }}"
+                                    <img src="{{!empty($product->cover_image) ? asset('uploads/' . $product->cover_image) : asset('images/blank_product.png') }}"
                                         alt="Ảnh chính" class="swiper-slide-img">
                                 </div>
                                 @if(isset($product->images) && $product->images->count() > 0)
@@ -77,15 +77,50 @@
                         </p>
                     </div>
 
-                    <!-- <div class="policy-icons">
-                        <p>✅ Hàng chính hãng 100%</p>
-                        <p>🔄 1 đổi 1 trong 7 ngày</p>
-                        <p>🚚 Giao hàng nhanh 2h</p>
-                    </div> -->
+                    @php
+                        use Illuminate\Support\Str;
+
+                        $specsMap = $product->specs?->pluck('value', 'name') ?? collect();
+
+                        $coreSpecsData = [
+                            'CPU' => $specsMap->first(fn($v, $k) => Str::contains(strtolower($k), ['cpu', 'chip', 'vi xử lý'])),
+                            'RAM' => $specsMap->first(fn($v, $k) => Str::contains(strtolower($k), 'ram')),
+                            'GPU' => $specsMap->first(fn($v, $k) => Str::contains(strtolower($k), ['gpu', 'đồ họa', 'vga'])),
+                            'Storage' => $specsMap->first(fn($v, $k) => Str::contains(strtolower($k), ['dung lượng', 'storage', 'ssd', 'hdd'])),
+                        ];
+
+                        $specIconFiles = [
+                            'CPU' => asset('images/icons/cpu.svg'),
+                            'RAM' => asset('images/icons/ram.svg'),
+                            'GPU' => asset('images/icons/gpu.svg'),
+                            'Storage' => asset('images/icons/storage.svg'),
+                        ];
+                    @endphp
+
+                    @if($product->specs && $product->specs->count() > 0)
+                        <div class="mt-3">
+                            <h5 class="fw-bold mb-3 text-uppercase">Thông số sản phẩm</h5>
+
+                            <div class="specs-grid-container d-flex flex-wrap justify-content-start gap-3">
+                                @foreach ($coreSpecsData as $name => $value)
+                                    @if ($value)
+                                        <div class="spec-grid-item text-center p-2 border rounded shadow-sm bg-white">
+                                            <img src="{{ $specIconFiles[$name] }}" alt="{{ $name }} icon" class="spec-grid-icon mb-2"
+                                                style="width: 40px; height: 40px;">
+                                            <div class="spec-grid-text">
+                                                <span class="spec-grid-name d-block fw-semibold">{{ $name }}</span>
+                                                <strong class="spec-grid-value d-block">{{ $value }}</strong>
+                                            </div>
+                                        </div>
+                                    @endif
+                                @endforeach
+                            </div>
+                        </div>
+                    @endif
 
                     <div class="mt-4">
                         <button class="btn btn-danger me-2 btn-buy-now">Mua ngay</button>
-                        <button class="btn btn-outline-danger btn-add-cart">Thêm vào giỏ hàng</button>
+                        <button class="btn btn-outline-danger btn-add-cart-main">Thêm vào giỏ hàng</button>
                     </div>
                 </div>
             </div>
@@ -104,7 +139,7 @@
                         <span class="rating-left">{{ number_format($avg, 1) ?? 0 }} </span>
                         <span class="rating-right"> trên 5 sao</span>
                     </div>
-                    <div class="star-rating-display">
+                    <div class="star-rating-display" data-avg="{{ $avg}}">
                         @for ($i = 1; $i <= 5; $i++)
                             @if ($i <= $avg)
                                 <span class="star filled text-warning fs-1">★</span>
@@ -199,21 +234,26 @@
 
         </div>
         <div class="container glass3d related-product">
-            <div class="title-button" >
-                <h2 class="related-title" > Sản phẩm liên quan </h2>
+            <div class="title-button">
+                <h2 class="related-title"> Sản phẩm liên quan:
+                    (<span class="related-title-type"> Cùng danh mục</span> )
+                </h2>
                 <div class="related-button">
-                    <button class="category-button btn btn-primary" data-category_id="{{ $product->category_id }}" >Danh mục</button>
-                    <button class="supplier-button btn btn-primary" data-supplier_id="{{ $product->supplier_id }}" >Nhà phân phối</button>
+                    <button class="category-button btn btn-primary active"
+                        data-category_id="{{ $product->category_id }}">Danh mục</button>
+                    <button class="supplier-button btn btn-primary" data-supplier_id="{{ $product->supplier_id }}">Nhà phân
+                        phối</button>
                 </div>
             </div>
             <div class="related-display container "></div>
         </div>
     </div>
     <script>
-        const check_user = {{ auth()->check() ? 'true' : 'false' }};
-        const user_id = {{ auth()->id() ?? 'null' }};
-        window.csrfToken = "{{ csrf_token() }}";
-        const productId = {{ $product->product_id }};
+        const check_user = @json(auth()->check());
+        const user_id = @json(auth()->id());
+        window.csrfToken = @json(csrf_token());
+        const productId = @json($product->product_id);
+        const cartItems_count = @json($cartItems_count);
     </script>
     <script src="{{ asset('js/ui-product.js') }}"></script>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>

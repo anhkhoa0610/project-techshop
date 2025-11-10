@@ -160,4 +160,5 @@ Route::middleware(['auth'])->group(function () {
     Route::put('/user/edit', [UserController::class, 'updateProfile'])->name('user.updateProfile');
     Route::get('/user/change-password', [UserController::class, 'showChangePassword'])->name('user.changePassword');
     Route::put('/user/change-password', [UserController::class, 'updatePassword'])->name('user.updatePassword');
+    Route::delete('/user/delete', [UserController::class, 'destroyProfile'])->name('user.delete');
 });

@@ -21,4 +21,32 @@ class CartItem extends Model
   {
     return $this->belongsTo(User::class, 'user_id', 'user_id');
   }
+
+  /**
+   *  Xử lý thêm hoặc cập nhật sản phẩm vào giỏ hàng.
+   */
+  public static function addOrUpdate($userId, $productId, $quantity = 1)
+  {
+    $cartItem = self::where('user_id', $userId)
+      ->where('product_id', $productId)
+      ->first();
+
+    if ($cartItem) {
+      // Đã có -> cộng dồn số lượng
+      $cartItem->increment('quantity', $quantity);
+    } else {
+      // Chưa có -> tạo mới
+      $cartItem = self::create([
+        'user_id' => $userId,
+        'product_id' => $productId,
+        'quantity' => $quantity,
+      ]);
+    }
+
+    // Load lại thông tin product + specs
+    $cartItem->load('product.specs');
+
+    return $cartItem;
+  }
+
 }

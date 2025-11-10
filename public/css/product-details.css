@@ -201,7 +201,6 @@
     width: 85px;
     height: 85px;
     border-radius: 50%;
-    background-color:#ff8400;
     margin-left: 20px;
     position: absolute;
     top:0 ;
@@ -274,7 +273,6 @@ display: flex;
 .related-title{
 color: #ddd;
 text-align: start;
-background: #66b9e9;
 }
 
 .title-button{
@@ -290,5 +288,227 @@ background: #66b9e9;
 
 .related-display{
     min-height: 200px;
-    background-color: #2a5792;
+}
+
+.product-card {
+    background: transparent;
+    border-radius: 1rem;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    height: 40rem;
+    width: 300px;
+    position: relative;
+    transition: all 0.5s cubic-bezier(0.25, 0.8, 0.25, 1);
+    color: white;
+}
+
+.btn-add-cart {
+    position: absolute;
+    bottom: 1.5rem;
+    width: fit-content;
+    margin-bottom: 10px;
+    margin-left: 2rem;
+}
+
+#btn-load-more {
+    color: white;
+    transition: all 0.5s cubic-bezier(0.25, 0.8, 0.25, 1);
+}
+
+#btn-load-more:hover {
+    transform: translateY(-6px) scale(1.03) !important;
+    box-shadow:
+        0 0 15px 7px rgba(109, 142, 214, 0.8),
+        0 0 30px 15px rgba(67, 55, 136, 0.6),
+        0 15px 50px 0px rgba(3, 8, 22, 0.4),
+        0 30px 80px 0px rgba(3, 8, 22, 0.2);
+}
+
+
+.product-info {
+    flex: 1 1 auto;
+    display: flex;
+    flex-direction: column;
+}
+
+.product-info .btn.full-width {
+    margin-top: auto;
+    margin-bottom: 30px;
+    width: 100%;
+}
+
+.product-card:hover {
+    transform: scale(1.05);
+    box-shadow: 0 10px 30px -10px rgba(14, 165, 233, 0.3);
+    cursor: pointer;
+}
+
+.product-image {
+    position: relative;
+    overflow: hidden;
+}
+
+.product-image img {
+    width: 100%;
+    height: 16rem;
+    object-fit: contain;
+    transition: transform 0.5s ease;
+}
+
+.product-card:hover .product-image img {
+    transform: scale(1.1);
+}
+
+.product-badge {
+    position: absolute;
+    top: 1rem;
+    left: 1rem;
+    background: linear-gradient(135deg, #6eb5b8, #072246);
+    color: white;
+    padding: 0.25rem 0.75rem;
+    border-radius: 9999px;
+    font-size: 0.75rem;
+    font-weight: 600;
+}
+
+.product-badge.new {
+    background: #10b981;
+}
+
+.product-badge.sale {
+    background: #ef4444;
+}
+
+.product-discount {
+    position: absolute;
+    top: 1rem;
+    right: 1rem;
+    background: linear-gradient(135deg, #6eb5b8, #072246);
+    color: white;
+    padding: 0.25rem 0.5rem;
+    border-radius: 9999px;
+    font-size: 0.75rem;
+    font-weight: 700;
+}
+
+.product-info {
+    padding: 1.5rem;
+}
+
+.product-name {
+    font-size: 1.25rem;
+    font-weight: 600;
+    margin-bottom: 0.5rem;
+    transition: color 0.3s ease;
+    color: white;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.product-card:hover .product-name {
+    color: #0ea5e9;
+}
+
+.product-rating {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    margin: 8px 0;
+    color: white;
+}
+
+.product-rating .stars i {
+    font-size: 14px;
+}
+
+.product-rating .reviews {
+    color: #777;
+    font-size: 13px;
+}
+
+.product-price {
+    margin-bottom: 1rem;
+}
+
+.current-price {
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: #0ea5e9;
+}
+
+.original-price {
+    color: #6b7280;
+    text-decoration: line-through;
+    font-size: 0.875rem;
+    margin-left: 0.5rem;
+}
+
+
+/* ensure card children render above the blurred background */
+.product-card>* {
+    position: relative;
+    z-index: 2;
+}
+
+.product-card:hover {
+    transform: translateY(-6px) scale(1.02) !important;
+
+    box-shadow:
+        0 0 15px 7px rgba(109, 142, 214, 0.8),
+        0 0 30px 15px rgba(67, 55, 136, 0.6),
+        0 15px 50px 0px rgba(3, 8, 22, 0.4),
+        0 30px 80px 0px rgba(3, 8, 22, 0.2);
+}
+
+/* Container lưới 2 cột như bạn yêu cầu */
+.specs-grid-container {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 6px;
+    /* Khoảng cách giữa các ô */
+    margin-top: 5px;
+}
+
+
+.spec-grid-item {
+    display: flex;
+    align-items: center;
+    gap: 3px;
+    overflow: hidden;
+}
+
+
+.spec-grid-icon {
+    width: 24px;
+    height: 24px;
+    flex-shrink: 0;
+    color: white !important;
+    margin-right: 2px;
+}
+
+.spec-grid-text {
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+}
+
+.spec-grid-name {
+    font-size: 0.8rem;
+    color: #6c757d;
+    text-transform: uppercase;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    overflow: hidden;
+}
+
+.spec-grid-value {
+    font-size: 0.8rem;
+    font-weight: 600;
+    color: #6c757d;
+    ;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    overflow: hidden;
 }
