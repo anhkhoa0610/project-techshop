@@ -191,7 +191,7 @@ class Product extends Model
     public function getFilteredProducts($categoryId = null, $supplierId = null)
     {
         $query = self::query()
-            ->with(['category', 'supplier', 'specs']) 
+            ->with(['category', 'supplier', 'specs','discounts']) 
             ->latest('created_at');
 
         if ($categoryId) {

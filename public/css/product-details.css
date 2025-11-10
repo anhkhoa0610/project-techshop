@@ -84,7 +84,7 @@
     text-align: center;
     margin-left: 10px;
     margin-right: 10px;
-    
+
 }
 
 .desc-product {
@@ -102,7 +102,7 @@
     min-height: 500px;
     position: relative;
     color: #ddd;
-    
+
 }
 
 .review-title {
@@ -181,15 +181,17 @@
     box-shadow: 0 4px 10px rgba(118, 75, 162, 0.3);
     color: rgb(6, 21, 70);
 }
+
 .comment-field {
     margin-top: 30px;
     padding: 20px;
     border-radius: 10px;
     min-height: 300px;
     position: relative;
-   
+
 }
-.groub-button-filter{
+
+.groub-button-filter {
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -197,27 +199,30 @@
     margin: 0;
     padding: 0;
 }
-.user-avatar{
+
+.user-avatar {
     width: 85px;
     height: 85px;
     border-radius: 50%;
     margin-left: 20px;
     position: absolute;
-    top:0 ;
+    top: 0;
     left: 0;
 }
 
-.user-review{
+.user-review {
     margin-left: 105px;
 }
-.review-display{
+
+.review-display {
     position: relative;
     margin-top: 30px;
     padding-bottom: 20px;
-    border-bottom:1px solid black ;
+    border-bottom: 1px solid black;
     font-weight: 500;
 }
-.review-info{
+
+.review-info {
     padding: 0;
     margin: 0;
 }
@@ -232,61 +237,75 @@
     opacity: 0.5;
     cursor: not-allowed;
 }
-.pagination-review{
+
+.pagination-review {
     display: flex;
     justify-content: center;
     margin-top: 20px;
 }
-.post-review{
+
+.post-review {
     background-color: rgb(166, 180, 166);
     min-height: 350px;
 }
-.post-form{
+
+.post-form {
     padding: 10px;
 }
 
 .glass3d {
     background: rgba(255, 255, 255, 0.1);
-    backdrop-filter: blur(12px);
+    backdrop-filter: blur(50px);
     -webkit-backdrop-filter: blur(12px);
     border: 1px solid rgba(255, 255, 255, 0.2);
 }
+
 .glass3d-child {
-    background: rgba(255, 255, 255,0.4);
+    background: rgba(255, 255, 255, 0.4);
     backdrop-filter: blur(12px);
     -webkit-backdrop-filter: blur(20px);
     border: 1px solid rgba(255, 255, 255, 0.2);
 }
-.review-count{
-color:#171616;
-font-weight: 500;
+
+.review-count {
+    color: #171616;
+    font-weight: 500;
 }
 
-.button-box{
-display: flex;
+.button-box {
+    display: flex;
 }
 
-.related-product{
+.related-product {
     margin-top: 30px;
 }
 
-.related-title{
-color: #ddd;
-text-align: start;
+.related-title {
+    color: #ddd;
+    text-align: start;
 }
 
-.title-button{
+.title-button {
     display: flex;
     justify-content: space-between;
 }
 
 .related-button button {
     margin-left: 25px;
+    margin-top: 20px;
     padding: 10px 20px;
     border-radius: 6px;
+    background-color: #444444;
+    color: white;
 }
 
-.related-display{
+.related-button button.active {
+    background-color: rgb(43, 226, 232);
+    color: rgb(12, 2, 2);
+    border: solid 3px rgba(255, 128, 0, 0.341);
+}
+
+.related-display {
     min-height: 200px;
 }
 
@@ -360,16 +379,39 @@ text-align: start;
     transform: scale(1.1);
 }
 
-.product-badge {
+@keyframes pulse {
+    0% {
+        /* Bắt đầu ở kích thước bình thường */
+        transform: scale(1);
+    }
+
+    50% {
+        /* Phóng to lên 10% ở giữa chừng */
+        transform: scale(1.3);
+    }
+
+    100% {
+        /* Trở về kích thước bình thường */
+        transform: scale(1);
+    }
+}
+
+.related-product-sale-icon {
     position: absolute;
     top: 1rem;
     left: 1rem;
-    background: linear-gradient(135deg, #6eb5b8, #072246);
+    background: #E74C3C;
     color: white;
     padding: 0.25rem 0.75rem;
     border-radius: 9999px;
     font-size: 0.75rem;
     font-weight: 600;
+    animation: pulse 1.5s ease-in-out infinite;
+    /* Đảm bảo nó scale từ tâm */
+    transform-origin: center;
+}
+.related-product-sale-icon.main{
+    font-size: 1.175rem;
 }
 
 .product-badge.new {
@@ -511,4 +553,70 @@ text-align: start;
     white-space: nowrap;
     text-overflow: ellipsis;
     overflow: hidden;
+}
+
+/* css xử lý khi load api */
+/* === Hiệu ứng shimmer skeleton === */
+.skeleton-card {
+    border-radius: 12px;
+    overflow: hidden;
+    padding: 12px;
+    transform: scale(1);
+    transition: transform 0.3s ease;
+}
+
+.skeleton-card:hover {
+    transform: scale(1.03);
+}
+
+.skeleton-image {
+    width: 100%;
+    height: 180px;
+    border-radius: 10px;
+    margin-bottom: 12px;
+}
+
+.skeleton-line {
+    height: 14px;
+    border-radius: 4px;
+    margin-bottom: 10px;
+}
+
+.skeleton-line.short {
+    width: 60%;
+}
+
+.shimmer {
+    background-size: 200% 100%;
+    animation: shimmerMove 1.3s infinite;
+}
+
+@keyframes shimmerMove {
+    0% {
+        background-position: 200% 0;
+    }
+
+    100% {
+        background-position: -200% 0;
+    }
+}
+
+/* === Hiệu ứng xuất hiện từng div === */
+.fade-in {
+    opacity: 0;
+    transform: translateY(15px);
+    animation: fadeInUp 0.6s ease forwards;
+}
+
+.fade-in-up {
+    opacity: 0;
+    transform: translateY(20px);
+    animation: fadeInUp 0.6s ease forwards;
+}
+
+@keyframes fadeInUp {
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
 }

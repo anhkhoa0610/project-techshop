@@ -13,6 +13,17 @@
                 <!-- Cột trái: Hình ảnh sản phẩm -->
                 <div class="col-md-6">
                     <div class="product-images text-center">
+
+                        @php
+                            $discount = $product->discounts->first(); 
+                        @endphp
+
+                        @if ($discount)
+                            <div class="related-product-sale-icon main">
+                                Giảm {{ $discount->discount_percent }}%
+                            </div>
+                        @endif
+
                         <img src="{{!empty($product->cover_image) ? asset('uploads/' . $product->cover_image) : asset('images/blank_product.png') }}"
                             class="prodcut-image" alt="Ảnh sản phẩm chính" id="mainImage">
                         <div class="swiper">
@@ -53,7 +64,32 @@
 
                     <h3 class=" fw-bold">
                         <strong>Đơn giá: </strong>
-                        {{ isset($product->price) ? number_format($product->price, 0, ',', '.') : 0}}đ
+                        @php
+                            // Tải đối tượng giảm giá đầu tiên nếu tồn tại
+                            $discount = $product->discounts->first(); 
+                        @endphp
+
+                        <span class="product-price">
+
+                            @if ($discount)
+
+                                <span class="current-price">
+                                    {{ number_format($discount->sale_price, 0, ',', '.') }}₫
+                                </span>
+
+                                <span class="original-price price-strike-through">
+                                    {{ number_format($discount->original_price, 0, ',', '.') }}₫
+                                </span>
+
+                            @else
+                                <span class="current-price">
+                                    {{ number_format($product->price, 0, ',', '.') }}₫
+                                </span>
+                            @endif
+
+                        </span>
+
+
                     </h3>
 
                     <p class="mt-3"><strong>Nhà phân phối: </strong>
@@ -63,7 +99,6 @@
                         {{ isset($product->warranty_period) ? $product->warranty_period . ' tháng' : 'Không bảo hành' }}</p>
                     <p class="mt-3"><strong>Danh mục: </strong>
                         {{ isset($product->category) ? $product->category->category_name : 'Không có danh mục' }}</p>
-
 
                     <div class="mt-4 d-flex align-items-center">
                         <strong class="me-2">Số lượng:</strong>
@@ -239,9 +274,9 @@
                     (<span class="related-title-type"> Cùng danh mục</span> )
                 </h2>
                 <div class="related-button">
-                    <button class="category-button btn btn-primary active"
-                        data-category_id="{{ $product->category_id }}">Danh mục</button>
-                    <button class="supplier-button btn btn-primary" data-supplier_id="{{ $product->supplier_id }}">Nhà phân
+                    <button class="category-button  active" data-category_id="{{ $product->category_id }}">Cùng danh
+                        mục</button>
+                    <button class="supplier-button " data-supplier_id="{{ $product->supplier_id }}">Nhà phân
                         phối</button>
                 </div>
             </div>
