@@ -266,12 +266,12 @@ document.addEventListener('DOMContentLoaded', function () {
 
                 // xử lý cập nhật số sao bình luận
                 updateStarDisplay(data.data.avg);
-                
+
                 let avg;
                 if (data.data.avg) {
                     avg = parseFloat(data.data.avg).toFixed(1);
                 }
-                
+
                 if (rating_left) {
                     rating_left.textContent = avg;
                 }
@@ -454,149 +454,214 @@ document.addEventListener('DOMContentLoaded', function () {
     const supplierBtn = document.querySelector('.supplier-button');
     const display = document.querySelector('.related-display');
 
-    // Hàm load sản phẩm
+    /**
+     * Hiển thị hiệu ứng tải (Skeleton) có animation xuất hiện từng khối
+     * @param {number} count
+     */
+    function showProductLoading(count = 4) {
+        if (!display) return;
+
+        let html = '';
+        for (let i = 0; i < count; i++) {
+            html += `
+            <div class="mb-4 mt-5 d-inline-block related-container fade-in" style="animation-delay: ${i * 0.15}s">
+                <div class="product-card skeleton-card">
+                    <div class="skeleton-image shimmer"></div>
+                    <div class="skeleton-line short shimmer"></div>
+                    <div class="skeleton-line shimmer"></div>
+                    <div class="skeleton-line shimmer"></div>
+                    <div class="skeleton-line short shimmer"></div>
+                </div>
+            </div>
+        `;
+        }
+        display.innerHTML = html;
+    }
+
+    /**
+     * Hàm load sản phẩm qua API
+     */
     function loadProducts(type, id) {
         let url = `${window.location.origin}/api/product-details/filter`;
-        if (type === 'category') {
-            url += `?category_id=${id}`;
-        } else if (type === 'supplier') {
-            url += `?supplier_id=${id}`;
-        }
+        if (type === 'category') url += `?category_id=${id}`;
+        else if (type === 'supplier') url += `?supplier_id=${id}`;
 
-        // Gọi API
+        // Hiển thị skeleton trước khi tải
+        showProductLoading();
+
         fetch(url)
-            .then(response => response.json())
+            .then(res => res.json())
             .then(data => {
                 if (data.success && data.data.length > 0) {
                     renderProducts(data.data);
-                    console.log("Thành công!!");
                 } else {
                     display.innerHTML = `<p class="text-center text-muted py-4">Không có sản phẩm phù hợp.</p>`;
                 }
             })
             .catch(err => {
-                console.error('Lỗi khi tải sản phẩm:', err);
                 display.innerHTML = `<p class="text-center text-danger py-4">Đã xảy ra lỗi khi tải sản phẩm.</p>`;
             });
     }
 
-    // Hàm render sản phẩm
+    /**
+     * Render sản phẩm liên quan ra giao diện 
+     */
     function renderProducts(products) {
-
-        display.innerHTML = ''; // xoá sản phẩm cũ
-        products.forEach(prod => {
+        display.innerHTML = '';
+        products.forEach((prod, i) => {
             const imageUrl = prod.cover_image
                 ? `/uploads/${prod.cover_image}`
                 : `/images/blank_product.png`;
 
             const productHtml = `
-                <div class=" mb-4 mt-5 d-inline-block related-container">
-                    <div class="product-card">
-                        <div class="product-image">
-                            <img src="${prod.cover_image
-                    ? '/uploads/' + prod.cover_image
-                    : '/images/place-holder.jpg'}" 
-                                alt="${prod.product_name}">
-                            <div class="product-badge">Hàng mới</div>
-                            <div class="product-discount">Trả góp 0%</div>
-                        </div>
+            <div class="mb-4 mt-5 d-inline-block related-container fade-in-up" style="animation-delay: ${i * 0.1}s">
+                <div class="product-card">
+                    <div class="product-image">
+                        <img src="${imageUrl}" alt="${prod.product_name}">
+                        ${prod.discounts?.length
+                    ? `<div class="related-product-sale-icon">Giảm ${prod.discounts[0].discount_percent}%</div>`
+                    : ''}
+                        <div class="product-discount">Trả góp 0%</div>
+                    </div>
 
-                        <a class="product-info" href="/product-details/${prod.product_id}">
-                            <h3 class="product-name">${prod.product_name}</h3>
+                    <a class="product-info" href="/product-details/${prod.product_id}">
+                        <h3 class="product-name">${prod.product_name}</h3>
 
-                            <div class="specs-grid-container">
+                        <div class="specs-grid-container">
                             ${prod.specs
-                    ? prod.specs
-                        .map((spec) => {
-                            const nameLower = spec.name ? spec.name.toLowerCase() : "";
+                    ? prod.specs.map(spec => {
+                        const nameLower = spec.name?.toLowerCase() || "";
+                        let iconFile = "cpu.svg";
+                        if (nameLower.includes("ram")) iconFile = "ram.svg";
+                        else if (nameLower.includes("gpu") || nameLower.includes("đồ họa") || nameLower.includes("vga")) iconFile = "gpu.svg";
+                        else if (nameLower.includes("ssd") || nameLower.includes("hdd") || nameLower.includes("storage") || nameLower.includes("dung lượng"))
+                            iconFile = "storage.svg";
 
-                            let iconFile = "cpu.svg"; // mặc định
-                            if (nameLower.includes("ram")) iconFile = "ram.svg";
-                            else if (nameLower.includes("gpu") || nameLower.includes("đồ họa") || nameLower.includes("vga"))
-                                iconFile = "gpu.svg";
-                            else if (
-                                nameLower.includes("dung lượng") ||
-                                nameLower.includes("ssd") ||
-                                nameLower.includes("hdd") ||
-                                nameLower.includes("storage")
-                            )
-                                iconFile = "storage.svg";
-
-                            return `
+                        return `
                                         <div class="spec-grid-item">
-                                        <img src="/images/icons/${iconFile}" alt="${spec.name} icon" class="spec-grid-icon">
-                                        <div class="spec-grid-text">
-                                            <span class="spec-grid-name">${spec.name}</span>
-                                            <strong class="spec-grid-value">${spec.value}</strong>
-                                        </div>
+                                            <img src="/images/icons/${iconFile}" alt="${spec.name}" class="spec-grid-icon">
+                                            <div class="spec-grid-text">
+                                                <span class="spec-grid-name">${spec.name}</span>
+                                                <strong class="spec-grid-value">${spec.value}</strong>
+                                            </div>
                                         </div>
                                     `;
-                        })
-                        .join("")
-                    : ""}
-                            </div>
+                    }).join('')
+                    : ''}
+                        </div>
 
-                            <div class="product-rating">
-                                <span class="stars" style="color:#ffc107;">⭐</span>
-                                <span class="rating-score">${prod.reviews_avg_rating ? prod.reviews_avg_rating.toFixed(1) : '0.0'}</span>
-                                <span class="reviews">(${prod.reviews_count || 0} đánh giá)</span>
-                            </div>
+                        <div class="product-rating">
+                            <span class="stars" style="color:#ffc107;">⭐</span>
+                            <span class="rating-score">${prod.reviews_avg_rating ? prod.reviews_avg_rating.toFixed(1) : '0.0'}</span>
+                            <span class="reviews">(${prod.reviews_count || 0} đánh giá)</span>
+                        </div>
 
-                            <div class="product-price">
-                                <span class="current-price">${prod.price
-                    ? prod.price.toLocaleString('vi-VN') + '₫'
-                    : 'Liên hệ'}</span>
-                            </div>
+                        <div class="product-price">
+                            <span class="current-price">${prod.price ? prod.price.toLocaleString('vi-VN') + '₫' : 'Liên hệ'}</span>
+                        </div>
 
-                            <div class="product-meta">
-                                <div class="release-date">
-                                    📅 <strong>Phát hành:</strong> ${prod.release_date || 'Đang cập nhật'}
-                                </div>
-                                <div class="stock-info">
-                                    📦 <strong>Còn lại:</strong> 
-                                    ${prod.stock_quantity > 0
+                        <div class="product-meta">
+                            <div class="release-date">
+                                📅 <strong>Phát hành:</strong> ${prod.release_date || 'Đang cập nhật'}
+                            </div>
+                            <div class="stock-info">
+                                📦 <strong>Còn lại:</strong> 
+                                ${prod.stock_quantity > 0
                     ? `${prod.stock_quantity} sản phẩm`
                     : '<span style="color:red;">Hết hàng</span>'}
-                                </div>
                             </div>
-                        </a>
+                        </div>
+                    </a>
 
-                        <button data-product-id="${prod.product_id}" data-quantity="1"
-                            class="btn-add-cart btn btn-primary full-width">Thêm vào giỏ 🛒</button>
-                    </div>
+                    <button data-product-id="${prod.product_id}" data-quantity="1"
+                        class="btn-add-cart btn btn-primary full-width">Thêm vào giỏ 🛒</button>
                 </div>
-                `;
+            </div>
+        `;
             display.insertAdjacentHTML('beforeend', productHtml);
         });
     }
 
-    // Sự kiện click nút
+    /**
+     * Gắn sự kiện click
+     */
     categoryBtn.addEventListener('click', function () {
-        const related_title_type = document.querySelector('.related-title-type');
-        related_title_type.textContent = "Cùng danh mục"
+        document.querySelector('.related-title-type').textContent = "Cùng danh mục";
         this.classList.add('active');
         supplierBtn.classList.remove('active');
-        const categoryId = this.dataset.category_id;
-        loadProducts('category', categoryId);
+        loadProducts('category', this.dataset.category_id);
     });
 
     supplierBtn.addEventListener('click', function () {
-        const related_title_type = document.querySelector('.related-title-type');
-        related_title_type.textContent = "Cùng nhà phân phối"
+        document.querySelector('.related-title-type').textContent = "Cùng nhà phân phối";
         this.classList.add('active');
         categoryBtn.classList.remove('active');
-        const supplierId = this.dataset.supplier_id;
-        loadProducts('supplier', supplierId);
+        loadProducts('supplier', this.dataset.supplier_id);
     });
 
-
+    // Auto load loại đang active
     if (categoryBtn.classList.contains('active')) {
-        const categoryId = categoryBtn.dataset.category_id;
-        loadProducts('category', categoryId);
+        loadProducts('category', categoryBtn.dataset.category_id);
     } else if (supplierBtn.classList.contains('active')) {
-        const supplierId = supplierBtn.dataset.supplier_id;
-        loadProducts('supplier', supplierId);
+        loadProducts('supplier', supplierBtn.dataset.supplier_id);
     }
+
+    // Xử lý các nút addToCart ở phần related products
+    document.addEventListener('click', async (e) => {
+        const btn = e.target.closest('.btn-add-cart');
+        if (!btn) return;
+
+        const productId = btn.dataset.productId;
+        const quantity = btn.dataset.quantity || 1;
+
+        btn.disabled = true;
+        const originalText = btn.textContent;
+        btn.textContent = 'Đang thêm...';
+
+        try {
+            const response = await fetch('/api/product-details/cart/add', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Accept': 'application/json',
+                    'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
+                },
+                body: JSON.stringify({user_id : user_id, product_id: productId, quantity })
+            });
+
+            const data = await response.json();
+
+            if (data.success) {
+                Swal.fire({
+                    icon: 'success',
+                    title: 'Thành công',
+                    text: data.message,
+                    timer: 2000,
+                    showConfirmButton: false
+                });
+            } else {
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Thất bại',
+                    text: data.message,
+                    showConfirmButton: true,
+                    confirmButtonText:"OK"
+                });
+            }
+        } catch (err) {
+            console.error('Lỗi thêm giỏ hàng:', err);
+            Swal.fire({
+                icon: 'error',
+                title: 'Lỗi',
+                text: 'Đã xảy ra lỗi, vui lòng thử lại.',
+                timer: 2000,
+                showConfirmButton: false
+            });
+        } finally {
+            btn.disabled = false;
+            btn.textContent = originalText;
+        }
+    });
 
 
 });

@@ -14,7 +14,7 @@ class UIProductDetailsController extends Controller
 {
     public function show($id)
     {
-        $product = Product::with('specs')->findOrFail($id);
+        $product = Product::with('specs','discounts')->findOrFail($id);
 
         $avg = $product->reviews()->avg('rating');
         $reviews_count = $product->reviews()->count();
