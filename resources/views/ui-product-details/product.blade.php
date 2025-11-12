@@ -249,6 +249,7 @@
                                     <span class="star filled text-warning fs-1">★★★★★</span>
                                 </option>
                             </select>
+                            
                         </div>
                         <div class="mb-3">
                             <label for="reviewComment" class="form-label">Bình luận của bạn:</label>
