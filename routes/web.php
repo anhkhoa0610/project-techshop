@@ -20,6 +20,7 @@ use App\Http\Controllers\LoginController;
 use App\Http\Controllers\MomoController;
 use App\Http\Controllers\VnpayController;
 use App\Http\Controllers\PostController;
+use App\Http\Controllers\ChartController;
 
 
 //trang chủ của tui, đụng vào nhớ xin phép =))
@@ -183,3 +184,5 @@ Route::get('/tin-tuc', [PostController::class, 'index'])->name('posts.index');
 
 // Route cho trang chi tiết (ví dụ: /tin-tuc/123)
 Route::get('/tin-tuc/{post}', [PostController::class, 'show'])->name('posts.show');
+
+Route::get('/chart',[ChartController::class, 'showSalesChart']);

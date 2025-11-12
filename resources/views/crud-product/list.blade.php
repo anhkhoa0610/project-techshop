@@ -9,7 +9,7 @@
                     <div class="table-title">
                         <div class="row">
                             <div class="col-sm-4">
-                                <button class="btn btn-info add-new">Thêm Mới Sản Phẩm
+                                <button class="btn btn-info add-new" style="margin-left: -80px;">Thêm Mới Sản Phẩm
                                 </button>
                             </div>
                             <div class="col-sm-4">
