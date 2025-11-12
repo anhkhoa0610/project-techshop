@@ -557,7 +557,24 @@ document.addEventListener('DOMContentLoaded', function () {
                         </div>
 
                         <div class="product-price">
-                            <span class="current-price">${prod.price ? prod.price.toLocaleString('vi-VN') + '₫' : 'Liên hệ'}</span>
+                            ${
+                                prod.discounts?.length 
+                                    ? 
+                                    `
+                                    <span class="current-price">
+                                        ${Number(prod.discounts[0].sale_price).toLocaleString('vi-VN')}₫
+                                    </span>
+                                    <span class="original-price price-strike-through">
+                                        ${Number(prod.discounts[0].original_price).toLocaleString('vi-VN')}₫
+                                    </span>
+                                    `
+                                    : 
+                                    `
+                                    <span class="current-price">
+                                        ${prod.price ? Number(prod.price).toLocaleString('vi-VN') + '₫' : 'Liên hệ'}
+                                    </span>
+                                    `
+                            }
                         </div>
 
                         <div class="product-meta">
