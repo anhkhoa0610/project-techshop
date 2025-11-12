@@ -5,7 +5,8 @@
  * Chúng ta chỉ cần style cho các cột đó.
  */
 
-html, body {
+html,
+body {
     height: 100%;
 }
 
@@ -18,31 +19,44 @@ html, body {
     /* * Dùng min-height thay vì height 
      * để nó tự dãn ra nếu nội dung dài (trên mobile) 
      */
-    min-height: 100vh; 
-    padding: 20px; /* Thêm padding cho dễ thở */
+    height: 100vh;
+    overflow: auto;
+    padding: 20px 0px 20px 0px;
+}
+
+.sidebar .logo {
+    display: flex;
+    justify-content: center;
+    align-items: center;
 }
 
 .sidebar .logo img {
-    margin-top: -30px;
-    width: 200px;
-    height: 200px;
+    width: 150px;
+    height: 150px;
     object-fit: cover;
 }
 
 .sidebar ul {
     list-style: none;
     padding: 0;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
 }
 
 .sidebar ul li {
-    padding: 12px 0; /* Giảm padding ngang, vì đã có ở .sidebar */
+    padding: 12px 0;
+    font-family: 'Orbitron', sans-serif;
+    font-weight: 500;
+    letter-spacing: 0.05em;
+    font-size: 20px;
 }
 
 .sidebar ul li a {
     color: #ddd;
     text-decoration: none;
     display: block;
-    padding: 10px 15px; /* Thêm padding vào link cho dễ bấm */
+    padding: 10px 15px;
     border-radius: 5px;
 }
 
@@ -51,10 +65,15 @@ html, body {
     color: #fff;
 }
 
+.sidebar ul li i {
+    padding: 0px 20px 0px 40px;
+}
+
 /* Nút Đăng xuất (form bên trong li) */
 .sidebar ul li form {
     margin: 0;
 }
+
 .sidebar ul li button {
     background: none;
     border: none;
@@ -65,40 +84,41 @@ html, body {
     border-radius: 5px;
     width: 100%;
     text-align: left;
-    font-family: inherit; /* Giữ font chữ giống <a> */
+    font-family: inherit;
+    /* Giữ font chữ giống <a> */
     font-size: inherit;
 }
+
 .sidebar ul li button:hover {
-    background: #c82333; /* Màu đỏ khi hover */
+    background: #c82333;
+    /* Màu đỏ khi hover */
     color: #fff;
     cursor: pointer;
 }
 
 /* --- PHẦN 3: STYLING CHO CONTENT (col-md-9) --- */
-.content {
-    /* * XÓA: margin-left: 50px; 
-     * Bootstrap đã tự xử lý khoảng cách.
-     */
-    padding: 30px; /* Thêm padding cho nội dung */
-    background: #f8f9fa; /* Thêm nền xám nhạt */
-    min-height: 100vh;
+.content-section {
+    padding: 30px;
+    height: 100vh;
+    overflow: auto;
 }
 
 .table-responsive {
     margin: 30px 0;
     /* * XÓA: margin-left: -80px; (Đây là lỗi chính)
      */
-    
+
     /* * SỬA: Dùng 'auto' để cuộn ngang khi cần,
      * 'visible' sẽ làm vỡ layout.
      */
-    overflow-x: auto; 
+    overflow-x: auto;
 }
 
 .table-wrapper {
     background: #fff;
     padding: 20px;
-    border-radius: 8px; /* Bo góc 1 chút */
+    border-radius: 8px;
+    /* Bo góc 1 chút */
     box-shadow: 0 1px 1px rgba(0, 0, 0, .05);
 }
 
@@ -107,16 +127,19 @@ html, body {
  */
 .table-title {
     display: flex;
-    justify-content: space-between; /* Đẩy 2 cụm ra 2 bên */
+    justify-content: space-between;
+    /* Đẩy 2 cụm ra 2 bên */
     align-items: center;
     padding-bottom: 15px;
     margin: 0 0 15px;
     min-height: 45px;
-    border-bottom: 1px solid #eee; /* Thêm đường kẻ */
+    border-bottom: 1px solid #eee;
+    /* Thêm đường kẻ */
 }
 
 .table-title h2 {
-    margin: 0; /* Xóa margin mặc định */
+    margin: 0;
+    /* Xóa margin mặc định */
     font-size: 24px;
 }
 
@@ -155,10 +178,21 @@ table.table td a {
     margin: 0 5px;
 }
 
-table.table td a.view { color: #03A9F4; }
-table.table td a.edit { color: #FFC107; }
-table.table td a.delete { color: #E34724; }
-table.table td i { font-size: 19px; }
+table.table td a.view {
+    color: #03A9F4;
+}
+
+table.table td a.edit {
+    color: #FFC107;
+}
+
+table.table td a.delete {
+    color: #E34724;
+}
+
+table.table td i {
+    font-size: 19px;
+}
 
 /* * Giúp cột "Description" không bị vỡ khi chữ quá dài
  * (CSS bạn cung cấp đã rất tốt)
@@ -168,20 +202,24 @@ table td {
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
-    max-width: 200px; /* Giới hạn chiều rộng */
+    max-width: 200px;
+    /* Giới hạn chiều rộng */
 }
+
 /* Ưu tiên cho cột cuối (Actions) */
 table.table td:last-child {
     white-space: nowrap;
     max-width: 130px;
     width: 130px;
 }
+
 /* Cho phép cột Name và Description dãn ra */
 table.table td:nth-child(2),
 table.table td:nth-child(3),
 table.table th:nth-child(2),
 table.table th:nth-child(3) {
-    white-space: normal; /* Cho phép xuống hàng */
+    white-space: normal;
+    /* Cho phép xuống hàng */
     text-align: left;
 }
 
@@ -206,8 +244,9 @@ table.table th:nth-child(3) {
      * XÓA: position: absolute; (Không cần nữa)
      * XÓA: right: 0;
      */
-    min-width: 250px; /* Tăng độ rộng 1 chút */
-    
+    min-width: 250px;
+    /* Tăng độ rộng 1 chút */
+
     /* CSS mới cho đẹp */
     border-radius: 8px;
     overflow: hidden;
@@ -217,8 +256,10 @@ table.table th:nth-child(3) {
 .search-box input.form-control {
     border: none;
     box-shadow: none;
-    padding-left: 10px; /* Điều chỉnh lại */
+    padding-left: 10px;
+    /* Điều chỉnh lại */
 }
+
 .search-box input.form-control:focus {
     outline: none;
     box-shadow: none;
@@ -229,6 +270,7 @@ table.table th:nth-child(3) {
     border: none;
     transition: background-color 0.2s;
 }
+
 .search-box button.btn-primary:hover {
     background-color: #0056b3;
 }
