@@ -1,8 +1,8 @@
 .promotion-wrapper {
-    /* padding-top: 50px;
-    padding-bottom: 50px; */
     padding: 50px;
     background-color: #333;
+    display: flex;
+    justify-content: center;
 }
 
 .promotion-page {
@@ -12,6 +12,7 @@
     padding-right: 30px;
     padding-top: 15px;
     padding-bottom: 15px;
+    width: 90%;
 }
 
 /* --- Banner --- */
@@ -52,7 +53,7 @@
 }
 
 .promotion-page .promo-btn:hover {
-    background-color: #dc3545;
+    background-color: #358edc;
     color: #fff;
     transform: translateY(-4px) scale(1.05);
     box-shadow: 0 6px 14px rgba(220, 53, 69, 0.35);
@@ -174,3 +175,322 @@
         padding: 10px 24px;
     }
 }
+
+.voucher-skeleton {
+    height: 230px;
+    border-radius: 1rem;
+    background: linear-gradient(90deg, #eee 25%, #f5f5f5 50%, #eee 75%);
+    background-size: 200% 100%;
+    animation: loadingShimmer 1s infinite;
+}
+
+@keyframes loadingShimmer {
+    0% {
+        background-position: 200% 0;
+    }
+
+    100% {
+        background-position: -200% 0;
+    }
+}
+
+.modern-big-title {
+    font-size: 2rem;
+    font-weight: 700;
+    color: #b91c1c;
+    letter-spacing: 0.5px;
+    text-transform: uppercase;
+    margin-bottom: 1.5rem;
+    text-shadow: 1px 1px 0 #fff, 2px 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.modern-big-title {
+    transition: transform 0.3s ease, color 0.3s ease;
+}
+
+.modern-big-title:hover {
+    transform: scale(1.03);
+    color: #dc2626;
+}
+
+.voucher-card {
+    position: relative;
+    background: linear-gradient(135deg, #ffecd2 0%, #fcb69f 100%);
+    border-radius: 16px;
+    box-shadow: 0 3px 12px rgba(0, 0, 0, 0.1);
+    overflow: hidden;
+    transition: 0.3s;
+    cursor: pointer;
+}
+
+.voucher-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 6px 18px rgba(0, 0, 0, 0.15);
+}
+
+.voucher-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 14px 18px;
+    background: rgba(255, 255, 255, 0.2);
+}
+
+.voucher-header .discount {
+    background: #ff5722;
+    color: white;
+    padding: 6px 12px;
+    font-weight: bold;
+    border-radius: 8px;
+    font-size: 1.1rem;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+}
+
+.voucher-body {
+    padding: 18px;
+    background: white;
+    border-top: 2px dashed #fcb69f;
+    text-align: left;
+}
+
+.voucher-body .code-box {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 8px;
+    flex-wrap: wrap;
+}
+
+.voucher-body .code-label {
+    color: #555;
+}
+
+.voucher-body .code {
+    font-weight: 700;
+    color: #0d47a1;
+    font-size: 1.1rem;
+    letter-spacing: 1px;
+    background: #e3f2fd;
+    padding: 5px 10px;
+    border-radius: 6px;
+}
+
+.voucher-body button.copy-btn {
+    border: none;
+    background: #0d47a1;
+    color: white;
+    padding: 6px 10px;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 0.9rem;
+    transition: 0.2s;
+}
+
+.voucher-body button.copy-btn:hover {
+    background: #1565c0;
+}
+
+.voucher-body .date {
+    color: #757575;
+    font-size: 0.9rem;
+    margin-top: 4px;
+}
+
+.voucher-status {
+    margin-top: 10px;
+    padding: 5px 10px;
+    border-radius: 20px;
+    font-size: 0.85rem;
+    display: inline-block;
+}
+
+.voucher-status.active {
+    background: #c8e6c9;
+    color: #2e7d32;
+}
+
+.voucher-status.inactive {
+    background: #eee;
+    color: #777;
+}
+
+/* Mép rách */
+.voucher-card::before,
+.voucher-card::after {
+    content: "";
+    position: absolute;
+    top: 50%;
+    width: 20px;
+    height: 20px;
+    background: #f9fafc;
+    border-radius: 50%;
+    transform: translateY(-50%);
+}
+
+.voucher-card::before {
+    left: -10px;
+}
+
+.voucher-card::after {
+    right: -10px;
+}
+
+/* Responsive */
+@media(max-width: 600px) {
+    .voucher-body .code-box {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+}
+
+.flash-sale-wrapper {
+    position: relative;
+    display: inline-block;
+    width: 100%;
+    overflow: hidden;
+}
+
+.flash-sale-banner {
+    position: relative;
+    background: linear-gradient(90deg, #ff0000, #ff6600, #ff0000);
+    background-size: 400% 100%;
+    border-radius: 16px;
+    padding: 14px 40px;
+    color: #fff;
+    animation: bgMove 2s linear infinite;
+    box-shadow: 0 0 30px rgba(255, 77, 0, 0.8);
+    border: 3px solid transparent;
+}
+
+/* Hiệu ứng viền sáng chạy vòng */
+.flash-sale-banner::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    border-radius: inherit;
+    padding: 3px;
+    background: linear-gradient(90deg, #ff0000, #ffff00, #ff0000, #ff6600);
+    background-size: 400% 100%;
+    /* stylelint-disable-next-line property-no-vendor-prefix */
+    -webkit-mask:
+        linear-gradient(#000 0 0) content-box,
+        linear-gradient(#000 0 0);
+    -webkit-mask-composite: xor;
+    mask-composite: exclude;
+    animation: borderMove 2s linear infinite;
+}
+
+/* Text neon nổi bật */
+.flash-sale-text {
+    font-size: 2.3rem;
+    font-weight: 900;
+    color: #fff;
+    text-shadow:
+        0 0 10px #fff,
+        0 0 20px #ff6600,
+        0 0 30px #ff3300,
+        0 0 40px #ff0000;
+    letter-spacing: 2px;
+    animation: flashText 1.5s infinite alternate;
+}
+
+/* Icon hiệu ứng neon */
+.lightning-icon,
+.clock-icon {
+    color: #fff700;
+    text-shadow:
+        0 0 15px #ff0,
+        0 0 30px #ffa500,
+        0 0 45px #ff6600;
+    animation: iconGlow 1.2s infinite alternate;
+}
+
+/* Hiệu ứng chuyển động nền */
+@keyframes bgMove {
+    0% {
+        background-position: 0% 50%;
+    }
+
+    100% {
+        background-position: 100% 50%;
+    }
+}
+
+/* Hiệu ứng viền sáng */
+@keyframes borderMove {
+    0% {
+        background-position: 0% 50%;
+    }
+
+    100% {
+        background-position: 100% 50%;
+    }
+}
+
+/* Nhấp nháy chữ */
+@keyframes flashText {
+    from {
+        opacity: 1;
+        transform: scale(1);
+    }
+
+    to {
+        opacity: 0.9;
+        transform: scale(1.05);
+        text-shadow: 0 0 25px #fff, 0 0 50px #ff3300;
+    }
+}
+
+/* Icon “rung nhẹ” */
+@keyframes iconGlow {
+    from {
+        transform: scale(1);
+        opacity: 0.9;
+    }
+
+    to {
+        transform: scale(1.2) rotate(-10deg);
+        opacity: 1;
+    }
+}
+
+.product-card {
+    transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.product-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 8px 20px rgba(0,0,0,0.15);
+}
+
+.product-card img {
+    height: 220px;
+    object-fit: cover;
+    transition: transform 0.3s;
+}
+
+.product-card:hover img {
+    transform: scale(1.05);
+}
+
+.sale-badge {
+    background: #dc2626;
+    color: white;
+    font-weight: 700;
+    font-size: 0.85rem;
+    padding: 5px 10px;
+    border-radius: 8px;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.12);
+}
+
+.btn-buy {
+    font-weight: bold;
+    border: 2px solid #dc2626;
+    color: #dc2626;
+}
+
+.btn-buy:hover {
+    background: #dc2626;
+    color: white;
+}
+

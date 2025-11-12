@@ -66,4 +66,15 @@ class User extends Authenticatable
             'birth' => 'date',
         ];
     }
+
+    // Quan hệ 1-n với CartItem
+    public function cartItems()
+    {
+        return $this->hasMany(CartItem::class, 'user_id', 'user_id');
+    }
+    // Hàm trả về số lượng items trong giỏ hàng
+    public function cartItemsCount()
+    {
+        return $this->cartItems()->sum('quantity');
+    }
 }

@@ -22,7 +22,7 @@ class UserSeeder extends Seeder
         $ho = ['Nguyễn', 'Trần', 'Lê', 'Phạm', 'Hoàng', 'Võ', 'Đặng', 'Bùi', 'Đỗ', 'Lương', 'Lý', 'Lâm', 'Lê', 'Đinh', 'Đặng'];
         $ten = ['An', 'Bình', 'Chi', 'Dũng', 'Hằng', 'Khoa', 'Lan', 'Minh', 'Ngọc', 'Thảo', 'Tùng', 'Vân', 'Kiệt', 'Hùng', 'Hạnh', 'Yến', 'Hương', 'Hải', 'Huy', 'Nhi', 'Như', 'Nguyệt', 'Ánh', 'Châu', 'Chương', 'Long', 'Uy'];
 
-        for ($i = 0; $i < 100; $i++) {
+        for ($i = 0; $i < 30; $i++) {
             $fullName = $faker->randomElement($ho) . ' ' . $faker->firstName . ' ' . $faker->randomElement($ten);
             $emailName = strtolower(str_replace(' ', '.', $faker->userName()));
             $domain = $faker->randomElement($emailDomains);
@@ -36,13 +36,65 @@ class UserSeeder extends Seeder
                 'phone' => '09' . rand(10000000, 99999999),
                 'password' => Hash::make('123456'),
                 'address' => $faker->address(),
-                'role' => $faker->randomElement(['User', 'Admin']),
+                'role' => 'User',
                 'birth' => $faker->date('Y-m-d', '2005-01-01'),
                 'is_tdc_student' => $isTDC,
 
 
             ]);
         }
+        User::create([
+            'full_name' => 'Admin',
+            'email' => 'admin@gmail.com',
+            'phone' => '09' . rand(10000000, 99999999),
+            'password' => Hash::make('123456'),
+            'address' => $faker->address(),
+            'role' => 'Admin',
+            'birth' => $faker->date('Y-m-d', '2005-01-01'),
+            'is_tdc_student' => 'false',
+        ]);
+        User::create([
+            'full_name' => 'Admin1',
+            'email' => 'admin1@gmail.com',
+            'phone' => '09' . rand(10000000, 99999999),
+            'password' => Hash::make('123456'),
+            'address' => $faker->address(),
+            'role' => 'Admin',
+            'birth' => $faker->date('Y-m-d', '2005-01-01'),
+            'is_tdc_student' => 'false',
+        ]);
+        User::create([
+            'full_name' => 'User',
+            'email' => 'user@gmail.com',
+            'phone' => '09' . rand(10000000, 99999999),
+            'password' => Hash::make('123456'),
+            'address' => $faker->address(),
+            'role' => 'User',
+            'birth' => $faker->date('Y-m-d', '2005-01-01'),
+            'is_tdc_student' => 'false',
+        ]);
+        User::create([
+            'full_name' => 'User1',
+            'email' => 'user1@gmail.com',
+            'phone' => '09' . rand(10000000, 99999999),
+            'password' => Hash::make('123456'),
+            'address' => $faker->address(),
+            'role' => 'User',
+            'birth' => $faker->date('Y-m-d', '2005-01-01'),
+            'is_tdc_student' => 'false',
+        ]);
+        User::create([ 
+            'full_name' => 'KietLuong',
+            'email' => 'kieluong@mail.tdc.edu.vn',
+            'phone' => '09' . rand(10000000, 99999999),
+            'password' => Hash::make('123456'),
+            'address' => $faker->address(),
+            'role' => 'User',
+            'birth' => $faker->date('Y-m-d', '2005-01-01'),
+            'is_tdc_student' => 'true',
+        ]);
+
+
         $this->command->info('Users seeded successfully!');
     }
 }

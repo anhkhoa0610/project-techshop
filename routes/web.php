@@ -26,7 +26,7 @@ use App\Http\Controllers\ChartController;
 //trang chủ của tui, đụng vào nhớ xin phép =))
 Route::prefix('index')->group(function () {
     Route::get('/', [IndexController::class, 'index'])->name('index');
-    Route::get('/categories/{category_id?}',[IndexController::class, 'categories'])->name('index.categories');
+    Route::get('/categories/{category_id?}', [IndexController::class, 'categories'])->name('index.categories');
 });
 
 Route::middleware(['checkrole:Admin'])->group(function () {
@@ -63,6 +63,18 @@ Route::middleware(['checkrole:Admin'])->group(function () {
         Route::get('/{reviewId}/view', [ReviewController::class, 'view'])->name('reviews.view');
         Route::put('/{reviewId}', [ReviewController::class, 'update'])->name('reviews.update');
         Route::delete('/{review_id}', [ReviewController::class, 'destroy'])->name('reviews.destroy');
+    });
+
+    Route::prefix('users')->group(function () {
+        Route::get('/', [UserController::class, 'index'])->name('users.index');
+        Route::get('/create', [UserController::class, 'create'])->name('users.create');
+        Route::post('/', [UserController::class, 'store'])->name('users.store');
+        Route::get('/search/autocomplete', [UserController::class, 'search'])->name('users.search');
+        Route::get('/{user}/edit', [UserController::class, 'edit'])->name('users.edit');
+        Route::put('/{user}', [UserController::class, 'update'])->name('users.update');
+        Route::get('/{user}/show', [UserController::class, 'show'])->name('users.show');
+        Route::delete('/{user}', [UserController::class, 'destroy'])->name('users.destroy');
+
     });
 });
 
@@ -106,18 +118,6 @@ Route::prefix('voucher')->group(function () {
     Route::get('/', [VoucherController::class, 'list'])->name('voucher.list');
 });
 
-
-Route::prefix('users')->group(function () {
-    Route::get('/', [UserController::class, 'index'])->name('users.index');
-    Route::get('/create', [UserController::class, 'create'])->name('users.create');
-    Route::post('/', [UserController::class, 'store'])->name('users.store');
-    Route::get('/{user}/edit', [UserController::class, 'edit'])->name('users.edit');
-    Route::put('/{user}', [UserController::class, 'update'])->name('users.update');
-    Route::get('/{user}/show', [UserController::class, 'show'])->name('users.show');
-    Route::delete('/{user}', [UserController::class, 'destroy'])->name('users.destroy');
-    Route::get('/search/autocomplete', [UserController::class, 'search'])->name('users.search');
-});
-
 // login routes //
 Route::get('login', [LoginController::class, 'showLoginForm'])->name('login');
 Route::post('login', [LoginController::class, 'login'])->name('user.authUser');
@@ -133,52 +133,21 @@ Route::post('/reset', [LoginController::class, 'reset'])->name('reset');
 Route::get('/forgot', [LoginController::class, 'showForgotForm'])->name('forgot.form');
 Route::post('/forgot', [LoginController::class, 'forgot'])->name('forgot');
 
-Route::get('reset-password/{token}', function ($token) {
-    return view('login.reset-password', ['token' => $token]);
-})->name('password.reset');
-
-Route::post('reset-password', function (Illuminate\Http\Request $request) {
-    $request->validate([
-        'token' => 'required',
-        'email' => 'required|email',
-        'password' => 'required|min:6|confirmed',
-        'password_confirmation' => 'required|min:6',
-    ], [
-        'email.required' => 'Vui lòng nhập email của bạn.',
-        'email.email' => 'Định dạng email không hợp lệ.',
-        'password.required' => 'Vui lòng nhập mật khẩu mới.',
-        'password.min' => 'Mật khẩu mới phải có ít nhất 6 ký tự.',
-        'password.confirmed' => 'Xác nhận mật khẩu mới không khớp.',
-        'password_confirmation.required' => 'Vui lòng xác nhận mật khẩu mới.',
-        'password_confirmation.min' => 'Xác nhận mật khẩu mới phải có ít nhất 6 ký tự.',
-    ]);
-
-    $status = Password::reset(
-        $request->only('email', 'password', 'password_confirmation', 'token'),
-        function ($user, $password) {
-            $user->password = \Hash::make($password);
-            $user->save();
-        }
-    );
-
-    return $status === Password::PASSWORD_RESET
-        ? redirect()->route('login')->with('success', 'Đặt lại mật khẩu thành công.')
-        : back()->withErrors(['email' => [__($status)]]);
-})->name('password.update');
-
+Route::get('reset-password/{token}', [LoginController::class, 'showResetPasswordForm'])->name('password.reset');
+Route::post('reset-password', [LoginController::class, 'resetPassword'])->name('password.update');
 
 Route::post('/api/voucher/check', [App\Http\Controllers\VoucherController::class, 'checkVoucher']);
 
 Route::get('/promotions', [PromotionController::class, 'index'])->name('promotion.index');
-Route::prefix('reviews')->group(function () {
-    Route::get('/', [ReviewController::class, 'index'])->name('reviews.index');
-    Route::get('/create', [ReviewController::class, 'create'])->name('reviews.create');
-    Route::post('/', [ReviewController::class, 'store'])->name('reviews.store');
-    Route::get('/{reviewId}/edit', [ReviewController::class, 'edit'])->name('reviews.edit');
-    Route::put('/{reviewId}', [ReviewController::class, 'update'])->name('reviews.update');
-    Route::delete('/{review_id}', [ReviewController::class, 'destroy'])->name('reviews.destroy');
-});
- 
+// Route::prefix('reviews')->group(function () {
+//     Route::get('/', [ReviewController::class, 'index'])->name('reviews.index');
+//     Route::get('/create', [ReviewController::class, 'create'])->name('reviews.create');
+//     Route::post('/', [ReviewController::class, 'store'])->name('reviews.store');
+//     Route::get('/{reviewId}/edit', [ReviewController::class, 'edit'])->name('reviews.edit');
+//     Route::put('/{reviewId}', [ReviewController::class, 'update'])->name('reviews.update');
+//     Route::delete('/{review_id}', [ReviewController::class, 'destroy'])->name('reviews.destroy');
+// });
+
 // Route cho trang danh sách tin tức
 Route::get('/tin-tuc', [PostController::class, 'index'])->name('posts.index');
 
@@ -186,3 +155,12 @@ Route::get('/tin-tuc', [PostController::class, 'index'])->name('posts.index');
 Route::get('/tin-tuc/{post}', [PostController::class, 'show'])->name('posts.show');
 
 Route::get('/chart',[ChartController::class, 'showSalesChart']);
+// Route cho trang profile
+Route::middleware(['auth'])->group(function () {
+    Route::get('/user/profile', [UserController::class, 'showProfile'])->name('user.profile');
+    Route::get('/user/edit', [UserController::class, 'showEditProfile'])->name('user.editProfile');
+    Route::put('/user/edit', [UserController::class, 'updateProfile'])->name('user.updateProfile');
+    Route::get('/user/change-password', [UserController::class, 'showChangePassword'])->name('user.changePassword');
+    Route::put('/user/change-password', [UserController::class, 'updatePassword'])->name('user.updatePassword');
+    Route::delete('/user/delete', [UserController::class, 'destroyProfile'])->name('user.delete');
+});

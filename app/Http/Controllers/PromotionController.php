@@ -3,27 +3,58 @@
 namespace App\Http\Controllers;
 
 use App\Models\Category;
-use Illuminate\Http\Request;
+use App\Models\Product;
+use App\Models\ProductDiscount;
 use App\Models\Voucher;
+use Illuminate\Http\Request;
 
 class PromotionController extends Controller
 {
+    // Hiển thị trang khuyến mãi
     public function index()
     {
         return view('ui-promotion.promotion');
     }
 
+    // API trả dữ liệu khuyến mãi
     public function apiIndex()
     {
-        $promotions = Voucher::all();
+        // Lấy danh sách voucher còn hạn
+        $vouchers = Voucher::where(function ($query) {
+            $query->whereNull('end_date')
+                ->orWhere('end_date', '>', now());
+        })->get();
+
+        // Danh mục sản phẩm
         $categories = Category::all();
 
+        // Lấy sản phẩm có khuyến mãi đang còn hiệu lực
+        $products = Product::with([
+            'discounts' => function ($query) {
+                $query->active();
+            }
+        ])
+            ->whereHas('discounts', function ($query) {
+                $query->active();
+            })
+            ->paginate(8)
+            ->withQueryString();
+
+        // Chỉ gửi mảng dữ liệu sản phẩm, không gửi toàn bộ paginator
         return response()->json([
             'status' => 'success',
             'data' => [
-                'promotions' => $promotions,
+                'promotions' => $vouchers,
                 'categories' => $categories,
+                'products' => $products->items(), // <-- đây mới là array sản phẩm
+                'pagination' => [
+                    'current_page' => $products->currentPage(),
+                    'last_page' => $products->lastPage(),
+                    'per_page' => $products->perPage(),
+                    'total' => $products->total(),
+                ],
             ],
         ]);
     }
+
 }

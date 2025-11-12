@@ -6,18 +6,30 @@ use App\Http\Requests\ReviewRequest;
 use Illuminate\Http\Request;
 use App\Models\Product;
 use App\Models\Review;
+use App\Models\CartItem;
+use App\Http\Requests\CartRequest;
+
 
 class UIProductDetailsController extends Controller
 {
     public function show($id)
     {
-        $product = Product::findOrFail($id);
+        $product = Product::with('specs','discounts')->findOrFail($id);
+
         $avg = $product->reviews()->avg('rating');
         $reviews_count = $product->reviews()->count();
         $reviewSummary = $product->getReviewSummary();
         $reviews = $product->getReviews();
+        $cartItems_count = auth()->check() ? auth()->user()->cartItemsCount() : 0;
 
-        return view('ui-product-details.product', compact('product', 'avg', 'reviews_count', 'reviewSummary', 'reviews'));
+        return view('ui-product-details.product', compact(
+            'product',
+            'avg',
+            'reviews_count',
+            'reviewSummary',
+            'reviews',
+            'cartItems_count'
+        ));
     }
 
     public function index($id, Request $request)
@@ -31,7 +43,7 @@ class UIProductDetailsController extends Controller
             'data' => $reviews
         ]);
     }
-    public function store(ReviewRequest $request)
+    public function storeReview(ReviewRequest $request)
     {
 
         $validated = $request->validated();
@@ -54,4 +66,33 @@ class UIProductDetailsController extends Controller
             ]
         ], 201);
     }
+
+    public function filterProducts(Request $request)
+    {
+        $categoryId = $request->input('category_id');
+        $supplierId = $request->input('supplier_id');
+
+        $products = (new Product)->getFilteredProducts($categoryId, $supplierId);
+
+        return response()->json([
+            'success' => true,
+            'data' => $products
+        ]);
+    }
+
+    public function addToCart(CartRequest $request)
+    {
+        $userId = auth()->id();
+        $productId = $request->product_id;
+        $quantity = $request->quantity;
+
+        $cartItem = CartItem::addOrUpdate($userId, $productId, $quantity);
+
+        return response()->json([
+            'success' => true,
+            'message' => "Đã thêm ({$quantity}) sản phẩm vào giỏ hàng!",
+            'item' => $cartItem,
+        ]);
+    }
+
 }

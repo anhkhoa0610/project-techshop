@@ -11,8 +11,11 @@ use Illuminate\Support\Facades\Password;
 class LoginController extends Controller
 {
     //
-    public function showLoginForm()
+    public function showLoginForm(Request $request)
     {
+        if (!Auth::check() && !$request->session()->has('url.intended')) {
+            $request->session()->put('url.intended', url()->previous());
+        }
         return view('login.login');
     }
 
@@ -36,7 +39,7 @@ class LoginController extends Controller
 
         if (Auth::attempt($credentials)) {
             // Đăng nhập thành công
-            return redirect()->route('index')->with('success', 'Đăng nhập thành công.');
+            return redirect()->intended(route('index'))->with('success', 'Đăng nhập thành công.');
         }
 
         // Đăng nhập thất bại
@@ -44,10 +47,15 @@ class LoginController extends Controller
     }
 
     // Đăng xuất
-    public function logout()
+    public function logout(Request $request)
     {
         Auth::logout();
-        return redirect()->route('index')->with('success', 'Đăng xuất thành công.');
+
+        // Xóa session đăng nhập
+        $request->session()->invalidate();
+        $request->session()->regenerateToken();
+
+        return redirect()->back()->with('success', 'Đăng xuất thành công.');
     }
 
     public function showResetForm()
@@ -158,6 +166,41 @@ class LoginController extends Controller
 
         return redirect("login")->with('success', 'Đăng ký thành công. Bạn có thể đăng nhập ngay bây giờ.');
     }
+
+    public function showResetPasswordForm($token)
+    {
+        return view('login.reset-password', ['token' => $token]);
+    }
+
+    public function resetPassword(Request $request)
+    {
+        $request->validate([
+            'token' => 'required',
+            'email' => 'required|email',
+            'password' => 'required|min:6|confirmed',
+            'password_confirmation' => 'required|min:6',
+        ], [
+            'email.required' => 'Vui lòng nhập email của bạn.',
+            'email.email' => 'Định dạng email không hợp lệ.',
+            'password.required' => 'Vui lòng nhập mật khẩu mới.',
+            'password.min' => 'Mật khẩu mới phải có ít nhất 6 ký tự.',
+            'password.confirmed' => 'Xác nhận mật khẩu mới không khớp.',
+            'password_confirmation.required' => 'Vui lòng xác nhận mật khẩu mới.',
+            'password_confirmation.min' => 'Xác nhận mật khẩu mới phải có ít nhất 6 ký tự.',
+        ]);
+
+        $status = Password::reset(
+            $request->only('email', 'password', 'password_confirmation', 'token'),
+            function ($user, $password) {
+                $user->password = Hash::make($password);
+                $user->save();
+            }
+        );
+
+        return $status === Password::PASSWORD_RESET
+            ? redirect()->route('login')->with('success', 'Đặt lại mật khẩu thành công.')
+            : back()->withErrors(['email' => [__($status)]]);
+    }
     public function apiLogin(Request $request)
     {
         $request->validate([
@@ -180,4 +223,15 @@ class LoginController extends Controller
             'user' => $user->only(['id', 'full_name', 'email', 'role']),
         ]);
     }
+
+    public function apiLogout(Request $request)
+    {
+        // Xóa token hiện tại (token đang dùng để gọi API)
+        $request->user()->currentAccessToken()->delete();
+
+        return response()->json([
+            'message' => 'Đăng xuất thành công',
+        ]);
+    }
+
 }
