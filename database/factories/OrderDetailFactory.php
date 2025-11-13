@@ -24,7 +24,7 @@ class OrderDetailFactory extends Factory
             'product_id' => Product::query()->inRandomOrder()->value('product_id')
                 ?? Product::factory(), // fallback nếu DB chưa có product nào
             'quantity' => $this->faker->numberBetween(1, 5),
-            'unit_price' => $this->faker->randomFloat(2, 50000, 500000),
+            'unit_price' => $this->faker->randomFloat(0, 50000, 500000),
         ];
     }
 }
