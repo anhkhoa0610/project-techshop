@@ -20,7 +20,7 @@ Route::middleware('auth:sanctum')->post('/logout', [LoginController::class, 'api
 Route::middleware(['auth:sanctum', 'checkrole:Admin'])->group(function () {
     Route::apiResource('categories', CategoryController::class);
 
-    Route::apiResource('products', ProductController::class)->only(['show', 'store', 'update', 'index', 'destroy']);
+    Route::apiResource('products', ProductController::class);
 
     Route::apiResource('orders', OrderController::class);
 

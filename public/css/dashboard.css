@@ -1,83 +1,151 @@
+/* --- PHẦN 1: LAYOUT CHÍNH (Đã sửa) --- */
+/* * Giả định bạn đang dùng <div class="row"> 
+ * và <div class="col-md-3 sidebar"> / <div class="col-md-9 content">
+ * Bootstrap sẽ lo việc chia cột. 
+ * Chúng ta chỉ cần style cho các cột đó.
+ */
+
+html,
 body {
-    display: flex;
+    height: 100%;
 }
 
-/* Sidebar */
+/* KHÔNG DÙNG: body { display: flex; } - Xung đột với Bootstrap */
+
+/* --- PHẦN 2: STYLING CHO SIDEBAR (col-md-3) --- */
 .sidebar {
-    width: 260px;
     background: #343a40;
     color: #fff;
+    /* * Dùng min-height thay vì height 
+     * để nó tự dãn ra nếu nội dung dài (trên mobile) 
+     */
     height: 100vh;
-    position: fixed;
-    top: 0;
-    left: 0;
-    padding-top: 20px;
+    overflow: auto;
+    padding: 20px 0px 20px 0px;
 }
 
+.sidebar .logo {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.sidebar .logo img {
+    width: 150px;
+    height: 150px;
+    object-fit: cover;
+}
 
 .sidebar ul {
     list-style: none;
     padding: 0;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
 }
 
 .sidebar ul li {
-    padding: 12px 20px;
+    padding: 12px 0;
+    font-family: 'Orbitron', sans-serif;
+    font-weight: 500;
+    letter-spacing: 0.05em;
+    font-size: 20px;
 }
 
 .sidebar ul li a {
     color: #ddd;
     text-decoration: none;
     display: block;
+    padding: 10px 15px;
+    border-radius: 5px;
 }
 
 .sidebar ul li a:hover {
     background: #495057;
     color: #fff;
-    border-radius: 5px;
 }
 
-/* Content */
-.content {
-    margin-left: 220px;
-    padding: 20px;
+.sidebar ul li i {
+    padding: 0px 20px 0px 40px;
+}
+
+/* Nút Đăng xuất (form bên trong li) */
+.sidebar ul li form {
+    margin: 0;
+}
+
+.sidebar ul li button {
+    background: none;
+    border: none;
+    color: #ddd;
+    text-decoration: none;
+    display: block;
+    padding: 10px 15px;
+    border-radius: 5px;
     width: 100%;
+    text-align: left;
+    font-family: inherit;
+    /* Giữ font chữ giống <a> */
+    font-size: inherit;
+}
+
+.sidebar ul li button:hover {
+    background: #c82333;
+    /* Màu đỏ khi hover */
+    color: #fff;
+    cursor: pointer;
+}
+
+/* --- PHẦN 3: STYLING CHO CONTENT (col-md-9) --- */
+.content-section {
+    padding: 10px 10px 0px 20px;
+    height: 100vh;
+    overflow: auto;
 }
 
 .table-responsive {
     margin: 30px 0;
-    overflow-x: visible;
-    margin-left: -80px;
+    /* * XÓA: margin-left: -80px; (Đây là lỗi chính)
+     */
+
+    /* * SỬA: Dùng 'auto' để cuộn ngang khi cần,
+     * 'visible' sẽ làm vỡ layout.
+     */
+    overflow-x: auto;
 }
 
 .table-wrapper {
-    min-width: 1000px;
     background: #fff;
     padding: 20px;
+    border-radius: 8px;
+    /* Bo góc 1 chút */
     box-shadow: 0 1px 1px rgba(0, 0, 0, .05);
 }
 
+/* * Dùng Flexbox để căn chỉnh Hàng Tiêu Đề
+ * (Gồm Title, Nút Add, Search) 
+ */
 .table-title {
-    font-size: 15px;
-    padding-bottom: 10px;
-    margin: 0 0 10px;
+    display: flex;
+    justify-content: space-between;
+    /* Đẩy 2 cụm ra 2 bên */
+    align-items: center;
+    padding-bottom: 15px;
+    margin: 0 0 15px;
     min-height: 45px;
+    border-bottom: 1px solid #eee;
+    /* Thêm đường kẻ */
 }
 
 .table-title h2 {
-    margin: 5px 0 0;
+    margin: 0;
+    /* Xóa margin mặc định */
     font-size: 24px;
 }
 
-.table-title select {
-    border-color: #ddd;
-    border-width: 0 0 1px 0;
-    padding: 3px 10px 3px 5px;
-    margin: 0 5px;
-}
+/* XÓA: .add-new { margin-left: -160px; } (Lỗi hack margin) */
 
-.table-title .show-entries {
-    margin-top: 7px;
-}
+/* --- PHẦN 4: STYLING BẢNG (Giữ nguyên) --- */
 
 .table thead th {
     white-space: nowrap;
@@ -87,49 +155,6 @@ body {
 .table td,
 .table th {
     text-align: center;
-}
-
-.search-box {
-    position: relative;
-    float: right;
-}
-
-.search-box .input-group {
-    min-width: 200px;
-    position: absolute;
-    right: 0;
-}
-
-.search-box .input-group-addon,
-.search-box input {
-    border-color: #ddd;
-    border-radius: 0;
-}
-
-.search-box .input-group-addon {
-    border: none;
-    border: none;
-    background: transparent;
-    position: absolute;
-    z-index: 9;
-}
-
-.search-box input {
-    height: 34px;
-    padding-left: 28px;
-    box-shadow: none !important;
-    border-width: 0 0 1px 0;
-}
-
-.search-box input:focus {
-    border-color: #3FBAE4;
-}
-
-.search-box i {
-    color: #a0a5b1;
-    font-size: 19px;
-    position: relative;
-    top: 8px;
 }
 
 table.table tr th,
@@ -169,36 +194,60 @@ table.table td i {
     font-size: 19px;
 }
 
-
-
-
-.logo img {
-    margin-top: -30px;
-    width: 200px;
-    height: 200px;
-    object-fit: cover;
-    /* giúp ảnh không bị méo */
-}
-
-.content {
-    margin-left: 50px;
-    padding: 10px;
-}
-
+/* * Giúp cột "Description" không bị vỡ khi chữ quá dài
+ * (CSS bạn cung cấp đã rất tốt)
+ */
 table th,
 table td {
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
-    /* Hiển thị ... nếu tràn */
     max-width: 200px;
+    /* Giới hạn chiều rộng */
 }
 
-.add-new {
-    margin-left: -160px;
+/* Ưu tiên cho cột cuối (Actions) */
+table.table td:last-child {
+    white-space: nowrap;
+    max-width: 130px;
+    width: 130px;
+}
+
+/* Cho phép cột Name và Description dãn ra */
+table.table td:nth-child(2),
+table.table td:nth-child(3),
+table.table th:nth-child(2),
+table.table th:nth-child(3) {
+    white-space: normal;
+    /* Cho phép xuống hàng */
+    text-align: left;
+}
+
+
+/* --- PHẦN 5: STYLING SEARCH BOX (Giữ nguyên) --- */
+/*
+ * Code search-box của bạn dùng position: absolute,
+ * nó sẽ hoạt động tốt khi nằm trong .table-title 
+ * (nếu .table-title có position: relative).
+ * * Tuy nhiên, để đơn giản, ta chỉ cần nó là một
+ * component bình thường trong Flexbox.
+ */
+
+.search-box {
+    position: relative;
+    /* * XÓA: float: right; (Không cần khi dùng flexbox)
+     */
 }
 
 .search-box .input-group {
+    /*
+     * XÓA: position: absolute; (Không cần nữa)
+     * XÓA: right: 0;
+     */
+    min-width: 250px;
+    /* Tăng độ rộng 1 chút */
+
+    /* CSS mới cho đẹp */
     border-radius: 8px;
     overflow: hidden;
     box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
@@ -207,6 +256,8 @@ table td {
 .search-box input.form-control {
     border: none;
     box-shadow: none;
+    padding-left: 10px;
+    /* Điều chỉnh lại */
 }
 
 .search-box input.form-control:focus {
@@ -226,4 +277,19 @@ table td {
 
 .error-message {
     text-align: left !important;
+}
+
+.grid {
+    margin-bottom: 8px;
+}
+
+.pg-enabled-filters-base {
+    display: flex;
+    flex-direction: row;
+    gap: 8px;
+}
+
+#table_base_productTable td {
+    text-align: center !important;
+    vertical-align: middle !important;
 }

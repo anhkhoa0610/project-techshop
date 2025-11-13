@@ -4,8 +4,61 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "605054f7c68c1b8c8662f094998959bc",
+    "content-hash": "f8814d4f7802fcd84a6eb1ffacbfa696",
     "packages": [
+        {
+            "name": "arielmejiadev/larapex-charts",
+            "version": "2.1.1",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/ArielMejiaDev/larapex-charts.git",
+                "reference": "821f9a99c47e51f7306d04c2eeb7c6c3ee9f1e1b"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/ArielMejiaDev/larapex-charts/zipball/821f9a99c47e51f7306d04c2eeb7c6c3ee9f1e1b",
+                "reference": "821f9a99c47e51f7306d04c2eeb7c6c3ee9f1e1b",
+                "shasum": ""
+            },
+            "require": {
+                "ext-json": "*"
+            },
+            "require-dev": {
+                "orchestra/testbench": "^4.4"
+            },
+            "type": "library",
+            "extra": {
+                "laravel": {
+                    "aliases": {
+                        "LarapexChart": "ArielMejiaDev\\LarapexCharts\\Facades\\LarapexChart"
+                    },
+                    "providers": [
+                        "ArielMejiaDev\\LarapexCharts\\LarapexChartsServiceProvider"
+                    ]
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "ArielMejiaDev\\LarapexCharts\\": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "ArielMejiaDev",
+                    "email": "arielmejiadev@gmail.com"
+                }
+            ],
+            "description": "Package to provide easy api to build apex charts on Laravel",
+            "support": {
+                "issues": "https://github.com/ArielMejiaDev/larapex-charts/issues",
+                "source": "https://github.com/ArielMejiaDev/larapex-charts/tree/2.1.1"
+            },
+            "time": "2021-06-24T16:16:54+00:00"
+        },
         {
             "name": "brick/math",
             "version": "0.14.0",
@@ -2074,6 +2127,82 @@
             "time": "2024-12-08T08:18:47+00:00"
         },
         {
+            "name": "livewire/livewire",
+            "version": "v3.6.4",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/livewire/livewire.git",
+                "reference": "ef04be759da41b14d2d129e670533180a44987dc"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/livewire/livewire/zipball/ef04be759da41b14d2d129e670533180a44987dc",
+                "reference": "ef04be759da41b14d2d129e670533180a44987dc",
+                "shasum": ""
+            },
+            "require": {
+                "illuminate/database": "^10.0|^11.0|^12.0",
+                "illuminate/routing": "^10.0|^11.0|^12.0",
+                "illuminate/support": "^10.0|^11.0|^12.0",
+                "illuminate/validation": "^10.0|^11.0|^12.0",
+                "laravel/prompts": "^0.1.24|^0.2|^0.3",
+                "league/mime-type-detection": "^1.9",
+                "php": "^8.1",
+                "symfony/console": "^6.0|^7.0",
+                "symfony/http-kernel": "^6.2|^7.0"
+            },
+            "require-dev": {
+                "calebporzio/sushi": "^2.1",
+                "laravel/framework": "^10.15.0|^11.0|^12.0",
+                "mockery/mockery": "^1.3.1",
+                "orchestra/testbench": "^8.21.0|^9.0|^10.0",
+                "orchestra/testbench-dusk": "^8.24|^9.1|^10.0",
+                "phpunit/phpunit": "^10.4|^11.5",
+                "psy/psysh": "^0.11.22|^0.12"
+            },
+            "type": "library",
+            "extra": {
+                "laravel": {
+                    "aliases": {
+                        "Livewire": "Livewire\\Livewire"
+                    },
+                    "providers": [
+                        "Livewire\\LivewireServiceProvider"
+                    ]
+                }
+            },
+            "autoload": {
+                "files": [
+                    "src/helpers.php"
+                ],
+                "psr-4": {
+                    "Livewire\\": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Caleb Porzio",
+                    "email": "calebporzio@gmail.com"
+                }
+            ],
+            "description": "A front-end framework for Laravel.",
+            "support": {
+                "issues": "https://github.com/livewire/livewire/issues",
+                "source": "https://github.com/livewire/livewire/tree/v3.6.4"
+            },
+            "funding": [
+                {
+                    "url": "https://github.com/livewire",
+                    "type": "github"
+                }
+            ],
+            "time": "2025-07-17T05:12:15+00:00"
+        },
+        {
             "name": "masterminds/html5",
             "version": "2.10.0",
             "source": {
@@ -2718,6 +2847,84 @@
                 }
             ],
             "time": "2025-08-21T11:53:16+00:00"
+        },
+        {
+            "name": "power-components/livewire-powergrid",
+            "version": "v6.7.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/Power-Components/livewire-powergrid.git",
+                "reference": "88bf56b4952fd5fe217a7f91f30e780da61ebbba"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/Power-Components/livewire-powergrid/zipball/88bf56b4952fd5fe217a7f91f30e780da61ebbba",
+                "reference": "88bf56b4952fd5fe217a7f91f30e780da61ebbba",
+                "shasum": ""
+            },
+            "require": {
+                "laravel/prompts": "*",
+                "livewire/livewire": "^3.6.0 || ^4.0",
+                "php": "^8.2"
+            },
+            "require-dev": {
+                "composer/composer": "^2.8",
+                "laradumps/laradumps": "^3.2|^4.0",
+                "larastan/larastan": "^2.0|^3.0",
+                "laravel/pint": "^1.24",
+                "laravel/scout": "^10.11.3",
+                "openspout/openspout": "^4.24.5",
+                "orchestra/testbench": "^9.4|^10.0",
+                "pestphp/pest": "^2.35.1|^3.0"
+            },
+            "suggest": {
+                "openspout/openspout": "Required to export XLS and CSV"
+            },
+            "type": "library",
+            "extra": {
+                "laravel": {
+                    "providers": [
+                        "PowerComponents\\LivewirePowerGrid\\Providers\\PowerGridServiceProvider"
+                    ]
+                }
+            },
+            "autoload": {
+                "files": [
+                    "src/functions.php"
+                ],
+                "psr-4": {
+                    "PowerComponents\\LivewirePowerGrid\\": "src"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Luan Freitas",
+                    "email": "luanfreitas10@protonmail.com",
+                    "role": "Developer"
+                },
+                {
+                    "name": "DanSysAnalyst",
+                    "email": "daniel@sysanalyst.eu",
+                    "role": "Developer"
+                }
+            ],
+            "description": "PowerGrid generates Advanced Datatables using Laravel Livewire.",
+            "homepage": "https://github.com/power-components/livewire-powergrid",
+            "support": {
+                "issues": "https://github.com/Power-Components/livewire-powergrid/issues",
+                "source": "https://github.com/Power-Components/livewire-powergrid/tree/v6.7.0"
+            },
+            "funding": [
+                {
+                    "url": "https://github.com/luanfreitasdev",
+                    "type": "github"
+                }
+            ],
+            "time": "2025-11-06T12:08:05+00:00"
         },
         {
             "name": "psr/clock",

@@ -41,7 +41,7 @@ class ProductRequest extends FormRequest
             'volume_sold' => 'required|integer|min:0',
             'cover_image' => 'nullable',
             'warranty_period' => 'required|integer|min:0',
-            'release_date' => 'required|date',
+            'release_date' => 'required|date|before_or_equal:today',
             'embed_url_review' => [
                 'nullable',
                 'url',
@@ -66,6 +66,8 @@ class ProductRequest extends FormRequest
             'max.file' => ':attribute không được vượt quá :max kilobytes',
             'url' => ':attribute phải là link youtube hợp lệ',
             'regex' => ':attribute phải là link youtube hợp lệ',
+            'before_or_equal' =>':attribute không được lớn hơn ngày hiện tại',
+            'date' =>'Sai định dạng :attribute',
         ];
     }
 
