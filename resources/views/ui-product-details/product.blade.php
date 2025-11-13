@@ -171,8 +171,8 @@
             <div class="review-title glass3d">
                 <div class="col-md-3 star-rating  ">
                     <div class="rating">
-                        <span class="rating-left">{{ number_format($avg, 1) ?? 0 }} </span>
                         <span class="rating-right"> trên 5 sao</span>
+                        <span class="rating-left">{{ number_format($avg, 1) ?? 0 }} </span>
                     </div>
                     <div class="star-rating-display" data-avg="{{ $avg}}">
                         @for ($i = 1; $i <= 5; $i++)

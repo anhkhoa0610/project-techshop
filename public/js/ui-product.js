@@ -132,6 +132,18 @@ document.addEventListener('DOMContentLoaded', function () {
                             stars += '<span class="star text-warning fs-1">☆</span>';
                         }
                     }
+                    const actions = (user_id === review.user.user_id)
+                        ? `
+                            <div class="review-actions ms-auto">
+                                <button class="btn btn-sm btn-outline-primary edit-review" data-id="${review.review_id}">
+                                    <i class="bi bi-pencil"></i> Edit
+                                </button>
+                                <button class="btn btn-sm btn-outline-danger delete-review" data-id="${review.review_id}">
+                                    <i class="bi bi-trash"></i> Delete
+                                </button>
+                            </div>
+                        `
+                        : '';
 
                     const formattedDate = new Date(review.review_date)
                         .toLocaleString('vi-VN', {
@@ -147,7 +159,10 @@ document.addEventListener('DOMContentLoaded', function () {
                                  <strong class="review-info">${review.user.full_name}</strong>
                                  <p class="review-info ms-5">| ${formattedDate}</p>
                              </div>
-                             <p class="review-info">${stars}</p>
+                             <div class="gr-star-ed d-flex">
+                                <p class="review-info-st">${stars}</p>
+                                ${actions}
+                             </div>
                              <p class="review-info">${review.comment ?? ""}</p>
                         </div>
                     </div>
@@ -209,6 +224,8 @@ document.addEventListener('DOMContentLoaded', function () {
 
     // Tải mặc định trang đầu tiên
     loadReviews(apiBase);
+    
+    
 
     // xử lý submit form thêm đánh giá
 
@@ -300,6 +317,70 @@ document.addEventListener('DOMContentLoaded', function () {
             }
         }
 
+    });
+
+     // Xử lý nút xóa đánh giá
+    document.addEventListener('click', function (e) {
+        if (e.target.closest('.delete-review')) {
+            e.preventDefault();
+
+            const button = e.target.closest('.delete-review');
+            const reviewId = button.getAttribute('data-id');
+            console.log(reviewId);
+
+            // Hiển thị xác nhận xóa
+            Swal.fire({
+                title: 'Bạn có chắc muốn xóa?',
+                text: 'Hành động này không thể hoàn tác!',
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#d33',
+                cancelButtonColor: '#3085d6',
+                confirmButtonText: 'Xóa',
+                cancelButtonText: 'Hủy'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    fetch(`/api/client-review/${reviewId}`, {
+                        method: 'DELETE',
+                        headers: {
+                            'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content'),
+                            'Accept': 'application/json',
+                            'Content-Type': 'application/json',
+                        },
+                    })
+                        .then(res => res.json())
+                        .then(data => {
+                            if (data.success) {
+                                Swal.fire({
+                                    icon: 'success',
+                                    title: 'Thành công!',
+                                    text: data.message,
+                                    showConfirmButton: false,
+                                    timer: 1500
+                                });
+
+                                // Xóa review khỏi giao diện
+                                const reviewElement = button.closest('.review-item');
+                                if (reviewElement) reviewElement.remove();
+                            } else {
+                                Swal.fire({
+                                    icon: 'error',
+                                    title: 'Lỗi!',
+                                    text: data.message || 'Không thể xóa đánh giá.',
+                                });
+                            }
+                        })
+                        .catch(err => {
+                            console.error(err);
+                            Swal.fire({
+                                icon: 'error',
+                                title: 'Lỗi hệ thống!',
+                                text: 'Đã xảy ra lỗi, vui lòng thử lại.',
+                            });
+                        });
+                }
+            });
+        }
     });
 
     // xử lý thêm vào giỏ hàng và mua ngay
@@ -557,10 +638,9 @@ document.addEventListener('DOMContentLoaded', function () {
                         </div>
 
                         <div class="product-price">
-                            ${
-                                prod.discounts?.length 
-                                    ? 
-                                    `
+                            ${prod.discounts?.length
+                    ?
+                    `
                                     <span class="current-price">
                                         ${Number(prod.discounts[0].sale_price).toLocaleString('vi-VN')}₫
                                     </span>
@@ -568,13 +648,13 @@ document.addEventListener('DOMContentLoaded', function () {
                                         ${Number(prod.discounts[0].original_price).toLocaleString('vi-VN')}₫
                                     </span>
                                     `
-                                    : 
-                                    `
+                    :
+                    `
                                     <span class="current-price">
                                         ${prod.price ? Number(prod.price).toLocaleString('vi-VN') + '₫' : 'Liên hệ'}
                                     </span>
                                     `
-                            }
+                }
                         </div>
 
                         <div class="product-meta">
@@ -643,7 +723,7 @@ document.addEventListener('DOMContentLoaded', function () {
                     'Accept': 'application/json',
                     'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
                 },
-                body: JSON.stringify({user_id : user_id, product_id: productId, quantity })
+                body: JSON.stringify({ user_id: user_id, product_id: productId, quantity })
             });
 
             const data = await response.json();
@@ -662,7 +742,7 @@ document.addEventListener('DOMContentLoaded', function () {
                     title: 'Thất bại',
                     text: data.message,
                     showConfirmButton: true,
-                    confirmButtonText:"OK"
+                    confirmButtonText: "OK"
                 });
             }
         } catch (err) {
@@ -679,6 +759,5 @@ document.addEventListener('DOMContentLoaded', function () {
             btn.textContent = originalText;
         }
     });
-
 
 });

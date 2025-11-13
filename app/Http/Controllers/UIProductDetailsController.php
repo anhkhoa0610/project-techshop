@@ -14,7 +14,7 @@ class UIProductDetailsController extends Controller
 {
     public function show($id)
     {
-        $product = Product::with('specs','discounts')->findOrFail($id);
+        $product = Product::with('specs', 'discounts')->findOrFail($id);
 
         $avg = $product->reviews()->avg('rating');
         $reviews_count = $product->reviews()->count();
@@ -65,6 +65,50 @@ class UIProductDetailsController extends Controller
                 'avg' => $avg
             ]
         ], 201);
+    }
+    public function updateReview(ReviewRequest $request, $id)
+    {
+        $review = Review::findOrFail($id);
+
+        if ($review->user_id !== auth()->id()) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Bạn không có quyền sửa đánh giá này.'
+            ], 403);
+        }
+
+        $validated = $request->validated();
+
+        $review->update([
+            'rating' => $validated['rating'],
+            'comment' => $validated['comment'] ?? $review->comment,
+            'review_date' => now(),
+        ]);
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Đánh giá đã được cập nhật thành công!',
+            'data' => $review
+        ]);
+    }
+
+    public function deleteReview($id)
+    {
+        $review = Review::findOrFail($id);
+
+        if ($review->user_id !== auth()->id()) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Bạn không có quyền xóa đánh giá này.'
+            ], 403);
+        }
+
+        $review->delete();
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Đánh giá đã được xóa thành công!',
+        ]);
     }
 
     public function filterProducts(Request $request)
