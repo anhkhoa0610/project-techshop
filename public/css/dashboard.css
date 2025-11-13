@@ -98,7 +98,7 @@ body {
 
 /* --- PHẦN 3: STYLING CHO CONTENT (col-md-9) --- */
 .content-section {
-    padding: 30px;
+    padding: 10px 10px 0px 20px;
     height: 100vh;
     overflow: auto;
 }
@@ -277,4 +277,19 @@ table.table th:nth-child(3) {
 
 .error-message {
     text-align: left !important;
+}
+
+.grid {
+    margin-bottom: 8px;
+}
+
+.pg-enabled-filters-base {
+    display: flex;
+    flex-direction: row;
+    gap: 8px;
+}
+
+#table_base_productTable td {
+    text-align: center !important;
+    vertical-align: middle !important;
 }
