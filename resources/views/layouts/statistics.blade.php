@@ -38,7 +38,7 @@
                 {!! $orderStatusChart->container() !!}
             </div>
             <div class="dashboard-chart__card">
-                {!! $deviceChart->container() !!}
+                {!! $revenueByPaymentMethodChart->container() !!}
             </div>
         </div>
     </div>
@@ -49,5 +49,5 @@
     {!! $categoryChart->script() !!}
     {!! $userGrowthChart->script() !!}
     {!! $orderStatusChart->script() !!}
-    {!! $deviceChart->script() !!}
+    {!! $revenueByPaymentMethodChart->script() !!}
 @endsection
