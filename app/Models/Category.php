@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\DB;
 
 class Category extends Model
 {
@@ -35,5 +36,19 @@ class Category extends Model
         }
 
         return $query;
+    }
+
+    public function scopeWithTotalRevenue($query)
+    {
+        // $query ở đây là một truy vấn Category
+        return $query->join('products', 'categories.category_id', '=', 'products.category_id')
+            ->join('order_details', 'products.product_id', '=', 'order_details.product_id')
+            ->join('orders', 'order_details.order_id', '=', 'orders.order_id')
+            ->where('orders.status', 'completed')
+            ->groupBy('categories.category_id', 'categories.category_name')
+            ->select([ 
+                'categories.category_name as category_name',
+                DB::raw('SUM(order_details.quantity * order_details.unit_price) as total_revenue')
+            ]);
     }
 }

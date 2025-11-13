@@ -1,0 +1,74 @@
+/* === Dashboard Chart Layout === */
+.dashboard-chart__container {
+    display: flex;
+    flex-direction: column;
+    gap: 2rem;
+    padding: 1.5rem;
+    width: 100%;
+}
+
+/* Các hàng biểu đồ */
+.dashboard-chart__row {
+    display: grid;
+    gap: 1.5rem;
+}
+
+/* Hàng có 2 biểu đồ */
+.dashboard-chart__row--two {
+    grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+}
+
+/* Hàng có 3 biểu đồ */
+.dashboard-chart__row--three {
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+}
+
+/* Card bao quanh biểu đồ */
+.dashboard-chart__card {
+    background: #fff;
+    border-radius: 1rem;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+    padding: 1rem;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.dashboard-chart__card:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 8px 18px rgba(0, 0, 0, 0.1);
+}
+
+/* Responsive cho mobile */
+@media (max-width: 768px) {
+    .dashboard-chart__container {
+        padding: 1rem;
+    }
+
+    .dashboard-chart__row--two,
+    .dashboard-chart__row--three {
+        grid-template-columns: 1fr;
+    }
+}
+
+.dashboard-chart__card .apexcharts-title-text {
+    font-weight: 700 !important;
+    letter-spacing: 0.05em !important;
+    font-size: 20px !important;
+    text-align: center !important;
+}
+
+
+.dashboard-chart__card .apexcharts-subtitle-text {
+    font-size: 16px !important;
+    font-weight: 500 !important;
+    letter-spacing: 0.05em !important;
+    text-align: center !important;
+}
+
+.apexcharts-text,
+.apexcharts-title-text,
+.apexcharts-subtitle-text,
+.apexcharts-legend-text {
+    font-family: 'Orbitron', sans-serif !important;
+    fill: #1e293b !important;
+    /* màu chữ trong chart */
+}

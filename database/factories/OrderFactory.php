@@ -20,7 +20,7 @@ class OrderFactory extends Factory
         return [
             'user_id' => User::inRandomOrder()->value('user_id'),
             'order_date' => $this->faker->dateTimeBetween('-1 month', 'now'),
-            'status' => 'pending',
+            'status' => 'completed',
             'shipping_address' => $this->faker->address(),
             'payment_method' => $this->faker->randomElement(['cash', 'card', 'transfer']),
             'voucher_id' => Voucher::inRandomOrder()->first()?->id ?? null,
