@@ -77,4 +77,10 @@ class User extends Authenticatable
     {
         return $this->cartItems()->sum('quantity');
     }
+
+    // Quan hệ 1-1 với UserProfile
+    public function profile()
+    {
+        return $this->hasOne(UserProfile::class, 'user_id', 'user_id');
+    }
 }

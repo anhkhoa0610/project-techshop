@@ -8,7 +8,44 @@
 
     <div class="profile-container mt-5">
         <div class="sidebar mt-3">
-            <h3>Categories</h3>
+            <div class="text-center mb-4">
+                <div class="avatar-container position-relative d-inline-block">
+                    @if(isset(auth()->user()->profile->avatar))
+                        <img src="{{ asset('storage/' . auth()->user()->profile->avatar) }}" 
+                             alt="Avatar" 
+                             class="rounded-circle"
+                             style="width: 150px; height: 150px; object-fit: cover; border: 3px solid #f0f0f0;">
+                    @else
+                        <a class="avatar-placeholder rounded-circle d-flex align-items-center justify-content-center bg-secondary text-white" 
+                             style="width: 150px; height: 150px; font-size: 60px; border: 3px solid #f0f0f0;">
+                            {{ strtoupper(substr(auth()->user()->full_name, 0, 1)) }}
+</a>
+                    @endif
+                    
+                    <form action="{{ route('profile.avatar.update') }}" method="POST" enctype="multipart/form-data" class="avatar-upload-form">
+                        @csrf
+                        <label for="avatar-upload" class="btn btn-sm btn-primary position-absolute" style="bottom: 10px; right: 10px;">
+                            <i class="bi bi-camera"></i>
+                            <input type="file" id="avatar-upload" name="avatar" class="d-none" onchange="this.form.submit()">
+                        </label>
+                    </form>
+                    
+                    @if(isset(auth()->user()->profile->avatar))
+                        <form action="{{ route('profile.avatar.remove') }}" method="POST" class="d-inline">
+                            @csrf
+                            @method('DELETE')
+                            <button type="submit" class="btn btn-sm btn-danger position-absolute" style="bottom: 10px; left: 10px;" 
+                                    onclick="return confirm('Bạn có chắc chắn muốn xóa ảnh đại diện?')">
+                                <i class="bi bi-trash"></i>
+                            </button>
+                        </form>
+                    @endif
+                </div>
+                <h4 class="mt-3">{{ auth()->user()->full_name }}</h4>
+                @if(auth()->user()->profile && auth()->user()->profile->bio)
+                    <p class="text-muted">{{ auth()->user()->profile->bio }}</p>
+                @endif
+            </div>
             <ul>
                 <li><a href="#">Điện thoại</a></li>
                 <li><a href="#">Laptop</a></li>
@@ -210,19 +247,19 @@
         /* Responsive */
 
         /* @media (max-width: 768px) {
-                                                                                .profile-container {
-                                                                                    flex-direction: column;
-                                                                                }
-                                                                                .sidebar {
-                                                                                    width: 100%;
-                                                                                }
-                                                                                .profile-info {
-                                                                                    flex-direction: column;
-                                                                                }
-                                                                                .info-left, .info-right {
-                                                                                    width: 100%;
-                                                                                }
-                                                                            } */
+                                                                                    .profile-container {
+                                                                                        flex-direction: column;
+                                                                                    }
+                                                                                    .sidebar {
+                                                                                        width: 100%;
+                                                                                    }
+                                                                                    .profile-info {
+                                                                                        flex-direction: column;
+                                                                                    }
+                                                                                    .info-left, .info-right {
+                                                                                        width: 100%;
+                                                                                    }
+                                                                                } */
     </style>
 @endsection
 
