@@ -10,24 +10,26 @@ class ChatbotController extends Controller
     public function chat(Request $request)
     {
         $query = trim($request->input('message', ''));
+        $openrouterApiKey = config('services.openrouter.api_key');
+        $baseUrl = config('services.openrouter.base_url');
+        $model = config('services.openrouter.model');
 
         if (empty($query)) {
             return response()->json(['reply' => 'Vui lòng nhập câu hỏi.']);
         }
 
         $response = Http::withHeaders([
-            'Authorization' => 'Bearer ' . env('OPENROUTER_API_KEY'),
+            'Authorization' => 'Bearer ' . $openrouterApiKey,
             'Content-Type' => 'application/json',
             'HTTP-Referer' => 'http://localhost',
-            'X-Title' => 'Laravel DeepSeek Chatbot',
-        ])->post(env('OPENROUTER_BASE_URL') . '/chat/completions', [
-                    'model' => env('OPENROUTER_MODEL'),
+            'X-Title' => 'Chatbot',
+        ])->post($baseUrl, [
+                    'model' => $model,
                     'max_tokens' => 300, // 👈 Giới hạn độ dài câu trả lời
                     'messages' => [
                         [
                             'role' => 'system',
-                            'content' => "Bạn là một trợ lý AI trả lời bằng tiếng Việt, ngắn gọn, tự nhiên.
-                                        Trả lời bằng văn bản thuần tiếng Việt, không chứa ký tự kỹ thuật."
+                            'content' => "Bạn là một trợ lý AI trả lời bằng tiếng Việt, ngắn gọn, lịch sự, nếu trả lời sản phẩm thì không cần liệt kê nhiều thông số"
                         ],
                         [
                             'role' => 'user',
