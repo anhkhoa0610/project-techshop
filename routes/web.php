@@ -31,8 +31,10 @@ Route::prefix('index')->group(function () {
 
 Route::middleware(['checkrole:Admin'])->group(function () {
     Route::get('/', function () {
-        return view('layouts.dashboard');
+        return redirect()->route('charts');;
     })->name('dashboard');
+    Route::get('/charts', [ChartController::class, 'index'])->name('charts');
+    
     Route::prefix('supplier')->group(function () {
         Route::get('/', [SupplierController::class, 'list'])->name('supplier.list');
     });
@@ -154,7 +156,6 @@ Route::get('/tin-tuc', [PostController::class, 'index'])->name('posts.index');
 // Route cho trang chi tiết (ví dụ: /tin-tuc/123)
 Route::get('/tin-tuc/{post}', [PostController::class, 'show'])->name('posts.show');
 
-Route::get('/chart',[ChartController::class, 'showSalesChart']);
 // Route cho trang profile
 Route::middleware(['auth'])->group(function () {
     Route::get('/user/profile', [UserController::class, 'showProfile'])->name('user.profile');
@@ -165,4 +166,3 @@ Route::middleware(['auth'])->group(function () {
     Route::delete('/user/delete', [UserController::class, 'destroyProfile'])->name('user.delete');
 });
 
-Route::get('/charts', [ChartController::class, 'index']);

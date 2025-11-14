@@ -162,8 +162,9 @@ document.addEventListener("DOMContentLoaded", () => {
     const xemThemBtn = document.createElement('div');
     xemThemBtn.className = "text-center my-3";
     xemThemBtn.innerHTML = `
-        <button class="btn btn-outline-primary btn-lg rounded-pill px-4 btn-load-more">
-            <span class="btn-text">Xem thêm</span>
+        <button class="btn btn-lg rounded-pill px-4 btn-load-more modern-load-more">
+            <i class="fa-solid fa-angles-down me-2"></i>
+            <span class="btn-text">Xem thêm sản phẩm</span>
             <span class="spinner-border spinner-border-sm ms-2 d-none" role="status"></span>
         </button>
     `;
@@ -203,38 +204,53 @@ document.addEventListener("DOMContentLoaded", () => {
             }
 
             let html = "";
-            products.forEach(product => {
-                const discount = product.discounts?.[0];
-                const originalPrice = discount?.original_price || product.price;
-                const salePrice = discount?.sale_price || product.price;
-                const discountPercent = discount?.discount_percent || 0;
-                const endDate = discount?.end_date || null;
-                const imageUrl = product.cover_image ? `/uploads/${product.cover_image}` : '/images/no-image.png';
+                products.forEach(product => {
+                    const id = product.product_id;
+                    const discount = product.discounts?.[0];
 
-                html += `
-                    <div class="col-6 col-md-4 col-lg-3">
-                        <div class="card product-card shadow-sm border-0 rounded-4 h-100">
-                            <a href="/product/${product.id}" class="text-decoration-none text-dark d-block h-100">
-                                <div class="position-relative">
-                                    <img src="${imageUrl}" class="card-img-top rounded-top-4" alt="${product.product_name}">
-                                    ${discountPercent > 0 ? `<span class="sale-badge position-absolute top-0 start-0 m-2">-${discountPercent}%</span>` : ""}
-                                </div>
-                                <div class="card-body text-center">
-                                    <h6 class="fw-bold mb-2">${product.product_name}</h6>
-                                    <div>
-                                        <span class="text-danger fw-bold fs-6">${formatCurrency(salePrice)}</span>
-                                        <br><small class="text-muted text-decoration-line-through">${formatCurrency(originalPrice)}</small>}
+                    const discountPercent = discount?.discount_percent || 0;
+                    const hasDiscount = discountPercent > 0;
+                    
+                    // Logic giá đã sửa:
+                    const salePrice = discount?.sale_price || product.price; // Giá bán (có thể đã giảm)
+                    const originalPrice = product.price; // Giá gốc (luôn là giá gốc)
+
+                    const endDate = discount?.end_date || null;
+                    const imageUrl = product.cover_image ? `/uploads/${product.cover_image}` : '/images/no-image.png';
+
+                    html += `
+                        <div class="col-6 col-md-4 col-lg-3 mb-4">
+                            <div class="card product-card shadow-sm border-0 rounded-4 h-100 d-flex flex-column">
+                                
+                                <a href="/product-details/${id}" class="text-decoration-none text-dark">
+                                    <div class="position-relative">
+                                        <img src="${imageUrl}" class="card-img-top rounded-top-4" alt="${product.product_name}">
+                                        ${discountPercent > 0 ? `<span class="sale-badge position-absolute top-0 start-0 m-2">-${discountPercent}%</span>` : ""}
                                     </div>
+                                    <div class="card-body text-start pb-0">
+                                        <h6 class="fw-bold mb-2 product-name">${product.product_name}</h6>
+                                    </div>
+                                </a>
+                                
+                                <div class="card-body text-start pt-2 d-flex flex-column flex-grow-1">
+                                    <div class="price-wrapper mt-auto">
+                                        <span class="text-danger fw-bold fs-6">${formatCurrency(salePrice)}</span>
+                                        
+                                        ${(hasDiscount && originalPrice !== salePrice) ? `
+                                            <small class="text-muted text-decoration-line-through ms-2">${formatCurrency(originalPrice)}</small>
+                                        ` : ""}
+                                    </div>
+                                    
                                     ${endDate ? `<div class="countdown mt-2 text-secondary small" data-end="${endDate}">Đang tính...</div>` : ""}
                                 </div>
-                            </a>
-                            <div class="card-footer bg-transparent border-0 text-center">
-                                <button class="btn btn-sm btn-buy rounded-pill px-3 add-to-cart-btn" data-product-id="${product.id}">Mua ngay</button>
+
+                                <div class="card-footer bg-transparent border-0 text-center pt-0">
+                                    <button class="btn btn-buy rounded-pill px-3 add-to-cart-btn" data-product-id="${id}">Thêm vào giỏ hàng</button>
+                                </div>
                             </div>
                         </div>
-                    </div>
-                `;
-            });
+                    `;
+                });
 
             // Append sản phẩm mới
             if (page === 1) {
@@ -314,3 +330,40 @@ const formatCurrency = (value) => {
     }).format(value);
 };
 
+// Lấy nút
+let myButton = document.getElementById("backToTopBtn");
+
+// Khi người dùng cuộn trang, gọi hàm scrollFunction
+window.onscroll = function() {
+    scrollFunction();
+};
+
+function scrollFunction() {
+    // Hiển thị nút khi cuộn xuống 200px
+    if (document.body.scrollTop > 200 || document.documentElement.scrollTop > 200) {
+        myButton.classList.add("show");
+    } else {
+        myButton.classList.remove("show");
+    }
+}
+
+// Khi người dùng nhấn vào nút, cuộn lên đầu trang
+myButton.onclick = function(e) {
+    e.preventDefault(); // Ngăn hành vi mặc định của thẻ <a>
+    scrollToTop();
+};
+
+function scrollToTop() {
+    // Dành cho các trình duyệt hiện đại
+    if (window.scrollTo) {
+        window.scrollTo({
+            top: 0,
+            behavior: 'smooth' /* Đây là chìa khóa cho hiệu ứng mượt mà */
+        });
+    } 
+    // Dành cho các trình duyệt cũ hơn (IE)
+    else {
+        document.documentElement.scrollTop = 0;
+        document.body.scrollTop = 0;
+    }
+}

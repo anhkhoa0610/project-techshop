@@ -288,8 +288,3 @@ table.table th:nth-child(3) {
     flex-direction: row;
     gap: 8px;
 }
-
-#table_base_productTable td {
-    text-align: center !important;
-    vertical-align: middle !important;
-}

@@ -28,8 +28,8 @@
                     <img src="{{ asset('images/logo.jpg') }}" alt="Logo">
                 </a>
                 <ul>
-                    <li class="category-title"><a href="{{ route('users.index') }}"><i class="fa fa-users"></i>Users</a>
-                    </li>
+                    <li class="category-title"><a href="{{ route('charts') }}"><i class="fas fa-chart-line"></i>Statistics</a>
+                    </li>                   
                     <li class="category-title"><a href="{{ route('products.list') }}"><i
                                 class="fa fa-archive"></i>Products</a></li>
                     <li class="category-title"><a href="{{ route('categories.list') }}"><i
@@ -42,6 +42,8 @@
                                 class="fa fa-ticket"></i>Vouchers</a></li>
                     <li class="category-title"><a href="{{ route('reviews.index') }}"><i
                                 class="fa fa-star"></i>Reviews</a></li>
+                    <li class="category-title"><a href="{{ route('users.index') }}"><i class="fa fa-users"></i>Users</a>
+                    </li>
                     <li class="category-title">
                         <form action="{{ route('logout') }}" method="POST">
                             @csrf

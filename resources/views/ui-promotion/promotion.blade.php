@@ -90,6 +90,9 @@
                 </div>
             </div>
         </div>
+        <a id="backToTopBtn" title="Quay lên đầu trang">
+            &#8593; 
+        </a>
     <script src="{{ asset('js/promotion.js') }}"></script>
 @endsection
 
