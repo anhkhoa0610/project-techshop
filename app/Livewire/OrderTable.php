@@ -14,8 +14,11 @@ use PowerComponents\LivewirePowerGrid\PowerGridFields;
 use PowerComponents\LivewirePowerGrid\PowerGridComponent;
 use Illuminate\View\View;
 use Illuminate\Support\Facades\Blade;
+use PowerComponents\LivewirePowerGrid\Traits\WithExport;
+use PowerComponents\LivewirePowerGrid\Components\SetUp\Exportable;
 final class OrderTable extends PowerGridComponent
 {
+    use WithExport;
     public string $tableName = 'orderTable';
     public string $sortField = 'order_id';
 
@@ -30,7 +33,10 @@ final class OrderTable extends PowerGridComponent
         return [
             PowerGrid::header()
                 ->showToggleColumns()
-                ->includeViewOnTop('components.add-order-button'),
+                ->includeViewOnTop('components.add-order-button')
+                ->showSearchInput(),
+            PowerGrid::exportable(fileName: 'order-export')
+                ->type(Exportable::TYPE_XLS, Exportable::TYPE_CSV),
             PowerGrid::footer()
                 ->showPerPage(5, [5, 10, 25, 50])
                 ->showRecordCount(),
@@ -90,16 +96,18 @@ final class OrderTable extends PowerGridComponent
                 ->sortable(),
 
             Column::make('Customer', 'full_name')
-                ->searchable()
                 ->sortable(),
 
             Column::make('Voucher', 'voucher_display')
-                ->searchable()
                 ->sortable(),
 
             Column::make('Status', 'status')
                 ->searchable()
-                ->sortable(),
+                ->sortable()->visibleInExport(false),
+
+            Column::make('Status', 'status_value')
+                ->sortable()->hidden()->visibleInExport(true),
+
             Column::make('shipping address', 'shipping_address')
                 ->searchable()
                 ->sortable(),
@@ -110,14 +118,27 @@ final class OrderTable extends PowerGridComponent
             Column::make('Created At', 'created_at_formatted', 'created_at')
                 ->sortable(),
 
-            Column::action('Action'),
+            Column::action('Action')->visibleInExport(false),
         ];
     }
 
     public function filters(): array
     {
         return [
+            Filter::select('full_name', 'user_id')
+                ->dataSource(\App\Models\User::all())
+                ->optionLabel('full_name')
+                ->optionValue('user_id'),
 
+            Filter::select('voucher_display', 'voucher_id')
+                ->dataSource(\App\Models\Voucher::all())
+                ->optionLabel('code')
+                ->optionValue('voucher_id'),
+
+            Filter::select('status', 'status_value')
+                ->dataSource(Order::select('status')->distinct()->get())
+                ->optionLabel('status')
+                ->optionValue('status'),
         ];
     }
 
@@ -125,4 +146,5 @@ final class OrderTable extends PowerGridComponent
     {
         return view('components.order-actions', ['order' => $row]);
     }
+
 }
