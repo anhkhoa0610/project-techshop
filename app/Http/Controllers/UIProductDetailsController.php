@@ -21,6 +21,11 @@ class UIProductDetailsController extends Controller
         $reviewSummary = $product->getReviewSummary();
         $reviews = $product->getReviews();
         $cartItems_count = auth()->check() ? auth()->user()->cartItemsCount() : 0;
+        if (auth()->check()) {
+            $hasReviewed = $product->reviews()
+                ->where('user_id', auth()->id())
+                ->exists();   // exists() trả về true/false
+        }
 
         return view('ui-product-details.product', compact(
             'product',
@@ -28,7 +33,8 @@ class UIProductDetailsController extends Controller
             'reviews_count',
             'reviewSummary',
             'reviews',
-            'cartItems_count'
+            'cartItems_count',
+            'hasReviewed'
         ));
     }
 
@@ -78,6 +84,8 @@ class UIProductDetailsController extends Controller
         }
 
         $validated = $request->validated();
+        $product = Product::findOrFail($validated['product_id']);
+        $avg = $product->reviews()->avg('rating');
 
         $review->update([
             'rating' => $validated['rating'],
@@ -88,7 +96,10 @@ class UIProductDetailsController extends Controller
         return response()->json([
             'success' => true,
             'message' => 'Đánh giá đã được cập nhật thành công!',
-            'data' => $review
+            'data' => [
+                'review' => $review,
+                'avg' => $avg
+            ]
         ]);
     }
 
@@ -103,11 +114,16 @@ class UIProductDetailsController extends Controller
             ], 403);
         }
 
+        $productId = $review->product_id;
         $review->delete();
-
+        $product = Product::findOrFail($productId);
+        $avg = $product->reviews()->avg('rating');
         return response()->json([
             'success' => true,
             'message' => 'Đánh giá đã được xóa thành công!',
+            'data' => [
+                'avg' => $avg
+            ]
         ]);
     }
 

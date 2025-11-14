@@ -28,7 +28,8 @@ final class CategoryTable extends PowerGridComponent
 
         return [
             PowerGrid::header()
-                ->showToggleColumns(),
+                ->showToggleColumns()
+                ->includeViewOnTop('components.add-category-button'),
             PowerGrid::footer()
                 ->showPerPage(5, [5, 10, 25, 50])
                 ->showRecordCount(),

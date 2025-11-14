@@ -166,7 +166,3 @@ Route::middleware(['auth'])->group(function () {
 });
 
 Route::get('/charts', [ChartController::class, 'index']);
-
-Route::get('/test', function () {
-    return view('test');
-});

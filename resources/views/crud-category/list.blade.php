@@ -134,3 +134,9 @@
         </div>
     </div>
 @endsection
+
+@push('scripts')
+    <script src="js/crud-categories.js">
+
+    </script>
+@endpush
