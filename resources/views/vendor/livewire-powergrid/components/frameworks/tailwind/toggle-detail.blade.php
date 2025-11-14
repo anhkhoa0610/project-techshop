@@ -18,6 +18,10 @@
                 this.$dispatch('pg-toggle-detail-{{ $tableName }}-{{ $rowId }}', {
                     collapsed: this.collapsed
                 });
+
+                setTimeout(() => {
+                    this.loading = false;
+                }, 300);
             }
         }
     }"
@@ -45,7 +49,7 @@
                         '-rotate-0': !collapsed
                     }">
                     <x-livewire-powergrid::icons.arrow
-                        class="text-pg-primary-600 w-5 h-5 transition-all duration-300 dark:text-pg-primary-200"
+                        class="text-pg-primary-600 w-5 h-5 transition-all duration-300 dark:text-pg-primary-200 rotate-90"
                     />
                 </div>
             @endunless

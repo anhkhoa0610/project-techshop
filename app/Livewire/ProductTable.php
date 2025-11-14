@@ -3,36 +3,44 @@
 namespace App\Livewire;
 
 use App\Models\Product;
-use Illuminate\Support\Carbon;
 use Illuminate\Database\Eloquent\Builder;
-use PowerComponents\LivewirePowerGrid\Button;
 use PowerComponents\LivewirePowerGrid\Column;
 use PowerComponents\LivewirePowerGrid\Facades\Filter;
 use PowerComponents\LivewirePowerGrid\Facades\PowerGrid;
 use PowerComponents\LivewirePowerGrid\PowerGridFields;
 use PowerComponents\LivewirePowerGrid\PowerGridComponent;
+use PowerComponents\LivewirePowerGrid\Components\SetUp\Exportable;
 use Illuminate\View\View;
+use PowerComponents\LivewirePowerGrid\Traits\WithExport;
+
 
 final class ProductTable extends PowerGridComponent
 {
     public string $tableName = 'productTable';
     public string $sortField = 'product_id';
+    public string $primaryKey = 'product_id';
 
-    // Override primary key method
-    public function primaryKey(): string
+    use WithExport;
+
+    public function getIdAttribute()
     {
-        return 'product_id';
+        return $this->product_id;
     }
 
     public function setUp(): array
     {
         return [
             PowerGrid::header()
-                ->showToggleColumns() // ⭐ Thêm toggle columns
-                ->includeViewOnTop('components.add-product-button')->showSearchInput(), // ⭐ Thêm button
+                ->showToggleColumns() 
+                ->includeViewOnTop('components.add-product-button')->showSearchInput(), 
             PowerGrid::footer()
-                ->showPerPage(5, [5, 10, 25, 50]) // ⭐ Mặc định 5, options: 5, 10, 25, 50
+                ->showPerPage(5, [5, 10, 25, 50]) 
                 ->showRecordCount(),
+            PowerGrid::exportable(fileName: 'products-export')
+                ->type(Exportable::TYPE_XLS, Exportable::TYPE_CSV),
+            PowerGrid::detail()
+                ->view('components.product_details')
+                ->showCollapseIcon(),
         ];
     }
 
@@ -55,9 +63,7 @@ final class ProductTable extends PowerGridComponent
         return PowerGrid::fields()
             ->add('product_id')
             ->add('product_name')
-            ->add('description', function ($product) {
-                return str(e($product->description))->words(8); //Gets the first 8 words
-            })
+            ->add('description')
             ->add('stock_quantity')
             ->add('price')
             ->add(
@@ -103,13 +109,12 @@ final class ProductTable extends PowerGridComponent
             Column::make('Supplier', 'supplier_name')
                 ->searchable(),
 
-            // Ẩn các columns ít quan trọng, có thể toggle
             Column::make('Sold', 'volume_sold')
                 ->sortable()
                 ->searchable(),
 
             Column::make('Description', 'description')
-                ->searchable(),
+                ->hidden(),
 
             Column::make('Warranty', 'warranty_period')
                 ->sortable()
@@ -117,11 +122,13 @@ final class ProductTable extends PowerGridComponent
 
             Column::make('Release Date', 'release_date')
                 ->sortable()
-                ->searchable(),
+                ->searchable()
+                ->hidden(),
 
             Column::make('Review URL', 'embed_url_review')
                 ->sortable()
-                ->searchable(),
+                ->searchable()
+                ->hidden(),
 
             Column::action('Action')->visibleInExport(false)
         ];
@@ -135,22 +142,18 @@ final class ProductTable extends PowerGridComponent
             Filter::inputText('description')
                 ->operators(['contains']),
 
-            // Filter theo Category
             Filter::select('category_name', 'category_id')
                 ->dataSource(\App\Models\Category::all())
                 ->optionLabel('category_name')
                 ->optionValue('category_id'),
 
-            // Filter theo Supplier
             Filter::select('supplier_name', 'supplier_id')
                 ->dataSource(\App\Models\Supplier::all())
                 ->optionLabel('name')
                 ->optionValue('supplier_id'),
 
-            // Filter theo Price range
             Filter::number('price'),
 
-            // Filter theo Stock
             Filter::number('stock_quantity'),
         ];
     }
@@ -162,6 +165,6 @@ final class ProductTable extends PowerGridComponent
 
     public function noDataLabel(): string|View
     {
-        return view('components.product_no-data');
+        return view('components.product_no_data');
     }
 }
