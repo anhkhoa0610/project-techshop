@@ -52,7 +52,17 @@ Route::get('/promotions', [PromotionController::class, 'apiIndex']);
 
 Route::post('/voucher/check', [App\Http\Controllers\VoucherController::class, 'checkVoucher']);
 
-Route::get('/posts', [PostController::class,'loadPostsApi']);
+Route::get('/posts', [PostController::class, 'loadPostsApi']);
 Route::get('/vouchers', [VoucherController::class, 'vouchers']);
 Route::get('/product-details/filter', [UIProductDetailsController::class, 'filterProducts']);
 Route::post('/product-details/cart/add', [UIProductDetailsController::class, 'addToCart']);
+
+Route::get('/supplier/{id}', [SupplierController::class, 'showApi']);
+Route::get('/supplier/{id}/sort-best-discount', [SupplierController::class, 'sortBestproductDiscount']);
+Route::get('/supplier/{id}/sort-price-asc', [SupplierController::class, 'sortpriceascProduct']);
+Route::get('/supplier/{id}/sort-price-desc', [SupplierController::class, 'sortpricedescProduct']);
+Route::get('/supplier/{id}/sort-newest', [SupplierController::class, 'sortnewestProduct']);
+Route::get('/supplier/{id}/sort-best-seller', [SupplierController::class, 'sortbestsellerProduct']);
+
+Route::get('/suppliers', [SupplierController::class, 'index']);
+

@@ -166,3 +166,5 @@ Route::middleware(['auth'])->group(function () {
 });
 
 Route::get('/charts', [ChartController::class, 'index']);
+
+Route::get('/supplier-ui/{id}', [SupplierController::class, 'indexView'])->name('supplier.ui');
