@@ -293,3 +293,11 @@ table.table th:nth-child(3) {
     text-align: center !important;
     vertical-align: middle !important;
 }
+
+#power-grid-table-base > 
+div:nth-child(1) > 
+div.mb-3.md\:flex.md\:flex-row.w-full.justify-between.items-center > 
+div.flex.flex-row.mt-3.md\:mt-0.w-full.rounded-full.flex.justify-start.sm\:justify-center.md\:justify-end > 
+div > span {
+    left: 90% !important;
+}

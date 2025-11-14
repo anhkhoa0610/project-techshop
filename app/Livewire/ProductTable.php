@@ -29,7 +29,7 @@ final class ProductTable extends PowerGridComponent
         return [
             PowerGrid::header()
                 ->showToggleColumns() // ⭐ Thêm toggle columns
-                ->includeViewOnTop('components.add-product-button'), // ⭐ Thêm button
+                ->includeViewOnTop('components.add-product-button')->showSearchInput(), // ⭐ Thêm button
             PowerGrid::footer()
                 ->showPerPage(5, [5, 10, 25, 50]) // ⭐ Mặc định 5, options: 5, 10, 25, 50
                 ->showRecordCount(),
@@ -46,7 +46,7 @@ final class ProductTable extends PowerGridComponent
     {
         return [
             'category' => ['category_name'],
-            'supplier' => ['supplier_name'],
+            'supplier' => ['name'],
         ];
     }
 
@@ -79,14 +79,15 @@ final class ProductTable extends PowerGridComponent
     {
         return [
             Column::make('ID', 'product_id')
-                ->sortable(),
+                ->sortable()
+                ->searchable(),
 
             Column::make('Name', 'product_name')
                 ->sortable()
                 ->searchable(),
 
             Column::make('Image', 'cover_image')
-            ->visibleInExport(false),
+                ->visibleInExport(false),
 
             Column::make('Price', 'price')
                 ->sortable()
@@ -104,15 +105,19 @@ final class ProductTable extends PowerGridComponent
 
             // Ẩn các columns ít quan trọng, có thể toggle
             Column::make('Sold', 'volume_sold')
-                ->sortable(),
+                ->sortable()
+                ->searchable(),
 
             Column::make('Description', 'description')
                 ->searchable(),
 
             Column::make('Warranty', 'warranty_period')
-                ->sortable(),
+                ->sortable()
+                ->searchable(),
 
-            Column::make('Release Date', 'release_date'),
+            Column::make('Release Date', 'release_date')
+                ->sortable()
+                ->searchable(),
 
             Column::make('Review URL', 'embed_url_review')
                 ->sortable()
@@ -157,6 +162,6 @@ final class ProductTable extends PowerGridComponent
 
     public function noDataLabel(): string|View
     {
-        return view('products.no-data');
+        return view('components.product_no-data');
     }
 }
