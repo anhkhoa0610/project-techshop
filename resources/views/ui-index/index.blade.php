@@ -22,31 +22,27 @@
 
         <div class="container">
             <div class="hero-content">
-                <div class="hero-text">
-                    <span class="hero-badge">🔥 Khuyến mãi đặc biệt</span>
+                <div class="hero-text" style="margin-top: 15vh; font-family: 'Doris'">
+                    <span class="hero-badge">🔥 Hàng mới</span>
                     <h1 class="hero-title">
-                        Sony Xperia
+                        iPhone 17
                         <span class="hero-subtitle">Pro Series</span>
                     </h1>
                     <p class="hero-description">
-                        Trải nghiệm công nghệ đỉnh cao với camera chuyên nghiệp và hiệu suất vượt trội.
-                        Giảm giá lên đến 30% cho đơn hàng đầu tiên.
+                        Trải nghiệm sự đột phá vượt mọi giới hạn với chip A18 Bionic mạnh mẽ nhất, hệ thống camera ProRAW
+                        50MP đỉnh cao và màn hình ProMotion XDR siêu mượt. 
                     </p>
-                    <div class="hero-buttons">
-                        <button class="btn btn-primary">Mua ngay</button>
-                        <button class="btn btn-outline">Xem chi tiết</button>
-                    </div>
                     <div class="hero-specs">
                         <div class="spec-item">
-                            <div class="spec-value">24MP</div>
+                            <div class="spec-value">50MP</div>
                             <div class="spec-label">Camera chính</div>
                         </div>
                         <div class="spec-item">
-                            <div class="spec-value">256GB</div>
+                            <div class="spec-value">1TB</div>
                             <div class="spec-label">Bộ nhớ</div>
                         </div>
                         <div class="spec-item">
-                            <div class="spec-value">5G</div>
+                            <div class="spec-value">Wi-Fi 7</div>
                             <div class="spec-label">Kết nối</div>
                         </div>
                     </div>
@@ -356,11 +352,11 @@
 
                     </div>
                     <div class="see-more-container">
-                    <a href="{{ route('posts.index') }}" class="btn-see-more">
-                        Xem tất cả tin tức >                   
-                    </a>
+                        <a href="{{ route('posts.index') }}" class="btn-see-more">
+                            Xem tất cả tin tức >
+                        </a>
+                    </div>
                 </div>
-                </div>        
             </div>
         </section>
 

@@ -35,7 +35,7 @@ class TopProductChart
         // 2. Xây dựng biểu đồ
         return $this->chart->horizontalBarChart()
             ->setTitle('Top 5 sản phẩm bán chạy')
-            ->setSubtitle('Dựa trên cột volume_sold đã được tổng hợp trong bảng Sản phẩm')
+            ->setSubtitle('Dựa trên cột số lượng bán ra trong bảng Sản phẩm')
             ->addData('Số lượng bán', $salesData)
             ->setLabels($productLabels)
             ->setColors(['#10b981'])

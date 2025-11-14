@@ -157,11 +157,11 @@ class IndexController extends Controller
         $currentCategory = null;
 
         if ($category_id) {
-
             $currentCategory = Category::find($category_id);
-
             if ($currentCategory) {
                 $productQuery->where('category_id', $category_id);
+            } else {
+                return redirect()->route('index');
             }
         }
 
