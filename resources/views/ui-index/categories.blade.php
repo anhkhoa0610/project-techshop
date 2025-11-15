@@ -35,7 +35,7 @@
         @if($currentCategory)
         <div class="container">
             <div class="hero-content">
-                <div class="hero-text" style="margin-top: 15vh; font-family: 'Doris'">
+                <div class="hero-text glass3d" style="margin-top: 15vh; font-family: 'Doris'">
                     <h1 class="hero-title">
                         Category
                         <span class="hero-subtitle">{{ $currentCategory->category_name }}</span>
@@ -404,27 +404,7 @@
 
 
     <!-- Chatbot Bubble -->
-    <div class="chatbot-container">
-        <div id="chatbot-button">💬</div>
-
-        <div id="chatbot-window">
-            <div class="chatbot-header">
-                <div class="chat-avatar">F</div>
-                <div class="chat-info">
-                    <strong>Chatbot hỗ trợ</strong>
-                    <span>October 15, 2024</span>
-                </div>
-                <button class="chat-close" id="chatbot-close">&times;</button>
-            </div>
-            <div class="chatbot-body">
-                <div class="bot-message">Xin chào 👋! Tôi có thể giúp gì cho bạn?</div>
-            </div>
-            <div class="chatbot-footer">
-                <input type="text" id="chatbot-input" placeholder="Nhập tin nhắn..." />
-                <button id="chatbot-send">Gửi</button>
-            </div>
-        </div>
-    </div>
+    @include('ui-index.chatbot'); 
 
     <script>
         const USER_ID = {{ auth()->id() ?? 'null' }};
