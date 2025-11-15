@@ -1,143 +1,12 @@
 @extends('layouts.dashboard')
-<style>
-
-</style>
 
 @section('content')
     <!-- Main Content -->
-    <div class="content">
-
-        <div class="row">
-            <div class="col-sm-4">
-
-            </div>
-            <div class="col-sm-4">
-
-            </div>
-            <div class="col-sm-4">
-                <form method="GET" action="{{ url()->current() }}" class="row g-3  align-items-end">
-                    <div class="col-sm-4">
-                        <label for="start_date" class="form-label">Từ ngày</label>
-                        <input type="date" id="start_date" name="start_date" value="{{ request('start_date') }}"
-                            class="form-control">
-                    </div>
-
-                    <div class="col-sm-4">
-                        <label for="end_date" class="form-label">Đến ngày</label>
-                        <input type="date" id="end_date" name="end_date" value="{{ request('end_date') }}"
-                            class="form-control">
-                    </div>
-
-                    <div class="col-sm-2">
-                        <button type="submit" class="btn btn-primary w-100">
-                            <i class="bi bi-search"></i> Lọc
-                        </button>
-                    </div>
-                </form>
-
-            </div>
-
+    <main class="max-w-full mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        <div class="bg-white rounded-lg shadow-sm border border-gray-200 overflow-hidden">
+            @livewire('order-table')
         </div>
-        <div class="container-xl">
-            <div class="table-responsive text-center">
-                <div class="table-wrapper">
-                    <div class="table-title">
-
-                        <div class="row">
-                            <div class="col-sm-4">
-                                <button class="btn btn-info add-new">Thêm Mới đơn hàng
-                                </button>
-
-                            </div>
-
-                            <div class="col-sm-4">
-                                <h2 class="text-center"><b>Quản Lý đơn hàng</b></h2>
-                            </div>
-                            <div class="col-sm-4">
-
-                                <form class="search-box" method="GET" action="{{ url()->current() }}">
-                                    <div class="input-group">
-                                        <span class="input-group-addon"><i class="material-icons">&#xE8B6;</i></span>
-                                        <input type="text" class="form-control" name="search" placeholder="Tìm kiếm..."
-                                            value="{{ request('search') }}">
-                                        <div class="input-group-append">
-                                            <button class="btn btn-primary" type="submit">Search</button>
-                                        </div>
-                                    </div>
-                                </form>
-
-                            </div>
-
-                        </div>
-
-
-                    </div>
-                    <table class="table table-bordered">
-
-                        <thead>
-                            <tr>
-                                <th>ID</th>
-                                <th>User name</th>
-                                <th>Order date</th>
-                                <th>Status</th>
-                                <th>Shipping address</th>
-                                <th>Payment method</th>
-                                <th>Voucher code</th>
-                                <th>Total price</th>
-                                <th>Actions</th>
-
-                            </tr>
-                        </thead>
-                        <tbody>
-                            @foreach ($orders as $order)
-                                <tr data-order-id="{{ $order->order_id }}" data-user-id="{{ $order->user->user_id }}"
-                                    data-order-date="{{ $order->order_date }}" data-status="{{ $order->status }}"
-                                    data-shipping-address="{{ $order->shipping_address }}"
-                                    data-payment-method="{{ $order->payment_method }}"
-                                    data-voucher-id="{{ $order->voucher->voucher_id ?? ""}}"
-                                    data-total-price="{{ $order->total_price }}">
-                                    <td>{{ $order->order_id }}</td>
-                                    <td>{{ $order->user->full_name }}</td>
-                                    <td>{{ $order->order_date }}</td>
-                                    <td>{{ $order->status }}</td>
-                                    <td>{{ $order->shipping_address }}</td>
-                                    <td>{{ $order->payment_method }}</td>
-                                    <td>{{ $order->voucher->code ?? "không áp dụng"}}</td>
-                                    <td>{{ number_format($order->total_price, 0, ',', '.') }}₫</td>
-                                    <td>
-                                        <a href="{{ route("orderDetails.list", [$order->order_id]) }}" class="view" title="View"
-                                            data-toggle="tooltip"><i class="material-icons">&#xE417;</i></a>
-                                        <a href="#" class="edit" title="Edit" data-toggle="modal" data-target="#editOrderModal">
-                                            <i class="material-icons">&#xE254;</i>
-                                        </a>
-                                        <form action="{{ url('/api/orders/' . $order->order_id) }}" method="POST"
-                                            style="display:inline;">
-                                            <button type="button" class="btn btn-link p-0 m-0 align-baseline delete"
-                                                title="Delete" data-toggle="tooltip"
-                                                onclick="confirmDelete({{ $order->order_id }})">
-                                                <i class="material-icons text-danger">&#xE872;</i>
-                                            </button>
-                                        </form>
-                                    </td>
-                                </tr>
-                            @endforeach
-
-                        </tbody>
-                    </table>
-                    <div class="clearfix">
-                        <div class="clearfix">
-                            <nav>
-                                {{ $orders->withQueryString()->links('pagination::bootstrap-5') }}
-                            </nav>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-    </div>
-
-
+    </main>
 
     <!-- Modal Thêm Mới order -->
     <div class="modal fade" id="addOrderModal" tabindex="-1" role="dialog" aria-labelledby="addOrderModalLabel"
@@ -295,12 +164,11 @@
             </form>
         </div>
     </div>
+    @push('scripts')
+    <script src="js/crud-orders.js">
 
-    <script>
-        window.csrfToken = "{{ csrf_token() }}";
     </script>
-    <script src="{{ asset('js/crud-orders.js') }}"></script>
-    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+@endpush
 
 
 @endsection

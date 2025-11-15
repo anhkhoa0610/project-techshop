@@ -1,20 +1,15 @@
 // Xử lý khi click nút Edit
-document.querySelectorAll('.edit').forEach(function (btn) {
-    btn.addEventListener('click', function (e) {
-        // Xóa lỗi cũ
-        document.querySelectorAll('.error-message').forEach(el => el.textContent = '');
-        e.preventDefault();
-        var row = btn.closest('tr');
+//Mở modal Edit
+$(document).on('click', '.edit', function () {
+    const row = this;
+    
+    $('#category_name').val(row.getAttribute('data-category-name') || '');
+    $('#description').val(row.getAttribute('data-category-description') || '');
 
-        document.getElementById('category_name').value = row.getAttribute('data-category-name') || '';
-        document.getElementById('description').value = row.getAttribute('data-category-description') || '';
-        document.getElementById('editCategoryForm').dataset.id = row.getAttribute('data-category-id');
+    document.getElementById('editCategoryForm').dataset.id = row.getAttribute('data-category-id');
 
-        $('#editCategoryModal').modal('show');
-    });
+    $('#editCategoryModal').modal('show');
 });
-
-
 
 // Xử lý submit formn edit
 document.getElementById('editCategoryForm').addEventListener('submit', async function (e) {
@@ -33,7 +28,7 @@ document.getElementById('editCategoryForm').addEventListener('submit', async fun
         method: 'POST',
         headers: {
             'Accept': 'application/json',
-            'X-CSRF-TOKEN':window.csrfToken
+            'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content
         },
         body: formData
     });
@@ -91,7 +86,7 @@ document.getElementById('addCategoryForm').addEventListener('submit', async func
         method: 'POST',
         headers: {
             'Accept': 'application/json',
-            'X-CSRF-TOKEN': window.csrfToken
+            'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content
         },
         body: formData
     });
@@ -142,7 +137,7 @@ function confirmDelete(id) {
                 method: 'DELETE',
                 headers: {
                     'Accept': 'application/json',
-                    'X-CSRF-TOKEN': window.csrfToken
+                    'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content
                 }
             })
                 .then(res => res.json())
@@ -159,18 +154,18 @@ function confirmDelete(id) {
 }
 
 // Hiển thị modal khi nhấn nút "Xem" chi tiết đơn hàng
-document.querySelectorAll('.view').forEach(btn => {
-    btn.addEventListener('click', e => {
-        e.preventDefault();
+// document.querySelectorAll('.view').forEach(btn => {
+//     btn.addEventListener('click', e => {
+//         e.preventDefault();
 
-        const row = btn.closest('tr');
-        document.getElementById('view_category_id').textContent = row.getAttribute('data-category-id') || '';
-        document.getElementById('view_category_name').textContent = row.getAttribute('data-category-name') || '';
-        document.getElementById('view_description').textContent = row.getAttribute('data-category-description') || '';
-        // Hiển thị modal
-        $('#viewCategoryModal').modal('show');
-    });
-});
+//         const row = btn.closest('tr');
+//         document.getElementById('view_category_id').textContent = row.getAttribute('data-category-id') || '';
+//         document.getElementById('view_category_name').textContent = row.getAttribute('data-category-name') || '';
+//         document.getElementById('view_description').textContent = row.getAttribute('data-category-description') || '';
+//         // Hiển thị modal
+//         $('#viewCategoryModal').modal('show');
+//     });
+// });
 function formatCurrency(value) {
     const number = parseFloat(value);
     if (isNaN(number)) return '0 ₫';

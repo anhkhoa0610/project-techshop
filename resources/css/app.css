@@ -3,3 +3,9 @@
 @tailwind utilities;
 @import './../../vendor/power-components/livewire-powergrid/dist/tailwind.css';
 
+textarea {
+    border: 1px solid #ced4da !important;
+    padding: .375rem .75rem !important;
+    border-radius: .375rem !important;
+    background-color: #fff !important;
+}

@@ -171,8 +171,8 @@
             <div class="review-title glass3d">
                 <div class="col-md-3 star-rating  ">
                     <div class="rating">
-                        <span class="rating-left">{{ number_format($avg, 1) ?? 0 }} </span>
                         <span class="rating-right"> trên 5 sao</span>
+                        <span class="rating-left">{{ number_format($avg, 1) ?? 0 }} </span>
                     </div>
                     <div class="star-rating-display" data-avg="{{ $avg}}">
                         @for ($i = 1; $i <= 5; $i++)
@@ -249,13 +249,13 @@
                                     <span class="star filled text-warning fs-1">★★★★★</span>
                                 </option>
                             </select>
-                            
+
                         </div>
                         <div class="mb-3">
                             <label for="reviewComment" class="form-label">Bình luận của bạn:</label>
                             <textarea class="form-control" id="reviewComment" name="comment" rows="4"></textarea>
                         </div>
-                        <button type="submit" class="btn btn-primary">Gửi đánh giá</button>
+                        <button type="submit" class="btn btn-primary submit-post-review">Gửi đánh giá</button>
                     </form>
                 </div>
             </div>
@@ -284,12 +284,59 @@
             <div class="related-display container "></div>
         </div>
     </div>
+
+    <!-- Modal Chỉnh Sửa Đánh Giá -->
+    <div class="modal fade" id="editReviewModal" tabindex="-1" aria-labelledby="editReviewModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <form id="editReviewForm">
+                    @csrf
+                    @method('PUT')
+                    <div class="modal-header bg-primary text-white">
+                        <h5 class="modal-title" id="editReviewModalLabel">
+                            <i class="fas fa-edit"></i> Chỉnh Sửa Đánh Giá
+                        </h5>
+                        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"
+                            aria-label="Close"></button>
+                    </div>
+
+                    <div class="modal-body">
+                        <input type="hidden" id="edit_review_id" name="review_id">
+
+                        <!-- Đánh giá sao -->
+                        <div class="form-group mb-3">
+                            <label class="form-label">Đánh giá</label>
+                            <div class="rating">
+                                @for($i = 5; $i >= 1; $i--)
+                                    <input type="radio" id="edit_star{{ $i }}" name="rating" value="{{ $i }}">
+                                    <label for="edit_star{{ $i }}"></label>
+                                @endfor
+                            </div>
+                        </div>
+
+                        <!-- Bình luận -->
+                        <div class="form-group mb-3">
+                            <label for="edit_comment">Bình luận</label>
+                            <textarea class="form-control" id="edit_comment" name="comment" rows="4"></textarea>
+                        </div>
+                    </div>
+
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Đóng</button>
+                        <button type="submit" class="btn btn-primary">Lưu thay đổi</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
     <script>
         const check_user = @json(auth()->check());
         const user_id = @json(auth()->id());
         window.csrfToken = @json(csrf_token());
         const productId = @json($product->product_id);
         const cartItems_count = @json($cartItems_count);
+        let hasReviewed = @json($hasReviewed)
     </script>
     <script src="{{ asset('js/ui-product.js') }}"></script>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
