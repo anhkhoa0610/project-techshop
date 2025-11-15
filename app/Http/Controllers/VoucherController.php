@@ -69,7 +69,6 @@ class VoucherController extends Controller
      */
     public function store(VoucherRequest $request)
     {
-        //
         $validated = $request->validated();
         $voucher = Voucher::createVoucher($validated);
 
