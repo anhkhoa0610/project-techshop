@@ -302,6 +302,8 @@
 
                     <div class="modal-body">
                         <input type="hidden" id="edit_review_id" name="review_id">
+                        <input type="hidden"  name="product_id" value="{{ $product->product_id }}">
+                        <input type="hidden"  name="user_id" value="{{auth()->id() }}">
 
                         <!-- Đánh giá sao -->
                         <div class="form-group mb-3">

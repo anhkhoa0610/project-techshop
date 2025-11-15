@@ -21,11 +21,9 @@ class UIProductDetailsController extends Controller
         $reviewSummary = $product->getReviewSummary();
         $reviews = $product->getReviews();
         $cartItems_count = auth()->check() ? auth()->user()->cartItemsCount() : 0;
-        if (auth()->check()) {
-            $hasReviewed = $product->reviews()
-                ->where('user_id', auth()->id())
-                ->exists();   // exists() trả về true/false
-        }
+        $hasReviewed = auth()->check()
+            ? $product->reviews()->where('user_id', auth()->id())->exists()
+            : false;
 
         return view('ui-product-details.product', compact(
             'product',
