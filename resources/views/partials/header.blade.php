@@ -39,9 +39,9 @@
 
             <nav class="nav desktop-only">
                 <a href="{{ asset('/index') }}" class="nav-link">Trang chủ</a>
-                <a href="#" class="nav-link">Điện thoại</a>
-                <a href="#" class="nav-link">Laptop</a>
-                <a href="#" class="nav-link">Phụ kiện</a>
+                <a href="{{ route('index.categories',3) }}" class="nav-link">Điện thoại</a>
+                <a href="{{ route('index.categories',2) }}" class="nav-link">Laptop</a>
+                <a href="{{ route('index.categories',6) }}" class="nav-link">Phụ kiện</a>
                 <a href="{{ route('promotion.index') }}" class="nav-link">Khuyến mãi</a>
             </nav>
 
