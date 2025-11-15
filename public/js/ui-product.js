@@ -240,13 +240,26 @@ document.addEventListener('DOMContentLoaded', function () {
     // Tải mặc định trang đầu tiên
     loadReviews(apiBase);
 
-    function updateReviewUI(data, rating, productId, action) {
+    function updateReviewUI(data, rating, productId, action, oldRating = null) {
         let amountReview = -1;
         if (action == 'add') {
             amountReview = 1;
         }
-        if (action == 'update') {
-            amountReview = 0;
+        if (action === 'update') {
+            if (oldRating == rating) {
+                amountReview = 0;
+            }
+            else {
+                const oldSpan = document.querySelector(`.review-count[data-rating="${oldRating}"]`);
+                if (oldSpan) oldSpan.textContent = parseInt(oldSpan.textContent || 0) - 1;
+
+                // Cộng 1 ở sao mới
+                const newSpan = document.querySelector(`.review-count[data-rating="${rating}"]`);
+                if (newSpan) newSpan.textContent = parseInt(newSpan.textContent || 0) + 1;
+
+                // Tổng tất cả không thay đổi
+                amountReview = 0;
+            }
         }
         //  Cập nhật số lượng đánh giá tùy vào số sao 
         const span = document.querySelector(`.review-count[data-rating="${rating}"]`);
@@ -269,7 +282,7 @@ document.addEventListener('DOMContentLoaded', function () {
             total_review.textContent = parseInt(total_review.textContent) + amountReview;
 
         //  Làm nổi bật nút lọc sao
-        if (action === 'add') {
+        if (action === 'add' || action == 'update') {
             document.querySelectorAll('.button-filter-star').forEach(b => b.classList.remove('active'));
             const activeBtn = document.querySelector(`.button-filter-star[data-rating="${rating}"]`);
             if (activeBtn) activeBtn.classList.add('active');
@@ -569,31 +582,25 @@ document.addEventListener('DOMContentLoaded', function () {
         });
 
         // xử lý sửa đánh giá
-        document.addEventListener("click", function (e) {
-            const button = e.target.closest(".edit-review-btn");
-            if (!button) return; // nếu không phải nút edit thì bỏ qua
+        let oldRating = null;
+        document.addEventListener('click', function (e) {
+            if (e.target.closest('.edit-review-btn')) {
+                const btn = e.target.closest('.edit-review-btn');
 
-            console.log("Đã click Edit!");
+                const reviewId = btn.dataset.id;
+                const rating = btn.dataset.rating;
+                const comment = btn.dataset.comment;
+                oldRating = rating;
 
-            // Lấy dữ liệu từ data-attributes
-            const reviewId = button.dataset.id;
-            const rating = button.dataset.rating;
-            const comment = button.dataset.comment;
+                document.getElementById('edit_review_id').value = reviewId;
 
-            // Gán vào form
-            document.getElementById('edit_review_id').value = reviewId;
-            if(isEmptyObject()){
-                 document.getElementById('edit_comment').value = comment;
+                const starInput = document.querySelector(`#edit_star${rating}`);
+                if (starInput) starInput.checked = true;
+                document.getElementById('edit_comment').value = comment && comment !== 'null' ? comment : '';
             }
-
-            // Gán rating
-            document.querySelectorAll('#editReviewForm input[name="rating"]').forEach(input => {
-                input.checked = parseInt(input.value) === parseInt(rating);
-            });
         });
 
 
-        // XỬ LÝ SUBMIT FORM AJAX
         document.getElementById("editReviewForm").addEventListener("submit", async function (e) {
             e.preventDefault();
 
@@ -614,14 +621,42 @@ document.addEventListener('DOMContentLoaded', function () {
                 const result = await response.json();
 
                 if (result.success) {
-                    alert("Cập nhật thành công!");
-                    location.reload();
+
+                    Swal.fire({
+                        icon: "success",
+                        title: "Cập nhật thành công!",
+                        showConfirmButton: false,
+                    });
+
+                    const modalEl = document.getElementById('editReviewModal');
+                    let modal = bootstrap.Modal.getInstance(modalEl);
+
+                    modal.hide();
+                    setTimeout(() => {
+                        document.body.classList.remove('modal-open');
+                        document.querySelectorAll('.modal-backdrop').forEach(el => el.remove());
+                    }, 300);
+
+                    const rating = formData.get("rating");
+                    updateReviewUI(result, rating, productId, "update", oldRating);
+
                 } else {
-                    alert("Lỗi cập nhật!");
+                    // Thông báo lỗi
+                    Swal.fire({
+                        icon: "error",
+                        title: "Lỗi!",
+                        text: result.message
+                    });
                 }
+
             } catch (error) {
                 console.error("Lỗi AJAX:", error);
-                alert("Không kết nối được server!");
+
+                Swal.fire({
+                    icon: "error",
+                    title: "Lỗi kết nối!",
+                    text: "Không kết nối được server!"
+                });
             }
         });
 
