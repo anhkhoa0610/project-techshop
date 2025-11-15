@@ -23,9 +23,10 @@ final class OrderTable extends PowerGridComponent
     public string $sortField = 'order_id';
 
     // Override primary key method
-    public function primaryKey(): string
+    public string $primaryKey = 'order_id';  
+    public function getIdAttribute()
     {
-        return 'order_id';
+        return $this->order_id;
     }
 
     public function setUp(): array
@@ -40,19 +41,21 @@ final class OrderTable extends PowerGridComponent
             PowerGrid::footer()
                 ->showPerPage(5, [5, 10, 25, 50])
                 ->showRecordCount(),
+            PowerGrid::detail()
+                ->view('components.order_details')
+                ->showCollapseIcon(),
         ];
     }
 
     public function datasource()
     {
-        return Order::query()->with(['voucher', 'user']);
+        return Order::query()->with(['voucher', 'user','orderDetails']);
     }
 
     public function fields(): PowerGridFields
     {
         return PowerGrid::fields()
             ->add('order_id')
-
             // Lấy full_name từ user
             ->add('full_name', fn($order) => $order->user?->full_name ?? '---')
 
@@ -70,7 +73,7 @@ final class OrderTable extends PowerGridComponent
                 $color = match ($order->status) {
                     'pending' => 'yellow',
                     'completed' => 'green',
-                    'canceled' => 'red',
+                    'cancelled' => 'red',
                     default => 'gray',
                 };
 
@@ -125,6 +128,9 @@ final class OrderTable extends PowerGridComponent
     public function filters(): array
     {
         return [
+            Filter::inputText('order_id')
+                ->operators(['contains']),
+
             Filter::select('full_name', 'user_id')
                 ->dataSource(\App\Models\User::all())
                 ->optionLabel('full_name')
@@ -147,4 +153,8 @@ final class OrderTable extends PowerGridComponent
         return view('components.order-actions', ['order' => $row]);
     }
 
+    public function noDataLabel(): string|View
+    {
+        return view('components.orders_nodata');
+    }
 }

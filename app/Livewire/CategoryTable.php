@@ -12,10 +12,16 @@ use PowerComponents\LivewirePowerGrid\Facades\PowerGrid;
 use PowerComponents\LivewirePowerGrid\PowerGridFields;
 use PowerComponents\LivewirePowerGrid\PowerGridComponent;
 use Illuminate\View\View;
+use PowerComponents\LivewirePowerGrid\Components\SetUp\Exportable;
+use PowerComponents\LivewirePowerGrid\Traits\WithExport;
+
+
 final class CategoryTable extends PowerGridComponent
 {
     public string $tableName = 'categoryTable';
     public string $sortField = 'category_id';
+
+    use WithExport;
 
     // Override primary key method
     public function primaryKey(): string
@@ -29,10 +35,12 @@ final class CategoryTable extends PowerGridComponent
         return [
             PowerGrid::header()
                 ->showToggleColumns()
-                ->includeViewOnTop('components.add-category-button'),
+                ->includeViewOnTop('components.add-category-button')->showSearchInput(),
             PowerGrid::footer()
                 ->showPerPage(5, [5, 10, 25, 50])
                 ->showRecordCount(),
+            PowerGrid::exportable(fileName: 'categories-export')
+                ->type(Exportable::TYPE_XLS, Exportable::TYPE_CSV),
         ];
     }
 
@@ -70,10 +78,7 @@ final class CategoryTable extends PowerGridComponent
 
             Column::make('Cover image', 'cover_image')
                 ->sortable()
-                ->searchable(),
-
-            Column::make('Created at', 'created_at_formatted', 'created_at')
-                ->sortable(),
+                ->hidden(),
 
             Column::make('Created at', 'created_at')
                 ->sortable()
@@ -86,17 +91,23 @@ final class CategoryTable extends PowerGridComponent
     public function filters(): array
     {
         return [
+            Filter::inputText('category_id')
+                ->operators(['contains']),
+            Filter::inputText('category_name')
+                ->operators(['contains']),
+            Filter::inputText('description')
+                ->operators(['contains']),
         ];
     }
 
-      public function actionsFromView($row): View
+    public function actionsFromView($row): View
     {
         return view('components.category-actions', ['category' => $row]);
     }
 
     public function noDataLabel(): string|View
     {
-        return view('products.no-data');
+        return view('components.categories_nodata');
     }
 
 }

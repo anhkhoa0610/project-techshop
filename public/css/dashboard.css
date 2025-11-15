@@ -152,10 +152,10 @@ body {
     vertical-align: middle !important;
 }
 
-.table td,
+/* .table td,
 .table th {
     text-align: center;
-}
+} */
 
 table.table tr th,
 table.table tr td {
