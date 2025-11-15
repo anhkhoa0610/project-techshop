@@ -29,6 +29,7 @@
         <div class="spinning-logo">
 
         </div>
+        <div class="loader"></div>
     </div>
     {{-- Header --}}
     @include('partials.header')
