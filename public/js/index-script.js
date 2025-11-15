@@ -20,6 +20,8 @@ const handleSearch = function () {
         searchResults.innerHTML = '';
         return;
     }
+
+    const markInstance = new Mark(searchResults);
     fetch(`/api/index/search?keyword=${encodeURIComponent(query)}`)
         .then(res => res.json())
         .then(data => {
@@ -33,12 +35,12 @@ const handleSearch = function () {
                         starsHtml += i <= Math.round(rating) ? '⭐' : '';
                     }
                     html += `
-                    <div class="result-item" onclick="window.location.href='/products/${product.product_id}'">
+                    <div class="result-item" onclick="window.location.href='/product-details/${product.product_id}'">
                         <div class="result-thumb">
                             <img src="${product.cover_image ? '/uploads/' + product.cover_image : '/images/place-holder.png'}" alt="${product.product_name}">
                         </div>
                         <div class="result-info">
-                            <div class="result-title">${product.product_name}</div>
+                            <div class="result-title markable-content">${product.product_name}</div>
                             <div class="result-rating">
                                 <span class="stars">${starsHtml}</span>
                                 <span class="rating-score">${rating.toFixed(1)}</span>
@@ -55,6 +57,20 @@ const handleSearch = function () {
             searchResults.innerHTML = html;
             searchResults.style.display = 'block';
             searchResults.classList.add('active');
+
+            if (data.status === 'success' && data.data.length) {
+                // Hủy bỏ highlight cũ (nếu có)
+                markInstance.unmark({
+                    done: function(){
+                        // Thực hiện highlight mới
+                        markInstance.mark(query, {
+                            // Chỉ highlight trong các phần tử có class 'markable-content'
+                            element: "span",
+                            className: "highlight" // Class CSS bạn sẽ dùng để định kiểu
+                        });
+                    }
+                });
+            }
         });
 };
 
@@ -85,9 +101,6 @@ document.addEventListener("click", debounce((event) => {
 
 // Thêm vào giỏ hàng
 const addCartButtons = document.querySelectorAll(".btn-add-cart");
-// Biến toàn cục để lưu token, giả sử đã được định nghĩa ở đâu đó
-// const csrfToken = document.querySelector('meta[name="csrf-token"]').content;
-// const USER_ID = document.querySelector('meta[name="user-id"]').content; 
 
 async function handleAddToCart(button) {
     // Lưu HTML ban đầu của nút để khôi phục sau
@@ -137,6 +150,10 @@ async function handleAddToCart(button) {
         }
 
         if (response.ok) {
+            if (data.cartItemCount !== undefined) {
+                updateCartCountDisplay(data.cartItemCount); 
+            }
+            
             Swal.fire({
                 icon: "success",
                 title: "Thành công!",
@@ -171,5 +188,17 @@ async function handleAddToCart(button) {
         button.disabled = false;
         button.innerHTML = originalButtonHtml; 
         button.classList.remove('btn-loading');
+    }
+}
+
+function updateCartCountDisplay(newCount) {
+    const cartCountElement = document.querySelector('.cart-count');
+    if (cartCountElement) {
+        cartCountElement.textContent = newCount;
+        
+        cartCountElement.classList.add('cart-flash');
+        setTimeout(() => {
+            cartCountElement.classList.remove('cart-flash');
+        }, 500); 
     }
 }

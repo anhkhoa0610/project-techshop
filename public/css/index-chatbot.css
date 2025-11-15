@@ -1,17 +1,16 @@
 /*chatbot styles*/
 .chatbot-container {
     position: fixed;
-    bottom: 24px;
-    right: 24px;
-    z-index: 9999;
+    bottom: 40px;
+    right: 40px;
+    z-index: 999;
 }
 
 /* Nút tròn (bubble) */
 #chatbot-button {
     width: 80px;
     height: 80px;
-    background-color: #15759b;
-    color: white;
+    background-color: #ececec;
     border-radius: 50%;
     display: flex;
     align-items: center;
@@ -29,16 +28,16 @@
 
 /* Cửa sổ chat */
 #chatbot-window {
-    width: 380px;
-    border-radius: 16px 0px 0px 16px;
+    width: 480px;
+    border-radius: 16px;
     box-shadow: 0 6px 20px rgba(0, 0, 0, 0.1);
     background: #fff;
     font-family: "Inter", sans-serif;
     display: none;
     flex-direction: column;
-    overflow-y: scroll;
     border: 1px solid #e5e7eb;
     height: 60vh;
+    padding: 10px;
 }
 
 /* Header */
@@ -51,27 +50,24 @@
 }
 
 .chat-avatar {
-  background: #7c3aed;
-  color: white;
-  font-weight: bold;
-  border-radius: 50%;
-  width: 36px;
-  height: 36px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  margin-right: 10px;
+    font-weight: bold;
+    width: 60px;
+    height: 60px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-right: 10px;
 }
 
 .chat-info strong {
-  display: block;
-  font-size: 14px;
-  color: #111827;
+    display: block;
+    font-size: 14px;
+    color: #111827;
 }
 
 .chat-info span {
-  font-size: 12px;
-  color: #6b7280;
+    font-size: 12px;
+    color: #6b7280;
 }
 
 
@@ -96,6 +92,27 @@
     align-self: flex-start;
 }
 
+.typing-spinner {
+    width: 40px;
+    height: 15px;
+    display: block;
+}
+
+.custom-spinner {
+    border-top-color: #3b82f6;
+    animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+    from {
+        transform: rotate(0deg);
+    }
+
+    to {
+        transform: rotate(360deg);
+    }
+}
+
 .user-message {
     background-color: #d1f7c4;
     margin-left: auto !important;
@@ -104,42 +121,71 @@
 /* Footer */
 .chatbot-footer {
     display: flex;
-    border-top: 1px solid #ccc;
+    align-items: center; /* Căn giữa theo chiều dọc */
+    padding: 8px; /* Thêm padding cho footer */
+    border-top: 1px solid #e5e7eb; /* Đường viền nhẹ */
+    background-color: #f8f8f8; /* Nền nhẹ */
 }
 
 #chatbot-input {
     flex: 1;
-    padding: 8px;
-    border: none;
+    padding: 10px 14px; /* Tăng padding */
+    border: 1px solid #d1d5db; /* Viền nhẹ */
+    border-radius: 20px; /* Bo tròn input */
     outline: none;
+    font-size: 14px;
+    margin-right: 8px; /* Khoảng cách với nút gửi */
+    transition: border-color 0.2s ease;
+}
+
+.chat-avatar img, #chatbot-button img {
+    object-fit: contain;
+    width: 80%;
+    height: 80%;
+}
+
+#chatbot-input:focus {
+    border-color: #15759b; /* Màu viền khi focus */
 }
 
 #chatbot-send {
-    background-color: #15759b;
-    color: white;
+    background-color: #15759b; /* Màu nền */
+    color: white; /* Màu icon */
     border: none;
-    padding: 8px 12px;
+    border-radius: 50%; /* Làm tròn nút */
+    width: 40px; /* Kích thước nút */
+    height: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
     cursor: pointer;
-    transition: 0.3s;
+    font-size: 18px; /* Kích thước icon */
+    transition: background-color 0.3s ease, transform 0.2s ease;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2); /* Thêm đổ bóng */
 }
 
 #chatbot-send:hover {
-    background-color: #0f5e7d;
+    background-color: #0f5e7d; /* Màu hover */
+    transform: scale(1.05); /* Hiệu ứng phóng to nhẹ */
+}
+
+#chatbot-send:active {
+    transform: scale(0.95); /* Hiệu ứng nhấn */
 }
 
 /* Nút X đóng */
 .chat-close {
-  background: transparent;
-  border: none;
-  font-size: 30px;
-  color: #6b7280;
-  cursor: pointer;
-  line-height: 1;
-  transition: color 0.2s ease;
-  margin-left: auto !important;
-  
+    background: transparent;
+    border: none;
+    font-size: 30px;
+    color: #6b7280;
+    cursor: pointer;
+    line-height: 1;
+    transition: color 0.2s ease;
+    margin-left: auto !important;
+
 }
 
 .chat-close:hover {
-  color: #111827;
+    color: #111827;
 }

@@ -8,6 +8,8 @@ use Illuminate\Http\Request;
 use App\Models\CartItem;
 use App\Http\Requests\CartRequest;
 use App\Models\Post;
+use Illuminate\Support\Facades\Auth;
+
 
 class IndexController extends Controller
 {
@@ -29,6 +31,12 @@ class IndexController extends Controller
 
         $categories = Category::all();
 
+        $cartItemCount = 0;
+
+        if (Auth::check()) {
+            $cartItemCount = CartItem::where('user_id', Auth::id())->count('quantity');
+        }
+
         $posts = Post::query()->inRandomOrder()->limit(4)->get();
 
         $reviews = Review::with('product', 'user')->orderBy('rating', 'desc')->limit(8)->get();
@@ -37,7 +45,7 @@ class IndexController extends Controller
             ->inRandomOrder()
             ->limit(4)
             ->get();
-        return view('ui-index.index', compact('topProducts', 'newProducts', 'videoProducts', 'reviews', 'categories', 'posts'));
+        return view('ui-index.index', compact('topProducts', 'newProducts', 'videoProducts', 'reviews', 'categories', 'posts', 'cartItemCount'));
     }
 
     public function getProductsByCategory($categoryId)
@@ -75,6 +83,7 @@ class IndexController extends Controller
     {
         $data = $request->validated();
 
+        $cartItemCount = 0;
         $product = Product::find($data['product_id']);
 
         if (!$product) {
@@ -109,14 +118,16 @@ class IndexController extends Controller
         } else {
             if ($requestedQuantity > $availableStock) {
                 return response()->json([
-                    'message' => 'Không thể thêm! Số lượng yêu cầu (' . $requestedQuantity . ') vượt quá số lượng stock hiện có (' . $availableStock . ') của sản phẩm.'
+                    'message' => 'Số lượng yêu cầu vượt quá số lượng stock hiện có (' . $availableStock . ') của sản phẩm.'
                 ], 400);
             }
             $cartItem = CartItem::create($data);
 
+            $cartItemCount = CartItem::where('user_id', Auth::id())->count('quantity');
             return response()->json([
                 'message' => 'Thêm sản phẩm vào giỏ hàng thành công!',
-                'cart_item' => $cartItem
+                'cart_item' => $cartItem,
+                'cartItemCount' => $cartItemCount,
             ]);
         }
     }
@@ -165,6 +176,12 @@ class IndexController extends Controller
             }
         }
 
+        $cartItemCount = 0;
+
+        if (Auth::check()) {
+            $cartItemCount = CartItem::where('user_id', Auth::id())->count('quantity');
+        }
+
         $allProducts = $productQuery->paginate(8);
 
         $posts = Post::query()->inRandomOrder()->limit(6)->get();
@@ -174,7 +191,8 @@ class IndexController extends Controller
             'allProducts',
             'categories',
             'currentCategory',
-            'posts'
+            'posts',
+            'cartItemCount'
         ));
     }
 
