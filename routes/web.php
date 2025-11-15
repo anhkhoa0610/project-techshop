@@ -166,3 +166,4 @@ Route::middleware(['auth'])->group(function () {
     Route::delete('/user/delete', [UserController::class, 'destroyProfile'])->name('user.delete');
 });
 
+Route::get('/supplier-ui/{id}', [SupplierController::class, 'indexView'])->name('supplier.ui');

@@ -5,6 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Str;
+use App\Models\OrderDetail;
 
 class Supplier extends Model
 {
@@ -80,6 +81,22 @@ class Supplier extends Model
         $supplier = self::findOrFail($id);
 
         $supplier->delete();
+    }
+
+    /**
+     * Tự động thêm accessor này vào JSON.
+     */
+    protected $appends = ['total_products_sold'];
+
+    // ... (các hàm khác) ...
+
+    // Hàm accessor của bạn
+    public function getTotalProductsSoldAttribute()
+    {
+        // ... (code đã sửa như ở trên) ...
+        return OrderDetail::whereHas('product', function ($query) {
+            $query->where('supplier_id', $this->supplier_id);
+        })->sum('quantity');
     }
 
 }

@@ -190,10 +190,10 @@ document.addEventListener("DOMContentLoaded", () => {
                 return;
             }
 
-            const products = result.data.products || [];
+            const items = result.data.products || [];
             lastPage = result.data.pagination?.last_page || 1;
 
-            if (products.length === 0 && page === 1) {
+            if (items.length === 0 && page === 1) {
                 promoContainer.innerHTML = `
                     <div class="col-12 text-center text-muted py-4">
                         Hiện tại chưa có sản phẩm Flash Sale nào.
@@ -204,53 +204,57 @@ document.addEventListener("DOMContentLoaded", () => {
             }
 
             let html = "";
-                products.forEach(product => {
-                    const id = product.product_id;
-                    const discount = product.discounts?.[0];
+            items.forEach(item => {
+                // Controller trả về mỗi phần tử dưới dạng { product, discount, final_price }
+                const product = item.product || item; // fallback nếu cấu trúc khác
+                const discount = item.discount ?? (product.discounts ? product.discounts[0] : null);
+                const finalPrice = item.final_price ?? discount?.sale_price ?? product.price ?? 0;
 
-                    const discountPercent = discount?.discount_percent || 0;
-                    const hasDiscount = discountPercent > 0;
-                    
-                    // Logic giá đã sửa:
-                    const salePrice = discount?.sale_price || product.price; // Giá bán (có thể đã giảm)
-                    const originalPrice = product.price; // Giá gốc (luôn là giá gốc)
+                const id = product.product_id ?? product.id ?? product.productId;
+                const discountPercent = discount?.discount_percent || 0;
+                const hasDiscount = discountPercent > 0;
 
-                    const endDate = discount?.end_date || null;
-                    const imageUrl = product.cover_image ? `/uploads/${product.cover_image}` : '/images/no-image.png';
+                // Giá hiển thị
+                const salePrice = finalPrice;
+                const originalPrice = product.price ?? salePrice;
 
-                    html += `
-                        <div class="col-6 col-md-4 col-lg-3 mb-4">
-                            <div class="card product-card shadow-sm border-0 rounded-4 h-100 d-flex flex-column">
-                                
-                                <a href="/product-details/${id}" class="text-decoration-none text-dark">
-                                    <div class="position-relative">
-                                        <img src="${imageUrl}" class="card-img-top rounded-top-4" alt="${product.product_name}">
-                                        ${discountPercent > 0 ? `<span class="sale-badge position-absolute top-0 start-0 m-2">-${discountPercent}%</span>` : ""}
-                                    </div>
-                                    <div class="card-body text-start pb-0">
-                                        <h6 class="fw-bold mb-2 product-name">${product.product_name}</h6>
-                                    </div>
-                                </a>
-                                
-                                <div class="card-body text-start pt-2 d-flex flex-column flex-grow-1">
-                                    <div class="price-wrapper mt-auto">
-                                        <span class="text-danger fw-bold fs-6">${formatCurrency(salePrice)}</span>
-                                        
-                                        ${(hasDiscount && originalPrice !== salePrice) ? `
-                                            <small class="text-muted text-decoration-line-through ms-2">${formatCurrency(originalPrice)}</small>
-                                        ` : ""}
-                                    </div>
+                const endDate = discount?.end_date ?? null;
+                const imageUrl = product.cover_image ? `/uploads/${product.cover_image}` : '/images/no-image.png';
+                const productName = product.product_name ?? product.name ?? '';
+
+                html += `
+                    <div class="col-6 col-md-4 col-lg-3 mb-4">
+                        <div class="card product-card shadow-sm border-0 rounded-4 h-100 d-flex flex-column">
+                            
+                            <a href="/product-details/${id}" class="text-decoration-none text-dark">
+                                <div class="position-relative">
+                                    <img src="${imageUrl}" class="card-img-top rounded-top-4" alt="${productName}">
+                                    ${discountPercent > 0 ? `<span class="sale-badge position-absolute top-0 start-0 m-2">-${discountPercent}%</span>` : ""}
+                                </div>
+                                <div class="card-body text-start pb-0">
+                                    <h6 class="fw-bold mb-2 product-name">${productName}</h6>
+                                </div>
+                            </a>
+                            
+                            <div class="card-body text-start pt-2 d-flex flex-column flex-grow-1">
+                                <div class="price-wrapper mt-auto">
+                                    <span class="text-danger fw-bold fs-6">${formatCurrency(salePrice)}</span>
                                     
-                                    ${endDate ? `<div class="countdown mt-2 text-secondary small" data-end="${endDate}">Đang tính...</div>` : ""}
+                                    ${(hasDiscount && originalPrice !== salePrice) ? `
+                                        <small class="text-muted text-decoration-line-through ms-2">${formatCurrency(originalPrice)}</small>
+                                    ` : ""}
                                 </div>
+                                
+                                ${endDate ? `<div class="countdown mt-2 text-secondary small" data-end="${endDate}">Đang tính...</div>` : ""}
+                            </div>
 
-                                <div class="card-footer bg-transparent border-0 text-center pt-0">
-                                    <button class="btn btn-buy rounded-pill px-3 add-to-cart-btn" data-product-id="${id}">Thêm vào giỏ hàng</button>
-                                </div>
+                            <div class="card-footer bg-transparent border-0 text-center pt-0">
+                                <button class="btn btn-buy rounded-pill px-3 add-to-cart-btn" data-product-id="${id}">Thêm vào giỏ hàng</button>
                             </div>
                         </div>
-                    `;
-                });
+                    </div>
+                `;
+            });
 
             // Append sản phẩm mới
             if (page === 1) {
