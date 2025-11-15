@@ -3,6 +3,18 @@
 @section('title', 'TechStore - Trang chủ')
 
 @section('content')
+    <?php
+    $categoryId = $currentCategory->category_id ?? null;
+
+    $specificVideoPath = 'videos/banner-' . $categoryId . '.mp4';
+    $defaultVideoPath = 'videos/banner.mp4';
+
+    if ($categoryId && File::exists(public_path($specificVideoPath))) {
+        $videoSource = $specificVideoPath;
+    } else {
+        $videoSource = $defaultVideoPath;
+    }
+            ?>
     <div id="loading-overlay">
         <div class="logo"></div>
         <div class="spinner"></div>
@@ -16,44 +28,25 @@
         <div class="hero-image">
             <video class="hero-video" autoplay muted loop playsinline preload="metadata"
                 poster="{{ asset('images/place-holder.jpg') }}">
-                <source src="{{ asset('videos/banner.mp4') }}" type="video/mp4">
+                <source src="{{ asset($videoSource) }}" type="video/mp4">
                 <img src="{{ asset('images/place-holder.jpg') }}" alt="Banner">
             </video>
         </div>
-
-        <div class="container">
-            <div class="hero-content">
-                <div class="hero-text">
-                    <span class="hero-badge">🔥 Khuyến mãi đặc biệt</span>
-                    <h1 class="hero-title">
-                        Sony Xperia
-                        <span class="hero-subtitle">Pro Series</span>
-                    </h1>
-                    <p class="hero-description">
-                        Trải nghiệm công nghệ đỉnh cao với camera chuyên nghiệp và hiệu suất vượt trội.
-                        Giảm giá lên đến 30% cho đơn hàng đầu tiên.
-                    </p>
-                    <div class="hero-buttons">
-                        <button class="btn btn-primary">Mua ngay</button>
-                        <button class="btn btn-outline">Xem chi tiết</button>
-                    </div>
-                    <div class="hero-specs">
-                        <div class="spec-item">
-                            <div class="spec-value">24MP</div>
-                            <div class="spec-label">Camera chính</div>
-                        </div>
-                        <div class="spec-item">
-                            <div class="spec-value">256GB</div>
-                            <div class="spec-label">Bộ nhớ</div>
-                        </div>
-                        <div class="spec-item">
-                            <div class="spec-value">5G</div>
-                            <div class="spec-label">Kết nối</div>
-                        </div>
+        @if($currentCategory)
+            <div class="container-fluid">
+                <div class="hero-content">
+                    <div class="hero-text glass3d" style="margin-top: 15vh; font-family: 'Doris'">
+                        <h1 class="hero-title">
+                            Category
+                            <span class="hero-subtitle">{{ $currentCategory->category_name }}</span>
+                        </h1>
+                        <p class="hero-description">
+                            {{ $currentCategory->description }}
+                        </p>
                     </div>
                 </div>
             </div>
-        </div>
+        @endif
     </section>
 
     <!-- Categories Section -->
@@ -220,7 +213,7 @@
                             'GPU' => asset('images/icons/gpu.svg'),
                             'Storage' => asset('images/icons/storage.svg'),
                         ];
-                                                                                    ?>
+                                                                                                                                                ?>
 
                                             <div class="specs-grid-container">
                                                 @foreach ($coreSpecsData as $name => $value)
@@ -243,7 +236,7 @@
                                                 <?php
                         $rating = round($product->reviews_avg_rating ?? 0, 1);
                         $count = $product->reviews_count ?? 0;
-                                                                                        ?>
+                                                                                                                                                    ?>
                                                 <span class="stars" style="color: #ffc107;">⭐</span>
                                                 <span class="rating-score">{{ $rating }}</span>
                                                 <span class="reviews">({{ $count }} đánh giá)</span>
@@ -277,7 +270,7 @@
                                     <?php
                         $remaining = $allProducts->total() - $allProducts->count();
                         $nextBatch = min($allProducts->perPage(), $remaining);
-                                                                ?>
+                                                                                                                            ?>
                                     <button id="btn-load-more" class="btn btn-lg glass3d">
                                         Xem thêm {{ $nextBatch }} / {{ $remaining }} sản phẩm
                                     </button>
@@ -411,31 +404,21 @@
 
 
     <!-- Chatbot Bubble -->
-    <div class="chatbot-container">
-        <div id="chatbot-button">💬</div>
-
-        <div id="chatbot-window">
-            <div class="chatbot-header">
-                <div class="chat-avatar">F</div>
-                <div class="chat-info">
-                    <strong>Chatbot hỗ trợ</strong>
-                    <span>October 15, 2024</span>
-                </div>
-                <button class="chat-close" id="chatbot-close">&times;</button>
-            </div>
-            <div class="chatbot-body">
-                <div class="bot-message">Xin chào 👋! Tôi có thể giúp gì cho bạn?</div>
-            </div>
-            <div class="chatbot-footer">
-                <input type="text" id="chatbot-input" placeholder="Nhập tin nhắn..." />
-                <button id="chatbot-send">Gửi</button>
-            </div>
-        </div>
-    </div>
+    @include('ui-index.chatbot')
 
     <script>
         const USER_ID = {{ auth()->id() ?? 'null' }};
-        console.log("User ID:", USER_ID);
+        const cartCountFromController = {{ $cartItemCount ?? 0 }};
+        function updateCartCount() {
+            if (typeof cartCountFromController === 'number' && cartCountFromController >= 0) {
+                const cartCountElement = document.querySelector('.cart-count');
+                if (cartCountElement) {
+                    cartCountElement.textContent = cartCountFromController;
+                }
+            }
+        }
+
+        document.addEventListener('DOMContentLoaded', updateCartCount);
     </script>
     <script src="{{ asset('js/index-chatbot.js') }}"></script>
     <script src="{{ asset('js/categories-filter.js') }}"></script>

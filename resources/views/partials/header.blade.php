@@ -34,19 +34,14 @@
     <div class="header-container">
         <div class="header-content">
             <div class="header-left">
-                <button class="menu-btn mobile-only">
-                    <span></span>
-                    <span></span>
-                    <span></span>
-                </button>
                 <div class="logo"></div>
             </div>
 
             <nav class="nav desktop-only">
                 <a href="{{ asset('/index') }}" class="nav-link">Trang chủ</a>
-                <a href="#" class="nav-link">Điện thoại</a>
-                <a href="#" class="nav-link">Laptop</a>
-                <a href="#" class="nav-link">Phụ kiện</a>
+                <a href="{{ route('index.categories', 3) }}" class="nav-link">Điện thoại</a>
+                <a href="{{ route('index.categories', 2) }}" class="nav-link">Laptop</a>
+                <a href="{{ route('index.categories', 6) }}" class="nav-link">Phụ kiện</a>
                 <div class="nav-dropdown">
                     <a href="#" class="nav-link">Nhà phân phối</a>
                     <div class="dropdown-menu" id="supplierMenu">
@@ -66,7 +61,7 @@
                 </div>
                 <button class="cart-btn" onclick="window.location.href='{{ route('cart.index') }}'">
                     🛒
-                    <span class="cart-count">2</span>
+                    <span class="cart-count">0</span>
                 </button>
                 @if (Auth::check())
                     <div class="user-dropdown">

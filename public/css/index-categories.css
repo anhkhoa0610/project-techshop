@@ -492,7 +492,7 @@ section.review-video {
     height: 60px;
     border-radius: 50%;
     border: 8px solid #f3f3f3;
-    border-top: 8px solid #E50914;
+    border-top: 8px solid #45f3ff;
     animation: spin 1s linear infinite;
     margin: 0;
 }
