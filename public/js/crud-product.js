@@ -1,112 +1,41 @@
+function decodeHtmlEntities(str) {
+    const txt = document.createElement('textarea');
+    txt.innerHTML = str;
+    return txt.value;
+}
 
-document.querySelectorAll('.edit').forEach(function (btn) {
-    btn.addEventListener('click', function (e) {
-        e.preventDefault();
-        var row = btn.closest('tr');
+//Mở modal Edit
+$(document).on('click', '#edit-product-btn', function () {
+    const row = this;
+    $('#edit_product_name').val(decodeHtmlEntities(row.getAttribute('data-product-name')) || '');
+    $('#edit_description').val(decodeHtmlEntities(row.getAttribute('data-description')) || '');
+    $('#edit_price').val(row.getAttribute('data-price') || '');
+    $('#edit_stock_quantity').val(row.getAttribute('data-stock-quantity') || '');
+    $('#edit_supplier_id').val(row.getAttribute('data-supplier-id') || '');
+    $('#edit_category_id').val(row.getAttribute('data-category-id') || '');
+    $('#edit_warranty_period').val(row.getAttribute('data-warranty-period') || '');
+    $('#edit_volume_sold').val(row.getAttribute('data-volume-sold') || '');
+    $('#edit_release_date').val(row.getAttribute('data-release-date') || '');
+    $('#edit_embed_url_review').val(row.getAttribute('data-embed-url-review') || '');
 
-        document.getElementById('product_name').value = row.getAttribute('data-product-name') || '';
-        document.getElementById('description').value = row.getAttribute('data-description') || '';
-        document.getElementById('price').value = row.getAttribute('data-price') || '';
-        document.getElementById('stock_quantity').value = row.getAttribute('data-stock-quantity') || '';
-        document.getElementById('supplier_id').value = row.getAttribute('data-supplier-id') || '';
-        document.getElementById('category_id').value = row.getAttribute('data-category-id') || '';
-        document.getElementById('warranty_period').value = row.getAttribute('data-warranty-period') || '';
-        document.getElementById('volume_sold').value = row.getAttribute('data-volume-sold') || '';
-        document.getElementById('release_date').value = row.getAttribute('data-release-date') || '';
-        document.getElementById('embed_url_review').value = row.getAttribute('data-embed-url-review') || '';
-
-        const imageFile = row.getAttribute('data-cover-image');
-        const preview = document.getElementById('preview_image');
-        if (imageFile) {
-            preview.src = `/uploads/${imageFile}`;
-        } else {
-            preview.src = `/images/place-holder.jpg`;
-        }
-
-        // Reset input file
-        document.getElementById('cover_image').value = '';
-
-        document.getElementById('editProductForm').dataset.id = row.getAttribute('data-product-id');
-
-        $('#editProductModal').modal('show');
-    });
-});
-
-document.getElementById('cover_image').addEventListener('change', function (e) {
-    const file = e.target.files[0];
+    const imageFile = row.getAttribute('data-cover-image');
     const preview = document.getElementById('preview_image');
 
-    if (file) {
-        const reader = new FileReader();
-        reader.onload = function (event) {
-            preview.src = event.target.result;
-        };
-        reader.readAsDataURL(file);
-    }
-});
-
-// Xử lý submit form
-document.getElementById('editProductForm').addEventListener('submit', async function (e) {
-    e.preventDefault();
-
-    clearFormErrors(this);
-
-
-    const id = this.dataset.id;
-    const url = `/api/products/${id}`;
-
-    const formData = new FormData();
-    formData.append('_method', 'PUT');
-    formData.append('product_name', document.getElementById('product_name').value);
-    formData.append('description', document.getElementById('description').value);
-    formData.append('stock_quantity', document.getElementById('stock_quantity').value);
-    formData.append('price', document.getElementById('price').value);
-    formData.append('volume_sold', document.getElementById('volume_sold').value);
-    formData.append('category_id', document.getElementById('category_id').value);
-    formData.append('supplier_id', document.getElementById('supplier_id').value);
-    formData.append('warranty_period', document.getElementById('warranty_period').value);
-    formData.append('release_date', document.getElementById('release_date').value);
-    formData.append('embed_url_review', document.getElementById('embed_url_review').value);
-    const fileInput = document.getElementById('cover_image');
-    if (fileInput.files.length > 0) {
-        formData.append('cover_image', fileInput.files[0]);
-    }
-
-    const response = await fetch(url, {
-        method: 'POST',
-        headers: {
-            'Accept': 'application/json',
-            'X-CSRF-TOKEN': window.csrfToken
-        },
-        body: formData
-    });
-
-    for (let [key, value] of formData.entries()) {
-        console.log(key, value);
-    }
-
-    if (response.ok) {
-        alert('Cập nhật sản phẩm thành công!');
-        $('#editProductModal').modal('hide');
-        location.reload();
+    if (imageFile && imageFile.trim() !== '') {
+        preview.src = `/uploads/${imageFile}`;
     } else {
-        const err = await response.json();
-        if (err.errors) {
-            Object.keys(err.errors).forEach(field => {
-                const errorDiv = document.getElementById(`error_edit_${field}`);
-                if (errorDiv) {
-                    errorDiv.textContent = err.errors[field][0];
-                }
-            });
-        } else {
-            alert('Sửa sản phẩm thất bại: ' + (err.message || 'Lỗi không xác định'));
-        }
+        preview.src = `/images/place-holder.jpg`;
     }
+
+    document.getElementById('edit_cover_image').value = '';
+
+    document.getElementById('editProductForm').dataset.id = row.getAttribute('data-product-id');
+
+    $('#editProductModal').modal('show');
 });
 
 // Hiển thị modal khi nhấn nút "Thêm Mới Sản Phẩm"
-document.querySelector('.add-new').addEventListener('click', function () {
-    // Reset form
+document.querySelector('#btn-register').addEventListener('click', function () {
     document.getElementById('addProductForm').reset();
     document.getElementById('add_preview_image').src = "/images/place-holder.jpg";
     $('#addProductModal').modal('show');
@@ -125,58 +54,140 @@ document.getElementById('add_cover_image').addEventListener('change', function (
     }
 });
 
-// Xử lý submit form thêm mới
-document.getElementById('addProductForm').addEventListener('submit', async function (e) {
-    e.preventDefault();
+//Thay ảnh
+document.getElementById('edit_cover_image').addEventListener('change', function (e) {
+    const file = e.target.files[0];
+    const preview = document.getElementById('preview_image');
 
-    clearFormErrors(this);
-
-
-    const url = '/api/products';
-    const formData = new FormData();
-    formData.append('product_name', document.getElementById('add_product_name').value);
-    formData.append('description', document.getElementById('add_description').value);
-    formData.append('stock_quantity', document.getElementById('add_stock_quantity').value);
-    formData.append('price', document.getElementById('add_price').value);
-    formData.append('volume_sold', document.getElementById('add_volume_sold').value);
-    formData.append('category_id', document.getElementById('add_category_id').value);
-    formData.append('supplier_id', document.getElementById('add_supplier_id').value);
-    formData.append('warranty_period', document.getElementById('add_warranty_period').value);
-    formData.append('release_date', document.getElementById('add_release_date').value);
-    formData.append('embed_url_review', document.getElementById('add_embed_url_review').value);
-    const fileInput = document.getElementById('add_cover_image');
-    if (fileInput.files.length > 0) {
-        formData.append('cover_image', fileInput.files[0]);
-    }
-
-    const response = await fetch(url, {
-        method: 'POST',
-        headers: {
-            'Accept': 'application/json',
-            'X-CSRF-TOKEN': window.csrfToken
-        },
-        body: formData
-    });
-
-    if (response.ok) {
-        alert('Thêm sản phẩm thành công!');
-        $('#addProductModal').modal('hide');
-        location.reload();
-    } else {
-        const err = await response.json();
-        if (err.errors) {
-            Object.keys(err.errors).forEach(field => {
-                const errorDiv = document.getElementById(`error_add_${field}`);
-                if (errorDiv) {
-                    errorDiv.textContent = err.errors[field][0];
-                }
-            });
-        } else {
-            alert('Thêm sản phẩm thất bại: ' + (err.message || 'Lỗi không xác định'));
-        }
+    if (file) {
+        const reader = new FileReader();
+        reader.onload = function (event) {
+            preview.src = event.target.result;
+        };
+        reader.readAsDataURL(file);
     }
 });
 
+// Submit edit form
+document.addEventListener('DOMContentLoaded', () => {
+    const formEdit = document.getElementById('editProductForm');
+    if (!formEdit) return;
+
+    formEdit.addEventListener('submit', async (e) => {
+        e.preventDefault();
+        clearFormErrors(formEdit);
+
+        const id = formEdit.dataset.id;
+        if (!id) return alert('Không xác định được sản phẩm cần sửa!');
+
+        const submitButton = formEdit.querySelector('button[type="submit"]');
+        const originalButtonHtml = submitButton.innerHTML;
+        
+        submitButton.disabled = true;
+        submitButton.innerHTML = `<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span> Đang lưu...`;
+        submitButton.classList.add('btn-loading');
+
+        const url = `/api/products/${id}`;
+        const formDataEdit = new FormData(formEdit);
+        formDataEdit.append('_method', 'PUT');
+
+        try {
+            const response = await fetch(url, {
+                method: 'POST', 
+                headers: {
+                    'Accept': 'application/json',
+                    'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content
+                },
+                body: formDataEdit
+            });
+
+            const data = await response.json();
+
+            if (response.ok) {
+                $('#editProductModal').modal('hide');
+                Swal.fire('Cập nhật sản phẩm thành công !', data.message, 'success').then(() => location.reload());
+            } else if (data.errors) {
+                Object.entries(data.errors).forEach(([field, messages]) => {
+                    const errorEl = document.getElementById(`error_edit_${field}`);
+                    if (errorEl) errorEl.textContent = messages[0];
+                });
+            } else {
+                Swal.fire('Cập nhật sản phẩm thất bại!', data.message, 'error');
+            }
+        } catch (err) {
+            Swal.fire('Lỗi không xác định !', 'Không thể kết nối đến máy chủ.', 'error');
+        } finally {
+            submitButton.disabled = false;
+            submitButton.innerHTML = originalButtonHtml;
+            submitButton.classList.remove('btn-loading');
+        }
+    });
+});
+
+//Submit thêm sản phẩm
+document.addEventListener('DOMContentLoaded', () => {
+    const formAdd = document.getElementById('addProductForm');
+    if (!formAdd) return;
+
+    formAdd.addEventListener('submit', async (e) => {
+        e.preventDefault();
+        clearFormErrors(formAdd);
+
+        const submitButton = formAdd.querySelector('button[type="submit"]');
+        const originalButtonHtml = submitButton.innerHTML;
+
+        submitButton.disabled = true;
+        submitButton.innerHTML = `<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span> Đang thêm...`;
+        submitButton.classList.add('btn-loading');
+
+        const url = `/api/products/`;
+        const formDataAdd = new FormData(formAdd);
+        formDataAdd.append('_method', 'POST');
+
+        try {
+            const response = await fetch(url, {
+                method: 'POST',
+                headers: {
+                    'Accept': 'application/json',
+                    'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content
+                },
+                body: formDataAdd
+            });
+
+            const data = await response.json();
+
+            if (response.ok) {
+                $('#addProductModal').modal('hide');
+                Swal.fire('Thêm sản phẩm thành công !', data.message, 'success').then(() => location.reload());
+            } else if (data.errors) {
+                // Hiển thị lỗi validation
+                Object.entries(data.errors).forEach(([field, messages]) => {
+                    const errorEl = document.getElementById(`error_add_${field}`);
+                    if (errorEl) errorEl.textContent = messages[0];
+                });
+            } else {
+                Swal.fire('Thêm sản phẩm thất bại!', data.message, 'error').then(() => location.reload());
+            }
+        } catch (err) {
+            Swal.fire('Lỗi không xác định !', data.message, 'err').then(() => location.reload());
+
+        } finally {
+            submitButton.disabled = false;
+            submitButton.innerHTML = originalButtonHtml;
+            submitButton.classList.remove('btn-loading');
+        }
+    });
+});
+
+//Clear lỗi
+function clearFormErrors(form) {
+    if (!form) return;
+    form.querySelectorAll('.error-message').forEach(function (el) {
+        el.textContent = '';
+    });
+}
+
+//Xóa sản phẩm
 function confirmDelete(id) {
     Swal.fire({
         title: 'Xác nhận xóa',
@@ -191,7 +202,7 @@ function confirmDelete(id) {
                 method: 'DELETE',
                 headers: {
                     'Accept': 'application/json',
-                    'X-CSRF-TOKEN': window.csrfToken
+                    'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content
                 }
             })
                 .then(res => res.json())
@@ -199,38 +210,10 @@ function confirmDelete(id) {
                     if (data.success) {
                         Swal.fire('Đã xóa!', data.message, 'success').then(() => location.reload());
                     } else {
-                        Swal.fire('Lỗi', 'Không thể xóa sản phẩm.', 'error');
+                        Swal.fire('Lỗi', data.message , 'error').then(() => location.reload());
                     }
                 })
                 .catch(() => Swal.fire('Lỗi', 'Không thể kết nối đến server.', 'error'));
         }
-    });
-}
-
-
-document.querySelectorAll('.view').forEach(function (btn) {
-    btn.addEventListener('click', function (e) {
-        e.preventDefault();
-        var row = btn.closest('tr');
-        document.getElementById('view_category').textContent = row.getAttribute('data-category-name') || '';
-        document.getElementById('view_supplier').textContent = row.getAttribute('data-supplier-name') || '';
-        document.getElementById('view_product_image').src = row.getAttribute('data-cover-image') ? '/uploads/' + row.getAttribute('data-cover-image') : '/images/place-holder.jpg';
-        document.getElementById('view_product_name').textContent = row.getAttribute('data-product-name') || '';
-        document.getElementById('view_price').textContent = row.getAttribute('data-price') || '';
-        document.getElementById('view_stock_quantity').textContent = row.getAttribute('data-stock-quantity') || '';
-        document.getElementById('view_volume_sold').textContent = row.getAttribute('data-volume-sold') || '';
-        document.getElementById('view_warranty_period').textContent = row.getAttribute('data-warranty-period') || '';
-        document.getElementById('view_release_date').textContent = row.getAttribute('data-release-date') || '';
-        document.getElementById('view_description').innerHTML = row.getAttribute('data-description') || '';
-        document.getElementById('view_embed_url_review').innerHTML = row.getAttribute('data-embed-url-review') || '';
-        $('#viewProductModal').modal('show');
-    });
-});
-
-function clearFormErrors(form) {
-    if (!form) return;
-    // clear elements with class 'error-message' inside the form
-    form.querySelectorAll('.error-message').forEach(function (el) {
-        el.textContent = '';
     });
 }

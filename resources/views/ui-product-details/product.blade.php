@@ -13,6 +13,17 @@
                 <!-- Cột trái: Hình ảnh sản phẩm -->
                 <div class="col-md-6">
                     <div class="product-images text-center">
+
+                        @php
+                            $discount = $product->discounts->first(); 
+                        @endphp
+
+                        @if ($discount)
+                            <div class="related-product-sale-icon main">
+                                Giảm {{ $discount->discount_percent }}%
+                            </div>
+                        @endif
+
                         <img src="{{!empty($product->cover_image) ? asset('uploads/' . $product->cover_image) : asset('images/blank_product.png') }}"
                             class="prodcut-image" alt="Ảnh sản phẩm chính" id="mainImage">
                         <div class="swiper">
@@ -53,7 +64,32 @@
 
                     <h3 class=" fw-bold">
                         <strong>Đơn giá: </strong>
-                        {{ isset($product->price) ? number_format($product->price, 0, ',', '.') : 0}}đ
+                        @php
+                            // Tải đối tượng giảm giá đầu tiên nếu tồn tại
+                            $discount = $product->discounts->first(); 
+                        @endphp
+
+                        <span class="product-price">
+
+                            @if ($discount)
+
+                                <span class="current-price">
+                                    {{ number_format($discount->sale_price, 0, ',', '.') }}₫
+                                </span>
+
+                                <span class="original-price price-strike-through">
+                                    {{ number_format($discount->original_price, 0, ',', '.') }}₫
+                                </span>
+
+                            @else
+                                <span class="current-price">
+                                    {{ number_format($product->price, 0, ',', '.') }}₫
+                                </span>
+                            @endif
+
+                        </span>
+
+
                     </h3>
 
                     <p class="mt-3"><strong>Nhà phân phối: </strong>
@@ -63,7 +99,6 @@
                         {{ isset($product->warranty_period) ? $product->warranty_period . ' tháng' : 'Không bảo hành' }}</p>
                     <p class="mt-3"><strong>Danh mục: </strong>
                         {{ isset($product->category) ? $product->category->category_name : 'Không có danh mục' }}</p>
-
 
                     <div class="mt-4 d-flex align-items-center">
                         <strong class="me-2">Số lượng:</strong>
@@ -136,8 +171,8 @@
             <div class="review-title glass3d">
                 <div class="col-md-3 star-rating  ">
                     <div class="rating">
-                        <span class="rating-left">{{ number_format($avg, 1) ?? 0 }} </span>
                         <span class="rating-right"> trên 5 sao</span>
+                        <span class="rating-left">{{ number_format($avg, 1) ?? 0 }} </span>
                     </div>
                     <div class="star-rating-display" data-avg="{{ $avg}}">
                         @for ($i = 1; $i <= 5; $i++)
@@ -214,12 +249,13 @@
                                     <span class="star filled text-warning fs-1">★★★★★</span>
                                 </option>
                             </select>
+
                         </div>
                         <div class="mb-3">
                             <label for="reviewComment" class="form-label">Bình luận của bạn:</label>
                             <textarea class="form-control" id="reviewComment" name="comment" rows="4"></textarea>
                         </div>
-                        <button type="submit" class="btn btn-primary">Gửi đánh giá</button>
+                        <button type="submit" class="btn btn-primary submit-post-review">Gửi đánh giá</button>
                     </form>
                 </div>
             </div>
@@ -239,21 +275,68 @@
                     (<span class="related-title-type"> Cùng danh mục</span> )
                 </h2>
                 <div class="related-button">
-                    <button class="category-button btn btn-primary active"
-                        data-category_id="{{ $product->category_id }}">Danh mục</button>
-                    <button class="supplier-button btn btn-primary" data-supplier_id="{{ $product->supplier_id }}">Nhà phân
+                    <button class="category-button  active" data-category_id="{{ $product->category_id }}">Cùng danh
+                        mục</button>
+                    <button class="supplier-button " data-supplier_id="{{ $product->supplier_id }}">Nhà phân
                         phối</button>
                 </div>
             </div>
             <div class="related-display container "></div>
         </div>
     </div>
+
+    <!-- Modal Chỉnh Sửa Đánh Giá -->
+    <div class="modal fade" id="editReviewModal" tabindex="-1" aria-labelledby="editReviewModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <form id="editReviewForm">
+                    @csrf
+                    @method('PUT')
+                    <div class="modal-header bg-primary text-white">
+                        <h5 class="modal-title" id="editReviewModalLabel">
+                            <i class="fas fa-edit"></i> Chỉnh Sửa Đánh Giá
+                        </h5>
+                        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"
+                            aria-label="Close"></button>
+                    </div>
+
+                    <div class="modal-body">
+                        <input type="hidden" id="edit_review_id" name="review_id">
+
+                        <!-- Đánh giá sao -->
+                        <div class="form-group mb-3">
+                            <label class="form-label">Đánh giá</label>
+                            <div class="rating">
+                                @for($i = 5; $i >= 1; $i--)
+                                    <input type="radio" id="edit_star{{ $i }}" name="rating" value="{{ $i }}">
+                                    <label for="edit_star{{ $i }}"></label>
+                                @endfor
+                            </div>
+                        </div>
+
+                        <!-- Bình luận -->
+                        <div class="form-group mb-3">
+                            <label for="edit_comment">Bình luận</label>
+                            <textarea class="form-control" id="edit_comment" name="comment" rows="4"></textarea>
+                        </div>
+                    </div>
+
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Đóng</button>
+                        <button type="submit" class="btn btn-primary">Lưu thay đổi</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
     <script>
         const check_user = @json(auth()->check());
         const user_id = @json(auth()->id());
         window.csrfToken = @json(csrf_token());
         const productId = @json($product->product_id);
         const cartItems_count = @json($cartItems_count);
+        let hasReviewed = @json($hasReviewed)
     </script>
     <script src="{{ asset('js/ui-product.js') }}"></script>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>

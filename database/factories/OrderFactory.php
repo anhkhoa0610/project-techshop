@@ -17,15 +17,17 @@ class OrderFactory extends Factory
      */
     public function definition(): array
     {
+        $createdAt = $this->faker->dateTimeBetween('-1 year', 'now');
+
         return [
             'user_id' => User::inRandomOrder()->value('user_id'),
             'order_date' => $this->faker->dateTimeBetween('-1 month', 'now'),
-            'status' => 'pending',
+            'status' => $this->faker->randomElement(['cancelled', 'completed', 'processing', 'completed', 'completed', 'completed', 'completed', 'completed']),
             'shipping_address' => $this->faker->address(),
-            'payment_method' => $this->faker->randomElement(['cash', 'card', 'transfer']),
+            'payment_method' => $this->faker->randomElement(['momo', 'vnpay', 'cash']),
             'voucher_id' => Voucher::inRandomOrder()->first()?->id ?? null,
-            'created_at' => now(),
-            'updated_at' => now(),
+            'created_at' => $createdAt,
+            'updated_at' => $this->faker->dateTimeBetween($createdAt, 'now'),
         ];
     }
 }

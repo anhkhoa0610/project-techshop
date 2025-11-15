@@ -73,27 +73,53 @@ class IndexController extends Controller
 
     public function addToCart(CartRequest $request)
     {
-        // Lấy dữ liệu đã validate
         $data = $request->validated();
 
-        // Kiểm tra xem sản phẩm đã có trong giỏ chưa
+        $product = Product::find($data['product_id']);
+
+        if (!$product) {
+            return response()->json([
+                'message' => 'Sản phẩm không tồn tại!'
+            ], 404);
+        }
+
+        $requestedQuantity = $data['quantity'];
+        $availableStock = $product->stock_quantity;
+
         $cartItem = CartItem::where('user_id', $data['user_id'])
             ->where('product_id', $data['product_id'])
             ->first();
 
         if ($cartItem) {
+            $newQuantity = $cartItem->quantity + $requestedQuantity;
+
+            if ($newQuantity > $availableStock) {
+                return response()->json([
+                    'message' => 'Không thể thêm! Tổng số lượng trong giỏ hàng (' . $newQuantity . ') vượt quá số lượng stock hiện có (' . $availableStock . ') của sản phẩm.'
+                ], 400);
+            }
+
+            $cartItem->update(['quantity' => $newQuantity]);
+
             return response()->json([
-                'message' => 'Sản phẩm đã có trong giỏ hàng!'
-            ], 400);
+                'message' => 'Cập nhật số lượng sản phẩm trong giỏ hàng thành công!',
+                'cart_item' => $cartItem
+            ]);
+
         } else {
-            CartItem::create($data);
+            if ($requestedQuantity > $availableStock) {
+                return response()->json([
+                    'message' => 'Không thể thêm! Số lượng yêu cầu (' . $requestedQuantity . ') vượt quá số lượng stock hiện có (' . $availableStock . ') của sản phẩm.'
+                ], 400);
+            }
+            $cartItem = CartItem::create($data);
+
+            return response()->json([
+                'message' => 'Thêm sản phẩm vào giỏ hàng thành công!',
+                'cart_item' => $cartItem
+            ]);
         }
-
-        return response()->json([
-            'message' => 'Added to cart successfully!'
-        ]);
     }
-
     public function filter(Request $request)
     {
         $products = Product::with(['specs'])
@@ -131,11 +157,11 @@ class IndexController extends Controller
         $currentCategory = null;
 
         if ($category_id) {
-
             $currentCategory = Category::find($category_id);
-
             if ($currentCategory) {
                 $productQuery->where('category_id', $category_id);
+            } else {
+                return redirect()->route('index');
             }
         }
 

@@ -21,6 +21,7 @@ use App\Http\Controllers\MomoController;
 use App\Http\Controllers\VnpayController;
 use App\Http\Controllers\PostController;
 use App\Http\Controllers\UserProfileController;
+use App\Http\Controllers\ChartController;
 
 
 //trang chủ của tui, đụng vào nhớ xin phép =))
@@ -31,8 +32,10 @@ Route::prefix('index')->group(function () {
 
 Route::middleware(['checkrole:Admin'])->group(function () {
     Route::get('/', function () {
-        return view('layouts.dashboard');
+        return redirect()->route('charts');;
     })->name('dashboard');
+    Route::get('/charts', [ChartController::class, 'index'])->name('charts');
+    
     Route::prefix('supplier')->group(function () {
         Route::get('/', [SupplierController::class, 'list'])->name('supplier.list');
     });
@@ -173,3 +176,4 @@ Route::middleware(['auth'])->group(function () {
     Route::put('/user/change-password', [UserController::class, 'updatePassword'])->name('user.updatePassword');
     Route::delete('/user/delete', [UserController::class, 'destroyProfile'])->name('user.delete');
 });
+

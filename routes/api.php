@@ -20,7 +20,7 @@ Route::middleware('auth:sanctum')->post('/logout', [LoginController::class, 'api
 Route::middleware(['auth:sanctum', 'checkrole:Admin'])->group(function () {
     Route::apiResource('categories', CategoryController::class);
 
-    Route::apiResource('products', ProductController::class)->only(['show', 'store', 'update', 'index', 'destroy']);
+    Route::apiResource('products', ProductController::class);
 
     Route::apiResource('orders', OrderController::class);
 
@@ -56,3 +56,6 @@ Route::get('/posts', [PostController::class,'loadPostsApi']);
 Route::get('/vouchers', [VoucherController::class, 'vouchers']);
 Route::get('/product-details/filter', [UIProductDetailsController::class, 'filterProducts']);
 Route::post('/product-details/cart/add', [UIProductDetailsController::class, 'addToCart']);
+
+Route::put('/client-review/{id}', [UIProductDetailsController::class, 'updateReview']);
+Route::delete('/client-review/{id}', [UIProductDetailsController::class, 'deleteReview']);

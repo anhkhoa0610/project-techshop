@@ -85,7 +85,14 @@ document.addEventListener("click", debounce((event) => {
 
 // Thêm vào giỏ hàng
 const addCartButtons = document.querySelectorAll(".btn-add-cart");
+// Biến toàn cục để lưu token, giả sử đã được định nghĩa ở đâu đó
+// const csrfToken = document.querySelector('meta[name="csrf-token"]').content;
+// const USER_ID = document.querySelector('meta[name="user-id"]').content; 
+
 async function handleAddToCart(button) {
+    // Lưu HTML ban đầu của nút để khôi phục sau
+    const originalButtonHtml = button.innerHTML; 
+    
     const productId = button.dataset.productId;
     const quantity = button.dataset.quantity || 1;
     const userId = USER_ID;
@@ -98,6 +105,14 @@ async function handleAddToCart(button) {
         });
         return;
     }
+
+    button.disabled = true; // Vô hiệu hóa nút
+    button.innerHTML = `
+        <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
+        Đang thêm...
+    `;
+    button.classList.add('btn-loading'); 
+
 
     try {
         const response = await fetch("/api/index/add-to-cart", {
@@ -118,12 +133,7 @@ async function handleAddToCart(button) {
             data = JSON.parse(text);
         } catch (e) {
             console.error("Không parse được JSON:", e);
-            Swal.fire({
-                icon: "error",
-                title: "Lỗi hệ thống!",
-                text: "Phản hồi không hợp lệ từ server.",
-            });
-            return;
+            throw new Error("Phản hồi không hợp lệ từ server."); 
         }
 
         if (response.ok) {
@@ -155,7 +165,11 @@ async function handleAddToCart(button) {
         Swal.fire({
             icon: "error",
             title: "Lỗi hệ thống!",
-            text: "Không thể kết nối đến máy chủ.",
+            text: error.message || "Không thể kết nối đến máy chủ.",
         });
+    } finally {
+        button.disabled = false;
+        button.innerHTML = originalButtonHtml; 
+        button.classList.remove('btn-loading');
     }
 }

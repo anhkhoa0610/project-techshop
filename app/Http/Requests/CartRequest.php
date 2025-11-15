@@ -53,7 +53,7 @@ class CartRequest extends FormRequest
 
             if($this->quantity >  $stock ){
                 $validator->errors()->add('quantity', '
-                Số lượng không hợp lệ (vượt quá số lượng kho).');
+                Số lượng không hợp lệ (số lượng hàng có sẵn trong kho không đủ).');
                 return;
             }
             // Tính số lượng đã có trong giỏ hàng
