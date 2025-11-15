@@ -20,14 +20,14 @@ class MoMoController extends Controller
         $cartItems = CartItem::where('user_id', $userId)->get();
         $shoppingAddress = $request->input('shipping_address', 'chưa có địa chỉ');
         $voucher = $request->input('voucher_id', null);
-        $amount = $data['total'] ?? $cartItems->sum(fn($i) => $i->product->price * $i->quantity);
+        $amount = $request->input('total', $cartItems->sum(fn($i) => $i->product->price * $i->quantity));
         $order = Order::create([
             'user_id' => auth()->id(),
             'order_date' => now(),
             'status' => 'pending',
-            'shipping_address' => $shoppingAddress ?? 'chưa có địa chỉ',
+            'shipping_address' => $shoppingAddress,
             'payment_method' => 'momo',
-            'voucher_id' => $voucher ?? null,
+            'voucher_id' => $voucher,
             'total_price' => $amount,
         ]);
 
@@ -40,11 +40,14 @@ class MoMoController extends Controller
         $orderId = $order->order_id; // Use provided order_id or generate one
         $redirectUrl = route('momo.return');
         $ipnUrl = route('momo.ipn');
-        $extraData = "";
+        $extraData = base64_encode(json_encode([
+            'user_id' => $userId,
+            'order_id' => $order->order_id,
+        ]));
 
         $requestId = time() . "";
         $requestType = "payWithATM";
-        // $extraData = ($_POST["extraData"] ? $_POST["extraData"] : "");
+       // $extraData = ($_POST["extraData"] ? $_POST["extraData"] : "");
         //before sign HMAC SHA256 signature
         $rawHash = "accessKey=" . $accessKey . "&amount=" . $amount . "&extraData=" . $extraData . "&ipnUrl=" . $ipnUrl . "&orderId=" . $orderId . "&orderInfo=" . $orderInfo . "&partnerCode=" . $partnerCode . "&redirectUrl=" . $redirectUrl . "&requestId=" . $requestId . "&requestType=" . $requestType;
         $signature = hash_hmac("sha256", $rawHash, $serectkey);
@@ -56,7 +59,7 @@ class MoMoController extends Controller
             'amount' => $amount,
             'orderId' => $orderId,
             'orderInfo' => $orderInfo,
-            'redirectUrl' => $redirectUrl,
+            'redirectUrl' => route('momo.return'),
             'ipnUrl' => $ipnUrl,
             'lang' => 'vi',
             'extraData' => $extraData,
@@ -68,7 +71,6 @@ class MoMoController extends Controller
         $jsonResult = json_decode($result, true);  // decode json
 
 
-
         if (isset($jsonResult['payUrl'])) {
             return redirect()->to($jsonResult['payUrl']);
         } else {
@@ -77,41 +79,56 @@ class MoMoController extends Controller
 
 
     }
-    public function momo_return(Request $request)
-    {
-        $data = $request->all();
-        dd($data);
-        if (($data['resultCode'] ?? 1) == 0) {
-            // ✅ Thanh toán thành công
-            $extraData = json_decode($data['extraData'] ?? '{}', true);
-            $orderId = $extraData['order_id'] ?? null;
-            $userId = $extraData['user_id'] ?? null;
 
-            $order = Order::find($orderId);
-            if ($order && $order->status === 'pending') {
-                $order->update(['status' => 'processing']);
+    
+    
+ 
 
-                // 🔹 Lưu chi tiết đơn hàng
-                $cartItems = CartItem::where('user_id', $userId)->get();
-                foreach ($cartItems as $item) {
-                    OrderDetail::create([
-                        'order_id' => $orderId,
-                        'product_id' => $item->product_id,
-                        'quantity' => $item->quantity,
-                        'unit_price' => $item->product->price * $item->quantity,
-                    ]);
-                }
+//      public function momo_payment(Request $request)
+//   {
 
-                // Xóa giỏ hàng
-                CartItem::where('user_id', $userId)->delete();
-            }
+//     $endpoint = "https://test-payment.momo.vn/v2/gateway/api/create";
 
-            return redirect()->route('index')->with('success', 'Thanh toán MoMo thành công!');
-        }
+//     $partnerCode = 'MOMOBKUN20180529';
+//     $accessKey = 'klm05TvNBzhg7h7j';
+//     $secretKey = 'at67qH6mk8w5Y1nAyMoYKMWACiEi2bsa';
+//     $orderInfo = "Thanh toán qua ATM MoMo";
+//     $amount = 10000;
+//     $orderId = time() . "";
+//     $redirectUrl = "momo.return";
+//     $ipnUrl = "http://localhost:8080/index";
+//     $extraData = "";
 
-        // ❌ Nếu thanh toán thất bại
-        //return redirect()->route('cart')->with('error', 'Thanh toán MoMo thất bại!');
-    }
+//     $requestId = time() . "";
+//     $requestType = "payWithATM";
+//     // $extraData = ($_POST["extraData"] ? $_POST["extraData"] : "");
+//     //before sign HMAC SHA256 signature
+//     $rawHash = "accessKey=" . $accessKey . "&amount=" . $amount . "&extraData=" . $extraData . "&ipnUrl=" . $ipnUrl . "&orderId=" . $orderId . "&orderInfo=" . $orderInfo . "&partnerCode=" . $partnerCode . "&redirectUrl=" . $redirectUrl . "&requestId=" . $requestId . "&requestType=" . $requestType;
+//     $signature = hash_hmac("sha256", $rawHash, $secretKey);
+//     $data = array(
+//       'partnerCode' => $partnerCode,
+//       'partnerName' => "Test",
+//       "storeId" => "MomoTestStore",
+//       'requestId' => $requestId,
+//       'amount' => $amount,
+//       'orderId' => $orderId,
+//       'orderInfo' => $orderInfo,
+//       'redirectUrl' => $redirectUrl,
+//       'ipnUrl' => $ipnUrl,
+//       'lang' => 'vi',
+//       'extraData' => $extraData,
+//       'requestType' => $requestType,
+//       'signature' => $signature
+//     );
+//     $result = $this->execPostRequest($endpoint, json_encode($data));
+//     $jsonResult = json_decode($result, true);  // decode json
+
+//     //Just a example, please check more in there
+//     return redirect()->to($jsonResult['payUrl']);
+
+
+//   }
+
     private function execPostRequest($url, $data)
     {
         $ch = curl_init($url);
@@ -125,6 +142,51 @@ class MoMoController extends Controller
         $result = curl_exec($ch);
         curl_close($ch);
         return $result;
+    }
+
+
+    public function momo_return(Request $request)
+    {
+        $data = $request->all();
+
+        // Giải mã extraData
+        $extraData = json_decode(base64_decode($data['extraData'] ?? ''), true);
+        $orderId = $extraData['order_id'] ?? null;
+
+        // Tìm đơn hàng theo order_id
+        $order = Order::where('order_id', $orderId)->first();
+
+        if (!$order) {
+            return redirect()->route('cart.index')->with('error', 'Không tìm thấy đơn hàng!');
+        }
+
+
+        // 🟢 Nếu thanh toán thành công
+        if (($data['resultCode'] ?? 1) == 0) {
+            $order->update(['status' => 'processing']);
+
+            $userId = auth()->id();
+            $cartItems = CartItem::where('user_id', $userId)->get();
+
+            foreach ($cartItems as $item) {
+                OrderDetail::create([
+                    'order_id' => $order->order_id,
+                    'product_id' => $item->product_id,
+                    'quantity' => $item->quantity,
+                    'unit_price' => $item->product->price * $item->quantity,
+                ]);
+            }
+
+            // Xoá giỏ hàng sau khi thanh toán thành công
+            CartItem::where('user_id', $userId)->delete();
+
+            return redirect()->route('index')->with('success', 'Thanh toán MoMo thành công!');
+        }
+        // 🔴 Nếu thất bại
+
+
+        return redirect()->route('cart.index')->with('error', 'Thanh toán MoMo thất bại!');
+
     }
 
     public function momo_ipn(Request $request)

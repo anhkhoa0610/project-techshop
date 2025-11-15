@@ -19,6 +19,7 @@ use App\Http\Controllers\IndexController;
 use App\Http\Controllers\LoginController;
 use App\Http\Controllers\MomoController;
 use App\Http\Controllers\VnpayController;
+use App\Http\Controllers\CancelController;
 
 Route::get('/', function () {
     return view('layouts.dashboard');
@@ -50,23 +51,39 @@ Route::prefix('orderDetails')->group(function () {
     Route::get('/{order_id}', [OrderDetailController::class, 'list'])->name('orderDetails.list');
 
 });
+// xóa đơn hàng
+Route::delete('/orders/{id}', [OrderController::class, 'deleteOrder'])->name('orders.delete');
 
 
 // Xem giỏ hàng
-Route::get('/cart', [CartController::class, 'index'])->name('cart.index');
 
+
+Route::middleware(['auth'])->group(function () {
+    // Trang Giỏ hàng
+    Route::get('/cart', [CartController::class, 'index'])->name('cart.index');
+    
+    // API: Xử lý AJAX Xóa sản phẩm
+    Route::delete('/cart/remove/{cartId}', [CartController::class, 'delete'])->name('cart.delete'); 
+    
+    // API: Xử lý AJAX Cập nhật số lượng
+    Route::post('/cart/update/{cartId}', [CartController::class, 'updateQuantity'])->name('cart.update_quantity');
+
+    // Xử lý Form Checkout - Route này nhận dữ liệu JSON từ form
+    Route::post('/pay', [CartController::class, 'handleCheckout'])->name('pay.checkout'); 
+   
+});
+Route::post('/checkout', [CheckoutController::class, 'handleCheckout'])->name('checkout'); 
+Route::get('/cancel', [OrderController::class, 'show'])->name('cancel');
+Route::get('/details', [OrderController::class, 'showOrderdetails'])->name('details.show');
 // thêm vào giỏ hàng
 Route::post('/cart/add', [CartController::class, 'addToCart'])->name('cart.add');
 
 // Thanh toán (gửi dữ liệu POST từ giỏ hàng)
-Route::post('/pay', [CheckoutController::class, 'handleCheckout'])->name('pay.checkout');
 
 // Trang hóa đơn
 Route::get('/hoadon', [HoaDonController::class, 'index'])->name('hoadon.index');
 
-// Xóa 1 hoặc nhiều sản phẩm trong giỏ
-Route::delete('/cart/{cart_id}', [CartController::class, 'destroy']);
-Route::delete('/cart-items', [CartController::class, 'destroyMany'])->name('cart.destroyMany');
+
 
 Route::get('/product-details/{id}', [UIProductDetailsController::class, 'show'])->name('product.details');
 // Redirect nếu không có id

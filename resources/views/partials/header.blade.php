@@ -42,6 +42,9 @@
                             <a href="" class="dropdown-item">
                                 <i class="fa-solid fa-id-card me-2"></i> Tài khoản của tôi
                             </a>
+                              <a href="{{ route('cancel') }}" class="dropdown-item">
+                                <i class="fa-solid fa-id-card me-2"></i> Đơn hàng của tôi
+                            </a>
 
                             <form action="{{ route('logout') }}" method="POST" class="dropdown-form" role="none">
                                 @csrf

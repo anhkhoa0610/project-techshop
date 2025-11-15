@@ -1,0 +1,293 @@
+/* =========================
+   HIỆU ỨNG NỀN & KÍNH MỜ
+========================= */
+.background-layout {
+    position: relative;
+    min-height: 100vh;
+    overflow: hidden;
+}
+
+.background-layout::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background-image: url('/images/background.jpg');
+    background-size: cover;
+    background-repeat: no-repeat;
+    background-position: center center;
+    z-index: -1;
+    transform-origin: center center;
+    animation: kenburns 18s ease-in-out infinite alternate;
+    filter: brightness(0.55);
+}
+
+@keyframes kenburns {
+    0% {
+        transform: scale(1) translate(0, 0);
+    }
+
+    50% {
+        transform: scale(1.12) translate(-2%, -2%);
+    }
+
+    100% {
+        transform: scale(1) translate(0, 0);
+    }
+}
+
+/* =========================
+   ORDER CONTAINER
+========================= */
+.order-container {
+    --accent: #3b82f6;
+    --success: #10b981;
+    --danger: #ef4444;
+
+    color: #ffffff;
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border-radius: 20px;
+    box-shadow: 0 8px 40px rgba(0, 0, 0, 0.45);
+    margin: 100px auto;
+    padding: 20px;
+    max-width: 1000px;
+    background: rgba(255, 255, 255, 0.08);
+    border: 1px solid rgba(255, 255, 255, 0.25);
+    z-index: 1;
+}
+
+/* =========================
+   HEADER
+========================= */
+.order-container .header-details {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+    margin-bottom: 18px;
+}
+
+.order-container .header-details h1 {
+    font-size: 22px;
+    margin: 0;
+    color: #fff;
+}
+
+.order-container .header-details .small {
+    color: rgba(255, 255, 255, 0.7);
+    font-size: 13px;
+}
+
+/* =========================
+   LAYOUT & CARD
+========================= */
+.order-container .layout {
+    display: grid;
+    grid-template-columns: 380px 1fr;
+    gap: 20px;
+}
+
+.order-container .card {
+    background: transparent !important;
+    border-radius: 16px;
+    padding: 18px;
+    color: white;
+    border: none;
+}
+
+/* =========================
+   BADGE
+========================= */
+.order-container .badge {
+    display: inline-block;
+    padding: 6px 10px;
+    border-radius: 999px;
+    font-weight: 600;
+    background: linear-gradient(90deg, var(--accent), #60a5fa);
+    color: #fff;
+    font-size: 13px;
+}
+
+/* =========================
+   TIMELINE
+========================= */
+.order-container .timeline {
+    margin-top: 14px;
+}
+
+.order-container .steps {
+    position: relative;
+    padding-left: 22px;
+}
+
+.order-container .steps::before {
+    content: '';
+    position: absolute;
+    left: 9px;
+    top: 10px;
+    bottom: 0;
+    width: 2px;
+    background: rgba(255, 255, 255, 0.3);
+    border-radius: 2px;
+}
+
+.order-container .step {
+    position: relative;
+    padding: 12px 0;
+    padding-left: 20px;
+}
+
+.order-container .dot {
+    position: absolute;
+    left: 0;
+    top: 14px;
+    width: 18px;
+    height: 18px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 10px;
+    color: #fff;
+}
+
+.order-container .dot.pending {
+    background: rgba(255, 255, 255, 0.2);
+}
+
+.order-container .dot.active {
+    background: var(--accent);
+}
+
+.order-container .dot.done {
+    background: var(--success);
+}
+
+.order-container .step .time {
+    font-size: 12px;
+    color: rgba(255, 255, 255, 0.7);
+}
+
+/* =========================
+   BẢN ĐỒ
+========================= */
+.order-container .map {
+    height: 220px;
+    border-radius: 8px;
+    background: rgba(255, 255, 255, 0.1);
+    border: 1px solid rgba(255, 255, 255, 0.25);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #fff;
+    font-weight: 600;
+}
+
+/* =========================
+   SẢN PHẨM
+========================= */
+.order-container .items {
+    margin-top: 12px;
+    border-radius: 8px;
+    overflow: hidden;
+}
+
+.order-container .item {
+    display: flex;
+    gap: 12px;
+    padding: 12px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+    align-items: center;
+}
+
+.order-container .item img {
+    width: 64px;
+    height: 64px;
+    border-radius: 6px;
+    object-fit: cover;
+}
+
+.order-container .item .meta {
+    flex: 1;
+    color: #fff;
+}
+
+.order-container .price {
+    font-weight: 700;
+    color: #fff;
+}
+
+/* =========================
+   LỊCH SỬ VẬN CHUYỂN
+========================= */
+.order-container .events {
+    margin-top: 12px;
+}
+
+.order-container .event {
+    display: flex;
+    gap: 12px;
+    padding: 10px;
+    border-radius: 8px;
+    background: rgba(255, 255, 255, 0.05);
+}
+
+.order-container .event + .event {
+    margin-top: 8px;
+}
+
+.order-container .event .right div:first-child {
+    font-weight: 700;
+    color: #fff;
+}
+
+.order-container .event .right .muted-small {
+    color: rgba(255, 255, 255, 0.7);
+}
+
+/* =========================
+   NÚT & FOOTER
+========================= */
+.order-container footer .actions {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+    margin-top: 12px;
+}
+
+.order-container button {
+    cursor: pointer;
+    padding: 10px 14px;
+    border-radius: 8px;
+    font-weight: 600;
+    transition: all 0.25s ease;
+    color: #fff;
+    border: none;
+}
+
+.order-container .btn-primary {
+    background: var(--accent);
+}
+
+.order-container .btn-ghost {
+    background: transparent;
+    border: 1px solid rgba(255, 255, 255, 0.4);
+}
+
+.order-container button:hover {
+    transform: translateY(-2px);
+    opacity: 0.9;
+}
+
+/* =========================
+   RESPONSIVE
+========================= */
+@media (max-width:900px) {
+    .order-container .layout {
+        grid-template-columns: 1fr;
+    }
+
+    .order-container .map {
+        height: 180px;
+    }
+}

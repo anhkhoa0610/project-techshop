@@ -44,58 +44,6 @@ districtSelect.addEventListener("change", () => {
 });
 loadCities();
 
-
-// document.getElementById('apply-btn').addEventListener('click', function () {
-//     const code = document.getElementById('voucher').value.trim();
-//     if (!code) return;
-//     fetch('/api/voucher/check', {
-//         method: 'POST',
-//         headers: {
-//             'Content-Type': 'application/json',
-//         },
-//         body: JSON.stringify({ voucher: code })
-//     })
-//         .then(res => res.json())
-//         .then(data => {
-//             const totalPriceEl = document.getElementById('total-price');
-//             const discountEl = document.getElementById('voucher-discount');
-//             const discountAmountEl = document.getElementById('voucher-amount');
-//             let total = parseInt(totalPriceEl.textContent.replace(/\D/g, ''));
-//             let discount = 0;
-//             if (data.valid) {
-//                 if (data.discount_type === 'percent') {
-//                     discount = Math.round(total * data.discount_value / 100);
-//                 } else if (data.discount_type === 'amount') {
-//                     discount = data.discount_value;
-//                 }
-//                 discountAmountEl.textContent = '-' + discount;
-//                 discountEl.style.display = '';
-//                 totalPriceEl.textContent = Number(firstPrice - discount);
-
-//                 totalPrice = Number(totalPriceEl.textContent);
-//                 Swal.fire({
-//                     icon: "success",
-//                     title: "Thành công!",
-//                     text: data.message || "Áp dụng voucher thành công.",
-//                     timer: 2000,
-//                     showConfirmButton: false,
-//                 });
-
-//             } else {
-//                 discountAmountEl.textContent = '-0₫';
-//                 discountEl.style.display = 'none';
-//                 totalPriceEl.textContent = total;
-//                 Swal.fire({
-//                     icon: "failed",
-//                     title: "Thất bại!",
-//                     text: data.message || "Áp dụng voucher không thành công.",
-//                     timer: 2000,
-//                     showConfirmButton: false,
-//                 });
-//             }
-//         });
-// });
-
 let lastAppliedCode = null; // Mã đã áp dụng trước đó
 let originalPrice = null;   // Giá gốc ban đầu
 
@@ -318,6 +266,7 @@ document.getElementById("payBtn").addEventListener("click", () => {
     const redirectInput = document.createElement('input');
     redirectInput.type = 'hidden';
     redirectInput.name = 'redirect';
+    redirectInput.method = 'post';
     redirectInput.value = '1';
     form.appendChild(redirectInput);
 

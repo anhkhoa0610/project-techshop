@@ -350,23 +350,56 @@ select:focus {
 }
 
 /* BUTTONS */
-.pay-btn {
-    margin-top: 14px;
-    width: 100%;
-    padding: 12px 14px;
-    border-radius: 12px;
-    border: none;
-    font: 700 15px/1 sans-serif;
-    cursor: pointer;
-    background: linear-gradient(90deg, var(--accent-1), var(--accent-2));
-    color: white;
-    box-shadow: 0 8px 30px rgba(0, 123, 255, 0.18);
-    transition: transform .1s;
+.btn-pay {
+    display: flex;
+    justify-content: space-between;
+    gap: 12px;
+    margin-top: 20px;
 }
 
-.pay-btn:active {
-    transform: translateY(1px);
+.btn-pay form {
+    flex: 1;
 }
+
+.btn-momo, .btn-vnpay {
+    width: 100%;
+    padding: 14px 0;
+    border: none;
+    border-radius: 12px;
+    font-size: 16px;
+    font-weight: 600;
+    cursor: pointer;
+    color: #fff;
+    transition: all 0.25s ease;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15);
+}
+
+/* Nút MOMO */
+.btn-momo {
+    background: linear-gradient(135deg, #a50064, #ec008c);
+}
+.btn-momo:hover {
+    background: linear-gradient(135deg, #d9007b, #ff33aa);
+    transform: translateY(-2px);
+    box-shadow: 0 6px 14px rgba(236, 0, 140, 0.4);
+}
+
+/* Nút VNPAY */
+.btn-vnpay {
+    background: linear-gradient(135deg, #0033a0, #0099ff);
+}
+.btn-vnpay:hover {
+    background: linear-gradient(135deg, #0055cc, #33bbff);
+    transform: translateY(-2px);
+    box-shadow: 0 6px 14px rgba(0, 102, 204, 0.4);
+}
+
+/* Hiệu ứng khi nhấn */
+.btn-momo:active, .btn-vnpay:active {
+    transform: scale(0.98);
+    box-shadow: 0 3px 6px rgba(0, 0, 0, 0.2);
+}
+
 
 /* PROMO CODE */
 .promo {
@@ -403,7 +436,26 @@ select:focus {
     color: white;
     box-shadow: 0 8px 30px rgba(0, 123, 255, 0.18);
 }
-
+.pay-btn
+{
+     width: 100%;
+    padding: 12px 14px;
+    border-radius: 12px;
+    border: none;
+    height: 3rem;
+    font: 700 15px/1 sans-serif;
+    cursor: pointer;
+    background: linear-gradient(90deg, var(--accent-1), var(--accent-2));
+    color: white;
+    box-shadow: 0 8px 30px rgba(0, 123, 255, 0.18);
+    margin-top: 10px;
+   
+}
+.pay-btn:hover, .apply:hover {
+    background: linear-gradient(90deg, var(--accent-2), var(--accent-1));
+    box-shadow: 0 10px 40px rgba(0, 123, 255, 0.25);
+    transform: translateY(-2px);
+}
 .apply-btn {
     display: flex;
     justify-content: end;
@@ -413,4 +465,9 @@ select:focus {
 .input-voucher
 {
     width: 150%;
+}
+.map {
+    
+    height: 600px; 
+    width: 100%;
 }
