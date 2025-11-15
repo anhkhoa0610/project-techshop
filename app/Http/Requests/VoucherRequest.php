@@ -29,13 +29,35 @@ class VoucherRequest extends FormRequest
                 'max:20',
                 // duy nhất trong bảng vouchers, nhưng bỏ qua id hiện tại khi update
                 Rule::unique('vouchers', 'code')->ignore($this->route('voucher'), 'voucher_id'),
-
-
             ],
             'discount_type' => 'required|in:percent,amount',
-            'discount_value' => 'required|numeric|min:0.01',
-            'start_date' => 'required|date|before_or_equal:end_date',
-            'end_date' => 'required|date|after_or_equal:start_date',
+            'discount_value' => [
+                'required',
+                'numeric',
+                'min:0.01',
+                // Ràng buộc có điều kiện:
+                // Nếu loại là 'percent', giá trị không được lớn hơn 100.
+                Rule::when(
+                    $this->discount_type === 'percent',
+                    ['max:100']
+                ),
+            ],
+            'start_date' => [
+                'required',
+                'date',
+                // Ngày bắt đầu phải là hôm nay hoặc sau hôm nay
+                'after_or_equal:today',
+                // Ngày bắt đầu phải trước hoặc bằng ngày kết thúc
+                'before_or_equal:end_date',
+            ],
+            'end_date' => [
+                'required',
+                'date',
+                // Ngày kết thúc phải sau hoặc bằng ngày bắt đầu
+                'after_or_equal:start_date',
+                // Ngày kết thúc phải sau ngày hôm nay (không được là hôm nay)
+                'after:today',
+            ],
             'status' => 'required|in:active,inactive',
         ];
     }
@@ -59,14 +81,17 @@ class VoucherRequest extends FormRequest
             'discount_value.required' => 'Giá trị giảm giá không được để trống',
             'discount_value.numeric' => 'Lượng giảm giá phải là số',
             'discount_value.min' => 'Giá trị giảm giá phải lớn hơn 0',
+            'discount_value.max' => 'Giá trị % không được vượt quá 100', // <-- ĐÃ THÊM
 
             // start_date
             'start_date.required' => 'Ngày bắt đầu không được để trống',
             'start_date.before_or_equal' => 'Ngày áp dụng không lớn hơn ngày hết hạn',
+            'start_date.after_or_equal' => 'Ngày bắt đầu phải là hôm nay hoặc sau hôm nay', // <-- ĐÃ THÊM
 
             // end_date
             'end_date.required' => 'Ngày hết hạn không được để trống',
             'end_date.after_or_equal' => 'Ngày hết hạn không bé hơn ngày bắt đầu',
+            'end_date.after' => 'Ngày hết hạn phải là ngày trong tương lai', // (Message này đã bao gồm rule 'after:today')
 
             // status
             'status.required' => 'Trạng thái không được để trống',

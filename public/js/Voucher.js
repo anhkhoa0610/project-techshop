@@ -1,5 +1,18 @@
 document.addEventListener('DOMContentLoaded', function () {
+    $(document).on('click', '#edit-voucher-btn', function () {
+        const row = this;
 
+        $('#edit_code').val(row.getAttribute('data-code') || '');
+        $('#edit_discount_type').val(row.getAttribute('data-discount_type') || '');
+        $('#edit_discount_value').val(row.getAttribute('data-discount_value') || '');
+        $('#edit_start_date').val(row.getAttribute('data-start_date') || '');
+        $('#edit_end_date').val(row.getAttribute('data-end_date') || '');
+        $('#edit_status').val(row.getAttribute('data-status') || '');
+
+        document.getElementById('editVoucherForm').dataset.id = row.getAttribute('data-voucher-id');
+
+        $('#editVoucherModal').modal('show');
+    });
     // ==================== Edit Voucher ====================
     const editForm = document.getElementById('editVoucherForm');
     if (editForm) {
@@ -20,7 +33,10 @@ document.addEventListener('DOMContentLoaded', function () {
             try {
                 const response = await fetch(url, {
                     method: 'POST',
-                    headers: { 'Accept': 'application/json', 'X-CSRF-TOKEN': window.csrfToken || '' },
+                    headers: {
+                        'Accept': 'application/json',
+                        'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content
+                    },
                     body: formData
                 });
 
@@ -51,7 +67,11 @@ document.addEventListener('DOMContentLoaded', function () {
         editForm.reset();
         document.querySelectorAll('.error-message').forEach(el => el.textContent = '');
     });
-
+    // Hiển thị modal khi nhấn nút "Thêm Mới danh mục"
+    document.querySelector('#btn-add-voucher').addEventListener('click', function () {
+        // Reset form
+        $('#addVoucherModal').modal('show');
+    });
     // ==================== Add Voucher ====================
     const addForm = document.getElementById('addVoucherForm');
     const closeBtn = document.getElementById('close');
@@ -173,7 +193,7 @@ function confirmDelete(id) {
                 method: 'DELETE',
                 headers: {
                     'Accept': 'application/json',
-                    'X-CSRF-TOKEN': window.csrfToken
+                    'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content
                 }
             })
                 .then(res => res.json())
