@@ -14,7 +14,7 @@
     } else {
         $videoSource = $defaultVideoPath;
     }
-        ?>
+            ?>
     <div id="loading-overlay">
         <div class="logo"></div>
         <div class="spinner"></div>
@@ -33,19 +33,19 @@
             </video>
         </div>
         @if($currentCategory)
-        <div class="container">
-            <div class="hero-content">
-                <div class="hero-text glass3d" style="margin-top: 15vh; font-family: 'Doris'">
-                    <h1 class="hero-title">
-                        Category
-                        <span class="hero-subtitle">{{ $currentCategory->category_name }}</span>
-                    </h1>
-                    <p class="hero-description">
-                        {{ $currentCategory->description }}
-                    </p>
+            <div class="container-fluid">
+                <div class="hero-content">
+                    <div class="hero-text glass3d" style="margin-top: 15vh; font-family: 'Doris'">
+                        <h1 class="hero-title">
+                            Category
+                            <span class="hero-subtitle">{{ $currentCategory->category_name }}</span>
+                        </h1>
+                        <p class="hero-description">
+                            {{ $currentCategory->description }}
+                        </p>
+                    </div>
                 </div>
             </div>
-        </div>
         @endif
     </section>
 
@@ -213,7 +213,7 @@
                             'GPU' => asset('images/icons/gpu.svg'),
                             'Storage' => asset('images/icons/storage.svg'),
                         ];
-                                                                                                                            ?>
+                                                                                                                                                ?>
 
                                             <div class="specs-grid-container">
                                                 @foreach ($coreSpecsData as $name => $value)
@@ -236,7 +236,7 @@
                                                 <?php
                         $rating = round($product->reviews_avg_rating ?? 0, 1);
                         $count = $product->reviews_count ?? 0;
-                                                                                                                                ?>
+                                                                                                                                                    ?>
                                                 <span class="stars" style="color: #ffc107;">⭐</span>
                                                 <span class="rating-score">{{ $rating }}</span>
                                                 <span class="reviews">({{ $count }} đánh giá)</span>
@@ -270,7 +270,7 @@
                                     <?php
                         $remaining = $allProducts->total() - $allProducts->count();
                         $nextBatch = min($allProducts->perPage(), $remaining);
-                                                                                                        ?>
+                                                                                                                            ?>
                                     <button id="btn-load-more" class="btn btn-lg glass3d">
                                         Xem thêm {{ $nextBatch }} / {{ $remaining }} sản phẩm
                                     </button>
@@ -404,11 +404,21 @@
 
 
     <!-- Chatbot Bubble -->
-    @include('ui-index.chatbot'); 
+    @include('ui-index.chatbot')
 
     <script>
         const USER_ID = {{ auth()->id() ?? 'null' }};
-        console.log("User ID:", USER_ID);
+        const cartCountFromController = {{ $cartItemCount ?? 0 }};
+        function updateCartCount() {
+            if (typeof cartCountFromController === 'number' && cartCountFromController >= 0) {
+                const cartCountElement = document.querySelector('.cart-count');
+                if (cartCountElement) {
+                    cartCountElement.textContent = cartCountFromController;
+                }
+            }
+        }
+
+        document.addEventListener('DOMContentLoaded', updateCartCount);
     </script>
     <script src="{{ asset('js/index-chatbot.js') }}"></script>
     <script src="{{ asset('js/categories-filter.js') }}"></script>

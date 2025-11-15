@@ -29,11 +29,6 @@
     <div class="header-container">
         <div class="header-content">
             <div class="header-left">
-                <button class="menu-btn mobile-only">
-                    <span></span>
-                    <span></span>
-                    <span></span>
-                </button>
                 <div class="logo"></div>
             </div>
 
@@ -54,7 +49,7 @@
                 </div>
                 <button class="cart-btn" onclick="window.location.href='{{ route('cart.index') }}'">
                     🛒
-                    <span class="cart-count">2</span>
+                    <span class="cart-count">0</span>
                 </button>
                 @if (Auth::check())
                     <div class="user-dropdown">

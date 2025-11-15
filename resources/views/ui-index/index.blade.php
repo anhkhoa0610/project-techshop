@@ -30,7 +30,7 @@
                     </h1>
                     <p class="hero-description">
                         Trải nghiệm sự đột phá vượt mọi giới hạn với chip A18 Bionic mạnh mẽ nhất, hệ thống camera ProRAW
-                        50MP đỉnh cao và màn hình ProMotion XDR siêu mượt. 
+                        50MP đỉnh cao và màn hình ProMotion XDR siêu mượt.
                     </p>
                     <div class="hero-specs">
                         <div class="spec-item">
@@ -472,13 +472,23 @@
     </div>
 
 
-    <!-- Chatbot Bubble -->                                 
-    @include('ui-index.chatbot'); 
-    
+    <!-- Chatbot Bubble -->
+    @include('ui-index.chatbot')
+
 
     <script>
         const USER_ID = {{ auth()->id() ?? 'null' }};
-        console.log("User ID:", USER_ID);
+        const cartCountFromController = {{ $cartItemCount ?? 0 }};
+        function updateCartCount() {
+            if (typeof cartCountFromController === 'number' && cartCountFromController >= 0) {
+                const cartCountElement = document.querySelector('.cart-count');
+                if (cartCountElement) {
+                    cartCountElement.textContent = cartCountFromController;
+                }
+            }
+        }
+
+        document.addEventListener('DOMContentLoaded', updateCartCount);
     </script>
     <script src="{{ asset('js/index-chatbot.js') }}"></script>
     <script src="{{ asset('js/index.js') }}"></script>
