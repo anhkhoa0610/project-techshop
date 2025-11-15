@@ -1,5 +1,5 @@
+<h3 class="text-xl font-bold mb-4">Product Details</h3>
 <div class="p-6 bg-white border border-gray-200 rounded-lg shadow-sm text-gray-800 text-left">
-    <h3 class="text-xl font-bold mb-4 border-b pb-2">Chi tiết sản phẩm</h3>
     <div class="grid grid-cols-2 gap-6">
         <div class="space-y-3">
             <div class="flex items-start">
