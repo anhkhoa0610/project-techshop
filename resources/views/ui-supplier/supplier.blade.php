@@ -16,7 +16,7 @@
 
             <div class="shop-info">
                 <h2 id="shop-name">Đang tải...</h2>
-
+                <h5 id="shop-desc"><strong>Mô tả:</strong>...</h5>
                 {{-- Model không có online status, nên ta ẩn/xóa dòng này --}}
                 {{-- <p id="shop-online-status">...</p> --}}
             </div>
@@ -29,10 +29,10 @@
             <div class="shop-stats">
                 <p id="shop-email"><strong>Email:</strong>...</p>
                 <p id="shop-phone"><strong>Số điện thoại:</strong>...</p>
-                <p id="shop-desc"><strong>Mô tả:</strong>...</p>
                 <p id="shop-address"><strong>Địa chỉ:</strong>...</p>
-                <p id="shop-stat-products"><strong>Sản phẩm:</strong> ...</p>
                 <p id="shop-stat-join"><strong>Tham gia:</strong> ...</p>
+                <p id="shop-stat-products"><strong>Sản phẩm:</strong> ...</p>
+                <p id="shop-stat-orders"><strong>Đã bán:</strong> ...</p>
             </div>
         </section>
 
@@ -60,7 +60,9 @@
         </section>
 
     </div> {{-- END supplier-container --}}
-
+    <a id="backToTopBtn" title="Quay lên đầu trang">
+        <i class="fa fa-arrow-up"></i>
+    </a>
     {{-- Link tới JS vẫn giữ nguyên --}}
     <script src="{{ asset('js/supplier-page.js') }}"></script>
 @endsection

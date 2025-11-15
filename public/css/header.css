@@ -1,9 +1,10 @@
 /* Wrapper */
 .nav-dropdown {
     position: relative;
+    display: inline-block;
 }
 
-/* Ẩn mặc định */
+/* Ẩn mặc định - Đã SỬA ĐỔI */
 .nav-dropdown .dropdown-menu {
     position: absolute;
     top: 100%;
@@ -11,7 +12,25 @@
     background: white;
     border: 1px solid #ddd;
     border-radius: 6px;
-    display: none;
+
+    /* 1. Thay 'display: none' bằng những thuộc tính này */
+    display: flex;
+    /* Giữ 'flex' để 'flex-direction' hoạt động */
+    opacity: 0;
+    /* Ẩn bằng cách làm mờ */
+    visibility: hidden;
+    /* Ẩn hoàn toàn khỏi trình duyệt */
+    transform: translateY(10px);
+    /* Di chuyển xuống 10px (để tạo hiệu ứng trượt lên) */
+    transition: opacity 0.3s ease, transform 0.3s ease, visibility 0.3s;
+    /* Thêm hiệu ứng */
+
+    /* Giới hạn chiều cao & cuộn (scroll) */
+    max-height: 400px;
+    /* <-- THÊM VÀO (bạn có thể đổi số 300px) */
+    overflow-y: auto;
+    /* <-- THÊM VÀO */
+
     flex-direction: column;
     padding: 6px 0;
     min-width: 160px;
@@ -19,9 +38,13 @@
     z-index: 20;
 }
 
-/* Hover -> hiện */
+/* Hover -> hiện - Đã SỬA ĐỔI */
 .nav-dropdown:hover .dropdown-menu {
-    display: flex;
+    /* 2. Thay 'display: flex' bằng những thuộc tính này */
+    opacity: 1;
+    visibility: visible;
+    transform: translateY(0);
+    /* Trở về vị trí 0 */
 }
 
 /* item inside */
@@ -36,4 +59,9 @@
 .dropdown-item:hover {
     background: #f2f2f2;
     color: #0d6efd;
+}
+
+.nav-dropdown>.nav-link {
+    display: inline-block;
+    padding: 8px 12px;
 }

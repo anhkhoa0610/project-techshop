@@ -48,7 +48,7 @@
                 <a href="#" class="nav-link">Laptop</a>
                 <a href="#" class="nav-link">Phụ kiện</a>
                 <div class="nav-dropdown">
-                    <a href="#" class="nav-link">Nhà phân phối ▾</a>
+                    <a href="#" class="nav-link">Nhà phân phối</a>
                     <div class="dropdown-menu" id="supplierMenu">
 
                     </div>

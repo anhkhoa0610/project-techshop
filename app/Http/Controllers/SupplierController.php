@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Supplier;
 use App\Http\Requests\SupplierRequest;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Pagination\LengthAwarePaginator;
 
 class SupplierController extends Controller
@@ -97,61 +98,143 @@ class SupplierController extends Controller
     }
 
     /**
-     * Lấy dữ liệu của một nhà cung cấp qua API.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\JsonResponse
+     * Lấy thông tin cơ bản của Supplier (dùng cho tất cả các API)
      */
-    public function showApi($id)
+    private function getSupplierData($supplier, $totalProducts)
+    {
+        return [
+            'id' => $supplier->supplier_id,
+            'name' => $supplier->name,
+            'email' => $supplier->email,
+            'phone' => $supplier->phone,
+            'address' => $supplier->address,
+            'description' => $supplier->description,
+            'logo_url' => $supplier->logo ? asset('uploads/' . $supplier->logo) : asset('placeholder-logo.png'),
+            'product_count' => $totalProducts, // Truyền tổng số sản phẩm vào
+            'join_date' => $supplier->created_at->diffForHumans(['parts' => 1, 'short' => true]),
+            'total_products_sold' => $supplier->total_products_sold,
+        ];
+    }
+
+    /**
+     * Chuyển đổi (transform) 1 sản phẩm sang định dạng JSON
+     */
+    private function transformProduct($product)
+    {
+        $discount = $product->discounts->first(); // Eager-loaded
+        $originalPrice = (float) ($product->price ?? 0);
+        $salePrice = (float) ($discount ? ($discount->sale_price ?? $originalPrice) : $originalPrice);
+        $discountAmount = max(0, $originalPrice - $salePrice);
+
+        return [
+            'supplier_name' => $product->supplier->name,
+            'product_id' => $product->product_id,
+            'name' => $product->product_name,
+            'price' => $originalPrice,
+            'sale_price' => $salePrice,
+            'discount_amount' => $discountAmount,
+            'discount' => $discount ? [
+                'discount_percent' => $discount->discount_percent ?? 0,
+                'start_date' => $discount->start_date,
+                'end_date' => $discount->end_date,
+            ] : null,
+            'image' => $product->cover_image ? asset('uploads/' . $product->cover_image) : asset('placeholder.png'),
+            'sales_count' => (int) ($product->sales_count ?? 0), // Dùng cho sort 'bestseller'
+            // 'effective_price' => $salePrice, // Không cần gửi, chỉ dùng để sort
+        ];
+    }
+
+    /**
+     * HÀM XỬ LÝ API CHÍNH - (ĐÃ CẬP NHẬT LẦN CUỐI)
+     */
+    private function handleSupplierApi($id, $sortType = 'default')
     {
         try {
             $supplier = Supplier::findOrFail($id);
+            $perPage = 6;
 
-            // Lấy tất cả sản phẩm, eager-load discount (có hoặc không)
-            $products = $supplier->products()
+            // 1. Tạo Query cơ bản
+            $query = $supplier->products()
                 ->with([
-                    'discounts' => function ($query) {
-                        $query->active();
-                    }
-                ])
-                ->paginate(12);
+                    'discounts' => function ($q) {
+                        $q->active(); // Eager load vẫn hoạt động!
+                    },
+                    // Quan trọng: Tải luôn supplier, vì query gốc là từ $supplier->products()
+                    // Điều này đảm bảo $product->supplier->name luôn tồn tại
+                    'supplier'
+                ]);
 
-            // Xây dựng dữ liệu trả về
-            $supplierData = [
-                'id' => $supplier->supplier_id,
-                'name' => $supplier->name,
-                'email' => $supplier->email,
-                'phone' => $supplier->phone,
-                'address' => $supplier->address,
-                'description' => $supplier->description,
-                'logo_url' => $supplier->logo ? asset('uploads/' . $supplier->logo) : asset('placeholder-logo.png'),
-                'product_count' => $products->total(),
-                'join_date' => $supplier->created_at->diffForHumans(['parts' => 1, 'short' => true]),
-            ];
+            // 2. Áp dụng Sắp Xếp (Sort)
+            $now = now()->toDateTimeString(); // Chuyển sang string để dùng trong Raw Query
 
-            // Transform products để thêm thông tin discount
+            switch ($sortType) {
+
+                case 'newest':
+                    $query->orderBy('products.created_at', 'desc');
+                    break;
+
+                case 'price_asc':
+                case 'price_desc':
+                    $direction = ($sortType == 'price_asc') ? 'asc' : 'desc';
+
+                    // Sắp xếp bằng giá-sau-giảm (dùng subquery)
+                    $query->orderByRaw(
+                        "COALESCE(
+                            (SELECT sale_price FROM product_discounts 
+                             WHERE product_discounts.product_id = products.product_id 
+                             AND (product_discounts.start_date IS NULL OR product_discounts.start_date <= '$now')
+                             AND (product_discounts.end_date IS NULL OR product_discounts.end_date >= '$now')
+                             ORDER BY sale_price ASC 
+                             LIMIT 1), 
+                            products.price
+                        ) $direction"
+                    );
+                    break;
+
+                case 'best_seller':
+                    $query->withCount('orderDetails as sales_count')
+                        ->orderBy('sales_count', 'desc');
+                    break;
+
+                case 'best_discount':
+                    // Sắp xếp bằng % giảm giá (dùng subquery)
+                    $query->orderByRaw(
+                        "COALESCE(
+                            (SELECT discount_percent FROM product_discounts 
+                             WHERE product_discounts.product_id = products.product_id 
+                             AND (product_discounts.start_date IS NULL OR product_discounts.start_date <= '$now')
+                             AND (product_discounts.end_date IS NULL OR product_discounts.end_date >= '$now')
+                             ORDER BY discount_percent DESC
+                             LIMIT 1), 
+                            0
+                        ) DESC"
+                    );
+                    break;
+
+                case 'default':
+                default:
+                    $query->orderBy('products.created_at', 'desc');
+                    break;
+            }
+
+            // 3. Phân trang (Paginate)
+            // Không cần 'groupBy' nữa vì chúng ta không Join
+            $products = $query->paginate($perPage);
+
+            // 4. Transform collection
+            // Bỏ 'setRelation' vì Eager Loading đã hoạt động
             $productItems = $products->getCollection()->map(function ($product) {
-                $discount = $product->discounts->first(); // Lấy discount còn hiệu lực đầu tiên (nếu có)
-                $originalPrice = $product->price ?? 0;
-                $salePrice = $discount ? ($discount->sale_price ?? $originalPrice) : $originalPrice;
-                $discountAmount = $discount ? ($originalPrice - $salePrice) : 0;
+                // Giờ $product->discounts và $product->supplier đều có
+                return $this->transformProduct($product);
+            });
 
-                return [
-                    'supplier_name' => $product->supplier->name,
-                    'product_id' => $product->product_id,
-                    'name' => $product->product_name,
-                    'price' => $originalPrice,
-                    'sale_price' => $salePrice,
-                    'discount_amount' => $discountAmount, // Số tiền đã giảm
-                    'discount' => $discount ? [
-                        'discount_percent' => $discount->discount_percent ?? 0,
-                        'start_date' => $discount->start_date,
-                        'end_date' => $discount->end_date,
-                    ] : null,
-                    'image' => $product->cover_image ? asset('uploads/' . $product->cover_image) : asset('placeholder.png'),
-                ];
-            })->values()->all();
+            // 5. Chuẩn bị Supplier Data (chỉ cho trang 1)
+            $supplierData = null;
+            if ($products->currentPage() == 1) {
+                $supplierData = $this->getSupplierData($supplier, $products->total());
+            }
 
+            // 6. Trả về JSON
             return response()->json([
                 'success' => true,
                 'supplier' => $supplierData,
@@ -161,347 +244,59 @@ class SupplierController extends Controller
                     'last_page' => $products->lastPage(),
                     'per_page' => $products->perPage(),
                     'total' => $products->total(),
+                    'has_more_pages' => $products->hasMorePages(),
                 ],
             ]);
 
         } catch (\Exception $e) {
             return response()->json([
                 'success' => false,
-                'message' => 'Supplier not found.'
-            ], 404);
+                'message' => 'Lỗi: ' . $e->getMessage() . ' tại file ' . $e->getFile() . ' dòng ' . $e->getLine() // Lấy lỗi chi tiết
+            ], 500);
         }
+    }
+
+    // ----- CÁC HÀM PUBLIC API CỦA BẠN -----
+    // Giờ đây chúng chỉ cần gọi hàm 'handleSupplierApi'
+
+    public function showApi($id)
+    {
+        return $this->handleSupplierApi($id, 'default');
     }
 
     public function sortBestproductDiscount($id)
     {
-        try {
-            $supplier = Supplier::findOrFail($id);
-
-            // Lấy tất cả sản phẩm, eager-load discount còn hiệu lực
-            $products = $supplier->products()
-                ->with([
-                    'discounts' => function ($query) {
-                        $query->active();
-                    }
-                ])
-                ->paginate(12);
-
-            // Transform products và sắp xếp theo discount tốt nhất
-            $productItems = $products->getCollection()->map(function ($product) {
-                $discount = $product->discounts->first();
-                $originalPrice = $product->price ?? 0;
-                $salePrice = $discount ? ($discount->sale_price ?? $originalPrice) : $originalPrice;
-                $discountAmount = $discount ? ($originalPrice - $salePrice) : 0;
-                $discountPercent = $discount ? ($discount->discount_percent ?? 0) : 0;
-
-                return [
-                    'supplier_name' => $product->supplier->name,
-                    'product_id' => $product->product_id,
-                    'name' => $product->product_name,
-                    'price' => $originalPrice,
-                    'sale_price' => $salePrice,
-                    'discount_amount' => $discountAmount,
-                    'discount_percent' => $discountPercent,
-                    'discount' => $discount ? [
-                        'discount_percent' => $discountPercent,
-                        'start_date' => $discount->start_date,
-                        'end_date' => $discount->end_date,
-                    ] : null,
-                    'image' => $product->cover_image ? asset('uploads/' . $product->cover_image) : asset('placeholder.png'),
-                ];
-            })->sortByDesc(function ($item) {
-                return [$item['discount_percent'], $item['discount_amount']];
-            })->values()->all();
-
-            return response()->json([
-                'success' => true,
-                'products' => $productItems,
-                'pagination' => [
-                    'current_page' => $products->currentPage(),
-                    'last_page' => $products->lastPage(),
-                    'per_page' => $products->perPage(),
-                    'total' => $products->total(),
-                ],
-            ]);
-
-        } catch (\Exception $e) {
-            return response()->json([
-                'success' => false,
-                'message' => 'Supplier not found.'
-            ], 404);
-        }
+        return $this->handleSupplierApi($id, 'best_discount');
     }
+
     public function sortpriceascProduct($id)
     {
-        try {
-            $supplier = Supplier::findOrFail($id);
-            $perPage = 12;
-            $page = (int) request()->get('page', 1);
-
-            // Lấy tất cả sản phẩm và eager-load discount còn hiệu lực
-            $products = $supplier->products()
-                ->with([
-                    'discounts' => function ($query) {
-                        $query->active();
-                    }
-                ])->get();
-
-            // Transform products, tính effective_price = sale_price nếu có, ngược lại price
-            $productItems = $products->map(function ($product) {
-                $discount = $product->discounts->first(); // Lấy discount còn hiệu lực đầu tiên (nếu có)
-                $originalPrice = (float) ($product->price ?? 0);
-                $salePrice = (float) ($discount ? ($discount->sale_price ?? $originalPrice) : $originalPrice);
-                $discountAmount = max(0, $originalPrice - $salePrice);
-
-                return [
-                    'supplier_name' => $product->supplier->name,
-                    'product_id' => $product->product_id,
-                    'name' => $product->product_name,
-                    'price' => $originalPrice,
-                    'sale_price' => $salePrice,
-                    'effective_price' => $salePrice, // dùng để sắp xếp
-                    'discount_amount' => $discountAmount, // Số tiền đã giảm
-                    'discount' => $discount ? [
-                        'discount_percent' => $discount->discount_percent ?? 0,
-                        'start_date' => $discount->start_date,
-                        'end_date' => $discount->end_date,
-                    ] : null,
-                    'image' => $product->cover_image ? asset('uploads/' . $product->cover_image) : asset('placeholder.png'),
-                ];
-            });
-
-            // Sắp xếp theo effective_price tăng dần
-            $sorted = $productItems->sortBy('effective_price')->values();
-
-            // Phân trang thủ công (do đã lấy & sắp xếp toàn bộ)
-            $total = $sorted->count();
-            $lastPage = (int) ceil($total / $perPage);
-            $slice = $sorted->forPage($page, $perPage)->values()->all();
-
-            return response()->json([
-                'success' => true,
-                'products' => $slice,
-                'pagination' => [
-                    'current_page' => $page,
-                    'last_page' => $lastPage,
-                    'per_page' => $perPage,
-                    'total' => $total,
-                ],
-            ]);
-
-        } catch (\Exception $e) {
-            return response()->json([
-                'success' => false,
-                'message' => 'Supplier not found.'
-            ], 404);
-        }
+        return $this->handleSupplierApi($id, 'price_asc');
     }
+
     public function sortpricedescProduct($id)
     {
-        try {
-            $supplier = Supplier::findOrFail($id);
-            $perPage = 12;
-            $page = (int) request()->get('page', 1);
-
-            // Lấy tất cả sản phẩm và eager-load discount còn hiệu lực
-            $products = $supplier->products()
-                ->with([
-                    'discounts' => function ($query) {
-                        $query->active();
-                    }
-                ])->get();
-
-            // Transform products, tính effective_price = sale_price nếu có, ngược lại price
-            $productItems = $products->map(function ($product) {
-                $discount = $product->discounts->first(); // Lấy discount còn hiệu lực đầu tiên (nếu có)
-                $originalPrice = (float) ($product->price ?? 0);
-                $salePrice = (float) ($discount ? ($discount->sale_price ?? $originalPrice) : $originalPrice);
-                $discountAmount = max(0, $originalPrice - $salePrice);
-
-                return [
-                    'supplier_name' => $product->supplier->name,
-                    'product_id' => $product->product_id,
-                    'name' => $product->product_name,
-                    'price' => $originalPrice,
-                    'sale_price' => $salePrice,
-                    'effective_price' => $salePrice, // dùng để sắp xếp
-                    'discount_amount' => $discountAmount, // Số tiền đã giảm
-                    'discount' => $discount ? [
-                        'discount_percent' => $discount->discount_percent ?? 0,
-                        'start_date' => $discount->start_date,
-                        'end_date' => $discount->end_date,
-                    ] : null,
-                    'image' => $product->cover_image ? asset('uploads/' . $product->cover_image) : asset('placeholder.png'),
-                ];
-            });
-
-            // Sắp xếp theo effective_price giảm dần
-            $sorted = $productItems->sortByDesc('effective_price')->values();
-
-            // Phân trang thủ công (do đã lấy & sắp xếp toàn bộ)
-            $total = $sorted->count();
-            $lastPage = (int) ceil($total / $perPage);
-            $slice = $sorted->forPage($page, $perPage)->values()->all();
-
-            return response()->json([
-                'success' => true,
-                'products' => $slice,
-                'pagination' => [
-                    'current_page' => $page,
-                    'last_page' => $lastPage,
-                    'per_page' => $perPage,
-                    'total' => $total,
-                ],
-            ]);
-        } catch (\Exception $e) {
-            return response()->json([
-                'success' => false,
-                'message' => 'Supplier not found.'
-            ], 404);
-        }
+        return $this->handleSupplierApi($id, 'price_desc');
     }
+
     public function sortnewestProduct($id)
     {
-        try {
-            $perPage = 12;
-
-            $supplier = Supplier::findOrFail($id);
-
-            // Lấy sản phẩm, eager-load discount còn hiệu lực, sắp xếp theo mới nhất
-            $products = $supplier->products()
-                ->with([
-                    'discounts' => function ($query) {
-                        $query->active();
-                    }
-                ])
-                ->orderBy('created_at', 'desc')
-                ->paginate($perPage);
-
-            // Transform products để thêm thông tin discount và giá sau giảm
-            $productItems = $products->getCollection()->map(function ($product) {
-                $discount = $product->discounts->first();
-                $originalPrice = (float) ($product->price ?? 0);
-                $salePrice = (float) ($discount ? ($discount->sale_price ?? $originalPrice) : $originalPrice);
-                $discountAmount = max(0, $originalPrice - $salePrice);
-
-                return [
-                    'supplier_name' => $product->supplier->name,
-                    'product_id' => $product->product_id,
-                    'name' => $product->product_name,
-                    'price' => $originalPrice,
-                    'sale_price' => $salePrice,
-                    'discount_amount' => $discountAmount,
-                    'discount' => $discount ? [
-                        'discount_percent' => $discount->discount_percent ?? 0,
-                        'start_date' => $discount->start_date,
-                        'end_date' => $discount->end_date,
-                    ] : null,
-                    'image' => $product->cover_image ? asset('uploads/' . $product->cover_image) : asset('placeholder.png'),
-                    'created_at' => $product->created_at,
-                ];
-            })->values()->all();
-
-            return response()->json([
-                'success' => true,
-                'products' => $productItems,
-                'pagination' => [
-                    'current_page' => $products->currentPage(),
-                    'last_page' => $products->lastPage(),
-                    'per_page' => $products->perPage(),
-                    'total' => $products->total(),
-                ],
-            ]);
-        } catch (\Exception $e) {
-            return response()->json([
-                'success' => false,
-                'message' => 'Supplier not found.',
-            ], 404);
-        }
+        return $this->handleSupplierApi($id, 'newest');
     }
+
     public function sortbestsellerProduct($id)
     {
-        try {
-            $perPage = 12;
-            $page = (int) request()->get('page', 1);
+        return $this->handleSupplierApi($id, 'best_seller');
+    }
 
-            $supplier = Supplier::findOrFail($id);
+    public function getSupplierDetails($id)
+    {
+        $supplier = Supplier::findOrFail($id);
 
-            // Thử lấy count đơn hàng (orderItems) nếu relation tồn tại, nếu không fallback dùng sold_count hoặc 0
-            try {
-                $products = $supplier->products()
-                    ->with([
-                        'discounts' => function ($q) {
-                            $q->active();
-                        }
-                    ])
-                    ->withCount('orderItems as sales_count')
-                    ->get();
-            } catch (\Throwable $e) {
-                $products = $supplier->products()
-                    ->with([
-                        'discounts' => function ($q) {
-                            $q->active();
-                        }
-                    ])
-                    ->get()
-                    ->map(function ($p) {
-                        $p->sales_count = (int) ($p->sold_count ?? 0);
-                        return $p;
-                    });
-            }
+        // $supplier bây giờ sẽ có cả 'completed_orders' (giả sử có sẵn) 
+        // và 'total_products_sold'
 
-            // Transform products để chuẩn hoá dữ liệu và tính giá sau giảm
-            $productItems = $products->map(function ($product) {
-                $discount = $product->discounts->first();
-                $originalPrice = (float) ($product->price ?? 0);
-                $salePrice = (float) ($discount ? ($discount->sale_price ?? $originalPrice) : $originalPrice);
-                $discountAmount = max(0, $originalPrice - $salePrice);
-                $salesCount = (int) ($product->sales_count ?? 0);
-
-                return [
-                    'supplier_name' => $product->supplier->name,
-                    'product_id' => $product->product_id,
-                    'name' => $product->product_name,
-                    'price' => $originalPrice,
-                    'sale_price' => $salePrice,
-                    'discount_amount' => $discountAmount,
-                    'discount' => $discount ? [
-                        'discount_percent' => $discount->discount_percent ?? 0,
-                        'start_date' => $discount->start_date,
-                        'end_date' => $discount->end_date,
-                    ] : null,
-                    'image' => $product->cover_image ? asset('uploads/' . $product->cover_image) : asset('placeholder.png'),
-                    'sales_count' => $salesCount,
-                ];
-            });
-
-            // Sắp xếp theo sales_count giảm dần, nếu bằng thì ưu tiên discount_amount giảm dần
-            $sorted = $productItems
-                ->sortByDesc('discount_amount')   // thứ yếu (để cùng sales_count, ưu tiên sản phẩm có giảm nhiều hơn)
-                ->sortByDesc('sales_count')       // chính: bán nhiều trước
-                ->values();
-
-            // Phân trang thủ công
-            $total = $sorted->count();
-            $lastPage = (int) ceil($total / $perPage);
-            $slice = $sorted->forPage($page, $perPage)->values()->all();
-
-            return response()->json([
-                'success' => true,
-                'products' => $slice,
-                'pagination' => [
-                    'current_page' => $page,
-                    'last_page' => $lastPage,
-                    'per_page' => $perPage,
-                    'total' => $total,
-                ],
-            ]);
-        } catch (\Exception $e) {
-            return response()->json([
-                'success' => false,
-                'message' => 'Supplier not found.'
-            ], 404);
-        }
+        return response()->json($supplier);
     }
 }
 
