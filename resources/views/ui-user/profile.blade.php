@@ -10,32 +10,40 @@
         <div class="sidebar mt-3">
             <div class="text-center mb-4">
                 <div class="avatar-container position-relative d-inline-block">
-                    @if(isset(auth()->user()->profile->avatar))
-                        <img src="{{ asset('storage/' . auth()->user()->profile->avatar) }}" 
-                             alt="Avatar" 
-                             class="rounded-circle"
-                             style="width: 150px; height: 150px; object-fit: cover; border: 3px solid #f0f0f0;">
+                    @php
+                        $user = auth()->user();
+
+                        $avatarUrl = $user->profile ? $user->profile->avatar : '';
+                    @endphp
+                    @if($avatarUrl)
+                        <img src="{{ asset('storage/' . $avatarUrl) }}" alt="{{ $user->full_name }}"
+                            class="rounded-circle user-avatar"
+                            style="width: 150px; height: 150px; object-fit: cover; border: 3px solid #f0f0f0;">
                     @else
-                        <a class="avatar-placeholder rounded-circle d-flex align-items-center justify-content-center bg-secondary text-white" 
-                             style="width: 150px; height: 150px; font-size: 60px; border: 3px solid #f0f0f0;">
+                        <div class="avatar-placeholder rounded-circle d-flex align-items-center justify-content-center bg-secondary text-white"
+                            style="width: 150px; height: 150px; font-size: 60px; border: 3px solid #f0f0f0;">
                             {{ strtoupper(substr(auth()->user()->full_name, 0, 1)) }}
-</a>
+                        </div>
                     @endif
-                    
-                    <form action="{{ route('profile.avatar.update') }}" method="POST" enctype="multipart/form-data" class="avatar-upload-form">
+
+                    <form action="{{ route('profile.avatar.update') }}" method="POST" enctype="multipart/form-data"
+                        class="avatar-upload-form">
                         @csrf
-                        <label for="avatar-upload" class="btn btn-sm btn-primary position-absolute" style="bottom: 10px; right: 10px;">
+                        <label for="avatar-upload" class="btn btn-sm btn-primary position-absolute"
+                            style="bottom: 10px; right: 10px;">
                             <i class="bi bi-camera"></i>
-                            <input type="file" id="avatar-upload" name="avatar" class="d-none" onchange="this.form.submit()">
+                            <input type="file" id="avatar-upload" name="avatar" class="d-none" accept="image/*"
+                                onchange="this.form.submit()">
                         </label>
                     </form>
-                    
-                    @if(isset(auth()->user()->profile->avatar))
+
+                    @if($user->profile && $user->profile->avatar)
                         <form action="{{ route('profile.avatar.remove') }}" method="POST" class="d-inline">
                             @csrf
                             @method('DELETE')
-                            <button type="submit" class="btn btn-sm btn-danger position-absolute" style="bottom: 10px; left: 10px;" 
-                                    onclick="return confirm('Bạn có chắc chắn muốn xóa ảnh đại diện?')">
+                            <button type="submit" class="btn btn-sm btn-danger position-absolute"
+                                style="bottom: 10px; left: 10px;"
+                                onclick="return confirm('Bạn có chắc chắn muốn xóa ảnh đại diện?')">
                                 <i class="bi bi-trash"></i>
                             </button>
                         </form>
@@ -247,24 +255,116 @@
         /* Responsive */
 
         /* @media (max-width: 768px) {
-                                                                                    .profile-container {
-                                                                                        flex-direction: column;
-                                                                                    }
-                                                                                    .sidebar {
-                                                                                        width: 100%;
-                                                                                    }
-                                                                                    .profile-info {
-                                                                                        flex-direction: column;
-                                                                                    }
-                                                                                    .info-left, .info-right {
-                                                                                        width: 100%;
-                                                                                    }
-                                                                                } */
+                                                                                                    .profile-container {
+                                                                                                        flex-direction: column;
+                                                                                                    }
+                                                                                                    .sidebar {
+                                                                                                        width: 100%;
+                                                                                                    }
+                                                                                                    .profile-info {
+                                                                                                        flex-direction: column;
+                                                                                                    }
+                                                                                                    .info-left, .info-right {
+                                                                                                        width: 100%;
+                                                                                                    }
+                                                                                                } */
     </style>
 @endsection
 
 @section('scripts')
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script>
+        // Add this script to handle avatar updates without page reload
+        document.addEventListener('DOMContentLoaded', function () {
+            const avatarForm = document.querySelector('.avatar-upload-form');
+            if (avatarForm) {
+                avatarForm.addEventListener('submit', function (e) {
+                    e.preventDefault();
+
+                    const formData = new FormData(this);
+
+                    fetch(this.action, {
+                        method: 'POST',
+                        body: formData,
+                        headers: {
+                            'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content,
+                            'X-Requested-With': 'XMLHttpRequest'
+                        }
+                    })
+                        .then(response => response.json())
+                        .then(data => {
+                            if (data.success) {
+                                const avatarImg = document.querySelector('.user-avatar');
+
+                                if (avatarImg) {
+                                    avatarImg.src = data.avatar_url + '?v=' + new Date().getTime();
+                                } else {
+                                    // Nếu chưa có avatar ảnh thì reload trang
+                                    window.location.reload();
+                                }
+
+                                Swal.fire({
+                                    icon: 'success',
+                                    title: 'Thành công!',
+                                    text: 'Cập nhật ảnh đại diện thành công!',
+                                    timer: 2000,
+                                    showConfirmButton: false
+                                });
+                            } else {
+                                Swal.fire({
+                                    icon: 'error',
+                                    title: 'Lỗi!',
+                                    text: data.message || 'Không thể cập nhật ảnh!'
+                                });
+                            }
+                        })
+                        .catch(error => {
+                            console.error('Error:', error);
+                            Swal.fire({
+                                icon: 'error',
+                                title: 'Lỗi!',
+                                text: 'Có lỗi xảy ra khi cập nhật ảnh đại diện!',
+                                timer: 2000,
+                                showConfirmButton: false
+                            });
+                        });
+                    // .then(response => response.json())
+                    // .then(data => {
+                    //     if (data.success) {
+                    //         // Force reload the avatar image
+                    //         const avatarImg = document.querySelector('.user-avatar');
+                    //         if (avatarImg) {
+                    //             // Add timestamp to prevent caching
+                    //             avatarImg.src = data.avatar_url + '?v=' + new Date().getTime();
+                    //         } else {
+                    //             // If no avatar was present before, reload the page
+                    //             window.location.reload();
+                    //         }
+
+                    //         // Show success message
+                    //         Swal.fire({
+                    //             icon: 'success',
+                    //             title: 'Thành công!',
+                    //             text: 'Cập nhật ảnh đại diện thành công!',
+                    //             timer: 2000,
+                    //             showConfirmButton: false
+                    //         });
+                    //     }
+                    // })
+                    // .catch(error => {
+                    //     console.error('Error:', error);
+                    //     Swal.fire({
+                    //         icon: 'error',
+                    //         title: 'Lỗi!',
+                    //         text: 'Có lỗi xảy ra khi cập nhật ảnh đại diện!',
+                    //         timer: 2000,
+                    //         showConfirmButton: false
+                    //     });
+                    // });
+                });
+            }
+        });
+    </script>
     <script>
         $('#deleteUserModal').on('click', '.btn-secondary', function () {
             $('#deleteUserModal').modal('hide');

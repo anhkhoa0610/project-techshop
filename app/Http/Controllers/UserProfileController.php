@@ -10,29 +10,35 @@ use Illuminate\Support\Facades\Auth;
 
 class UserProfileController extends Controller
 {
-    public function updateAvatar(Request $request)
-    {
-        $request->validate([
-            'avatar' => 'required|image|mimes:jpeg,png,jpg,gif|max:2048',
-        ]);
+   public function updateAvatar(Request $request)
+{
+    $request->validate([
+        'avatar' => 'required|image|mimes:jpeg,png,jpg,gif|max:2048',
+    ]);
 
-        $user = Auth::user();
-        
-        // Xóa ảnh cũ nếu có
-        if ($user->profile && $user->profile->avatar) {
-            Storage::delete('public/' . $user->profile->avatar);
-        }
+    $user = Auth::user();
 
-        // Lưu ảnh mới
-        $path = $request->file('avatar')->store('avatars', 'public');
-        
-        // Cập nhật hoặc tạo mới profile
-        $user->profile()->updateOrCreate(
-            ['user_id' => $user->id],
-            ['avatar' => $path]
-        );
+    // Xóa avatar cũ nếu có
+    if ($user->profile && $user->profile->avatar) {
+        Storage::disk('public')->delete($user->profile->avatar);
+    }
 
-        return back()->with('success', 'Cập nhật ảnh đại diện thành công!');
+    // Lưu file mới vào thư mục "avatars"
+    $path = $request->file('avatar')->store('avatars', 'public');
+
+    // Cập nhật hoặc tạo mới profile
+    $user->profile()->updateOrCreate(
+        ['user_id' => $user->user_id], // lưu ý dùng user_id
+        ['avatar' => $path]
+    );
+
+    // Trả về JSON để JS cập nhật ảnh mà không reload
+    return response()->json([
+        'success' => true,
+        'avatar_url' => asset('storage/' . $path),
+    ]);
+
+        // return back()->with('success', 'Cập nhật ảnh đại diện thành công!');
     }
 
     public function removeAvatar()
