@@ -8,7 +8,7 @@ use App\Models\Product;
 use App\Models\Review;
 use App\Models\CartItem;
 use App\Http\Requests\CartRequest;
-
+use Auth;
 
 class UIProductDetailsController extends Controller
 {
@@ -20,7 +20,10 @@ class UIProductDetailsController extends Controller
         $reviews_count = $product->reviews()->count();
         $reviewSummary = $product->getReviewSummary();
         $reviews = $product->getReviews();
-        $cartItems_count = auth()->check() ? auth()->user()->cartItemsCount() : 0;
+        $cartItems_count =  0;
+        if(Auth::check()){
+            $cartItems_count = CartItem::where('user_id',Auth::id())->count('quantity');
+        }
         $hasReviewed = auth()->check()
             ? $product->reviews()->where('user_id', auth()->id())->exists()
             : false;
