@@ -1,26 +1,31 @@
 @include('components.login-modal')
 <header class="header">
     {{-- Toast thông báo --}}
+    <link rel="stylesheet" href="{{ asset('css/header.css') }}">
     @if(session('success') || session('error'))
         <div class="toast-container position-fixed end-0 p-3" style="z-index: 2000; top:50px;">
             @if(session('success'))
-                <div class="toast align-items-center text-bg-success border-0 show" role="alert" aria-live="assertive" aria-atomic="true">
+                <div class="toast align-items-center text-bg-success border-0 show" role="alert" aria-live="assertive"
+                    aria-atomic="true">
                     <div class="d-flex">
                         <div class="toast-body">
                             {{ session('success') }}
                         </div>
-                        <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast" aria-label="Close"></button>
+                        <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast"
+                            aria-label="Close"></button>
                     </div>
                 </div>
             @endif
 
             @if(session('error'))
-                <div class="toast align-items-center text-bg-danger border-0 show" role="alert" aria-live="assertive" aria-atomic="true">
+                <div class="toast align-items-center text-bg-danger border-0 show" role="alert" aria-live="assertive"
+                    aria-atomic="true">
                     <div class="d-flex">
                         <div class="toast-body">
                             {{ session('error') }}
                         </div>
-                        <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast" aria-label="Close"></button>
+                        <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast"
+                            aria-label="Close"></button>
                     </div>
                 </div>
             @endif
@@ -42,12 +47,19 @@
                 <a href="#" class="nav-link">Điện thoại</a>
                 <a href="#" class="nav-link">Laptop</a>
                 <a href="#" class="nav-link">Phụ kiện</a>
+                <div class="nav-dropdown">
+                    <a href="#" class="nav-link">Nhà phân phối</a>
+                    <div class="dropdown-menu" id="supplierMenu">
+
+                    </div>
+                </div>
                 <a href="{{ route('promotion.index') }}" class="nav-link">Khuyến mãi</a>
             </nav>
 
             <div class="header-actions">
                 <div class="search-box desktop-only">
-                    <input type="search" id="header-search-input" placeholder="Tìm kiếm sản phẩm..." class="search-input">
+                    <input type="search" id="header-search-input" placeholder="Tìm kiếm sản phẩm..."
+                        class="search-input">
                     <button class="search-btn" id="header-search-btn">🔍</button>
                     <div id="search-results" class="search-results glass3d"></div>
 
@@ -96,25 +108,5 @@
     </div>
 
 </header>
-
-<script>
-
-    document.addEventListener("DOMContentLoaded", () => {
-        // Khởi tạo tất cả toast có trên trang
-        const toastElList = [].slice.call(document.querySelectorAll('.toast'))
-        toastElList.map(function (toastEl) {
-            const toast = new bootstrap.Toast(toastEl, { delay: 2500 }) // tự ẩn sau 2 giây
-            toast.show()
-        })
-
-        // Dropdown hover (giữ nguyên như trước)
-        const dropdown = document.querySelector('.user-dropdown');
-        if (dropdown) {
-            dropdown.addEventListener('mouseenter', () => dropdown.classList.add('open'));
-            dropdown.addEventListener('mouseleave', () => dropdown.classList.remove('open'));
-        }
-    });
-
-</script>
+<script src="{{ asset('js/header.js') }}"></script>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
-

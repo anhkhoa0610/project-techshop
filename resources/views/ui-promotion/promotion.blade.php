@@ -91,7 +91,7 @@
             </div>
         </div>
         <a id="backToTopBtn" title="Quay lên đầu trang">
-            &#8593; 
+            <i class="fa fa-arrow-up"></i> 
         </a>
     <script src="{{ asset('js/promotion.js') }}"></script>
 @endsection
