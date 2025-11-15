@@ -37,7 +37,7 @@ document.getElementById('editOrderForm').addEventListener('submit', async functi
         method: 'POST',
         headers: {
             'Accept': 'application/json',
-            'X-CSRF-TOKEN': window.csrfToken
+            'X-CSRF-TOKEN':document.querySelector('meta[name="csrf-token"]').content
         },
         body: formData
     });
@@ -96,7 +96,7 @@ document.getElementById('addOrderForm').addEventListener('submit', async functio
         method: 'POST',
         headers: {
             'Accept': 'application/json',
-            'X-CSRF-TOKEN': window.csrfToken
+            'X-CSRF-TOKEN':document.querySelector('meta[name="csrf-token"]').content
         },
         body: formData
     });
@@ -148,7 +148,7 @@ function confirmDelete(id) {
                 method: 'DELETE',
                 headers: {
                     'Accept': 'application/json',
-                    'X-CSRF-TOKEN': window.csrfToken
+                    'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content
                 }
             })
                 .then(res => res.json())

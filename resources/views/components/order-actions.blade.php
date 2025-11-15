@@ -11,7 +11,7 @@
     </button>
 
     <button class="delete-btn p-2 rounded text-red-600"
-        onclick="" title="Delete"  >
+        onclick="confirmDelete({{ $order->order_id }})" title="Delete"  >
         <!-- svg delete -->
         <i class="fa-solid fa-trash"></i>
     </button>
