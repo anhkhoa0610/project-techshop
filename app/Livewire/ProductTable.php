@@ -136,6 +136,9 @@ final class ProductTable extends PowerGridComponent
     public function filters(): array
     {
         return [
+            Filter::inputText('product_id')
+                ->operators(['contains']),
+
             Filter::inputText('product_name')
                 ->operators(['contains']),
 
@@ -165,6 +168,6 @@ final class ProductTable extends PowerGridComponent
 
     public function noDataLabel(): string|View
     {
-        return view('components.product_no_data');
+        return view('components.product_nodata');
     }
 }
