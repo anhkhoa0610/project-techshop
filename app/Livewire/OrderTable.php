@@ -34,8 +34,7 @@ final class OrderTable extends PowerGridComponent
         return [
             PowerGrid::header()
                 ->showToggleColumns()
-                ->includeViewOnTop('components.add-order-button')
-                ->showSearchInput(),
+                ->includeViewOnTop('components.add-order-button'),
             PowerGrid::exportable(fileName: 'order-export')
                 ->type(Exportable::TYPE_XLS, Exportable::TYPE_CSV),
             PowerGrid::footer()
@@ -80,7 +79,7 @@ final class OrderTable extends PowerGridComponent
                 return '<span class="px-2 py-1 rounded text-black" style="background-color: ' . $color . '; width: 95px; display: inline-block; text-align: center;">'
                     . ucfirst($order->status) . '</span>';
             })
-            ->add('payment_element', function ($order) {
+            ->add('payment_method', function ($order) {
                 $color = match ($order->payment_method) {
                     'cash' => 'yellow',
                     'card' => 'olive',
@@ -94,10 +93,9 @@ final class OrderTable extends PowerGridComponent
                     . ucfirst($order->payment_method) . '</span>';
             })
             ->add('status_value', fn($order) => $order->status)
-            ->add('total_price')
             ->add('created_at')
             ->add(
-                'formatted_price',
+                'total_price',
                 fn($order) =>
                 number_format($order->total_price, 0, ',', '.') . ' đ'
             );
@@ -107,16 +105,13 @@ final class OrderTable extends PowerGridComponent
     {
         return [
             Column::make('Order ID', 'order_id')
-                ->searchable()
                 ->sortable(),
 
             Column::make('Customer', 'full_name'),
 
-            Column::make('Voucher code', 'voucher_code')
-                ->sortable(),
+            Column::make('Voucher code', 'voucher_code'),
 
             Column::make('Status', 'status')
-                ->searchable()
                 ->sortable()->visibleInExport(false),
 
             Column::make('Status', 'status_value')
@@ -126,10 +121,10 @@ final class OrderTable extends PowerGridComponent
                 ->searchable()
                 ->sortable(),
 
-            Column::make('Payment method', 'payment_element')
+            Column::make('Payment method', 'payment_method')
                 ->sortable(),
 
-            Column::make('Total', 'formatted_price')
+            Column::make('Total price', 'total_price')
                 ->sortable(),
 
             Column::make('Created At', 'created_at')
@@ -156,12 +151,12 @@ final class OrderTable extends PowerGridComponent
                 ->optionLabel('status')
                 ->optionValue('status'),
 
-            Filter::select('payment_element', 'orders.payment_method')
+            Filter::select('payment_method', 'orders.payment_method')
                 ->dataSource(Order::select('payment_method')->distinct()->get())
                 ->optionLabel('payment_method')
                 ->optionValue('payment_method'),
 
-            Filter::number('formatted_price','orders.total_price'),
+            Filter::number('total_price','orders.total_price'),
 
             Filter::inputText('created_at', 'orders.created_at')
                 ->operators(['contains']),
