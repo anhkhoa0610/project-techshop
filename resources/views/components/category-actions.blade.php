@@ -2,6 +2,7 @@
     <button class="edit-btn p-2 rounded text-blue-600 edit"
         data-category-name = "{{ $category->category_name }}"
         data-category-id="{{ $category->category_id }}"
+        data-cover-image="{{$category->cover_image_filename}}"
         data-category-description="{{ $category->description }}"
         >
         <!-- svg edit -->

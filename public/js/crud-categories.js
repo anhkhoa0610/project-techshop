@@ -2,13 +2,38 @@
 //Mở modal Edit
 $(document).on('click', '.edit', function () {
     const row = this;
-    
+
     $('#category_name').val(row.getAttribute('data-category-name') || '');
     $('#description').val(row.getAttribute('data-category-description') || '');
+
+    const imageFile = row.getAttribute('data-cover-image');
+    const preview = document.getElementById('preview_image');
+
+    if (imageFile && imageFile.trim() !== '') {
+        preview.src = `/uploads/${imageFile}`;
+    } else {
+        preview.src = `/images/place-holder.jpg`;
+    }
+
+    document.getElementById('edit_cover_image').value = '';
 
     document.getElementById('editCategoryForm').dataset.id = row.getAttribute('data-category-id');
 
     $('#editCategoryModal').modal('show');
+});
+
+//Xem ảnh khi thêm trong edit
+document.getElementById('edit_cover_image').addEventListener('change', function (e) {
+    const file = e.target.files[0];
+    const preview = document.getElementById('preview_image');
+
+    if (file) {
+        const reader = new FileReader();
+        reader.onload = function (event) {
+            preview.src = event.target.result;
+        };
+        reader.readAsDataURL(file);
+    }
 });
 
 // Xử lý submit formn edit
@@ -23,6 +48,13 @@ document.getElementById('editCategoryForm').addEventListener('submit', async fun
     formData.append('_method', 'PUT');
     formData.append('category_name', document.getElementById('category_name').value);
     formData.append('description', document.getElementById('description').value);
+    const imageInput = document.getElementById('edit_cover_image');
+    
+    // 1. Kiểm tra xem người dùng có chọn file mới hay không
+    if (imageInput.files.length > 0) {
+        // 2. Nếu có, thêm file đó vào formData
+        formData.append('cover_image', imageInput.files[0]);
+    }
 
     const response = await fetch(url, {
         method: 'POST',
@@ -72,6 +104,18 @@ document.querySelector('.add-new').addEventListener('click', function () {
     $('#addCategoryModal').modal('show');
 });
 
+// Xem ảnh sau khi thêm
+document.getElementById('add_cover_image').addEventListener('change', function (e) {
+    const file = e.target.files[0];
+    const preview = document.getElementById('add_preview_image');
+    if (file) {
+        const reader = new FileReader();
+        reader.onload = function (event) {
+            preview.src = event.target.result;
+        };
+        reader.readAsDataURL(file);
+    }
+});
 
 // Xử lý submit form thêm mới danh mục
 document.getElementById('addCategoryForm').addEventListener('submit', async function (e) {
@@ -153,19 +197,7 @@ function confirmDelete(id) {
     });
 }
 
-// Hiển thị modal khi nhấn nút "Xem" chi tiết đơn hàng
-// document.querySelectorAll('.view').forEach(btn => {
-//     btn.addEventListener('click', e => {
-//         e.preventDefault();
 
-//         const row = btn.closest('tr');
-//         document.getElementById('view_category_id').textContent = row.getAttribute('data-category-id') || '';
-//         document.getElementById('view_category_name').textContent = row.getAttribute('data-category-name') || '';
-//         document.getElementById('view_description').textContent = row.getAttribute('data-category-description') || '';
-//         // Hiển thị modal
-//         $('#viewCategoryModal').modal('show');
-//     });
-// });
 function formatCurrency(value) {
     const number = parseFloat(value);
     if (isNaN(number)) return '0 ₫';

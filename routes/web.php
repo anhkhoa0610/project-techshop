@@ -21,6 +21,7 @@ use App\Http\Controllers\MomoController;
 use App\Http\Controllers\VnpayController;
 use App\Http\Controllers\PostController;
 use App\Http\Controllers\ChartController;
+use App\Http\Controllers\CancelController;
 
 
 //trang chủ của tui, đụng vào nhớ xin phép =))
@@ -82,22 +83,39 @@ Route::middleware(['checkrole:Admin'])->group(function () {
 
 
 
+// xóa đơn hàng
+Route::delete('/orders/{id}', [OrderController::class, 'deleteOrder'])->name('orders.delete');
+
 
 // Xem giỏ hàng
-Route::get('/cart', [CartController::class, 'index'])->name('cart.index');
 
+
+Route::middleware(['auth'])->group(function () {
+    // Trang Giỏ hàng
+    Route::get('/cart', [CartController::class, 'index'])->name('cart.index');
+    
+    // API: Xử lý AJAX Xóa sản phẩm
+    Route::delete('/cart/remove/{cartId}', [CartController::class, 'delete'])->name('cart.delete'); 
+    
+    // API: Xử lý AJAX Cập nhật số lượng
+    Route::post('/cart/update/{cartId}', [CartController::class, 'updateQuantity'])->name('cart.update_quantity');
+
+    // Xử lý Form Checkout - Route này nhận dữ liệu JSON từ form
+    Route::post('/pay', [CartController::class, 'handleCheckout'])->name('pay.checkout'); 
+   
+});
+Route::post('/checkout', [CheckoutController::class, 'handleCheckout'])->name('checkout'); 
+Route::get('/cancel', [OrderController::class, 'show'])->name('cancel');
+Route::get('/details/{id}', [OrderController::class, 'showOrderdetails'])->name('details.show');
 // thêm vào giỏ hàng
 Route::post('/cart/add', [CartController::class, 'addToCart'])->name('cart.add');
 
 // Thanh toán (gửi dữ liệu POST từ giỏ hàng)
-Route::post('/pay', [CheckoutController::class, 'handleCheckout'])->name('pay.checkout');
 
 // Trang hóa đơn
 Route::get('/hoadon', [HoaDonController::class, 'index'])->name('hoadon.index');
 
-// Xóa 1 hoặc nhiều sản phẩm trong giỏ
-Route::delete('/cart/{cart_id}', [CartController::class, 'destroy']);
-Route::delete('/cart-items', [CartController::class, 'destroyMany'])->name('cart.destroyMany');
+
 
 Route::get('/product-details/{id}', [UIProductDetailsController::class, 'show'])->name('product.details');
 // Redirect nếu không có id
@@ -121,6 +139,19 @@ Route::prefix('voucher')->group(function () {
 });
 
 // login routes //
+Route::get('/export/invoice/{orderId}/xlsx', [App\Http\Controllers\ExportController::class, 'exportInvoice'])->name('export.invoice.xlsx');
+
+Route::prefix('users')->group(function () {
+    Route::get('/', [UserController::class, 'index'])->name('users.index');
+    Route::get('/create', [UserController::class, 'create'])->name('users.create');
+    Route::post('/', [UserController::class, 'store'])->name('users.store');
+    Route::get('/{user}/edit', [UserController::class, 'edit'])->name('users.edit');
+Route::put('/{user}', [UserController::class, 'update'])->name('users.update');
+    Route::delete('/{user}', [UserController::class, 'destroy'])->name('users.destroy');
+    Route::get('/search/autocomplete', [UserController::class, 'search'])->name('users.search');
+});
+
+ // login routes //
 Route::get('login', [LoginController::class, 'showLoginForm'])->name('login');
 Route::post('login', [LoginController::class, 'login'])->name('user.authUser');
 

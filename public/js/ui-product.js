@@ -99,6 +99,7 @@ document.addEventListener('DOMContentLoaded', function () {
     const reviewContainer = document.querySelector('.comment-field');
     const paginationContainer = document.querySelector('.pagination');
     const apiBase = `/api/product/${productId}/reviews`;
+    updateCartCountDisplay(cartItems_count);
 
     let currentUrl = apiBase;
 
@@ -347,6 +348,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
                     if (data.success) {
                         Swal.fire({ icon: 'success', text: data.message, timer: 1500, showConfirmButton: false });
+                        updateCartCountDisplay(data.cartItems_count);
                     } else {
                         Swal.fire({ icon: 'warning', text: data.message || 'Không thể thêm vào giỏ hàng!' });
                     }
@@ -419,6 +421,7 @@ document.addEventListener('DOMContentLoaded', function () {
                     if (data.success) {
                         // Chuyển sang trang giỏ hàng khi thêm thành công
                         window.location.href = '/cart';
+                        updateCartCountDisplay(data.cartItems_count);
                     } else {
                         Swal.fire({ icon: 'warning', text: data.message || 'Không thể thêm vào giỏ hàng!' });
                     }
@@ -479,6 +482,7 @@ document.addEventListener('DOMContentLoaded', function () {
                         timer: 2000,
                         showConfirmButton: false
                     });
+                    updateCartCountDisplay(data.cartItems_count);
                 } else {
                     Swal.fire({
                         icon: 'error',
@@ -493,7 +497,7 @@ document.addEventListener('DOMContentLoaded', function () {
                 Swal.fire({
                     icon: 'error',
                     title: 'Lỗi',
-                    text: 'Đã xảy ra lỗi, vui lòng thử lại.',
+                    text: err.message,
                     timer: 2000,
                     showConfirmButton: false
                 });
@@ -663,9 +667,9 @@ document.addEventListener('DOMContentLoaded', function () {
                     icon: "success",
                     title: "Cập nhật thành công!",
                     showConfirmButton: false,
-                    timer: 1500 
+                    timer: 1500
                 }).then(() => {
-                    location.reload(); 
+                    location.reload();
                 });
             } else {
                 Swal.fire({

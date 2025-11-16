@@ -1,253 +1,317 @@
+/* -------------------------------------------------------------------- */
+/* Cải tiến: Sử dụng font-family Poppins cho toàn bộ thẻ body */
+/* -------------------------------------------------------------------- */
 @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap');
 
+body {
+    font-family: 'Poppins', sans-serif;
+}
 
+/* -------------------------------------------------------------------- */
+/* BACKGROUND STYLES (Không thay đổi) */
+/* -------------------------------------------------------------------- */
 .background-layout::before {
-  content: "" !important;
-  position: absolute !important;
-  inset: 0 !important;
-  /* top:0; right:0; bottom:0; left:0 */
-  background-image: url('/images/background.jpg') !important;
-  background-size: cover !important;
-  background-repeat: no-repeat !important;
-  background-position: center center !important;
-  z-index: -1 !important;
-  transform-origin: center center !important;
-  will-change: transform !important;
-  animation: kenburns 18s ease-in-out infinite alternate !important;
+    content: "" !important;
+    position: absolute !important;
+    inset: 0 !important;
+    background-image: url('/images/background.jpg') !important;
+    background-size: cover !important;
+    background-repeat: no-repeat !important;
+    background-position: center center !important;
+    z-index: -1 !important;
+    transform-origin: center center !important;
+    will-change: transform !important;
+    animation: kenburns 18s ease-in-out infinite alternate !important;
 }
 
 .background-layout>* {
-  position: relative !important;
-  z-index: 2 !important;
+    position: relative !important;
+    z-index: 2 !important;
+}
+
+.background-layout::after {
+    content: "" !important;
+    position: absolute !important;
+    inset: 0 !important;
+    background: rgba(0, 0, 0, 0.4) !important;
+    z-index: 1 !important;
 }
 
 @keyframes kenburns {
-  0% {
-    transform: scale(1) translate(0, 0);
-  }
-
-  50% {
-    transform: scale(1.12) translate(-2%, -2%);
-  }
-
-  100% {
-    transform: scale(1) translate(0, 0);
-  }
+    0% {
+        transform: scale(1) translate(0, 0);
+    }
+    50% {
+        transform: scale(1.12) translate(-2%, -2%);
+    }
+    100% {
+        transform: scale(1) translate(0, 0);
+    }
 }
 
+/* -------------------------------------------------------------------- */
+/* CONTAINER - Tối ưu hóa cho Responsive */
+/* -------------------------------------------------------------------- */
 .cartp-container {
-
-  background: transparent !important;
-  -webkit-backdrop-filter: blur(6px) saturate(120%) !important;
-  backdrop-filter: blur(6px) saturate(120%) !important;
-  color: white;
-  border: 1px solid rgb(21, 117, 155);
-  width: 100%;
-  max-width: 900px;
-  border-radius: 20px;
-  overflow: hidden;
-  margin: 80px auto;
- min-height: 50vh;
-  margin-top: 120px;
+    background: rgba(255, 255, 255, 0.1);
+    -webkit-backdrop-filter: blur(8px) saturate(120%);
+    backdrop-filter: blur(8px) saturate(120%);
+    color: white;
+    border: 1px solid rgb(21, 117, 155);
+    
+    width: 95%; /* Chiếm 95% chiều rộng màn hình */
+    max-width: 900px;
+    border-radius: 20px;
+    overflow: hidden;
+    /* Margin trên/dưới động */
+    margin: clamp(40px, 8vw, 120px) auto 40px; 
+    min-height: 50vh;
 }
-
-
 
 .cartp-header {
-   background: transparent !important;
-  -webkit-backdrop-filter: blur(6px) saturate(120%) !important;
-  backdrop-filter: blur(6px) saturate(120%) !important;
-  color: #fff;
-  padding: 20px;
-  font-size: 26px;
-  font-weight: 600;
-  text-align: center;
-  letter-spacing: 0.5px;
+    color: #fff;
+    padding: 20px;
+    font-size: clamp(20px, 3vw, 26px); /* Kích thước chữ động */
+    font-weight: 600;
+    text-align: center;
+    letter-spacing: 0.5px;
 }
 
 .cartp-items {
-  padding: 20px 30px;
-    max-height: 460px; /* vừa đủ cho ~5 sản phẩm (tùy chiều cao mỗi item) */
-  overflow-y: auto;
+    padding: clamp(15px, 3vw, 30px); /* Padding động */
+    max-height: 70vh; /* Sử dụng vh để co giãn chiều cao */
+    overflow-y: auto;
+    /* Tùy chỉnh scrollbar */
+    scrollbar-width: thin; 
+    scrollbar-color: #00b4d8 #102a4350;
+}
+.cartp-items::-webkit-scrollbar {
+    width: 8px;
+}
+.cartp-items::-webkit-scrollbar-thumb {
+    background: #00b4d8;
+    border-radius: 10px;
+}
+.cartp-items::-webkit-scrollbar-track {
+    background: #ffffff10;
 }
 
-/* ✅ Thêm checkbox cột đầu tiên */
+/* -------------------------------------------------------------------- */
+/* ITEM LAYOUT - Tối ưu hóa Grid cho Desktop */
+/* -------------------------------------------------------------------- */
 .cartp-item {
-  display: grid;
-  grid-template-columns: 40px 90px 1fr 120px 80px 50px;
-  align-items: center;
-  gap: 15px;
-  border-bottom: 1px solid #eee;
-  padding: 15px 0;
-  transition: 0.3s;
+    display: grid;
+    /* Checkbox (40) | Image (90) | Info (1fr) | Quantity (100) | Price (120) | Remove (50) */
+    grid-template-columns: 40px 90px 1fr 100px 120px 50px;
+    align-items: center;
+    gap: 15px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.2); /* Màu border sáng */
+    padding: 15px 0;
+    transition: 0.3s;
 }
 
 .cartp-item:hover {
-  background: #bdbdbd;
-  border-radius: 12px;
-  opacity: 1.2;
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 12px;
 }
 
 .cartp-select {
-  width: 18px;
-  height: 18px;
-  accent-color: #007bff;
-  cursor: pointer;
-  transform: scale(1.2);
+    width: 18px;
+    height: 18px;
+    accent-color: #00b4d8;
+    cursor: pointer;
+    transform: scale(1.2);
 }
 
 .cartp-item img {
-  width: 80px;
-  height: 80px;
-  border-radius: 14px;
-  object-fit: cover;
-  box-shadow: 0 3px 10px rgba(0, 0, 0, 0.1);
+    width: 80px;
+    height: 80px;
+    border-radius: 14px;
+    object-fit: cover;
+    box-shadow: 0 3px 10px rgba(0, 0, 0, 0.2);
 }
 
+/* Đảm bảo chữ dễ đọc trên nền tối */
 .cartp-info h3 {
-  font-size: 18px;
-  color: #333;
-  margin-bottom: 5px;
+    font-size: clamp(16px, 2vw, 18px);
+    color: #fff; /* Chỉnh màu chữ */
+    margin-bottom: 5px;
+    font-weight: 600;
 }
 
 .cartp-info p {
-  color: #777;
-  font-size: 14px;
+    color: #ccc; /* Chỉnh màu chữ phụ */
+    font-size: 14px;
 }
 
 .cartp-quantity input {
-  width: 55px;
-  padding: 6px;
-  text-align: center;
-  border: 1px solid #ccc;
-  border-radius: 8px;
-  font-size: 15px;
-  outline: none;
-  transition: 0.2s;
+    /* Đảm bảo input chiếm 90% cột 100px */
+    width: 90px; 
+    padding: 6px;
+    text-align: center;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    font-size: 15px;
+    outline: none;
+    transition: 0.2s;
+    color: #102a43; /* Đặt màu chữ input tối */
 }
 
 .cartp-quantity input:focus {
-  border-color: #007bff;
+    border-color: #007bff;
 }
 
 .cartp-price {
-  color: #007bff;
-  font-weight: 600;
-  font-size: 16px;
+    color: #00b4d8;
+    font-weight: 700;
+    font-size: clamp(16px, 2.5vw, 18px);
 }
 
 .cartp-remove {
-  background: none;
-  border: none;
-  color: #ff4b5c;
-  font-size: 22px;
-  cursor: pointer;
-  transition: 0.3s;
+    background: none;
+    border: none;
+    color: #ff4b5c;
+    font-size: 22px;
+    cursor: pointer;
+    transition: 0.3s;
 }
 
 .cartp-remove:hover {
-  transform: scale(1.3);
-  color: #ff1f3a;
+    transform: scale(1.3);
+    color: #ff1f3a;
 }
 
+/* -------------------------------------------------------------------- */
+/* FOOTER - Các nút chức năng */
+/* -------------------------------------------------------------------- */
 .cartp-footer {
-   background: transparent !important;
-  -webkit-backdrop-filter: blur(6px) saturate(120%) !important;
-  backdrop-filter: blur(6px) saturate(120%) !important;
-  padding: 60px 40px;
-  text-align: right;
-  border-top: 1px solid #eee;
-  
-  
+    padding: 20px clamp(20px, 5vw, 40px);
+    text-align: right;
+    border-top: 1px solid rgba(255, 255, 255, 0.2);
 }
 
 .cartp-total {
-  font-size: 20px;
-  font-weight: 600;
-  margin-bottom: 12px;
-  color: #ffffff;
-}
-
-.cartp-checkout {
-  background: linear-gradient(90deg, #007bff, #00b4d8);
-  color: white;
-  padding: 14px 28px;
-  border: none;
-  border-radius: 10px;
-  font-size: 16px;
-  font-weight: 500;
-  cursor: pointer;
-  box-shadow: 0 4px 12px rgba(0, 123, 255, 0.3);
-  transition: 0.3s;
-}
-
-.cartp-checkout:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 6px 18px rgba(0, 123, 255, 0.4);
-}
-
-@media (max-width: 768px) {
-  .cartp-item {
-    grid-template-columns: 25px 70px 1fr 60px;
-    grid-template-areas:
-      "checkbox img name remove"
-      "checkbox img quantity price";
-  }
-
-  .cartp-select {
-    grid-area: checkbox;
-  }
-
-  .cartp-item img {
-    grid-area: img;
-  }
-
-  .cartp-info {
-    grid-area: name;
-  }
-
-  .cartp-quantity {
-    grid-area: quantity;
-  }
-
-  .cartp-price {
-    grid-area: price;
-  }
-
-  .cartp-remove {
-    grid-area: remove;
-    text-align: right;
-  }
+    font-size: clamp(18px, 3vw, 22px);
+    font-weight: 600;
+    margin-bottom: 12px;
+    color: #ffffff;
 }
 
 .cartp-footer-buttons {
-  display: flex;
-  justify-content: flex-end;
-  gap: 10px;
+    display: flex;
+    justify-content: flex-end;
+    gap: 15px;
+    flex-wrap: wrap; /* Cho phép các nút xuống dòng */
+}
+
+.cartp-checkout, .cartp-delete-selected {
+    padding: 14px 28px;
+    border: none;
+    border-radius: 10px;
+    font-size: 16px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: 0.3s;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+}
+
+.cartp-checkout {
+    background: linear-gradient(90deg, #007bff, #00b4d8);
+    color: white;
 }
 
 .cartp-delete-selected {
-  background: #ff4b5c;
-  color: white;
-  padding: 14px 28px;
-  border: none;
-  border-radius: 10px;
-  font-size: 16px;
-  font-weight: 500;
-  cursor: pointer;
-  box-shadow: 0 4px 12px rgba(255, 75, 92, 0.3);
-  transition: 0.3s;
+    background: #ff4b5c;
+    color: white;
+}
+
+.cartp-checkout:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 18px rgba(0, 123, 255, 0.4);
 }
 
 .cartp-delete-selected:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 6px 18px rgba(255, 75, 92, 0.4);
+    transform: translateY(-2px);
+    box-shadow: 0 6px 18px rgba(255, 75, 92, 0.4);
 }
+
+/* -------------------------------------------------------------------- */
+/* MEDIA QUERIES cho thiết bị di động */
+/* -------------------------------------------------------------------- */
+@media (max-width: 768px) {
+    .cartp-container {
+        margin-top: 40px; /* Giảm margin trên cùng */
+        width: 100%;
+        border-radius: 0; /* Bo góc trên desktop, nhưng full width trên mobile */
+    }
+
+    .cartp-item {
+        /* Chuyển sang bố cục 2 dòng trên di động, dùng auto và 1fr */
+        grid-template-columns: auto 70px 1fr auto; 
+        grid-template-areas:
+          "checkbox img name remove"
+          "checkbox img quantity price";
+        gap: 8px; /* Giảm gap */
+        padding: 10px 0;
+    }
+
+    .cartp-select {
+        grid-area: checkbox;
+    }
+
+    .cartp-item img {
+        grid-area: img;
+        width: 60px;
+        height: 60px;
+    }
+
+    .cartp-info {
+        grid-area: name;
+    }
+    
+    .cartp-info h3 {
+        font-size: 15px; /* Giảm cỡ chữ tiêu đề */
+    }
+
+    .cartp-quantity {
+        grid-area: quantity;
+        justify-self: start; /* Căn trái trong vùng */
+    }
+    .cartp-quantity input {
+        width: 65px; /* Giảm chiều rộng input */
+    }
+
+    .cartp-price {
+        grid-area: price;
+        justify-self: end; /* Căn phải trong vùng */
+    }
+
+    .cartp-remove {
+        grid-area: remove;
+        text-align: right;
+        font-size: 20px;
+    }
+}
+
+/* Media Query cho màn hình rất nhỏ (Small Mobile) */
+@media (max-width: 500px) {
+    .cartp-footer-buttons {
+        flex-direction: column;
+        gap: 12px;
+    }
+
+    .cartp-checkout, .cartp-delete-selected {
+        width: 100%; /* Các nút chiếm hết chiều rộng */
+        text-align: center;
+    }
+}
+
+/* Animation cho Input Error */
 .input-error {
-  animation: flashRed 0.4s ease;
+    animation: flashRed 0.4s ease;
 }
 
 @keyframes flashRed {
-  0% { background-color: #ffdede; }
-  100% { background-color: white; }
+    0% { background-color: #ffdede; }
+    100% { background-color: white; }
 }
