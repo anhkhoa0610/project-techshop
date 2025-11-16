@@ -43,7 +43,7 @@ class SupplierController extends Controller
         return response()->json([
             'success' => true,
             'data' => $suppliers,
-            'message' => 'Suppliers retrieved successfully',
+            'message' => 'Lấy danh sách nhà cung cấp thành công.',
         ]);
     }
 
@@ -64,7 +64,7 @@ class SupplierController extends Controller
         return response()->json([
             'success' => true,
             'data' => $supplier,
-            'message' => 'Supplier created successfully',
+            'message' => 'Tạo nhà cung cấp mới thành công.',
         ]);
     }
 
@@ -76,7 +76,7 @@ class SupplierController extends Controller
         return response()->json([
             'success' => true,
             'data' => $supplier,
-            'message' => 'Supplier updated successfully',
+            'message' => 'Cập nhật nhà cung cấp thành công.',
         ]);
     }
 
@@ -86,13 +86,13 @@ class SupplierController extends Controller
             Supplier::deleteSupplier($id);
             return response()->json([
                 'success' => true,
-                'message' => 'Supplier deleted successfully',
+                'message' => 'Xóa nhà cung cấp thành công.',
             ]);
 
         } catch (\Exception $e) {
             return response()->json([
                 'success' => false,
-                'message' => 'Error deleting supplier: ' . $e->getMessage(),
+                'message' => 'Lỗi khi xóa nhà cung cấp: ' . $e->getMessage(),
             ], 500);
         }
     }

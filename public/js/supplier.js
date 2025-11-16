@@ -1,10 +1,28 @@
 document.addEventListener('DOMContentLoaded', function () {
+    $(document).on('click', '#edit-supplier-btn', function () {
+        const row = this;
+        const logoUrl = row.getAttribute('data-logo-url');
+        const placeholderUrl = row.getAttribute('data-placeholder-url');
+        $('#edit_name').val(row.getAttribute('data-name') || '');
+        $('#edit_description').val(row.getAttribute('data-description') || '');
+        $('#edit_email').val(row.getAttribute('data-email') || '');
+        $('#edit_phone').val(row.getAttribute('data-phone') || '');
+        $('#edit_address').val(row.getAttribute('data-address') || '');
+        $('#edit_logo').val('');
+        $('#edit_logo_preview').attr('src', logoUrl ? logoUrl : placeholderUrl);
+
+        document.getElementById('editSupplierForm').dataset.id = row.getAttribute('data-supplier-id');
+        console.log(logoUrl);
+
+        $('#editSupplierModal').modal('show');
+    });
 
     // ==================== Edit Supplier ====================
     const editForm = document.getElementById('editSupplierForm');
     const editLogo = document.getElementById('edit_logo');
 
     if (editForm) {
+
         // submit edit
         editForm.addEventListener('submit', async function (e) {
             e.preventDefault();
@@ -26,7 +44,7 @@ document.addEventListener('DOMContentLoaded', function () {
                     method: 'POST',
                     headers: {
                         'Accept': 'application/json',
-                        'X-CSRF-TOKEN': window.csrfToken || ''
+                        'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content
                     },
                     body: formData
                 });
@@ -69,6 +87,10 @@ document.addEventListener('DOMContentLoaded', function () {
         });
     }
 
+    document.querySelector('#btn-add-supplier').addEventListener('click', function () {
+        // Reset form
+        $('#addSupplierModal').modal('show');
+    });
     // ==================== Add Supplier ====================
     const addForm = document.getElementById('addSupplierForm');
     const addLogo = document.getElementById('add_logo');
@@ -91,7 +113,7 @@ document.addEventListener('DOMContentLoaded', function () {
                     method: 'POST',
                     headers: {
                         'Accept': 'application/json',
-                        'X-CSRF-TOKEN': window.csrfToken || ''
+                        'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content
                     },
                     body: formData
                 });
@@ -99,7 +121,7 @@ document.addEventListener('DOMContentLoaded', function () {
                 const data = await response.json();
 
                 if (response.ok && data.success) {
-                    Swal.fire('Thành công!', 'Thêm Nhà Phân Phối thành công.', 'success')
+                    Swal.fire('Thành công!', 'Thêm nhà cung cấp thành công.', 'success')
                         .then(() => location.reload());
                 } else if (data.errors) {
                     // Hiển thị lỗi chi tiết
@@ -162,28 +184,6 @@ document.addEventListener('DOMContentLoaded', function () {
         });
     });
 
-    // ==================== Edit button ====================
-    document.querySelectorAll('.edit').forEach(function (btn) {
-        btn.addEventListener('click', function (e) {
-            e.preventDefault();
-            const row = btn.closest('tr');
-            if (!row) return;
-
-            document.getElementById('edit_logo').value = '';
-            const logo = row.getAttribute('data-logo');
-            document.getElementById('edit_logo_preview').src = logo ? '/uploads/' + logo : '/uploads/place-holder.jpg';
-
-            document.getElementById('edit_name').value = row.getAttribute('data-name') || '';
-            document.getElementById('edit_email').value = row.getAttribute('data-email') || '';
-            document.getElementById('edit_phone').value = row.getAttribute('data-phone') || '';
-            document.getElementById('edit_address').value = row.getAttribute('data-address') || '';
-            document.getElementById('edit_description').value = row.getAttribute('data-description') || '';
-
-            editForm?.setAttribute('data-id', row.getAttribute('data-supplier-id'));
-            $('#editSupplierModal').modal('show');
-        });
-    });
-
     // ==================== Tooltip ====================
     const tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-toggle="tooltip"]'));
     tooltipTriggerList.map(el => new bootstrap.Tooltip(el));
@@ -204,7 +204,7 @@ function confirmDelete(id) {
                 method: 'DELETE',
                 headers: {
                     'Accept': 'application/json',
-                    'X-CSRF-TOKEN': window.csrfToken
+                    'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content
                 }
             })
                 .then(res => res.json())
