@@ -31,7 +31,7 @@
                                 <div class="row">
                                     <div>
                                         <div class="label">Người nhận</div>
-                                        <div><strong>{{ auth()->user()->name ?? 'Người dùng' }}</strong></div>
+                                        <div><strong>{{ auth()->user()->full_name ?? 'Người dùng' }}</strong></div>
                                         <div class="muted-small">{{ auth()->user()->phone ?? '—' }}</div>
                                         <div class="muted-small">{{ $order['shipping_address'] }}</div>
                                     </div>
@@ -134,8 +134,8 @@
                                 <div class="card">
                                     <div class="label">Bản đồ & trạng thái hiện tại</div>
                                     <?php
-                    $origin_address = "53 Đ. Võ Văn Ngân, Phường, Thủ Đức, Thành phố Hồ Chí Minh"; // Điểm A: Địa chỉ xuất phát
-                    $destination_address = $order['shipping_address']; // Điểm B: Địa chỉ đích
+                                        $origin_address = "53 Đ. Võ Văn Ngân, Phường, Thủ Đức, Thành phố Hồ Chí Minh"; // Điểm A: Địa chỉ xuất phát
+                                        $destination_address = $order['shipping_address']; // Điểm B: Địa chỉ đích
                                                                                                 ?>
                                     <div class="map glass-map">
                                         <iframe width="100%" height="100%" frameborder="0" style="border:0;border-radius:12px;"
@@ -161,10 +161,10 @@
                                     </div>
                                     <div>Dự kiến giao hàng</div>
                                     <?php
-                    $format = 'd/m/Y H:i';
-                    $deliveryDate = \Carbon\Carbon::createFromFormat($format, $order['created_at'])->addDays(5);
-                    $formattedDeliveryDate = $deliveryDate->format('d/m/Y');
-                    $dayOfWeek = $deliveryDate->locale('vi')->dayName;
+                                        $format = 'd/m/Y H:i';
+                                        $deliveryDate = \Carbon\Carbon::createFromFormat($format, $order['created_at'])->addDays(5);
+                                        $formattedDeliveryDate = $deliveryDate->format('d/m/Y');
+                                        $dayOfWeek = $deliveryDate->locale('vi')->dayName;
                                                                         ?>
                                     <div class="muted-small">
                                         {{ $dayOfWeek }}, {{ $formattedDeliveryDate }} • Trong Ngày

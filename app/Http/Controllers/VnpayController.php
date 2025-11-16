@@ -167,12 +167,12 @@ class VnpayController extends Controller
             $vnp_Url .= 'vnp_SecureHash=' . $vnpSecureHash;
         }
         $shippingAddress = $request->input('shipping_address');
-        $amount = $request->input('total', 5000);
+        $amount = $request->input('total', 0);
         $userId = auth()->id(); // hoặc Auth::id()
         $voucher = $request->input('voucher_id');
 
         //Save transaction to database
-        $order = Order::create([
+        Order::create([
             'user_id' => $userId,
             'order_date' => now(),
             'status' => 'pending',
@@ -208,9 +208,7 @@ class VnpayController extends Controller
                 ->first();
 
             if ($order) {
-                $order->update([
-                    'status' => 'processing',
-                ]);
+                
                 // Lấy giỏ hàng của user
 
                 $cartItems = CartItem::where('user_id', $userId)->get();
