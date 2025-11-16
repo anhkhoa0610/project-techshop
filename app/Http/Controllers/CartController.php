@@ -1,6 +1,7 @@
 <?php
 
 namespace App\Http\Controllers;
+
 use App\Models\CartItem;
 use App\Models\Product;
 use Illuminate\Http\Request;
@@ -8,65 +9,59 @@ use Illuminate\Support\Facades\Auth;
 
 class CartController extends Controller
 {
+    /**
+     * Hiển thị trang giỏ hàng.
+     */
     public function index()
     {
-        // Giả lập user_id = 1 tạm thời
+        // Đảm bảo chỉ người dùng đã đăng nhập mới xem được giỏ hàng
         if (!Auth::check()) {
             return redirect()->route('login');
-        } else {
-            $user_Id = auth()->id(); 
         }
 
-        $cartItems = CartItem::with('product')
-            ->where('user_id', $user_Id)
-            ->get();
+        // Lấy tất cả CartItem của người dùng hiện tại
+        // Giả sử Model CartItem có quan hệ 'product'
+        $cartItems = CartItem::where('user_id', Auth::id())->with('product')->get();
 
-        return view('ui-giohang.cart', [
-            'cartItems' => $cartItems
-        ]);
+        return view('ui-giohang.cart', compact('cartItems'));
     }
 
+    /**
+     * [POST] Xử lý dữ liệu giỏ hàng được gửi đến từ trang Giỏ hàng để chuyển sang thanh toán.
+     */
+    
 
-    public function destroy($cart_id)
+    /**
+     * [DELETE] Xóa một CartItem bằng AJAX.
+     */
+    public function delete(string $cartId)
     {
-        $cart = CartItem::findOrFail($cart_id);
-        $cart->delete();
-        return response()->json([
-            'success' => true,
-            'message' => 'Xóa danh mục thành công!'
-        ]);
+        $cartItem = CartItem::where('cart_id', $cartId)->where('user_id', Auth::id())->first();
+
+        if (!$cartItem) {
+            return response()->json(['message' => 'Mục giỏ hàng không tồn tại hoặc không thuộc về bạn.'], 404);
+        }
+
+        $cartItem->delete();
+        return response()->json(['message' => 'Đã xóa sản phẩm khỏi giỏ hàng.'], 200);
     }
 
-    // Thêm sản phẩm vào giỏ hàng
-    public function addToCart(Request $request)
+    /**
+     * [POST] Cập nhật số lượng CartItem bằng AJAX.
+     */
+    public function updateQuantity(Request $request, string $cartId)
     {
-        $user_id = Auth::id() ?? 1; // fallback nếu chưa đăng nhập
-        $product_id = $request->input('product_id');
-        $quantity = $request->input('quantity', 1);
+        $request->validate(['quantity' => 'required|integer|min:1']);
+        
+        $cartItem = CartItem::where('cart_id', $cartId)->where('user_id', Auth::id())->first();
 
-        // Kiểm tra sản phẩm đã có trong giỏ chưa
-        $cartItem = CartItem::where('user_id', $user_id)
-            ->where('product_id', $product_id)
-            ->first();
-
-        if ($cartItem) {
-            $cartItem->quantity += $quantity;
-            $cartItem->save();
-        } else {
-            CartItem::create([
-                'user_id' => $user_id,
-                'product_id' => $product_id,
-                'quantity' => $quantity,
-            ]);
+        if (!$cartItem) {
+            return response()->json(['message' => 'Mục giỏ hàng không tồn tại hoặc không thuộc về bạn.'], 404);
         }
 
-        if ($request->wantsJson()) {
-            return response()->json([
-                'success' => true,
-                'message' => 'Thêm vào giỏ hàng thành công!'
-            ]);
-        } else {
-            return redirect()->back()->with('success', 'Thêm vào giỏ hàng thành công!');
-        }
+        $cartItem->quantity = $request->input('quantity');
+        $cartItem->save();
+
+        return response()->json(['message' => 'Cập nhật số lượng thành công.'], 200);
     }
 }

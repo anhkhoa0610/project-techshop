@@ -144,9 +144,14 @@ class Order extends Model
         }
     }
     public function momo()
-{
-    return $this->hasOne(Momo::class, 'order_id', 'id');
-}
+    {
+        return $this->hasOne(Momo::class, 'order_id', 'id');
+    }
+    public function items()
+    {
+        // 🟢 THAY OrderItem::class bằng tên Model CHI TIẾT ĐƠN HÀNG của bạn (OrderDetail::class)
+        // 🟢 SỬ DỤNG 'order_id' làm Khóa Ngoại để khắc phục lỗi 'order_order_id'
 
-
+        return $this->hasMany(OrderDetail::class, 'order_id');
+    }
 }
