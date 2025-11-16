@@ -45,8 +45,6 @@ class VoucherRequest extends FormRequest
             'start_date' => [
                 'required',
                 'date',
-                // Ngày bắt đầu phải là hôm nay hoặc sau hôm nay
-                'after_or_equal:today',
                 // Ngày bắt đầu phải trước hoặc bằng ngày kết thúc
                 'before_or_equal:end_date',
             ],
@@ -81,12 +79,11 @@ class VoucherRequest extends FormRequest
             'discount_value.required' => 'Giá trị giảm giá không được để trống',
             'discount_value.numeric' => 'Lượng giảm giá phải là số',
             'discount_value.min' => 'Giá trị giảm giá phải lớn hơn 0',
-            'discount_value.max' => 'Giá trị % không được vượt quá 100', // <-- ĐÃ THÊM
+            'discount_value.max' => 'Giá trị % không được vượt quá 100',
 
             // start_date
             'start_date.required' => 'Ngày bắt đầu không được để trống',
             'start_date.before_or_equal' => 'Ngày áp dụng không lớn hơn ngày hết hạn',
-            'start_date.after_or_equal' => 'Ngày bắt đầu phải là hôm nay hoặc sau hôm nay', // <-- ĐÃ THÊM
 
             // end_date
             'end_date.required' => 'Ngày hết hạn không được để trống',
