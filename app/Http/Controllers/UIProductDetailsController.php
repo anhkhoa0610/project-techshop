@@ -148,11 +148,16 @@ class UIProductDetailsController extends Controller
         $quantity = $request->quantity;
 
         $cartItem = CartItem::addOrUpdate($userId, $productId, $quantity);
+        $cartItems_count =  0;
+        if(Auth::check()){
+            $cartItems_count = CartItem::where('user_id',Auth::id())->count('quantity');
+        }
 
         return response()->json([
             'success' => true,
             'message' => "Đã thêm ({$quantity}) sản phẩm vào giỏ hàng!",
             'item' => $cartItem,
+            'cartItems_count' =>$cartItems_count
         ]);
     }
 

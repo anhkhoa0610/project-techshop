@@ -45,7 +45,21 @@ class CategoryController extends Controller
     public function store(CategoryRequest $request)
     {
         $category = new Category();
-        $category->fill($request->all());
+        $data = $request->all();
+
+        if ($request->hasFile('cover_image')) {
+            $file = $request->file('cover_image');
+
+            $filename = $file->getClientOriginalName();
+
+            $file->move(public_path('uploads'), $filename);
+
+            if ($category->cover_image && file_exists(public_path('uploads/' . $category->cover_image))) {
+                unlink(public_path('uploads/' . $category->cover_image));
+            }
+            $data['cover_image'] = $filename;
+        }
+        $category->fill($data);
         $category->save();
         return response()->json([
             'success' => true,
@@ -95,7 +109,20 @@ class CategoryController extends Controller
                 'message' => 'Cập nhật danh mục thất bại',
             ]);
         }
-        $category->update($request->all());
+
+        $data = $request->all();
+
+        if ($request->hasFile('cover_image')) {
+            $file = $request->file('cover_image');
+
+            $filename = $file->getClientOriginalName();
+
+            $file->move(public_path('uploads'), $filename);
+
+            $data['cover_image'] = $filename;
+        }
+        
+        $category->update($data);
         return response()->json([
             'status' => true,
             'message' => 'Cập nhật danh mục thành công',
