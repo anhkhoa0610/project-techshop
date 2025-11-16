@@ -16,7 +16,7 @@ class UpdateOrderRequest extends FormRequest
         return [
             'status' => 'required|in:pending,processing,completed,cancelled',
             'shipping_address' => 'sometimes|string|max:255|min:10',
-            'payment_method' => 'sometimes|in:cash,card,transfer',
+            'payment_method' => 'sometimes|in:cash,card,transfer,momo,vnpay',
             'voucher_id' => 'nullable|integer|exists:vouchers,voucher_id',
         ];
     }
