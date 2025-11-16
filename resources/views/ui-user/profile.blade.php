@@ -30,24 +30,14 @@
                         class="avatar-upload-form">
                         @csrf
                         <label for="avatar-upload" class="btn btn-sm btn-primary position-absolute"
-                            style="bottom: 10px; right: 10px;">
+                            style="bottom: -85px; right: 55px; width: 25px; height: 25px; display: flex;">
                             <i class="bi bi-camera"></i>
                             <input type="file" id="avatar-upload" name="avatar" class="d-none" accept="image/*"
                                 onchange="this.form.submit()">
                         </label>
                     </form>
 
-                    @if($user->profile && $user->profile->avatar)
-                        <form action="{{ route('profile.avatar.remove') }}" method="POST" class="d-inline">
-                            @csrf
-                            @method('DELETE')
-                            <button type="submit" class="btn btn-sm btn-danger position-absolute"
-                                style="bottom: 10px; left: 10px;"
-                                onclick="return confirm('Bạn có chắc chắn muốn xóa ảnh đại diện?')">
-                                <i class="bi bi-trash"></i>
-                            </button>
-                        </form>
-                    @endif
+
                 </div>
                 <h4 class="mt-3">{{ auth()->user()->full_name }}</h4>
                 @if(auth()->user()->profile && auth()->user()->profile->bio)
@@ -55,11 +45,10 @@
                 @endif
             </div>
             <ul>
-                <li><a href="#">Điện thoại</a></li>
-                <li><a href="#">Laptop</a></li>
-                <li><a href="#">Phụ kiện</a></li>
-                <li><a href="#">Âm thanh</a></li>
-                <li><a href="#">Máy tính bảng</a></li>
+                <li><a href="{{ route('user.profile') }}">Tài Khoản</a></li>
+                <li><a href="#">Địa chỉ</a></li>
+                <li><a href="{{ route('promotion.index') }}">Khuyến mãi</a></li>
+                <li><a href="#">Đơn mua</a></li>
             </ul>
         </div>
 
@@ -255,19 +244,19 @@
         /* Responsive */
 
         /* @media (max-width: 768px) {
-                                                                                                    .profile-container {
-                                                                                                        flex-direction: column;
-                                                                                                    }
-                                                                                                    .sidebar {
-                                                                                                        width: 100%;
-                                                                                                    }
-                                                                                                    .profile-info {
-                                                                                                        flex-direction: column;
-                                                                                                    }
-                                                                                                    .info-left, .info-right {
-                                                                                                        width: 100%;
-                                                                                                    }
-                                                                                                } */
+                                                                                                        .profile-container {
+                                                                                                            flex-direction: column;
+                                                                                                        }
+                                                                                                        .sidebar {
+                                                                                                            width: 100%;
+                                                                                                        }
+                                                                                                        .profile-info {
+                                                                                                            flex-direction: column;
+                                                                                                        }
+                                                                                                        .info-left, .info-right {
+                                                                                                            width: 100%;
+                                                                                                        }
+                                                                                                    } */
     </style>
 @endsection
 
@@ -328,39 +317,7 @@
                                 showConfirmButton: false
                             });
                         });
-                    // .then(response => response.json())
-                    // .then(data => {
-                    //     if (data.success) {
-                    //         // Force reload the avatar image
-                    //         const avatarImg = document.querySelector('.user-avatar');
-                    //         if (avatarImg) {
-                    //             // Add timestamp to prevent caching
-                    //             avatarImg.src = data.avatar_url + '?v=' + new Date().getTime();
-                    //         } else {
-                    //             // If no avatar was present before, reload the page
-                    //             window.location.reload();
-                    //         }
 
-                    //         // Show success message
-                    //         Swal.fire({
-                    //             icon: 'success',
-                    //             title: 'Thành công!',
-                    //             text: 'Cập nhật ảnh đại diện thành công!',
-                    //             timer: 2000,
-                    //             showConfirmButton: false
-                    //         });
-                    //     }
-                    // })
-                    // .catch(error => {
-                    //     console.error('Error:', error);
-                    //     Swal.fire({
-                    //         icon: 'error',
-                    //         title: 'Lỗi!',
-                    //         text: 'Có lỗi xảy ra khi cập nhật ảnh đại diện!',
-                    //         timer: 2000,
-                    //         showConfirmButton: false
-                    //     });
-                    // });
                 });
             }
         });

@@ -163,10 +163,7 @@ class UserController extends Controller
             $user = User::findOrFail($user_id);
             $user->delete();
 
-            return response()->json([
-                'success' => true,
-                'message' => 'User đã được xóa thành công.'
-            ]);
+            return redirect()->back()->with('success', 'Xóa người dùng thành công!');
 
         } catch (\Exception $e) {
             return response()->json([
