@@ -1,33 +1,18 @@
-<!DOCTYPE html>
-<html lang="vi">
+@extends('layouts.layouts')
 
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>@yield('title', 'TechStore - Cửa hàng công nghệ hàng đầu Việt Nam')</title>
-    <meta name="description"
-        content="@yield('description', 'TechStore - Chuyên bán điện thoại, laptop, tai nghe chính hãng với giá tốt nhất. Bảo hành uy tín, giao hàng nhanh toàn quốc.')">
+@section('title', 'TechStore - Trang chủ')
 
-    <link rel="stylesheet" href="{{ asset('css/index-style.css') }}">
+@section('content')
+    <link rel="stylesheet" href="{{ asset('css/index.css') }}">
+    <link rel="stylesheet" href="{{ asset('css/index-filter.css') }}">
+    <link rel="stylesheet" href="{{ asset('css/index-chatbot.css') }}">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css" />
     <link rel="stylesheet" href="{{ asset('css/pay.css') }}">
-
-
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap"
-        rel="stylesheet">
-</head>
-
-<body>
-
-    {{-- Header --}}
-    @include('partials.header')
-
-    {{-- Nội dung từng trang --}}
-
-    <body>
-        <div class="container-center background-layout">
-            <div class="wrap">
-                <!-- LEFT -->
-                <section class="panel">
+    <div class="container-center background-layout ">
+        <div class="wrap ">
+            <!-- LEFT -->
+            <div class="glass3d " style="border-radius: 20px;">
+                <section class="panel ">
                     <h1>Thanh toán</h1>
                     <p class="lead">Điền thông tin giao hàng và chọn phương thức thanh toán</p>
                     <form id="checkoutForm">
@@ -47,17 +32,15 @@
 
                                 <div>
                                     <label for="phone">Số điện thoại</label>
-                                    <input id="phone" name="phone" type="tel"
-                                        value="{{ old('phone', $user->phone ?? '') }}" placeholder="09x xxx xxxx"
-                                        required>
+                                    <input id="phone" name="phone" type="tel" value="{{ old('phone', $user->phone ?? '') }}"
+                                        placeholder="09x xxx xxxx" required>
                                 </div>
                             </div>
 
                             <div style="margin-top:12px">
                                 <label for="email">Email</label>
-                                <input id="email" name="email" type="email"
-                                    value="{{ old('email', $user->email ?? '') }}" placeholder="you@example.com"
-                                    required>
+                                <input id="email" name="email" type="email" value="{{ old('email', $user->email ?? '') }}"
+                                    placeholder="you@example.com" required>
                             </div>
                         </div>
 
@@ -130,38 +113,11 @@
 
                     </form>
                 </section>
+            </div>
 
-                <!-- RIGHT -->
-                <!-- <aside class="summary">
-                    <h3>Đơn hàng của bạn</h3>
-                    <div class="item">
-                        <div class="thumb"><img src="https://i.imgur.com/tGbaZCY.jpg"></div>
-                        <div>
-                            <div class="title">Quần Jeans Xanh</div>
-                            <div class="meta">Size M • Số lượng: 1</div>
-                        </div>
-                        <div class="price">350.000₫</div>
-                       
-                    </div>
-                    <div class="item">
-                        <div class="thumb"><img src="https://i.imgur.com/6oHix35.jpg"></div>
-                        <div>
-                            <div class="title">Áo Thun Trắng</div>
-                            <div class="meta">Size L • Số lượng: 1</div>
-                        </div>
-                        <div class="price">200.000₫</div>
-                    </div>
-                     <div>Sinh Viên TDC Giảm 10%</div>
-                    <div class="divider"></div>
-                    <div class="totals">
-                        <div class="row total">
-                            <div>Tổng phải trả</div>
-                            <div>580.000₫</div>
-                        </div>
-                        <button class="pay-btn" type="button" id="payBtn">Thanh toán & Đặt hàng</button>
-                    </div>
-                </aside> -->
-                <aside class="summary">
+
+            <div class="glass3d" style="border-radius: 20px;">
+                <aside class="summary ">
                     <h3>Đơn hàng của bạn</h3>
 
                     @php
@@ -174,7 +130,7 @@
                             <div class="item">
                                 <div class="thumb"><img src="/uploads/{{ $item->product->cover_image}}"></div>
                                 <div>
-                                    <div class="title">{{ $item->product->name }}</div>
+                                    <div class="title">{{ $item->product->product_name }}</div>
                                     <div class="meta">Số lượng: {{ $item->quantity }}</div>
                                 </div>
                                 <div class="price">
@@ -208,23 +164,28 @@
                 </aside>
             </div>
         </div>
+    </div>
+    <script>
+        const csrfToken = "{{ csrf_token() }}";
+        const totalAmount = {{ $total ?? 0 }};
+        const cartItems = @json($cartItems->map(fn($i) => ['id' => $i->cart_id, 'qty' => $i->quantity]));
 
-    </body>
+        const momoUrl = "{{ route('momo.payment') }}";
+        const vnpayUrl = "{{ route('vnpay.payment') }}";
+    </script>
+    <script src="{{ asset('js/pay.js') }}"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+     <script>
+         const cartCountFromController = {{ $cartItemCount ?? 0 }};
+        function updateCartCount() {
+            if (typeof cartCountFromController === 'number' && cartCountFromController >= 0) {
+                const cartCountElement = document.querySelector('.cart-count');
+                if (cartCountElement) {
+                    cartCountElement.textContent = cartCountFromController;
+                }
+            }
+        }
 
-
-
-    {{-- Footer --}}
-    @include('partials.footer')
-
-
-</body>
-
-</html>
-<script>
-    const momoUrl = "{{ route('momo.payment') }}";
-    const vnpayUrl = "{{ route('vnpay.payment') }}";
-    const csrfToken = "{{ csrf_token() }}";
-    const totalAmount = "{{ $total ?? 0 }}";
-</script>
-<script src="{{ asset('js/pay.js') }}"></script>
-<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+        document.addEventListener('DOMContentLoaded', updateCartCount);
+    </script>
+@endsection

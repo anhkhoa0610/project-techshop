@@ -60,7 +60,7 @@ class VoucherController extends Controller
         return response()->json([
             'success' => true,
             'data' => $vouchers,
-            'message' => 'Suppliers retrieved successfully',
+            'message' => 'Lấy danh sách voucher thành công.',
         ]);
     }
 
@@ -69,14 +69,13 @@ class VoucherController extends Controller
      */
     public function store(VoucherRequest $request)
     {
-        //
         $validated = $request->validated();
         $voucher = Voucher::createVoucher($validated);
 
         return response()->json([
             'success' => true,
             'data' => $voucher,
-            'message' => 'Supplier created successfully',
+            'message' => 'Thêm mới voucher thành công.',
         ], 201);
     }
 
@@ -92,7 +91,7 @@ class VoucherController extends Controller
         return response()->json([
             'success' => true,
             'data' => $voucher,
-            'message' => 'Voucher updated successfully',
+            'message' => 'Cập nhật voucher thành công.',
         ]);
     }
 
@@ -106,13 +105,13 @@ class VoucherController extends Controller
             Voucher::deleteVoucher($id);
             return response()->json([
                 'success' => true,
-                'message' => 'Voucher deleted successfully',
+                'message' => 'Xóa voucher thành công.',
             ]);
 
         } catch (\Exception $e) {
             return response()->json([
                 'success' => false,
-                'message' => 'Error deleting voucher: ' . $e->getMessage(),
+                'message' => 'Lỗi khi xóa voucher: ' . $e->getMessage(),
             ], 500);
         }
     }

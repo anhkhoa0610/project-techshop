@@ -30,7 +30,7 @@
                     </h1>
                     <p class="hero-description">
                         Trải nghiệm sự đột phá vượt mọi giới hạn với chip A18 Bionic mạnh mẽ nhất, hệ thống camera ProRAW
-                        50MP đỉnh cao và màn hình ProMotion XDR siêu mượt. 
+                        50MP đỉnh cao và màn hình ProMotion XDR siêu mượt.
                     </p>
                     <div class="hero-specs">
                         <div class="spec-item">
@@ -472,34 +472,23 @@
     </div>
 
 
-
-
     <!-- Chatbot Bubble -->
-    <div class="chatbot-container">
-        <div id="chatbot-button">💬</div>
+    @include('ui-index.chatbot')
 
-        <div id="chatbot-window">
-            <div class="chatbot-header">
-                <div class="chat-avatar">F</div>
-                <div class="chat-info">
-                    <strong>Chatbot hỗ trợ</strong>
-                    <span>October 15, 2024</span>
-                </div>
-                <button class="chat-close" id="chatbot-close">&times;</button>
-            </div>
-            <div class="chatbot-body">
-                <div class="bot-message">Xin chào 👋! Tôi có thể giúp gì cho bạn?</div>
-            </div>
-            <div class="chatbot-footer">
-                <input type="text" id="chatbot-input" placeholder="Nhập tin nhắn..." />
-                <button id="chatbot-send">Gửi</button>
-            </div>
-        </div>
-    </div>
 
     <script>
         const USER_ID = {{ auth()->id() ?? 'null' }};
-        console.log("User ID:", USER_ID);
+        const cartCountFromController = {{ $cartItemCount ?? 0 }};
+        function updateCartCount() {
+            if (typeof cartCountFromController === 'number' && cartCountFromController >= 0) {
+                const cartCountElement = document.querySelector('.cart-count');
+                if (cartCountElement) {
+                    cartCountElement.textContent = cartCountFromController;
+                }
+            }
+        }
+
+        document.addEventListener('DOMContentLoaded', updateCartCount);
     </script>
     <script src="{{ asset('js/index-chatbot.js') }}"></script>
     <script src="{{ asset('js/index.js') }}"></script>

@@ -17,6 +17,16 @@ chatbotClose.addEventListener("click", () => {
     chatbotButton.style.display = "flex";
 });
 
+document.addEventListener("click", (e) => {
+    const clickedInside = chatbotWindow.contains(e.target) || chatbotButton.contains(e.target);
+
+    // Nếu click *không* nằm trong cửa sổ hoặc nút mở
+    if (!clickedInside) {
+        chatbotWindow.style.display = "none";
+        chatbotButton.style.display = "flex";
+    }
+});
+
 // Gửi tin nhắn
 chatbotSend.addEventListener("click", sendMessage);
 chatbotInput.addEventListener("keypress", (e) => {
@@ -39,7 +49,21 @@ async function sendMessage() {
     // Hiển thị bot đang gõ...
     const typingMsg = document.createElement("div");
     typingMsg.classList.add("bot-message");
-    typingMsg.textContent = "Đang xử lý...";
+    typingMsg.innerHTML = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200" width="24" height="24">
+    <circle fill="#1B124E" stroke="#1B124E" stroke-width="15" r="15" cx="40" cy="100">
+        <animate attributeName="opacity" calcMode="spline" dur="2" values="1;0;1;" 
+            keySplines=".5 0 .5 1;.5 0 .5 1" repeatCount="indefinite" begin="-.4" />
+    </circle>
+    <circle fill="#1B124E" stroke="#1B124E" stroke-width="15" r="15" cx="100" cy="100">
+        <animate attributeName="opacity" calcMode="spline" dur="2" values="1;0;1;" 
+            keySplines=".5 0 .5 1;.5 0 .5 1" repeatCount="indefinite" begin="-.2" />
+    </circle>
+    <circle fill="#1B124E" stroke="#1B124E" stroke-width="15" r="15" cx="160" cy="100">
+        <animate attributeName="opacity" calcMode="spline" dur="2" values="1;0;1;" 
+            keySplines=".5 0 .5 1;.5 0 .5 1" repeatCount="indefinite" begin="0" />
+    </circle>
+</svg>
+`;
     chatbotBody.appendChild(typingMsg);
     chatbotBody.scrollTop = chatbotBody.scrollHeight;
 

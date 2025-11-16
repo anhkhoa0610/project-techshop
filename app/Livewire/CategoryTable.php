@@ -60,7 +60,12 @@ final class CategoryTable extends PowerGridComponent
             ->add('category_id')
             ->add('category_name')
             ->add('description')
-            ->add('cover_image')
+            ->add(
+                'cover_image',
+                fn($category) =>
+                '<img src="' . asset('uploads/' . $category->cover_image) . '" class="h-12 w-12 object-cover rounded">'
+            )
+            ->add('cover_image_filename', fn($category) => $category->cover_image)
             ->add('created_at');
     }
 
@@ -68,6 +73,10 @@ final class CategoryTable extends PowerGridComponent
     {
         return [
             Column::make('Category id', 'category_id'),
+
+             Column::make('Cover image', 'cover_image')
+                ->visibleInExport(false),
+
             Column::make('Category name', 'category_name')
                 ->sortable()
                 ->searchable(),
@@ -75,10 +84,6 @@ final class CategoryTable extends PowerGridComponent
             Column::make('Description', 'description')
                 ->sortable()
                 ->searchable(),
-
-            Column::make('Cover image', 'cover_image')
-                ->sortable()
-                ->hidden(),
 
             Column::make('Created at', 'created_at')
                 ->sortable()
