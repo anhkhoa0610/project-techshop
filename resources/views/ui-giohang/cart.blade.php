@@ -1,27 +1,15 @@
-<!DOCTYPE html>
-<html lang="en">
+@extends('layouts.layouts')
 
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="csrf-token" content="{{ csrf_token() }}">
-    <title>@yield('title', 'TechStore - Cửa hàng công nghệ hàng đầu Việt Nam')</title>
-    <meta name="description"
-        content="@yield('description', 'TechStore - Chuyên bán điện thoại, laptop, tai nghe chính hãng với giá tốt nhất. Bảo hành uy tín, giao hàng nhanh toàn quốc.')">
+@section('title', 'TechStore - Trang chủ')
 
-    <link rel="stylesheet" href="{{ asset('css/index-style.css') }}">
+@section('content')
+    <link rel="stylesheet" href="{{ asset('css/index.css') }}">
+    <link rel="stylesheet" href="{{ asset('css/index-filter.css') }}">
+    <link rel="stylesheet" href="{{ asset('css/index-chatbot.css') }}">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css" />
     <link rel="stylesheet" href="{{ asset('css/cart.css') }}">
-
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap"
-        rel="stylesheet">
-</head>
-
-<body>
-    {{-- Header --}}
-    @include('partials.header')
-
     <div class="background-layout">
-        <div class="cartp-container">
+        <div class="cartp-container glass3d">
             <div class="cartp-header">🛍️ Giỏ hàng của bạn</div>
 
             <div class="cartp-items">
@@ -71,11 +59,19 @@
             @endif
         </div>
     </div>
+    <script src="{{ asset('js/cart.js') }}"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script>
+         const cartCountFromController = {{ $cartItemCount ?? 0 }};
+        function updateCartCount() {
+            if (typeof cartCountFromController === 'number' && cartCountFromController >= 0) {
+                const cartCountElement = document.querySelector('.cart-count');
+                if (cartCountElement) {
+                    cartCountElement.textContent = cartCountFromController;
+                }
+            }
+        }
 
-    {{-- Footer --}}
-    @include('partials.footer')
-</body>
-
-</html>
-<script src="{{ asset('js/cart.js') }}"></script>
-<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+        document.addEventListener('DOMContentLoaded', updateCartCount);
+    </script>
+@endsection

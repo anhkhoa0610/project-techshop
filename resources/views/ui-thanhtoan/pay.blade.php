@@ -175,4 +175,17 @@
     </script>
     <script src="{{ asset('js/pay.js') }}"></script>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+     <script>
+         const cartCountFromController = {{ $cartItemCount ?? 0 }};
+        function updateCartCount() {
+            if (typeof cartCountFromController === 'number' && cartCountFromController >= 0) {
+                const cartCountElement = document.querySelector('.cart-count');
+                if (cartCountElement) {
+                    cartCountElement.textContent = cartCountFromController;
+                }
+            }
+        }
+
+        document.addEventListener('DOMContentLoaded', updateCartCount);
+    </script>
 @endsection

@@ -40,6 +40,13 @@
     position: relative !important;
     z-index: 2 !important;
 }
+.background-layout::after {
+    content: "" !important;
+    position: absolute !important;
+    inset: 0 !important;
+    background: rgba(0, 0, 0, 0.4) !important;
+    z-index: 1 !important;
+}
 
 @keyframes kenburns {
     0% {

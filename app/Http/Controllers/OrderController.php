@@ -103,29 +103,7 @@ class OrderController extends Controller
         ]);
     }
 
-    public function show()
-    {
-        // Lấy ID user hiện tại
-        $userId = auth()->id();
-
-        // Nếu chưa đăng nhập thì redirect (tuỳ app)
-        if (!$userId) {
-            return redirect()->route('login');
-        }
-
-        // Lấy toàn bộ đơn hàng của user này kèm chi tiết sản phẩm
-        $orders = Order::with('orderDetails.product')
-            ->where('user_id', $userId)
-            ->whereIn('status', ['pending', 'processing'])
-            ->get();
-
-        // Định dạng từng đơn hàng — giữ cả 'id' và 'order_id' để view không bị lỗi nếu dùng key khác
-        $formattedOrders = $orders->map(fn($order) => $this->formatOrder($order))->toArray();
-
-        // Truyền sang Blade (cách rõ ràng)
-        return view('ui-cancel-order.cancel', ['formattedOrders' => $formattedOrders]);
-    }
-    //  public function showOrderdetails()
+    // public function show()
     // {
     //     // Lấy ID user hiện tại
     //     $userId = auth()->id();
@@ -138,79 +116,55 @@ class OrderController extends Controller
     //     // Lấy toàn bộ đơn hàng của user này kèm chi tiết sản phẩm
     //     $orders = Order::with('orderDetails.product')
     //         ->where('user_id', $userId)
-    //         ->where('status', 'processing')
+    //         ->whereIn('status', ['pending', 'processing','completed','cancelled'])
+    //         ->orderBy('order_date', 'desc')
     //         ->get();
 
     //     // Định dạng từng đơn hàng — giữ cả 'id' và 'order_id' để view không bị lỗi nếu dùng key khác
     //     $formattedOrders = $orders->map(fn($order) => $this->formatOrder($order))->toArray();
 
     //     // Truyền sang Blade (cách rõ ràng)
-    //     return view('ui-order-details.order-details', ['formattedOrders' => $formattedOrders]);
+    //     return view('ui-cancel-order.cancel', ['formattedOrders' => $formattedOrders]);
     // }
 
-    /**
-     * Hàm định dạng order theo cấu trúc bảng thực tế
-     */
-    //  public function showOrderdetails()
-// {
-//     // Lấy ID user hiện tại
-//     $userId = auth()->id();
 
-    //     // Nếu chưa đăng nhập thì redirect (tuỳ app)
-//     if (!$userId) {
-//         return redirect()->route('login');
-//     }
+  
+    
+    public function show()
+{
+    // Lấy ID user hiện tại
+    $userId = auth()->id();
 
-    //     // Lấy toàn bộ đơn hàng của user này kèm chi tiết sản phẩm
-//     $orders = Order::with('orderDetails.product')
-//         ->where('user_id', $userId)
-//         ->where('status', 'processing')
-//         ->get();
+    // Nếu chưa đăng nhập thì redirect (tuỳ app)
+    if (!$userId) {
+        return redirect()->route('login');
+    }
 
-    //     // Định dạng từng đơn hàng — tích hợp logic format vào đây
-//     $formattedOrders = $orders->map(function ($order) {
-//         // Chuyển object thành mảng
-//         $orderArray = $order->toArray();
+    // 1. Lấy toàn bộ đơn hàng của user kèm chi tiết sản phẩm
+    $orders = Order::with('orderDetails.product')
+        ->where('user_id', $userId)
+        ->whereIn('status', ['pending', 'processing', 'completed', 'cancelled'])
+        ->orderBy('order_date', 'desc')
+        ->get();
 
-    //         // Thêm key 'id' alias cho 'order_id'
-//         $orderArray['id'] = $orderArray['order_id'];
+    // 2. Lọc các đơn hàng không có chi tiết sản phẩm
+    // 🟢 SỬA ĐỔI TẠI ĐÂY: Dùng filter để loại bỏ đơn hàng không có OrderDetails
+    $validOrders = $orders->filter(function ($order) {
+        // Kiểm tra đơn hàng có ít nhất một chi tiết sản phẩm hay không
+        return $order->orderDetails->count() > 0;
+    });
 
-    //         // Thêm key 'total' alias cho 'total_price'
-//         $orderArray['total'] = $orderArray['total_price'];
 
-    //         // Thêm key 'items' alias cho 'order_details'
-//         $orderArray['items'] = $orderArray['order_details'];
+    // 3. Định dạng từng đơn hàng hợp lệ
+    // Định dạng (map) chỉ các đơn hàng đã được lọc ($validOrders)
+    $formattedOrders = $validOrders->map(fn($order) => $this->formatOrder($order))->toArray();
 
-    //         // Đảm bảo 'created_at' có và format
-//         if (!isset($orderArray['created_at'])) {
-//             $orderArray['created_at'] = now()->format('d/m/Y H:i');
-//         } else {
-//             $orderArray['created_at'] = \Carbon\Carbon::parse($orderArray['created_at'])->format('d/m/Y H:i');
-//         }
+    // 4. Truyền sang Blade
+    return view('ui-cancel-order.cancel', ['formattedOrders' => $formattedOrders]);
+}
+    
 
-    //         // Tính tổng số lượng
-//         $totalQuantity = $order->orderDetails->sum('quantity');
-//         $orderArray['total_quantity'] = $totalQuantity;
-
-    //         // Xử lý alias cho từng item (để view dùng $item['img'], $item['title'] trực tiếp)
-//         foreach ($orderArray['items'] as &$item) {
-//             // Alias 'img' từ product (với mặc định nếu thiếu)
-//             $item['img'] = asset('uploads/' . $item['product']['cover_image'] ?? null); // Thay bằng đường dẫn thực
-
-    //             // Alias 'title' từ product name
-//             $item['title'] = $item['product']['product_name'] ?? 'Sản phẩm không xác định';
-
-    //             // 'unit_price' và 'quantity' đã có từ order_details, giữ nguyên
-//         }
-
-    //         return $orderArray;
-//     })->toArray();
-
-    //     // Truyền sang Blade
-//     return view('ui-order-details.order-details', ['formattedOrders' => $formattedOrders]);
-// }
-
-    public function showOrderdetails($id) // 🟢 1. PHẢI NHẬN THAM SỐ ID
+  public function showOrderdetails($id) // 🟢 1. PHẢI NHẬN THAM SỐ ID
     {
         // Lấy ID user hiện tại
         $userId = auth()->id();
