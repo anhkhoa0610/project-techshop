@@ -74,7 +74,7 @@ Route::middleware(['auth'])->group(function () {
 });
 Route::post('/checkout', [CheckoutController::class, 'handleCheckout'])->name('checkout'); 
 Route::get('/cancel', [OrderController::class, 'show'])->name('cancel');
-Route::get('/details', [OrderController::class, 'showOrderdetails'])->name('details.show');
+Route::get('/details/{id}', [OrderController::class, 'showOrderdetails'])->name('details.show');
 // thêm vào giỏ hàng
 Route::post('/cart/add', [CartController::class, 'addToCart'])->name('cart.add');
 
@@ -106,6 +106,7 @@ Route::prefix('voucher')->group(function () {
     Route::get('/', [VoucherController::class, 'list'])->name('voucher.list');
 });
 
+Route::get('/export/invoice/{orderId}/xlsx', [App\Http\Controllers\ExportController::class, 'exportInvoice'])->name('export.invoice.xlsx');
 
 Route::prefix('users')->group(function () {
     Route::get('/', [UserController::class, 'index'])->name('users.index');

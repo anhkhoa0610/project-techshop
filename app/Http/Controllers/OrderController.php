@@ -116,7 +116,7 @@ class OrderController extends Controller
         // Lấy toàn bộ đơn hàng của user này kèm chi tiết sản phẩm
         $orders = Order::with('orderDetails.product')
             ->where('user_id', $userId)
-            ->where('status', 'processing')
+            ->whereIn('status', ['pending', 'processing'])
             ->get();
 
         // Định dạng từng đơn hàng — giữ cả 'id' và 'order_id' để view không bị lỗi nếu dùng key khác
@@ -151,66 +151,131 @@ class OrderController extends Controller
     /**
      * Hàm định dạng order theo cấu trúc bảng thực tế
      */
- public function showOrderdetails()
-{
-    // Lấy ID user hiện tại
-    $userId = auth()->id();
+    //  public function showOrderdetails()
+// {
+//     // Lấy ID user hiện tại
+//     $userId = auth()->id();
 
-    // Nếu chưa đăng nhập thì redirect (tuỳ app)
-    if (!$userId) {
-        return redirect()->route('login');
-    }
+    //     // Nếu chưa đăng nhập thì redirect (tuỳ app)
+//     if (!$userId) {
+//         return redirect()->route('login');
+//     }
 
-    // Lấy toàn bộ đơn hàng của user này kèm chi tiết sản phẩm
-    $orders = Order::with('orderDetails.product')
-        ->where('user_id', $userId)
-        ->where('status', 'processing')
-        ->get();
+    //     // Lấy toàn bộ đơn hàng của user này kèm chi tiết sản phẩm
+//     $orders = Order::with('orderDetails.product')
+//         ->where('user_id', $userId)
+//         ->where('status', 'processing')
+//         ->get();
 
-    // Định dạng từng đơn hàng — tích hợp logic format vào đây
-    $formattedOrders = $orders->map(function ($order) {
+    //     // Định dạng từng đơn hàng — tích hợp logic format vào đây
+//     $formattedOrders = $orders->map(function ($order) {
+//         // Chuyển object thành mảng
+//         $orderArray = $order->toArray();
+
+    //         // Thêm key 'id' alias cho 'order_id'
+//         $orderArray['id'] = $orderArray['order_id'];
+
+    //         // Thêm key 'total' alias cho 'total_price'
+//         $orderArray['total'] = $orderArray['total_price'];
+
+    //         // Thêm key 'items' alias cho 'order_details'
+//         $orderArray['items'] = $orderArray['order_details'];
+
+    //         // Đảm bảo 'created_at' có và format
+//         if (!isset($orderArray['created_at'])) {
+//             $orderArray['created_at'] = now()->format('d/m/Y H:i');
+//         } else {
+//             $orderArray['created_at'] = \Carbon\Carbon::parse($orderArray['created_at'])->format('d/m/Y H:i');
+//         }
+
+    //         // Tính tổng số lượng
+//         $totalQuantity = $order->orderDetails->sum('quantity');
+//         $orderArray['total_quantity'] = $totalQuantity;
+
+    //         // Xử lý alias cho từng item (để view dùng $item['img'], $item['title'] trực tiếp)
+//         foreach ($orderArray['items'] as &$item) {
+//             // Alias 'img' từ product (với mặc định nếu thiếu)
+//             $item['img'] = asset('uploads/' . $item['product']['cover_image'] ?? null); // Thay bằng đường dẫn thực
+
+    //             // Alias 'title' từ product name
+//             $item['title'] = $item['product']['product_name'] ?? 'Sản phẩm không xác định';
+
+    //             // 'unit_price' và 'quantity' đã có từ order_details, giữ nguyên
+//         }
+
+    //         return $orderArray;
+//     })->toArray();
+
+    //     // Truyền sang Blade
+//     return view('ui-order-details.order-details', ['formattedOrders' => $formattedOrders]);
+// }
+
+    public function showOrderdetails($id) // 🟢 1. PHẢI NHẬN THAM SỐ ID
+    {
+        // Lấy ID user hiện tại
+        $userId = auth()->id();
+
+        // Nếu chưa đăng nhập thì redirect
+        if (!$userId) {
+            return redirect()->route('login');
+        }
+
+        // 🟢 2. CHỈ LẤY MỘT ĐƠN HÀNG DUY NHẤT VỚI ID ĐƯỢC CHỌN
+        $order = Order::with('orderDetails.product')
+            ->where('user_id', $userId) // Bảo mật: Đảm bảo đơn hàng thuộc về user hiện tại
+            ->where('order_id', $id)    // Lọc chính xác theo ID đơn hàng
+            // Bỏ điều kiện status 'processing' nếu bạn muốn xem chi tiết các đơn hàng đã hoàn thành
+             //->where('status', 'pendding') 
+            ->first(); // Chỉ lấy một kết quả
+
+        // 🟢 3. KIỂM TRA TÌM KIẾM
+        if (!$order) {
+            // Chuyển hướng hoặc báo lỗi nếu đơn hàng không tồn tại
+            return redirect()->route('order.index')->with('error', 'Đơn hàng không tồn tại hoặc không thuộc về bạn.');
+        }
+
+        // 🟢 4. ĐỊNH DẠNG ĐƠN HÀNG DUY NHẤT
+
         // Chuyển object thành mảng
         $orderArray = $order->toArray();
-        
+
         // Thêm key 'id' alias cho 'order_id'
         $orderArray['id'] = $orderArray['order_id'];
-        
+
         // Thêm key 'total' alias cho 'total_price'
         $orderArray['total'] = $orderArray['total_price'];
-        
+
         // Thêm key 'items' alias cho 'order_details'
         $orderArray['items'] = $orderArray['order_details'];
-        
+
         // Đảm bảo 'created_at' có và format
         if (!isset($orderArray['created_at'])) {
             $orderArray['created_at'] = now()->format('d/m/Y H:i');
         } else {
             $orderArray['created_at'] = \Carbon\Carbon::parse($orderArray['created_at'])->format('d/m/Y H:i');
         }
-        
+
         // Tính tổng số lượng
         $totalQuantity = $order->orderDetails->sum('quantity');
         $orderArray['total_quantity'] = $totalQuantity;
-        
-        // Xử lý alias cho từng item (để view dùng $item['img'], $item['title'] trực tiếp)
+
+        // Xử lý alias cho từng item (dùng tham chiếu)
         foreach ($orderArray['items'] as &$item) {
             // Alias 'img' từ product (với mặc định nếu thiếu)
-            $item['img'] = asset('uploads/' . $item['product']['cover_image'] ?? null); // Thay bằng đường dẫn thực
-            
+            $item['img'] = asset('uploads/' . $item['product']['cover_image'] ?? null);
+
             // Alias 'title' từ product name
-            $item['title'] = $item['product']['name'] ?? 'Sản phẩm không xác định';
-            
-            // 'unit_price' và 'quantity' đã có từ order_details, giữ nguyên
+            $item['title'] = $item['product']['product_name'] ?? 'Sản phẩm không xác định';
         }
-        
-        return $orderArray;
-    })->toArray();
+        // 🟢 GỠ BỎ THAM CHIẾU (Rất quan trọng)
+        unset($item);
 
-    // Truyền sang Blade
-    return view('ui-order-details.order-details', ['formattedOrders' => $formattedOrders]);
-}
+        // 🟢 5. TRUYỀN SANG BLADE
+        // Truyền đơn hàng duy nhất vào trong một MẢNG để khớp với cấu trúc Blade đang sử dụng @foreach
+        $formattedOrders = [$orderArray];
 
-
+        return view('ui-order-details.order-details', ['formattedOrders' => $formattedOrders]);
+    }
     private function formatOrder($order)
     {
         return [

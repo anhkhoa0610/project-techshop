@@ -37,7 +37,7 @@ class MoMoController extends Controller
         $serectkey = 'at67qH6mk8w5Y1nAyMoYKMWACiEi2bsa';
         $orderInfo = "Thanh toán qua MoMo";
         $amount = $data['total']; // Default amount if not provided
-        $orderId = $order->order_id; // Use provided order_id or generate one
+        $orderId =time(); // Use provided order_id or generate one
         $redirectUrl = route('momo.return');
         $ipnUrl = route('momo.ipn');
         $extraData = base64_encode(json_encode([
@@ -69,12 +69,15 @@ class MoMoController extends Controller
         $result =
             $this->execPostRequest($endpoint, json_encode($data));
         $jsonResult = json_decode($result, true);  // decode json
-
+        //   if (isset($jsonResult['payUrl'])) {
+           
+        //     dd($jsonResult['payUrl']);
+        // }
 
         if (isset($jsonResult['payUrl'])) {
             return redirect()->to($jsonResult['payUrl']);
         } else {
-            return back()->with('error', 'Không thể tạo liên kết thanh toán từ MoMo.');
+           return redirect()->route('cart.index')->with('error', 'Không thể tạo liên kết thanh toán từ MoMo. Vui lòng thử lại.');
         }
 
 
