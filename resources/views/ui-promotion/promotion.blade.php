@@ -96,7 +96,8 @@
     <script>
         // Lấy ID người dùng từ server (ví dụ cho Laravel)
         const USER_ID = {{ auth()->check() ? auth()->id() : 'null' }};
-
+        console.log("User ID:", USER_ID);
+        console.log("Card",  data.cartItemCount);
         // Lấy CSRF token (Hàm add to cart cũng cần cái này)
         const csrfToken = '{{ csrf_token() }}';
     </script>

@@ -50,7 +50,7 @@ async function loadVouchers(page = 1) {
                     </div>
                     <div class="date">
                         <i class="far fa-calendar-alt"></i>
-                        Hiệu lực: ${voucher.start_date} - ${voucher.end_date}
+                        Thời hạn: ${new Date(voucher.start_date).toLocaleDateString('vi-VN')} - ${new Date(voucher.end_date).toLocaleDateString('vi-VN')}
                     </div>
                     <span class="voucher-status ${isActive ? "active" : "inactive"}">
                         ${isActive ? "Có hiệu lực" : "không hiệu lực"}
@@ -203,6 +203,11 @@ document.addEventListener("DOMContentLoaded", () => {
                 return;
             }
 
+            if (page === 1 && result.cartItemCount !== undefined) {
+                // Gọi hàm cập nhật UI, nhưng không cần hiệu ứng flash
+                updateCartCountDisplay(result.cartItemCount, false);
+            }
+
             const items = result.data.products || [];
             lastPage = result.data.pagination?.last_page || 1;
 
@@ -232,7 +237,7 @@ document.addEventListener("DOMContentLoaded", () => {
                 const originalPrice = product.price ?? salePrice;
 
                 const endDate = discount?.end_date ?? null;
-                const imageUrl = product.cover_image ? `/uploads/${product.cover_image}` : '/images/no-image.png';
+                const imageUrl = product.cover_image ? `/uploads/${product.cover_image}` : '/images/placeholder.png';
                 const productName = product.product_name ?? product.name ?? '';
 
                 html += `
@@ -257,12 +262,16 @@ document.addEventListener("DOMContentLoaded", () => {
                                         <small class="text-muted text-decoration-line-through ms-2">${formatCurrency(originalPrice)}</small>
                                     ` : ""}
                                 </div>
-                                
+                                <div class="text-secondary small">${product.stock_quantity ? 'sôl lượng: ' + product.stock_quantity : '<p class="text-danger">hết hàng</p>'}</strong></div>
                                 ${endDate ? `<div class="countdown mt-2 text-secondary small" data-end="${endDate}">Đang tính...</div>` : ""}
                             </div>
 
                             <div class="card-footer bg-transparent border-0 text-center pt-0">
-                                <button class="btn btn-buy rounded-pill px-3 add-to-cart-btn btn-add-cart" data-product-id="${id}">Thêm vào giỏ hàng</button>
+                                ${product.stock_quantity > 0 ?
+                        `<button class="btn btn-buy rounded-pill px-3 add-to-cart-btn btn-add-cart" data-product-id="${id}">Thêm vào giỏ hàng</button>`
+                        :
+                        '<span class="text-danger fw-bold mb-2 d-block">Hết hàng</span>'
+                    }
                             </div>
                         </div>
                     </div>
@@ -419,7 +428,7 @@ async function handleAddToCart(button) {
             headers: {
                 "Content-Type": "application/json",
                 "Accept": "application/json",
-                "X-CSRF-TOKEN": csrfToken // Giả định csrfToken là biến toàn cục
+                'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content
             },
             body: JSON.stringify({ user_id: userId, product_id: productId, quantity })
         });
@@ -439,7 +448,6 @@ async function handleAddToCart(button) {
             if (data.cartItemCount !== undefined) {
                 updateCartCountDisplay(data.cartItemCount);
             }
-
             Swal.fire({
                 icon: "success",
                 title: "Thành công!",
@@ -447,6 +455,7 @@ async function handleAddToCart(button) {
                 timer: 2000,
                 showConfirmButton: false,
             });
+
         } else {
             let errorMessages = "";
             if (data.errors) {
@@ -477,14 +486,22 @@ async function handleAddToCart(button) {
     }
 }
 
-function updateCartCountDisplay(newCount) {
+/**
+ * Cập nhật số lượng hiển thị trên icon giỏ hàng
+ * @param {number} newCount - Số lượng mới
+ * @param {boolean} useFlash - (Tùy chọn) Có dùng hiệu ứng flash hay không, mặc định là có.
+ */
+function updateCartCountDisplay(newCount, useFlash = true) {
     const cartCountElement = document.querySelector('.cart-count');
     if (cartCountElement) {
         cartCountElement.textContent = newCount;
 
-        cartCountElement.classList.add('cart-flash');
-        setTimeout(() => {
-            cartCountElement.classList.remove('cart-flash');
-        }, 500);
+        // Chỉ thêm class 'cart-flash' nếu useFlash là true
+        if (useFlash) {
+            cartCountElement.classList.add('cart-flash');
+            setTimeout(() => {
+                cartCountElement.classList.remove('cart-flash');
+            }, 500);
+        }
     }
 }
