@@ -77,6 +77,7 @@ document.getElementById('apply-btn').addEventListener('click', function () {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json',
+            'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content,
         },
         body: JSON.stringify({ voucher: code })
     })
@@ -152,6 +153,7 @@ document.getElementById('apply-btn').addEventListener('click', function () {
 // 🔁 Khi người dùng nhập mã mới → reset tổng tiền về giá gốc
 document.getElementById('voucher').addEventListener('input', function () {
     const newCode = this.value.trim();
+    console.log(newCode);
     const totalPriceEl = document.getElementById('total-price');
     const discountEl = document.getElementById('voucher-discount');
     const discountAmountEl = document.getElementById('voucher-amount');
