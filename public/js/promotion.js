@@ -154,10 +154,23 @@ document.addEventListener('DOMContentLoaded', () => loadVouchers());
 
 document.addEventListener("DOMContentLoaded", () => {
     const promoContainer = document.getElementById("promotion-container");
+    if (!promoContainer) return;
     let currentPage = 1;
     const perPage = 8;
     let lastPage = 1; // sẽ cập nhật từ API
 
+    //nut add to cart
+    promoContainer.addEventListener('click', function (e) {
+        // Tìm nút giỏ hàng gần nhất mà người dùng click
+        const cartButton = e.target.closest('.add-to-cart-btn');
+
+        if (cartButton) {
+            e.preventDefault(); // Ngăn hành vi mặc định (nếu có)
+            handleAddToCart(cartButton); // Gọi hàm toàn cục
+        }
+        // Nếu click vào thứ khác, nó sẽ không làm gì
+        // và sẽ cho phép link (<a>) hoạt động bình thường
+    });
     // Tạo nút Xem thêm
     const xemThemBtn = document.createElement('div');
     xemThemBtn.className = "text-center my-3";
@@ -249,7 +262,7 @@ document.addEventListener("DOMContentLoaded", () => {
                             </div>
 
                             <div class="card-footer bg-transparent border-0 text-center pt-0">
-                                <button class="btn btn-buy rounded-pill px-3 add-to-cart-btn" data-product-id="${id}">Thêm vào giỏ hàng</button>
+                                <button class="btn btn-buy rounded-pill px-3 add-to-cart-btn btn-add-cart" data-product-id="${id}">Thêm vào giỏ hàng</button>
                             </div>
                         </div>
                     </div>
@@ -338,7 +351,7 @@ const formatCurrency = (value) => {
 let myButton = document.getElementById("backToTopBtn");
 
 // Khi người dùng cuộn trang, gọi hàm scrollFunction
-window.onscroll = function() {
+window.onscroll = function () {
     scrollFunction();
 };
 
@@ -352,7 +365,7 @@ function scrollFunction() {
 }
 
 // Khi người dùng nhấn vào nút, cuộn lên đầu trang
-myButton.onclick = function(e) {
+myButton.onclick = function (e) {
     e.preventDefault(); // Ngăn hành vi mặc định của thẻ <a>
     scrollToTop();
 };
@@ -364,10 +377,114 @@ function scrollToTop() {
             top: 0,
             behavior: 'smooth' /* Đây là chìa khóa cho hiệu ứng mượt mà */
         });
-    } 
+    }
     // Dành cho các trình duyệt cũ hơn (IE)
     else {
         document.documentElement.scrollTop = 0;
         document.body.scrollTop = 0;
+    }
+}
+
+// --------------------------------------------------
+// PHẦN ADD TO CART
+// --------------------------------------------------
+async function handleAddToCart(button) {
+    // Lưu HTML ban đầu của nút để khôi phục sau
+    const originalButtonHtml = button.innerHTML;
+
+    const productId = button.dataset.productId;
+    const quantity = button.dataset.quantity || 1;
+    const userId = USER_ID; // Giả định USER_ID và csrfToken là biến toàn cục
+
+    if (!userId || userId === 'null') {
+        Swal.fire({
+            icon: "warning",
+            title: "Bạn cần đăng nhập!",
+            text: "Vui lòng đăng nhập để thêm sản phẩm vào giỏ hàng.",
+        });
+        return;
+    }
+
+    button.disabled = true; // Vô hiệu hóa nút
+    button.innerHTML = `
+        <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
+        Đang thêm...
+    `;
+    button.classList.add('btn-loading');
+
+
+    try {
+        const response = await fetch("/api/index/add-to-cart", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+                "Accept": "application/json",
+                "X-CSRF-TOKEN": csrfToken // Giả định csrfToken là biến toàn cục
+            },
+            body: JSON.stringify({ user_id: userId, product_id: productId, quantity })
+        });
+
+        const text = await response.text();
+        console.log("Phản hồi từ server:", text);
+
+        let data;
+        try {
+            data = JSON.parse(text);
+        } catch (e) {
+            console.error("Không parse được JSON:", e);
+            throw new Error("Phản hồi không hợp lệ từ server.");
+        }
+
+        if (response.ok) {
+            if (data.cartItemCount !== undefined) {
+                updateCartCountDisplay(data.cartItemCount);
+            }
+
+            Swal.fire({
+                icon: "success",
+                title: "Thành công!",
+                text: data.message || "Đã thêm sản phẩm vào giỏ hàng.",
+                timer: 2000,
+                showConfirmButton: false,
+            });
+        } else {
+            let errorMessages = "";
+            if (data.errors) {
+                for (const key in data.errors) {
+                    errorMessages += `${data.errors[key].join(", ")}\n`;
+                }
+            } else {
+                errorMessages = data.message || "Đã xảy ra lỗi.";
+            }
+
+            Swal.fire({
+                icon: "error",
+                title: "Lỗi!",
+                html: errorMessages.replace(/\n/g, "<br>")
+            });
+        }
+    } catch (error) {
+        console.error("Fetch error:", error);
+        Swal.fire({
+            icon: "error",
+            title: "Lỗi hệ thống!",
+            text: error.message || "Không thể kết nối đến máy chủ.",
+        });
+    } finally {
+        button.disabled = false;
+        button.innerHTML = originalButtonHtml;
+        button.classList.remove('btn-loading');
+    }
+}
+
+function updateCartCountDisplay(newCount) {
+    const cartCountElement = document.querySelector('.cart-count');
+    if (cartCountElement) {
+        cartCountElement.textContent = newCount;
+
+        cartCountElement.classList.add('cart-flash');
+        setTimeout(() => {
+            cartCountElement.classList.remove('cart-flash');
+        }, 500);
     }
 }
