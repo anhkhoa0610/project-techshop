@@ -16,29 +16,69 @@
     display: flex;
     justify-content: center;
     align-items: center;
+    /* Đã hoàn nguyên lại căn giữa theo chiều dọc */
     min-height: 95vh;
-    padding-top: 80px;
+    padding: clamp(20px, 4vw, 80px) 10px;
+    /* Tối ưu padding */
+}
 
+/* ---------------------------------------------------- */
+/* Cải tiến: Thiết lập Layout Chính (.wrap) */
+/* ---------------------------------------------------- */
+.wrap {
+    width: 95%;
+    max-width: var(--container-width);
+    display: grid;
+    grid-template-columns: 1fr 380px;
+    gap: 28px;
+    align-items: start;
+    margin-top: 7vh;
+    /* Đẩy nội dung xuống 10vh */
+}
+
+/* ---------------------------------------------------- */
+/* TỐI ƯU HÓA: BACKGROUND KENBURNS */
+/* Đã loại bỏ tất cả các !important không cần thiết */
+/* Sử dụng position: fixed để background luôn nằm ở viewport (cố định) */
+/* ---------------------------------------------------- */
+.background-layout {
+    /* Đảm bảo nội dung con có thể được đặt trên background */
+    position: relative;
+    overflow: hidden;
 }
 
 .background-layout::before {
-    content: "" !important;
-    position: absolute !important;
-    inset: 0 !important;
-    /* top:0; right:0; bottom:0; left:0 */
-    background-image: url('/images/background.jpg') !important;
-    background-size: cover !important;
-    background-repeat: no-repeat !important;
-    background-position: center center !important;
-    z-index: -1 !important;
-    transform-origin: center center !important;
-    will-change: transform !important;
-    animation: kenburns 18s ease-in-out infinite alternate !important;
+    content: "";
+    position: fixed;
+    /* Cố định vào viewport */
+    inset: 0;
+    background-image: url('/images/background.jpg');
+    /* Dùng placeholder */
+    background-size: cover;
+    background-repeat: no-repeat;
+    background-position: center center;
+    z-index: -10;
+    /* Đặt rất thấp để luôn ở dưới cùng */
+    transform-origin: center center;
+    will-change: transform;
+    animation: kenburns 18s ease-in-out infinite alternate;
 }
 
 .background-layout>* {
-    position: relative !important;
-    z-index: 2 !important;
+    position: relative;
+    /* Đảm bảo nội dung con có z-index context */
+    z-index: 2;
+    /* Đảm bảo nội dung con nằm trên overlay */
+}
+
+.background-layout::after {
+    content: "";
+    position: fixed;
+    /* Cố định overlay vào viewport */
+    inset: 0;
+    background: rgba(0, 0, 0, 0.4);
+    z-index: 1;
+    /* Nằm trên background (-10) nhưng dưới nội dung (2) */
 }
 
 @keyframes kenburns {
@@ -55,90 +95,86 @@
     }
 }
 
-.wrap {
-    width: 100%;
-    max-width: var(--container-width);
-    display: grid;
-    grid-template-columns: 1fr 380px;
-    gap: 28px;
-    align-items: start;
-
-}
-
 .panel,
 .summary {
-    background: var(--card);
+    background: rgba(255, 255, 255, 0.1);
     border-radius: var(--radius);
     padding: 26px;
-    /* Summary will override this to 20px */
     box-shadow: var(--shadow);
     overflow: hidden;
-    background: transparent !important;
-    -webkit-backdrop-filter: blur(6px) saturate(120%) !important;
-    backdrop-filter: blur(6px) saturate(120%) !important;
+    -webkit-backdrop-filter: blur(6px) saturate(120%);
+    backdrop-filter: blur(6px) saturate(120%);
     color: white;
     border: 1px solid rgb(21, 117, 155);
 }
 
+.summary {
+    top: 24px;
+    height: fit-content;
+    padding: 20px;
+}
+
+/* Scrollbar Styles */
 .summary .items-list {
-  max-height: 360px; 
-  overflow-y: auto;
-  margin-bottom: 1rem;
-  scrollbar-width: thin; /* Firefox */
-  scrollbar-color: #555 #222;
+    max-height: 360px;
+    overflow-y: auto;
+    margin-bottom: 1rem;
+    scrollbar-width: thin;
+    scrollbar-color: #555 #222;
 }
 
-/* Thanh cuộn tùy chỉnh cho Chrome/Safari */
 .summary .items-list::-webkit-scrollbar {
-  width: 6px;
-}
-.summary .items-list::-webkit-scrollbar-thumb {
-  background: #666;
-  border-radius: 10px;
-}
-.summary .items-list::-webkit-scrollbar-thumb:hover {
-  background: #888;
+    width: 6px;
 }
 
-/* Căn chỉnh từng item */
+.summary .items-list::-webkit-scrollbar-thumb {
+    background: #666;
+    border-radius: 10px;
+}
+
+.summary .items-list::-webkit-scrollbar-thumb:hover {
+    background: #888;
+}
+
+/* Summary Items */
 .summary .item {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  margin-bottom: 12px;
-  gap: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 12px;
+    gap: 10px;
 }
 
 .summary .thumb img {
-  width: 50px;
-  height: 50px;
-  border-radius: 8px;
-  object-fit: cover;
+    width: 50px;
+    height: 50px;
+    border-radius: 8px;
+    object-fit: cover;
 }
 
 .summary .title {
-  font-weight: 600;
+    font-weight: 600;
 }
 
 .summary .meta {
-  font-size: 0.9rem;
-  color: #cbd5e1;
+    font-size: 0.9rem;
+    /* 14.4px */
+    color: #cbd5e1;
 }
 
-/* Căn hàng giảm giá và tổng tiền */
 .summary .item-text {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin: 6px 0;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin: 6px 0;
 }
 
 .summary .total {
-  font-size: 1.1rem;
-  font-weight: 700;
-  border-top: 1px solid #475569;
-  padding-top: 8px;
-  margin-top: 8px;
+    font-size: 1.1rem;
+    font-weight: 700;
+    border-top: 1px solid #475569;
+    padding-top: 8px;
+    margin-top: 8px;
 }
 
 .section {
@@ -160,32 +196,37 @@
 
 .muted,
 .note {
-
-    font-size: 13px;
+    font-size: 0.8125rem;
+    /* 13px */
 }
 
 .note {
     margin-top: 8px;
 }
 
-/* TYPOGRAPHY */
+/* ---------------------------------------------------- */
+/* TYPOGRAPHY - Dùng clamp() cho tiêu đề chính */
+/* ---------------------------------------------------- */
 h1 {
-    font: 600 20px/1 sans-serif;
-    /* Simplified font shorthand */
+    /* Font size động: 20px (min) -> 24px (max) */
+    font-size: clamp(1.25rem, 3vw, 1.5rem);
+    font-weight: 600;
+    line-height: 1;
     margin: 0 0 10px;
 }
 
 p.lead {
     margin: 0 0 20px;
     color: white;
-    font-size: 14px;
+    font-size: 0.875rem;
+    /* 14px */
 }
 
 label {
     display: block;
-    font: 600 13px/1 sans-serif;
+    font: 600 0.8125rem/1 sans-serif;
+    /* 13px */
     margin-bottom: 8px;
-
 }
 
 .subtitle {
@@ -196,24 +237,22 @@ label {
 }
 
 .subtitle small {
-
     font-weight: 500;
 }
 
-/* FORM ELEMENTS (INPUTS & SELECTS) */
+/* FORM ELEMENTS */
 input[type="text"],
 input[type="email"],
 input[type="tel"],
 select,
 .promo input {
-    /* Grouped promo input with others for shared styles */
     width: 100%;
     padding: 12px 14px;
-    /* Promo input will override this padding later */
     border-radius: 10px;
     border: 1px solid #e7eefb;
     background: linear-gradient(180deg, rgba(255, 255, 255, 0.9), rgba(250, 250, 255, 0.9));
-    font-size: 14px;
+    font-size: 0.875rem;
+    /* 14px */
     color: var(--text);
     outline: none;
     transition: box-shadow .15s, border-color .15s;
@@ -231,11 +270,11 @@ select:focus {
     display: flex;
     justify-content: space-between;
     gap: 14px;
-    flex-wrap: nowrap;
+    flex-wrap: wrap;
 }
 
 .radio {
-    flex: 1;
+    flex: 1 1 45%;
     border: 1px solid #eef5ff;
     padding: 12px;
     border-radius: 12px;
@@ -253,79 +292,16 @@ select:focus {
     box-shadow: 0 6px 16px rgba(0, 0, 0, 0.05);
 }
 
-.radio input {
-    margin-right: 8px;
-    /* Tối ưu hóa: xóa dòng này nếu không cần thiết, nhưng giữ lại để rõ ràng */
-}
-
 .radio .label {
     font-weight: 600;
-    font-size: 14px;
+    font-size: 0.875rem;
+    /* 14px */
 }
 
 .radio .meta {
-    font-size: 13px;
+    font-size: 0.8125rem;
+    /* 13px */
     color: black;
-
-}
-
-/* SUMMARY */
-.summary {
-    background: linear-gradient(180deg, rgba(255, 255, 255, 0.95), rgba(255, 255, 255, 0.98));
-    padding: 20px;
-    /* Override panel padding */
-    top: 24px;
-    height: fit-content;
-}
-
-.summary h3 {
-    margin: 0 0 12px;
-    font-size: 16px;
-}
-
-/* Summary Items */
-.item {
-    display: flex;
-    gap: 12px;
-    align-items: center;
-    padding: 10px 0;
-    border-bottom: 1px dashed #f0f4fb;
-}
-
-.item:last-child {
-    border-bottom: none;
-}
-
-.thumb {
-    width: 64px;
-    height: 64px;
-    border-radius: 10px;
-    overflow: hidden;
-    flex-shrink: 0;
-    box-shadow: 0 4px 14px rgba(16, 42, 67, 0.06);
-}
-
-.thumb img {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-    display: block;
-}
-
-.item .title {
-    font-weight: 600;
-    font-size: 14px;
-}
-
-.item .meta {
-    font-size: 13px;
-
-}
-
-.item .price {
-    margin-left: auto;
-    font-weight: 700;
-    color: var(--accent-1);
 }
 
 /* Totals */
@@ -340,46 +316,96 @@ select:focus {
     justify-content: space-between;
     align-items: center;
     margin-bottom: 10px;
-    font-size: 14px;
+    font-size: 0.875rem;
+    /* 14px */
 }
 
 .item-text.total {
     font-weight: 700;
-    font-size: 18px;
+    /* Font size động: 16px (min) -> 18px (max) */
+    font-size: clamp(1rem, 2vw, 1.125rem);
     color: var(--text);
 }
 
 /* BUTTONS */
-.pay-btn {
-    margin-top: 14px;
-    width: 100%;
-    padding: 12px 14px;
-    border-radius: 12px;
-    border: none;
-    font: 700 15px/1 sans-serif;
-    cursor: pointer;
-    background: linear-gradient(90deg, var(--accent-1), var(--accent-2));
-    color: white;
-    box-shadow: 0 8px 30px rgba(0, 123, 255, 0.18);
-    transition: transform .1s;
+.btn-pay {
+    display: flex;
+    justify-content: space-between;
+    gap: 12px;
+    margin-top: 20px;
+    flex-wrap: wrap;
 }
 
-.pay-btn:active {
-    transform: translateY(1px);
+.btn-pay form {
+    flex: 1 1 48%;
 }
+
+.btn-momo,
+.btn-vnpay {
+    width: 100%;
+    padding: 14px 0;
+    border: none;
+    border-radius: 12px;
+    font-size: 1rem;
+    /* 16px */
+    font-weight: 600;
+    cursor: pointer;
+    color: #fff;
+    transition: all 0.25s ease;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15);
+}
+
+/* Nút MOMO */
+.btn-momo {
+    background: linear-gradient(135deg, #a50064, #ec008c);
+}
+
+.btn-momo:hover {
+    background: linear-gradient(135deg, #d9007b, #ff33aa);
+    transform: translateY(-2px);
+    box-shadow: 0 6px 14px rgba(236, 0, 140, 0.4);
+}
+
+/* Nút VNPAY */
+.btn-vnpay {
+    background: linear-gradient(135deg, #0033a0, #0099ff);
+}
+
+.btn-vnpay:hover {
+    background: linear-gradient(135deg, #0055cc, #33bbff);
+    transform: translateY(-2px);
+    box-shadow: 0 6px 14px rgba(0, 102, 204, 0.4);
+}
+
+/* Hiệu ứng khi nhấn */
+.btn-momo:active,
+.btn-vnpay:active {
+    transform: scale(0.98);
+    box-shadow: 0 3px 6px rgba(0, 0, 0, 0.2);
+}
+
 
 /* PROMO CODE */
 .promo {
     display: flex;
     gap: 8px;
     margin-top: 12px;
+    align-items: stretch;
 }
 
-.promo input {
+/* ĐIỀU CHỈNH INPUT VOUCHER */
+.input-voucher {
     flex: 1;
-    padding: 10px 12px;
-    /* Tối ưu hóa: override padding để nhỏ hơn */
+    /* Cho phép nó mở rộng tối đa */
 }
+
+/* Đảm bảo input bên trong .input-voucher kéo dài hết */
+.input-voucher input {
+    width: 150%;
+}
+
+/* END ĐIỀU CHỈNH INPUT VOUCHER */
+
 
 .promo button {
     padding: 10px 12px;
@@ -390,27 +416,134 @@ select:focus {
     font-weight: 700;
     cursor: pointer;
 }
-.apply
-{
+
+/* CẢI TIẾN: Điều chỉnh lại CSS cho nút "Apply" và input voucher */
+.apply {
     width: 50%;
     padding: 12px 14px;
     border-radius: 12px;
     border: none;
     height: 3rem;
-    font: 700 15px/1 sans-serif;
+    font: 700 0.9375rem/1 sans-serif;
+    /* 15px */
     cursor: pointer;
     background: linear-gradient(90deg, var(--accent-1), var(--accent-2));
     color: white;
     box-shadow: 0 8px 30px rgba(0, 123, 255, 0.18);
 }
 
+.pay-btn {
+    width: 100%;
+    padding: 12px 14px;
+    border-radius: 12px;
+    border: none;
+    height: 3rem;
+    font: 700 0.9375rem/1 sans-serif;
+    /* 15px */
+    cursor: pointer;
+    background: linear-gradient(90deg, var(--accent-1), var(--accent-2));
+    color: white;
+    box-shadow: 0 8px 30px rgba(0, 123, 255, 0.18);
+    margin-top: 10px;
+}
+
+.pay-btn:hover,
+.apply:hover {
+    background: linear-gradient(90deg, var(--accent-2), var(--accent-1));
+    box-shadow: 0 10px 40px rgba(0, 123, 255, 0.25);
+    transform: translateY(-2px);
+}
+
 .apply-btn {
     display: flex;
-    justify-content: end;
-    align-items: end;
-
+    justify-content: flex-end;
+    align-items: flex-end;
 }
-.input-voucher
-{
-    width: 150%;
+
+
+.map {
+    height: 600px;
+    width: 100%;
+}
+
+
+/* ============================================= */
+/* MEDIA QUERIES cho thiết bị di động (<= 768px) */
+/* ============================================= */
+@media (max-width: 768px) {
+
+    /* 1. Thay đổi layout chính thành 1 cột */
+    .wrap {
+        grid-template-columns: 1fr;
+        gap: 20px;
+        width: 100%;
+        padding: 0 10px;
+    }
+
+    /* 2. Căn giữa lại Container */
+    .container-center {
+        padding-top: 20px;
+        align-items: flex-start;
+        min-height: auto;
+    }
+
+    /* 3. Đảm bảo phần Tóm tắt (Summary) được xếp sau Panel chính */
+    .panel {
+        order: 1;
+    }
+
+    .summary {
+        order: 2;
+        position: static;
+    }
+
+    /* 4. Đảm bảo các nhóm Input 2 cột cũng thành 1 cột */
+    .two-col {
+        grid-template-columns: 1fr;
+    }
+
+    /* 5. Nhóm Radio và Button Pay thành 1 cột */
+    .radio-group,
+    .btn-pay {
+        flex-direction: column;
+    }
+
+    .radio,
+    .btn-pay form {
+        flex: 1 1 100%;
+    }
+
+    /* Giảm chiều cao Map trên Mobile */
+    .map {
+        height: 40vh;
+    }
+}
+
+/* Media Query cho màn hình rất nhỏ (<= 480px) */
+@media (max-width: 480px) {
+
+    .panel,
+    .summary {
+        padding: 18px;
+    }
+
+    h1 {
+        font-size: 1.125rem;
+        /* 18px */
+    }
+
+    /* Đảm bảo promo code hiển thị tốt */
+    .promo {
+        flex-direction: column;
+        align-items: stretch;
+    }
+
+    .input-voucher {
+        width: 150%;
+        margin-bottom: 8px;
+    }
+
+    .apply {
+        width: 50%;
+    }
 }

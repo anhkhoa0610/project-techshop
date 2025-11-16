@@ -80,6 +80,10 @@
                                     <i class="fa-solid fa-building me-2"></i> Trang quản trị
                                 </a>
                             @endif
+                              <a href="{{ route('cancel') }}" class="dropdown-item">
+                                <i class="fa-solid fa-id-card me-2"></i> Đơn hàng của tôi
+                            </a>
+
                             <form action="{{ route('logout') }}" method="POST" class="dropdown-form" role="none">
                                 @csrf
                                 <button type="submit" class="dropdown-item logout-btn">

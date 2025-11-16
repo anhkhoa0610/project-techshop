@@ -91,7 +91,7 @@ class LoginController extends Controller
         $user->password = Hash::make($request->new_password);
         $user->save();
 
-        return redirect()->route('login')->with('success', 'Đặt lại mật khẩu thành công.');
+        return redirect()->route('index')->with('success', 'Đặt lại mật khẩu thành công.');
     }
 
     public function showForgotForm()
@@ -164,7 +164,7 @@ class LoginController extends Controller
         $user->password = Hash::make($request->password);
         $user->save();
 
-        return redirect("login")->with('success', 'Đăng ký thành công. Bạn có thể đăng nhập ngay bây giờ.');
+        return redirect("index")->with('success', 'Đăng ký thành công. Bạn có thể đăng nhập ngay bây giờ.');
     }
 
     public function showResetPasswordForm($token)
@@ -198,7 +198,7 @@ class LoginController extends Controller
         );
 
         return $status === Password::PASSWORD_RESET
-            ? redirect()->route('login')->with('success', 'Đặt lại mật khẩu thành công.')
+            ? redirect()->route('index')->with('success', 'Đặt lại mật khẩu thành công.')
             : back()->withErrors(['email' => [__($status)]]);
     }
     public function apiLogin(Request $request)
