@@ -31,6 +31,16 @@
                                     <div class="text-danger error-message" id="error_edit_category_name"></div>
                                 </div>
                                 <div class="form-group">
+                                    <label for="edit_cover_image">Hình ảnh danh mục</label>
+                                    <div class="mt-2 text-center">
+                                        <img id="preview_image" src="" alt="Ảnh sản phẩm"
+                                            style="max-width: 120px; border-radius: 6px;">
+                                    </div>
+                                    <input type="file" class="form-control" id="edit_cover_image" name="cover_image"
+                                        accept="image/*">
+                                    <div class="text-danger error-message" id="error_edit_cover_image"></div>
+                                </div>
+                                <div class="form-group">
                                     <label for="description">Mô tả</label>
                                     <textarea class="form-control" id="description" name="description"></textarea>
                                     <div class="text-danger error-message" id="error_edit_description"></div>
@@ -73,6 +83,16 @@
                                     <div class="text-danger error-message" id="error_add_category_name"></div>
                                 </div>
                                 <div class="form-group">
+                                    <label for="add_cover_image">Hình ảnh</label>
+                                    <div class="mt-2 text-center">
+                                        <img id="add_preview_image" src="{{ asset('images/place-holder.jpg') }}"
+                                            alt="Ảnh sản phẩm" style="max-width: 120px; border-radius: 6px;">
+                                    </div>
+                                    <input type="file" class="form-control" id="add_cover_image" name="cover_image"
+                                        accept="image/*">
+                                    <div class="text-danger error-message" id="error_add_cover_image"></div>
+                                </div>
+                                <div class="form-group">
                                     <label for="add_description">Mô tả</label>
                                     <textarea class="form-control" id="add_description" name="description"></textarea>
                                     <div class="text-danger error-message" id="error_add_description"></div>
@@ -91,48 +111,7 @@
         </div>
     </div>
 
-    <!-- Modal View category -->
-    <div class="modal fade" id="viewCategoryModal" tabindex="-1" role="dialog" aria-labelledby="viewCategoryLabel"
-        aria-hidden="true">
-        <div class="modal-dialog modal-lg" role="document">
-            <div class="modal-content shadow-lg">
-                <div class="modal-header bg-info text-white">
-                    <h5 class="modal-title" id="viewSupplierModalLabel">
-                        Thông tin danh mục
-                    </h5>
-                </div>
-                <div class="modal-body bg-light">
-                    <div class="row">
 
-                        <div class="col-md-12">
-                            <div class="card border-0 bg-white shadow-sm">
-                                <div class="card-body p-3">
-                                    <div class="row mb-2">
-                                        <div class="col-4 font-weight-bold text-secondary">ID</div>
-                                        <div class="col-8" id="view_category_id"></div>
-                                    </div>
-                                    <div class="row mb-2">
-                                        <div class="col-4 font-weight-bold text-secondary">Category name:</div>
-                                        <div class="col-8" id="view_category_name"></div>
-                                    </div>
-                                    <div class="row mb-2">
-                                        <div class="col-4 font-weight-bold text-secondary">Description:</div>
-                                        <div class="col-8" id="view_description"></div>
-                                    </div>
-
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div class="modal-footer bg-white">
-                    <button type="button" class="btn btn-secondary" data-dismiss="modal">
-                        <i class="material-icons align-middle">close</i> Đóng
-                    </button>
-                </div>
-            </div>
-        </div>
-    </div>
 @endsection
 
 @push('scripts')
