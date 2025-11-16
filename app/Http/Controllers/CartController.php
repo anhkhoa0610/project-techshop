@@ -18,12 +18,17 @@ class CartController extends Controller
         if (!Auth::check()) {
             return redirect()->route('login');
         }
+         $cartItemCount = 0;
+
+        if (Auth::check()) {
+            $cartItemCount = CartItem::where('user_id', Auth::id())->count('quantity');
+        }
 
         // Lấy tất cả CartItem của người dùng hiện tại
         // Giả sử Model CartItem có quan hệ 'product'
         $cartItems = CartItem::where('user_id', Auth::id())->with('product')->get();
 
-        return view('ui-giohang.cart', compact('cartItems'));
+        return view('ui-giohang.cart', compact('cartItems','cartItemCount'));
     }
 
     /**

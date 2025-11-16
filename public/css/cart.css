@@ -20,6 +20,14 @@
   position: relative !important;
   z-index: 2 !important;
 }
+.background-layout::after {
+    content: "" !important;
+    position: absolute !important;
+    inset: 0 !important;
+    background: rgba(0, 0, 0, 0.4) !important;
+    z-index: 1 !important;
+}
+
 
 @keyframes kenburns {
   0% {
@@ -37,9 +45,7 @@
 
 .cartp-container {
 
-  background: transparent !important;
-  -webkit-backdrop-filter: blur(6px) saturate(120%) !important;
-  backdrop-filter: blur(6px) saturate(120%) !important;
+
   color: white;
   border: 1px solid rgb(21, 117, 155);
   width: 100%;
@@ -54,9 +60,7 @@
 
 
 .cartp-header {
-   background: transparent !important;
-  -webkit-backdrop-filter: blur(6px) saturate(120%) !important;
-  backdrop-filter: blur(6px) saturate(120%) !important;
+   
   color: #fff;
   padding: 20px;
   font-size: 26px;
@@ -151,9 +155,7 @@
 }
 
 .cartp-footer {
-   background: transparent !important;
-  -webkit-backdrop-filter: blur(6px) saturate(120%) !important;
-  backdrop-filter: blur(6px) saturate(120%) !important;
+
   padding: 60px 40px;
   text-align: right;
   border-top: 1px solid #eee;

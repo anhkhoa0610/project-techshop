@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Models\CartItem;
 use App\Models\User;
+use Illuminate\Support\Facades\Auth;
 
 
 
@@ -16,6 +17,11 @@ class PayController extends Controller
     }
     public function pay(Request $request) // Đây là phương thức bị thiếu
     {
+         $cartItemCount = 0;
+
+        if (Auth::check()) {
+            $cartItemCount = CartItem::where('user_id', Auth::id())->count('quantity');
+        }
         // ... (Phần 1: Nhận và giải mã JSON)
         $selectedItemsData = json_decode($request->input('items'), true);
         $selectedCartItemIds = array_column($selectedItemsData, 'id'); // Vẫn là 'id' từ JSON gửi lên
@@ -35,6 +41,7 @@ class PayController extends Controller
         return view('ui-thanhtoan.pay', [
             'cartItems' => $selectedCartItems,
             'user' => User::find(auth()->id()),
+            'cartItemCount'=> $cartItemCount,
         ]);
 
     }

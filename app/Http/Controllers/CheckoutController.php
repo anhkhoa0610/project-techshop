@@ -15,6 +15,12 @@ class CheckoutController extends Controller
      */
     public function handleCheckout(Request $request)
     {
+         $cartItemCount = 0;
+
+        if (Auth::check()) {
+            $cartItemCount = CartItem::where('user_id', Auth::id())->count('quantity');
+        }
+        
         if (!Auth::check()) {
             return redirect()->route('login')->with('error', 'Vui lòng đăng nhập để thanh toán.');
         }
@@ -67,6 +73,7 @@ class CheckoutController extends Controller
             'cartItems' => $finalCartItems,
             'user' => Auth::user(),
             'totalAmount' => $totalAmount,
+            'cartItemCount' => $cartItemCount,
         ]);
     }
 
