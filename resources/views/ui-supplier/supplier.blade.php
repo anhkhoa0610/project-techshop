@@ -64,5 +64,12 @@
         <i class="fa fa-arrow-up"></i>
     </a>
     {{-- Link tới JS vẫn giữ nguyên --}}
+    <script>
+        // Lấy ID người dùng từ server (ví dụ cho Laravel)
+        const USER_ID = {{ auth()->check() ? auth()->id() : 'null' }};
+
+        // Lấy CSRF token (Hàm add to cart cũng cần cái này)
+        const csrfToken = '{{ csrf_token() }}';
+    </script>
     <script src="{{ asset('js/supplier-page.js') }}"></script>
 @endsection
