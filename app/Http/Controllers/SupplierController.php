@@ -4,8 +4,9 @@ namespace App\Http\Controllers;
 
 use App\Models\Supplier;
 use App\Http\Requests\SupplierRequest;
-use Illuminate\Support\Facades\DB;
 use Illuminate\Pagination\LengthAwarePaginator;
+use Illuminate\Support\Facades\Auth;
+use App\Models\CartItem;
 
 class SupplierController extends Controller
 {
@@ -141,6 +142,7 @@ class SupplierController extends Controller
             'image' => $product->cover_image ? asset('uploads/' . $product->cover_image) : asset('placeholder.png'),
             'sales_count' => (int) ($product->sales_count ?? 0), // Dùng cho sort 'bestseller'
             // 'effective_price' => $salePrice, // Không cần gửi, chỉ dùng để sort
+            'stock_quantity' => (int) ($product->stock_quantity ?? 0),
         ];
     }
 
@@ -216,7 +218,11 @@ class SupplierController extends Controller
                     $query->orderBy('products.created_at', 'desc');
                     break;
             }
+            $cartItemCount = 0;
 
+            if (Auth::check()) {
+                $cartItemCount = CartItem::where('user_id', Auth::id())->count('quantity');
+            }
             // 3. Phân trang (Paginate)
             // Không cần 'groupBy' nữa vì chúng ta không Join
             $products = $query->paginate($perPage);
@@ -237,6 +243,7 @@ class SupplierController extends Controller
             // 6. Trả về JSON
             return response()->json([
                 'success' => true,
+                'cartItemCount' => $cartItemCount,
                 'supplier' => $supplierData,
                 'products' => $productItems,
                 'pagination' => [
