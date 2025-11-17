@@ -22,6 +22,7 @@ use App\Http\Controllers\VnpayController;
 use App\Http\Controllers\PostController;
 use App\Http\Controllers\ChartController;
 use App\Http\Controllers\CancelController;
+use App\Http\Controllers\SpecController;
 
 
 //trang chủ của tui, đụng vào nhớ xin phép =))
@@ -78,6 +79,10 @@ Route::middleware(['checkrole:Admin'])->group(function () {
         Route::get('/{user}/show', [UserController::class, 'show'])->name('users.show');
         Route::delete('/{user}', [UserController::class, 'destroy'])->name('users.destroy');
 
+    });
+
+    Route::prefix('specs')->group(function () {
+        Route::get('/', [SpecController::class, 'list'])->name('specs.list');
     });
 });
 
