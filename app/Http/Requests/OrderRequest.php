@@ -24,7 +24,7 @@ class OrderRequest extends FormRequest
         return [
             'user_id' => 'required|integer|exists:users,user_id',
             'shipping_address' => 'required|string|max:255|min:10',
-            'payment_method' => 'required|in:cash,card,transfer',
+            'payment_method' => 'required|in:cash,card,transfer,momo,vnpay',
             'voucher_id' => 'nullable|integer|exists:vouchers,voucher_id',
         ];
     }

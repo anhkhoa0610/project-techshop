@@ -67,14 +67,17 @@ final class CategoryTable extends PowerGridComponent
             )
             ->add('cover_image_filename', fn($category) => $category->cover_image)
             ->add('created_at');
+
     }
 
     public function columns(): array
     {
         return [
-            Column::make('Category id', 'category_id'),
+            Column::make('Category id', 'category_id')
+                ->sortable()
+                ->searchable(),
 
-             Column::make('Cover image', 'cover_image')
+            Column::make('Cover image', 'cover_image')
                 ->visibleInExport(false),
 
             Column::make('Category name', 'category_name')
@@ -101,6 +104,8 @@ final class CategoryTable extends PowerGridComponent
             Filter::inputText('category_name')
                 ->operators(['contains']),
             Filter::inputText('description')
+                ->operators(['contains']),
+            Filter::inputText('created_at')
                 ->operators(['contains']),
         ];
     }

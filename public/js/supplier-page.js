@@ -23,10 +23,10 @@ document.addEventListener('DOMContentLoaded', function () {
         if (cartButton) {
             // ----- ĐÂY LÀ PHẦN SỬA QUAN TRỌNG -----
             e.preventDefault(); // Ngăn hành vi mặc định của nút (nếu có)
-            
+
             // GỌI HÀM XỬ LÝ GIỎ HÀNG
-            handleAddToCart(cartButton); 
-            
+            handleAddToCart(cartButton);
+
             // Return để không chạy code chuyển trang bên dưới
             return;
             // ----------------------------------------
@@ -42,7 +42,6 @@ document.addEventListener('DOMContentLoaded', function () {
         }
     });
     // ----- KẾT THÚC PHẦN SỬA -----
-
 
     // ----- Tạo và chèn nút "Xem Thêm" vào DOM -----
     const xemThemContainer = document.createElement('div');
@@ -102,7 +101,9 @@ document.addEventListener('DOMContentLoaded', function () {
 
         let priceOldHtml = '';
         let badgeHtml = '';
-
+        const stockHtml = product.stock_quantity
+            ? `Số lượng: <span class="text-secondary fw-bold">${product.stock_quantity}</span>`
+            : `<span class="text-secondary fw-bold">Hết hàng</span>`;
         if (product.discount && discountAmount > 0) {
             const discountPercent = product.discount.discount_percent || Math.round((discountAmount / originalPrice) * 100);
             badgeHtml = `<div class="product-badge badge-save">Tiết kiệm ${discountAmount.toLocaleString('vi-VN')} đ</div>`;
@@ -122,11 +123,15 @@ document.addEventListener('DOMContentLoaded', function () {
                 <div class="product-info">
                     <span class="product-brand">${product.supplier_name || 'Không rõ'}</span>
                     <h4>${product.name}</h4>
+                    <div class="text-secondary small">${stockHtml}</div>
                     <div class="price-area">
                         <div class="price-current">${salePrice.toLocaleString('vi-VN')}đ</div>
                         ${priceOldHtml}
                     </div>
-                    <button class="btn-add-cart btn-add-to-cart" data-product-id="${product.product_id}">Thêm vào giỏ</button>
+                    ${product.stock_quantity > 0 ?
+                    '<button class="btn-add-cart btn-add-to-cart" data-product-id="${product.product_id}">Thêm vào giỏ</button>' :
+                    '<div class="w-100 h-25 d-flex justify-content-center align-items-center"><span class="fw-bold d-block text-secondary">Liên hệ sau</span></div>'
+                }
                 </div>
             </div>
         `;
@@ -160,6 +165,11 @@ document.addEventListener('DOMContentLoaded', function () {
             })
             .then(data => {
                 if (data.success) {
+                    //load sô lượng giỏ hàng nếu có
+                    if (isSortOrInit && data.cartItemCount !== undefined) {
+                        updateCartCountDisplay(data.cartItemCount, false);
+                    }
+
                     if (isSortOrInit && data.supplier) {
                         updateShopInfo(data.supplier);
                     }
@@ -355,14 +365,17 @@ async function handleAddToCart(button) {
     }
 }
 
-function updateCartCountDisplay(newCount) {
+function updateCartCountDisplay(newCount, useFlash = true) {
     const cartCountElement = document.querySelector('.cart-count');
     if (cartCountElement) {
         cartCountElement.textContent = newCount;
 
-        cartCountElement.classList.add('cart-flash');
-        setTimeout(() => {
-            cartCountElement.classList.remove('cart-flash');
-        }, 500);
+        // Chỉ thêm class 'cart-flash' nếu useFlash là true
+        if (useFlash) {
+            cartCountElement.classList.add('cart-flash');
+            setTimeout(() => {
+                cartCountElement.classList.remove('cart-flash');
+            }, 500);
+        }
     }
 }
