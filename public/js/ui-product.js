@@ -631,8 +631,13 @@ document.addEventListener('DOMContentLoaded', function () {
         // Set hidden ID
         document.getElementById('edit_review_id').value = reviewId;
 
+
         // Set comment
-        document.getElementById('edit_comment').value = comment ?? "";
+        document.getElementById('edit_comment').value =
+            (comment === null || comment === "null" || comment === undefined || comment === "undefined")
+                ? ""
+                : comment;
+
 
         // Set rating
         document.querySelectorAll('#editReviewForm input[name="rating"]').forEach(input => {
