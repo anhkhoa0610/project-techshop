@@ -34,7 +34,7 @@ class CartRequest extends FormRequest
             'product_id.integer' => 'Sản phẩm không tồn tại',
             'product_id.exists' => 'Sản phẩm không tồn tại',
 
-            'quantity.required' => 'Thiếu số lượng',
+            'quantity.required' => 'Số lượng không hợp lệ',
             'quantity.integer' => 'Số lượng phải là số nguyên',
             'quantity.min' => 'Số lượng tối thiểu là 1',
         ];
@@ -53,7 +53,7 @@ class CartRequest extends FormRequest
 
             if($this->quantity >  $stock ){
                 $validator->errors()->add('quantity', '
-                Số lượng không hợp lệ (số lượng hàng có sẵn trong kho không đủ).');
+                số lượng hàng có sẵn trong kho không đủ.');
                 return;
             }
             // Tính số lượng đã có trong giỏ hàng
