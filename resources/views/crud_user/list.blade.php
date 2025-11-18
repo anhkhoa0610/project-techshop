@@ -60,6 +60,7 @@
                         <thead class="thead-light">
                             <tr>
                                 <th>ID</th>
+                                <th>Ảnh đại diện</th>
                                 <th>Họ Tên</th>
                                 <th>Email</th>
                                 <th>Địa chỉ</th>
@@ -81,6 +82,17 @@
                                     data-role="{{ $user->role }}"
                                     data-is_tdc_student="{{ $user->is_tdc_student }}">
                                     <td>{{ $user->user_id }}</td>
+                                    <td>
+                                        <div class="avatar-container" style="width: 50px; height: 50px; border-radius: 50%; overflow: hidden; margin: 0 auto;">
+                                            @if($user->profile && $user->profile->avatar)
+                                                <img src="{{ asset('storage/' . $user->profile->avatar) }}" alt="{{ $user->full_name }}" style="width: 100%; height: 100%; object-fit: cover;">
+                                            @else
+                                                <div style="width: 100%; height: 100%; background-color: #f0f0f0; display: flex; align-items: center; justify-content: center;">
+                                                    <i class="fas fa-user" style="font-size: 24px; color: #888;"></i>
+                                                </div>
+                                            @endif
+                                        </div>
+                                    </td>
                                     <td>{{ $user->full_name }}</td>
                                     <td>{{ $user->email }}</td>
                                     <td>{{ $user->address }}</td>
@@ -115,7 +127,7 @@
                                 </tr>
                             @empty
                                 <tr>
-                                    <td colspan="8" class="text-center">Không có dữ liệu</td>
+                                    <td colspan="9" class="text-center">Không có dữ liệu</td>
                                 </tr>
                             @endforelse
                         </tbody>
