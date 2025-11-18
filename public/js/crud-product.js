@@ -6,6 +6,9 @@ function decodeHtmlEntities(str) {
 
 //Mở modal Edit
 $(document).on('click', '#edit-product-btn', function () {
+    const formReset = document.getElementById('editProductForm');
+    formReset.reset();
+    formReset.querySelectorAll('.text-danger, .error-message').forEach(e => e.innerHTML = "");
     const row = this;
     $('#edit_product_name').val(decodeHtmlEntities(row.getAttribute('data-product-name')) || '');
     $('#edit_description').val(decodeHtmlEntities(row.getAttribute('data-description')) || '');
@@ -17,6 +20,7 @@ $(document).on('click', '#edit-product-btn', function () {
     $('#edit_volume_sold').val(row.getAttribute('data-volume-sold') || '');
     $('#edit_release_date').val(row.getAttribute('data-release-date') || '');
     $('#edit_embed_url_review').val(row.getAttribute('data-embed-url-review') || '');
+    $('#edit_updated_at').val(row.getAttribute('data-updated-at') || '');
 
     const imageFile = row.getAttribute('data-cover-image');
     const preview = document.getElementById('preview_image');
@@ -36,7 +40,9 @@ $(document).on('click', '#edit-product-btn', function () {
 
 // Hiển thị modal khi nhấn nút "Thêm Mới Sản Phẩm"
 document.querySelector('#btn-register').addEventListener('click', function () {
-    document.getElementById('addProductForm').reset();
+    const formReset = document.getElementById('addProductForm');
+    formReset.reset();
+    formReset.querySelectorAll('.text-danger, .error-message').forEach(e => e.innerHTML = "");
     document.getElementById('add_preview_image').src = "/images/place-holder.jpg";
     $('#addProductModal').modal('show');
 });

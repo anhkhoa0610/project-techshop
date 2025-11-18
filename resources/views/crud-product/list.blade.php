@@ -129,6 +129,7 @@
         <div class="modal-dialog" role="document">
             <form id="editProductForm" method="POST" enctype="multipart/form-data">
                 @csrf
+                <input type="hidden" id="edit_updated_at" name="updated_at" value="">
                 <div class="modal-content">
                     <div class="modal-header">
                         <h5 class="modal-title" id="editProductModalLabel">Chỉnh sửa sản phẩm</h5>

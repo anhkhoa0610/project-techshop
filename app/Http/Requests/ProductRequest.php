@@ -28,6 +28,7 @@ class ProductRequest extends FormRequest
             'required',
             'string',
             'max:255',
+            'min:5',
             Rule::unique('products', 'product_name')->ignore($id, 'product_id'),
         ];
 
@@ -37,9 +38,9 @@ class ProductRequest extends FormRequest
             'supplier_id' => 'required|exists:suppliers,supplier_id',
             'price' => 'required|numeric|min:0',
             'stock_quantity' => 'required|integer|min:0',
-            'description' => 'nullable|string',
+            'description' => 'nullable|string|max:1000',
             'volume_sold' => 'required|integer|min:0',
-            'cover_image' => 'nullable',
+            'cover_image' => 'nullable|image|mimes:jpeg,png,jpg,gif,webp|max:5120',
             'warranty_period' => 'required|integer|min:0',
             'release_date' => 'required|date|before_or_equal:today',
             'embed_url_review' => [
@@ -66,8 +67,8 @@ class ProductRequest extends FormRequest
             'max.file' => ':attribute không được vượt quá :max kilobytes',
             'url' => ':attribute phải là link youtube hợp lệ',
             'regex' => ':attribute phải là link youtube hợp lệ',
-            'before_or_equal' =>':attribute không được lớn hơn ngày hiện tại',
-            'date' =>'Sai định dạng :attribute',
+            'before_or_equal' => ':attribute không được lớn hơn ngày hiện tại',
+            'date' => 'Sai định dạng :attribute',
         ];
     }
 
