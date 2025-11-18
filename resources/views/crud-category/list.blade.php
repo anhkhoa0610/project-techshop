@@ -36,8 +36,7 @@
                                         <img id="preview_image" src="" alt="Ảnh sản phẩm"
                                             style="max-width: 120px; border-radius: 6px;">
                                     </div>
-                                    <input type="file" class="form-control" id="edit_cover_image" name="cover_image"
-                                        accept="image/*">
+                                    <input type="file" class="form-control" id="edit_cover_image" name="cover_image">
                                     <div class="text-danger error-message" id="error_edit_cover_image"></div>
                                 </div>
                                 <div class="form-group">

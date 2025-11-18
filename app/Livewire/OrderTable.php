@@ -92,6 +92,7 @@ final class OrderTable extends PowerGridComponent
                 return '<span class="px-2 py-1 rounded text-black" style="background-color: ' . $color . '; width: 95px; display: inline-block; text-align: center;">'
                     . ucfirst($order->payment_method) . '</span>';
             })
+            ->add('payment_value', fn($order) => $order->payment_method)
             ->add('status_value', fn($order) => $order->status)
             ->add('created_at')
             ->add(

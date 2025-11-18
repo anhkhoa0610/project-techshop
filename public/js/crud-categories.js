@@ -2,6 +2,8 @@
 //Mở modal Edit
 $(document).on('click', '.edit', function () {
     const row = this;
+    // xóa đi các lỗi cũ sau khi click
+    document.querySelectorAll('.error-message').forEach(el => el.textContent = '');
 
     $('#category_name').val(row.getAttribute('data-category-name') || '');
     $('#description').val(row.getAttribute('data-category-description') || '');
@@ -88,7 +90,7 @@ document.getElementById('editCategoryForm').addEventListener('submit', async fun
             Swal.fire({
                 icon: 'error',
                 title: 'Cập nhật danh mục thất bại',
-                text: 'Đã xảy ra lỗi không xác định',
+                text: 'Không thể sửa danh mục này, vui lòng thử lại sau',
                 confirmButtonText: 'Đóng',
                 confirmButtonColor: '#d33'
             });

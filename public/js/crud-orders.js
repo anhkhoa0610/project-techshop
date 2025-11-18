@@ -2,7 +2,8 @@
 //Mở modal Edit
 $(document).on('click', '.edit', function () {
     const row = this;
-
+    // xóa đi các lỗi cũ sau khi click
+    document.querySelectorAll('.error-message').forEach(el => el.textContent = '');
     // Lấy dữ liệu từ data-attributes
     $('#edit_status').val(row.getAttribute('data-status') || '');
     $('#edit_shipping_address').val(row.getAttribute('data-shipping-address') || '');
@@ -156,7 +157,7 @@ function confirmDelete(id) {
                     if (data.success) {
                         Swal.fire('Đã xóa!', data.message, 'success').then(() => location.reload());
                     } else {
-                        Swal.fire('Lỗi', 'Không thể xóa đơn hàng.', 'error');
+                        Swal.fire('Lỗi', 'Không thể xóa đơn hàng này,vui lòng thử lại sau!', 'error');
                     }
                 })
                 .catch(() => Swal.fire('Lỗi', 'Không thể kết nối đến server.', 'error'));

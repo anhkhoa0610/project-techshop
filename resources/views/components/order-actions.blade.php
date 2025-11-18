@@ -2,7 +2,7 @@
     <button class="edit-btn p-2 rounded text-blue-600 edit"
         data-status="{{ $order->status_value }}"
         data-shipping-address="{{ $order->shipping_address }}"
-        data-payment-method="{{ $order->payment_method }}"
+        data-payment-method="{{ $order->payment_value}}"
         data-voucher-id="{{ $order->voucher_id }}"
         data-order-id="{{ $order->order_id }}"
         >
