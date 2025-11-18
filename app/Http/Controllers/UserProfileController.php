@@ -3,50 +3,48 @@
 namespace App\Http\Controllers;
 
 use App\Models\User;
-use App\Models\UserProfile;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Auth;
 
 class UserProfileController extends Controller
 {
-   public function updateAvatar(Request $request)
-{
-    $request->validate([
-        'avatar' => 'required|image|mimes:jpeg,png,jpg,gif|max:2048',
-    ]);
+    public function updateAvatar(Request $request)
+    {
+        $request->validate([
+            'avatar' => 'required|image|mimes:jpeg,png,jpg,gif,jfif,webp|max:2048',
+        ]);
 
-    $user = Auth::user();
+        $user = Auth::user();
 
-    // Xóa avatar cũ nếu có
-    if ($user->profile && $user->profile->avatar) {
-        Storage::disk('public')->delete($user->profile->avatar);
-    }
+        // Xóa ảnh cũ
+        if ($user->profile && $user->profile->avatar) {
+            Storage::disk('public')->delete($user->profile->avatar);
+        }
 
-    // Lưu file mới vào thư mục "avatars"
-    $path = $request->file('avatar')->store('avatars', 'public');
+        // Lưu file vào storage/app/public/avatars
+        $path = $request->file('avatar')->store('avatars', 'public');
 
-    // Cập nhật hoặc tạo mới profile
-    $user->profile()->updateOrCreate(
-        ['user_id' => $user->user_id], // lưu ý dùng user_id
-        ['avatar' => $path]
-    );
+        // Cập nhật DB
+        $user->profile()->updateOrCreate(
+            ['user_id' => $user->user_id],
+            ['avatar' => $path]
+        );
 
-    // Trả về JSON để JS cập nhật ảnh mà không reload
-    return response()->json([
-        'success' => true,
-        'avatar_url' => asset('storage/' . $path),
-    ]);
-
-        // return back()->with('success', 'Cập nhật ảnh đại diện thành công!');
+        // Trả về JSON để JS cập nhật ảnh
+        // return response()->json([
+        //     'success' => true,
+        //     'avatar_url' => asset('storage/' . $path)
+        // ]);
+        return back()->with('success', 'Cập nhật thông tin thành công!');
     }
 
     public function removeAvatar()
     {
         $user = Auth::user();
-        
+
         if ($user->profile && $user->profile->avatar) {
-            Storage::delete('public/' . $user->profile->avatar);
+            Storage::disk('public')->delete($user->profile->avatar);
             $user->profile->update(['avatar' => null]);
             return back()->with('success', 'Đã xóa ảnh đại diện!');
         }
@@ -57,7 +55,7 @@ class UserProfileController extends Controller
     public function updateProfile(Request $request)
     {
         $user = Auth::user();
-        
+
         $validated = $request->validate([
             'full_name' => 'required|string|max:255',
             'phone' => 'nullable|string|max:15',
@@ -67,10 +65,8 @@ class UserProfileController extends Controller
             'website' => 'nullable|url|max:255',
         ]);
 
-        // Cập nhật thông tin người dùng
         $user->update($validated);
 
-        // Cập nhật thông tin profile
         $profileData = $request->only(['bio', 'website']);
         $user->profile()->updateOrCreate(
             ['user_id' => $user->id],
@@ -80,4 +76,3 @@ class UserProfileController extends Controller
         return back()->with('success', 'Cập nhật thông tin thành công!');
     }
 }
-

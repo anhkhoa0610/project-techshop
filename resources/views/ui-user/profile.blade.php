@@ -1,9 +1,6 @@
 @extends('layouts.layouts')
-
 @section('title', 'Thông tin cá nhân - TechStore')
-
 @section('content')
-
     <link rel="stylesheet" href="{{ asset('css/profile.css') }}">
 
     <div class="profile-container mt-5">
@@ -13,43 +10,60 @@
                     @php
                         $user = auth()->user();
 
-                        $avatarUrl = $user->profile ? $user->profile->avatar : '';
+                        $defaultAvatarUrl = asset('images/avatars/user-icon.png');
+                        $avatarFile = $user->profile->avatar ?? null;
+                        if ($avatarFile) {
+                            $userAvatarPath = asset('storage/' . $avatarFile);
+                        } else {
+                            $userAvatarPath = $defaultAvatarUrl;
+                        }
                     @endphp
-                    @if($avatarUrl)
-                        <img src="{{ asset('storage/' . $avatarUrl) }}" alt="{{ $user->full_name }}"
-                            class="rounded-circle user-avatar"
-                            style="width: 150px; height: 150px; object-fit: cover; border: 3px solid #f0f0f0;">
-                    @else
-                        <div class="avatar-placeholder rounded-circle d-flex align-items-center justify-content-center bg-secondary text-white"
-                            style="width: 150px; height: 150px; font-size: 60px; border: 3px solid #f0f0f0;">
-                            {{ strtoupper(substr(auth()->user()->full_name, 0, 1)) }}
-                        </div>
-                    @endif
+
+                    <img src="{{ $userAvatarPath }}" onerror="this.src='{{ $defaultAvatarUrl }}'"
+                        alt="{{ $user->full_name ?? 'User Avatar' }}" class="rounded-circle user-avatar"
+                        style="width:150px;height:150px;object-fit:cover;border:3px solid #f0f0f0;">
+
 
                     <form action="{{ route('profile.avatar.update') }}" method="POST" enctype="multipart/form-data"
                         class="avatar-upload-form">
                         @csrf
-                        <label for="avatar-upload" class="btn btn-sm btn-primary position-absolute"
-                            style="bottom: -85px; right: 55px; width: 25px; height: 25px; display: flex;">
-                            <i class="bi bi-camera"></i>
+                        <label for="avatar-upload"
+                            class="btn btn-sm btn-primary position-absolute rounded-circle p-0 d-flex align-items-center justify-content-center"
+                            style="bottom: 0px; right: 0px; width: 30px; height: 30px; cursor: pointer; border: 2px solid #fff;">
+                            <i class="bi bi-camera" style="font-size: 14px;"></i>
+
                             <input type="file" id="avatar-upload" name="avatar" class="d-none" accept="image/*"
                                 onchange="this.form.submit()">
                         </label>
                     </form>
-
-
                 </div>
                 <h4 class="mt-3">{{ auth()->user()->full_name }}</h4>
                 @if(auth()->user()->profile && auth()->user()->profile->bio)
                     <p class="text-muted">{{ auth()->user()->profile->bio }}</p>
                 @endif
             </div>
-            <ul>
+            <div class="sidebar-menu" style="width:250px; background:#fafafa; padding:20px; border-radius:10px;">
+                <h6 style="font-weight:bold;">Tài Khoản Của Tôi</h6>
+                <ul class="profile-tabs" style="list-style:none; padding:0; margin-top:15px;">
+                    <li class="tab-item active"><a href="{{ route('user.profile') }}">Thông tin cá nhân</a></li>
+                    <li class="tab-item"> <a href="{{ route('user.editProfile') }}">Chỉnh sửa</a></li>
+                    <!-- <li class="tab-item">Đơn mua</li> -->
+                    <li class="tab-item"><a href="{{ route('user.changePassword') }}">Thay mật
+                            khẩu</a> </li>
+                    <li class="tab-item"> <button type="button" data-bs-toggle="modal" data-bs-target="#deleteUserModal"
+                            data-url="{{ route('user.delete') }}" class="btn btn-danger"
+                            data-name="{{ auth()->user()->full_name }}">
+                            Xóa tài khoản</button></li>
+                </ul>
+<h6 style="margin-top:25px; font-weight:bold;">
+    <a href="#">Khuyến mãi</a>
+</h6>                <h6 style="margin-top:25px; font-weight:bold;"> <a href="#">Đơn Mua</a></h6>
+            </div>
+            <!-- <ul>
                 <li><a href="{{ route('user.profile') }}">Tài Khoản</a></li>
-                <li><a href="#">Địa chỉ</a></li>
                 <li><a href="{{ route('promotion.index') }}">Khuyến mãi</a></li>
                 <li><a href="#">Đơn mua</a></li>
-            </ul>
+            </ul> -->
         </div>
 
         <div class="profile-content mt-5">
@@ -72,15 +86,8 @@
                         </p>
                     </div>
                 </div>
-
                 <div class="profile-actions">
-                    <a href="{{ route('user.editProfile') }}" class="btn btn-edit">Chỉnh sửa</a>
-                    <a href="{{ route('user.changePassword') }}" class="btn btn-password">Thay mật khẩu</a>
-                    <button type="button" class="btn btn-delete" data-bs-toggle="modal" data-bs-target="#deleteUserModal"
-                        data-url="{{ route('user.delete') }} " data-name="{{ auth()->user()->full_name }}">
-                        Xóa tài khoản
-                    </button>
-
+                    <!-- <a class="btn btn-edit">Chỉnh sửa</a> -->
                 </div>
             </div>
         </div>
@@ -113,6 +120,22 @@
         </div>
     </div>
     <style>
+        .tab-item {
+            padding: 6px 0;
+            cursor: pointer;
+            color: #333;
+            font-size: 15px;
+        }
+
+        .tab-item:hover {
+            color: #ff5733;
+        }
+
+        .tab-item.active {
+            font-weight: bold;
+            color: #ff5733;
+        }
+
         .profile-container {
             display: flex;
             justify-content: space-between;
@@ -244,35 +267,64 @@
         /* Responsive */
 
         /* @media (max-width: 768px) {
-                                                                                                        .profile-container {
-                                                                                                            flex-direction: column;
-                                                                                                        }
-                                                                                                        .sidebar {
-                                                                                                            width: 100%;
-                                                                                                        }
-                                                                                                        .profile-info {
-                                                                                                            flex-direction: column;
-                                                                                                        }
-                                                                                                        .info-left, .info-right {
-                                                                                                            width: 100%;
-                                                                                                        }
-                                                                                                    } */
+                                                                                                                                                .profile-container {
+                                                                                                                                                    flex-direction: column;
+                                                                                                                                                }
+                                                                                                                                                .sidebar {
+                                                                                                                                                    width: 100%;
+                                                                                                                                                }
+                                                                                                                                                .profile-info {
+                                                                                                                                                    flex-direction: column;
+                                                                                                                                                }
+                                                                                                                                                .info-left, .info-right {
+                                                                                                                                                    width: 100%;
+                                                                                                                                                }
+                                                                                                                                            } */
     </style>
 @endsection
 
 @section('scripts')
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script>
-        // Add this script to handle avatar updates without page reload
         document.addEventListener('DOMContentLoaded', function () {
             const avatarForm = document.querySelector('.avatar-upload-form');
-            if (avatarForm) {
-                avatarForm.addEventListener('submit', function (e) {
-                    e.preventDefault();
+            const fileInput = document.getElementById('avatar-upload');
 
-                    const formData = new FormData(this);
+            if (fileInput) {
+                fileInput.addEventListener('change', function () {
 
-                    fetch(this.action, {
+                    // (1) Kiểm tra nếu không có file
+                    if (!this.files || !this.files[0]) return;
+
+                    const file = this.files[0];
+
+                    // (2) Kiểm tra định dạng file
+                    if (!file.type.startsWith("image/")) {
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'Lỗi file!',
+                            text: 'Vui lòng chọn đúng định dạng hình ảnh.'
+                        });
+                        return;
+                    }
+
+                    // (3) Kiểm tra kích thước file (< 2MB)
+                    if (file.size > 2 * 1024 * 1024) {
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'Ảnh quá lớn!',
+                            text: 'Kích thước ảnh tối đa là 2MB.'
+                        });
+                        return;
+                    }
+
+                    const formData = new FormData(avatarForm);
+                    const avatarImg = document.querySelector('.user-avatar');
+
+                    // Loading effect
+                    if (avatarImg) avatarImg.style.opacity = '0.5';
+
+                    fetch(avatarForm.action, {
                         method: 'POST',
                         body: formData,
                         headers: {
@@ -280,48 +332,35 @@
                             'X-Requested-With': 'XMLHttpRequest'
                         }
                     })
-                        .then(response => response.json())
+                        .then(res => res.json())
                         .then(data => {
-                            if (data.success) {
-                                const avatarImg = document.querySelector('.user-avatar');
+                            if (!data.success) throw new Error(data.message || "Upload thất bại");
 
-                                if (avatarImg) {
-                                    avatarImg.src = data.avatar_url + '?v=' + new Date().getTime();
-                                } else {
-                                    // Nếu chưa có avatar ảnh thì reload trang
-                                    window.location.reload();
-                                }
+                            // Cập nhật ảnh với cache buster để hiển thị ảnh mới
+                            avatarImg.src = data.avatar_url + "?v=" + Date.now();
+                            avatarImg.style.opacity = '1';
 
-                                Swal.fire({
-                                    icon: 'success',
-                                    title: 'Thành công!',
-                                    text: 'Cập nhật ảnh đại diện thành công!',
-                                    timer: 2000,
-                                    showConfirmButton: false
-                                });
-                            } else {
-                                Swal.fire({
-                                    icon: 'error',
-                                    title: 'Lỗi!',
-                                    text: data.message || 'Không thể cập nhật ảnh!'
-                                });
-                            }
-                        })
-                        .catch(error => {
-                            console.error('Error:', error);
                             Swal.fire({
-                                icon: 'error',
-                                title: 'Lỗi!',
-                                text: 'Có lỗi xảy ra khi cập nhật ảnh đại diện!',
+                                icon: 'success',
+                                title: 'Cập nhật thành công!',
+                                text: 'Ảnh đại diện đã được thay đổi.',
                                 timer: 2000,
                                 showConfirmButton: false
                             });
+                        })
+                        .catch(err => {
+                            Swal.fire({
+                                icon: 'error',
+                                title: 'Lỗi!',
+                                text: err.message
+                            });
+                            if (avatarImg) avatarImg.style.opacity = '1';
                         });
-
                 });
             }
         });
     </script>
+
     <script>
         $('#deleteUserModal').on('click', '.btn-secondary', function () {
             $('#deleteUserModal').modal('hide');
