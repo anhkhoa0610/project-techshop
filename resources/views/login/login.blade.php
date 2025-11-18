@@ -40,7 +40,7 @@
                         @endif
 
                         <label for="email">Email</label>
-                        <input type="email" id="email" name="email" value="{{ old('email') }}" placeholder="Nhập email">
+                        <input type="text" id="email" name="email" value="{{ old('email') }}" placeholder="Nhập email">
                         @if ($errors->has('email'))
                             <span class="text-danger">{{ $errors->first('email') }}</span>
                         @endif
