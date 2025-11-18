@@ -31,10 +31,10 @@ final class ProductTable extends PowerGridComponent
     {
         return [
             PowerGrid::header()
-                ->showToggleColumns() 
-                ->includeViewOnTop('components.add-product-button')->showSearchInput(), 
+                ->showToggleColumns()
+                ->includeViewOnTop('components.add-product-button')->showSearchInput(),
             PowerGrid::footer()
-                ->showPerPage(5, [5, 10, 25, 50]) 
+                ->showPerPage(5, [5, 10, 25, 50])
                 ->showRecordCount(),
             PowerGrid::exportable(fileName: 'products-export')
                 ->type(Exportable::TYPE_XLS, Exportable::TYPE_CSV),
@@ -78,6 +78,7 @@ final class ProductTable extends PowerGridComponent
             ->add('warranty_period')
             ->add('release_date')
             ->add('embed_url_review')
+            ->add('updated_at')
         ;
     }
 
@@ -137,6 +138,12 @@ final class ProductTable extends PowerGridComponent
     {
         return [
             Filter::inputText('product_id')
+                ->operators(['contains']),
+
+            Filter::inputText('volume_sold')
+                ->operators(['contains']),
+
+            Filter::inputText('warranty_period')
                 ->operators(['contains']),
 
             Filter::inputText('product_name')

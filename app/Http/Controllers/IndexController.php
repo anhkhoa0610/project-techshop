@@ -9,6 +9,7 @@ use App\Models\CartItem;
 use App\Http\Requests\CartRequest;
 use App\Models\Post;
 use Illuminate\Support\Facades\Auth;
+use App\Models\Supplier;
 
 
 class IndexController extends Controller
@@ -162,6 +163,8 @@ class IndexController extends Controller
     {
         $categories = Category::all();
 
+        $suppliers = Supplier::all();
+
         $productQuery = Product::with(['specs'])
             ->withAvg('reviews', 'rating')
             ->withCount('reviews');
@@ -192,7 +195,7 @@ class IndexController extends Controller
             'categories',
             'currentCategory',
             'posts',
-            'cartItemCount'
+            'cartItemCount', 'suppliers'
         ));
     }
 

@@ -81,11 +81,18 @@ class ProductController extends Controller
         if (!$product) {
             return response()->json([
                 'success' => false,
-                'message' => 'Product not found',
+                'message' => 'Sản phẩm không tồn tại',
             ], 404);
         }
 
         $data = $request->all();
+
+        if ($data['updated_at'] != $product->updated_at) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Sản phẩm đã được cập nhật trước đó , vui lòng tải lại trang',
+            ], 409);
+        }
 
         if ($request->hasFile('cover_image')) {
             $file = $request->file('cover_image');
