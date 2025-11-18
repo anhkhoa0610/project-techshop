@@ -208,7 +208,7 @@ document.getElementById("payBtn").addEventListener("click", () => {
         Swal.fire({
                 icon: "error",
                 title: "Lỗi!",
-                text: "Vui lòng nhập email hợp lệ",
+                text: "Vui lòng nhập email hợp lệ, user@domain.com",
             });
         emailInput.classList.add("error");
         return;
