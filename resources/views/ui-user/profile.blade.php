@@ -55,15 +55,12 @@
                             data-name="{{ auth()->user()->full_name }}">
                             Xóa tài khoản</button></li>
                 </ul>
-<h6 style="margin-top:25px; font-weight:bold;">
-    <a href="#">Khuyến mãi</a>
-</h6>                <h6 style="margin-top:25px; font-weight:bold;"> <a href="#">Đơn Mua</a></h6>
+                <h6 style="margin-top:25px; font-weight:bold;">
+                    <a href="#">Khuyến mãi</a>
+                </h6>
+                <h6 style="margin-top:25px; font-weight:bold;"> <a href="#">Sinh viên TDC</a></h6>
             </div>
-            <!-- <ul>
-                <li><a href="{{ route('user.profile') }}">Tài Khoản</a></li>
-                <li><a href="{{ route('promotion.index') }}">Khuyến mãi</a></li>
-                <li><a href="#">Đơn mua</a></li>
-            </ul> -->
+        
         </div>
 
         <div class="profile-content mt-5">
@@ -267,19 +264,19 @@
         /* Responsive */
 
         /* @media (max-width: 768px) {
-                                                                                                                                                .profile-container {
-                                                                                                                                                    flex-direction: column;
-                                                                                                                                                }
-                                                                                                                                                .sidebar {
-                                                                                                                                                    width: 100%;
-                                                                                                                                                }
-                                                                                                                                                .profile-info {
-                                                                                                                                                    flex-direction: column;
-                                                                                                                                                }
-                                                                                                                                                .info-left, .info-right {
-                                                                                                                                                    width: 100%;
-                                                                                                                                                }
-                                                                                                                                            } */
+                                                                                                                                                    .profile-container {
+                                                                                                                                                        flex-direction: column;
+                                                                                                                                                    }
+                                                                                                                                                    .sidebar {
+                                                                                                                                                        width: 100%;
+                                                                                                                                                    }
+                                                                                                                                                    .profile-info {
+                                                                                                                                                        flex-direction: column;
+                                                                                                                                                    }
+                                                                                                                                                    .info-left, .info-right {
+                                                                                                                                                        width: 100%;
+                                                                                                                                                    }
+                                                                                                                                                } */
     </style>
 @endsection
 
