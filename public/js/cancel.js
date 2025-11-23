@@ -64,7 +64,7 @@ document.querySelectorAll('.order-card').forEach(card => {
                                 // Xóa phần hiển thị khỏi giao diện
                                 card.remove();
                             } else {
-                                Swal.fire('Lỗi', data.message, 'error');
+                                Swal.fire('Hủy Đơn hàng không thành công', data.message, 'error');
                             }
                         })
                         .catch(() => Swal.fire('Lỗi', 'Không thể kết nối máy chủ', 'error'));

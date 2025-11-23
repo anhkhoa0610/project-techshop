@@ -146,10 +146,11 @@
                                 <label for="supplier" class="form-label fw-semibold mt-3">Nhà phân phối</label>
                                 <select class="form-select" id="supplier" name="supplier_filter">
                                     <option value="">Tất cả</option>
-                                    <option value="1">Apple</option>
-                                    <option value="2">Samsung</option>
-                                    <option value="3">ASUS</option>
-                                    <option value="4">Dell</option>
+                                    @foreach ($suppliers as $supplier)
+                                        <option value="{{ $supplier->supplier_id }}">
+                                            {{ $supplier->name }}
+                                        </option>
+                                    @endforeach
                                 </select>
                             </div>
 

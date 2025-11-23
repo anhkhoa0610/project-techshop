@@ -159,7 +159,7 @@
             cursor: not-allowed;
         }
 
-        .loader {
+        .loader-1 {
             border: 4px solid #f3f3f3;
             border-top: 4px solid #3498db;
             border-radius: 50%;
@@ -217,7 +217,7 @@
             </div>
 
             <div class="load-more-container">
-                <div class="loader" id="loader"></div>
+                <div class="loader-1" id="loader"></div>
 
                 @if ($posts->hasMorePages())
                     <button class="load-more-btn" id="load-more-btn">
