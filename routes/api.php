@@ -14,6 +14,7 @@ use App\Http\Controllers\UIProductDetailsController;
 use App\Http\Controllers\ProductController;
 use App\Http\Controllers\LoginController;
 use App\Http\Controllers\PromotionController;
+use App\Http\Controllers\SpecController;
 
 Route::post('/login', [LoginController::class, 'apiLogin']);
 Route::middleware('auth:sanctum')->post('/logout', [LoginController::class, 'apiLogout']);
@@ -29,6 +30,8 @@ Route::middleware(['auth:sanctum', 'checkrole:Admin'])->group(function () {
     Route::apiResource('suppliers', SupplierController::class);
 
     Route::apiResource('vouchers', VoucherController::class);
+
+    Route::apiResource('specs', SpecController::class);
 });
 
 Route::get('categories/{categoryId}/products', [IndexController::class, 'getProductsByCategory']);
@@ -67,4 +70,5 @@ Route::get('/supplier/{id}/sort-newest', [SupplierController::class, 'sortnewest
 Route::get('/supplier/{id}/sort-best-seller', [SupplierController::class, 'sortbestsellerProduct']);
 
 Route::get('/suppliers', [SupplierController::class, 'index']);
+Route::get('/products-spec', [SpecController::class, 'getProducts']);
 

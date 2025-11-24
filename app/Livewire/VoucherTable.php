@@ -78,7 +78,6 @@ final class VoucherTable extends PowerGridComponent
                 ->searchable(),
 
             Column::make('Discount type', 'discount_type')
-                ->sortable()
                 ->searchable(),
 
             Column::make('Discount value', 'discount_value')
@@ -92,7 +91,6 @@ final class VoucherTable extends PowerGridComponent
                 ->sortable(),
 
             Column::make('Status', 'status_formatted', 'status')
-                ->sortable()
                 ->searchable(),
 
             Column::make('Created at', 'created_at_formatted', 'created_at')
@@ -122,6 +120,7 @@ final class VoucherTable extends PowerGridComponent
                 ->optionLabel('label'),
             Filter::datepicker('start_date'),
             Filter::datepicker('end_date'),
+            Filter::datepicker('created_at'),
         ];
     }
 

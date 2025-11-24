@@ -12,6 +12,26 @@ class User extends Authenticatable
 {
     /** @use HasFactory<\Database\Factories\UserFactory> */
     use HasFactory, Notifiable, HasApiTokens;
+    
+    /**
+     * Get the user's profile.
+     */
+    public function profile()
+    {
+        return $this->hasOne(UserProfile::class, 'user_id', 'user_id');
+    }
+    
+    /**
+     * Get the user's avatar URL.
+     *
+     * @return string
+     */
+    public function getAvatarAttribute()
+    {
+        return $this->profile && $this->profile->avatar 
+            ? asset('storage/' . $this->profile->avatar)
+            : asset('images/default-avatar.png');
+    }
 
     /**
      * The table associated with the model.
@@ -76,5 +96,5 @@ class User extends Authenticatable
     public function cartItemsCount()
     {
         return $this->cartItems()->sum('quantity');
-    }
+    }    
 }

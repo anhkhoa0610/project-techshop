@@ -23,7 +23,7 @@ final class OrderTable extends PowerGridComponent
     public string $sortField = 'order_id';
 
     // Override primary key method
-    public string $primaryKey = 'order_id';  
+    public string $primaryKey = 'order_id';
     public function getIdAttribute()
     {
         return $this->order_id;
@@ -49,7 +49,12 @@ final class OrderTable extends PowerGridComponent
 
     public function datasource()
     {
-        return Order::query()->with(['voucher', 'user','orderDetails']);
+        return Order::query()
+            ->leftJoin('vouchers', 'orders.voucher_id', '=', 'vouchers.voucher_id')
+            ->leftJoin('users', 'orders.user_id', '=', 'users.user_id')
+            ->select(
+                'orders.*',              // tất cả cột từ orders
+            );
     }
 
     public function fields(): PowerGridFields
@@ -59,14 +64,9 @@ final class OrderTable extends PowerGridComponent
             // Lấy full_name từ user
             ->add('full_name', fn($order) => $order->user?->full_name ?? '---')
 
-            // Lấy code từ quan hệ voucher
-            ->add('voucher_code', fn($order) => $order->voucher?->code)
-
-            // Hiển thị text thay thế
             ->add(
-                'voucher_display',
-                fn($order) =>
-                $order->voucher?->code ?? 'Không áp dụng'
+                'voucher_code',
+                fn($order) => $order->voucher?->code ?? '---'
             )
 
             ->add('status', function ($order) {
@@ -80,14 +80,26 @@ final class OrderTable extends PowerGridComponent
                 return '<span class="px-2 py-1 rounded text-black" style="background-color: ' . $color . '; width: 95px; display: inline-block; text-align: center;">'
                     . ucfirst($order->status) . '</span>';
             })
+            ->add('payment_element', function ($order) {
+                $color = match ($order->payment_method) {
+                    'cash' => 'yellow',
+                    'card' => 'olive',
+                    'transfer' => 'orange',
+                    'momo' => 'pink',
+                    'vnpay' => 'aqua',
+                    default => 'gray',
+                };
+
+                return '<span class="px-2 py-1 rounded text-black" style="background-color: ' . $color . '; width: 95px; display: inline-block; text-align: center;">'
+                    . ucfirst($order->payment_method) . '</span>';
+            })
             ->add('status_value', fn($order) => $order->status)
             ->add('total_price')
             ->add('created_at')
-
             ->add(
-                'created_at_formatted',
+                'formatted_price',
                 fn($order) =>
-                Carbon::parse($order->created_at)->format('d/m/Y H:i:s')
+                number_format($order->total_price, 0, ',', '.') . ' đ'
             );
     }
 
@@ -98,10 +110,9 @@ final class OrderTable extends PowerGridComponent
                 ->searchable()
                 ->sortable(),
 
-            Column::make('Customer', 'full_name')
-                ->sortable(),
+            Column::make('Customer', 'full_name'),
 
-            Column::make('Voucher', 'voucher_display')
+            Column::make('Voucher code', 'voucher_code')
                 ->sortable(),
 
             Column::make('Status', 'status')
@@ -115,10 +126,13 @@ final class OrderTable extends PowerGridComponent
                 ->searchable()
                 ->sortable(),
 
-            Column::make('Total', 'total_price')
+            Column::make('Payment method', 'payment_element')
                 ->sortable(),
 
-            Column::make('Created At', 'created_at_formatted', 'created_at')
+            Column::make('Total', 'formatted_price')
+                ->sortable(),
+
+            Column::make('Created At', 'created_at')
                 ->sortable(),
 
             Column::action('Action')->visibleInExport(false),
@@ -128,23 +142,32 @@ final class OrderTable extends PowerGridComponent
     public function filters(): array
     {
         return [
-            Filter::inputText('order_id')
+            Filter::inputText('order_id', 'order_id')
                 ->operators(['contains']),
 
-            Filter::select('full_name', 'user_id')
-                ->dataSource(\App\Models\User::all())
-                ->optionLabel('full_name')
-                ->optionValue('user_id'),
+            Filter::inputText('full_name', 'users.full_name')
+                ->operators(['contains']),
 
-            Filter::select('voucher_display', 'voucher_id')
-                ->dataSource(\App\Models\Voucher::all())
-                ->optionLabel('code')
-                ->optionValue('voucher_id'),
+            Filter::inputText('voucher_code', 'vouchers.code')
+                ->operators(['contains']),
 
-            Filter::select('status', 'status_value')
+            Filter::select('status', 'orders.status')
                 ->dataSource(Order::select('status')->distinct()->get())
                 ->optionLabel('status')
                 ->optionValue('status'),
+
+            Filter::select('payment_element', 'orders.payment_method')
+                ->dataSource(Order::select('payment_method')->distinct()->get())
+                ->optionLabel('payment_method')
+                ->optionValue('payment_method'),
+
+            Filter::number('formatted_price','orders.total_price'),
+
+            Filter::inputText('created_at', 'orders.created_at')
+                ->operators(['contains']),
+
+            Filter::inputText('shipping_address', 'shipping_address')
+                ->operators(['contains']),
         ];
     }
 

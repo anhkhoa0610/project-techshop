@@ -6,6 +6,8 @@ use App\Models\Category;
 use App\Models\Product;
 use App\Models\Voucher;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
+use App\Models\CartItem;
 
 class PromotionController extends Controller
 {
@@ -39,6 +41,11 @@ class PromotionController extends Controller
             ->paginate(8)
             ->withQueryString();
 
+        $cartItemCount = 0;
+
+        if (Auth::check()) {
+            $cartItemCount = CartItem::where('user_id', Auth::id())->count('quantity');
+        }
         // Biến đổi collection để trả về array sản phẩm kèm discount hiện tại và giá sau giảm
         $productItems = $products->getCollection()->map(function ($product) {
             // Lấy discount đầu tiên (nếu có nhiều, tuỳ logic bạn chọn)
@@ -58,6 +65,7 @@ class PromotionController extends Controller
         // Chỉ gửi mảng dữ liệu sản phẩm, không gửi toàn bộ paginator
         return response()->json([
             'status' => 'success',
+            'cartItemCount' => $cartItemCount,
             'data' => [
                 'promotions' => $vouchers,
                 'categories' => $categories,

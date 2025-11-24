@@ -119,7 +119,7 @@ class MoMoController extends Controller
             // KHÔNG LƯU cartItems vào extraData. Sẽ truy vấn lại trong momo_return.
         ]));
 
-        $requestId = time() . "";
+        $requestId = 3000 . "";
         $requestType = "payWithATM";
         
         //before sign HMAC SHA256 signature
@@ -254,6 +254,14 @@ class MoMoController extends Controller
                     'unit_price' => $item->product->price * $item->quantity,
                 ]);
             }
+               // trừ stock quantity
+                foreach ($cartItems as $item) {
+                    $product = $item->product;
+                    if ($product) {
+                        $product->decrement('stock_quantity', $item->quantity);
+                        $product->increment('volume_sold', $item->quantity);
+                    }
+                }
 
             // 3. XÓA GIỎ HÀNG
             CartItem::where('user_id', $userId)->delete();

@@ -1,0 +1,18 @@
+<?php
+
+namespace App\Models;
+
+use Illuminate\Database\Eloquent\Model;
+
+class UserProfile extends Model
+{
+     protected $fillable = ['user_id', 'avatar', 'bio', 'website'];
+     
+     protected $primaryKey = 'user_id';
+     public $incrementing = false;
+
+    public function user()
+    {
+        return $this->belongsTo(User::class, 'user_id', 'user_id');
+    }
+}

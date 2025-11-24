@@ -7,6 +7,7 @@ use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Validation\ValidationException;
+use App\Models\Voucher;
 
 
 class UserController extends Controller
@@ -163,10 +164,7 @@ class UserController extends Controller
             $user = User::findOrFail($user_id);
             $user->delete();
 
-            return response()->json([
-                'success' => true,
-                'message' => 'User đã được xóa thành công.'
-            ]);
+            return redirect()->back()->with('success', 'Xóa người dùng thành công!');
 
         } catch (\Exception $e) {
             return response()->json([
@@ -268,6 +266,12 @@ class UserController extends Controller
             'message' => 'Lỗi khi xóa tài khoản: ' . $e->getMessage()
         ], 500);
     }
+}
+public function profile()
+{
+    $vouchers = Voucher::where('user_id', auth()->id())->get();
+
+    return view('user.profile', compact('vouchers'));
 }
     
 }

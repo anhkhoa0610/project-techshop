@@ -58,6 +58,8 @@
                                         <option value="cash">cash</option>
                                         <option value="card">card</option>
                                         <option value="transfer">transfer</option>
+                                        <option value="momo">momo</option>
+                                        <option value="vnpay">vnpay</option>
                                     </select>
                                     <div class="text-danger error-message" id="error_add_payment_method"></div>
                                 </div>
@@ -138,6 +140,8 @@
                                         <option value="cash">cash</option>
                                         <option value="card">card</option>
                                         <option value="transfer">transfer</option>
+                                        <option value="momo">momo</option>
+                                        <option value="vnpay">vnpay</option>
                                     </select>
                                     <div class="text-danger error-message" id="error_edit_payment_method"></div>
                                 </div>
