@@ -1,6 +1,7 @@
 <?php
 
 namespace App\Http\Controllers;
+
 use App\Models\Category;
 use App\Models\Product;
 use App\Models\Review;
@@ -16,14 +17,14 @@ class IndexController extends Controller
 {
     public function index()
     {
-        $topProducts = Product::with(['specs'])
+        $topProducts = Product::with(['specs', 'discounts'])
             ->withAvg('reviews', 'rating')
             ->withCount('reviews')
             ->orderByDesc('volume_sold')
             ->limit(8)
             ->get();
 
-        $newProducts = Product::with(['specs', 'category', 'supplier'])
+        $newProducts = Product::with(['specs', 'category', 'supplier', 'discounts'])
             ->withAvg('reviews', 'rating')
             ->withCount('reviews')
             ->orderByDesc('release_date')
@@ -115,7 +116,6 @@ class IndexController extends Controller
                 'message' => 'Cập nhật số lượng sản phẩm trong giỏ hàng thành công!',
                 'cart_item' => $cartItem
             ]);
-
         } else {
             if ($requestedQuantity > $availableStock) {
                 return response()->json([
@@ -195,8 +195,8 @@ class IndexController extends Controller
             'categories',
             'currentCategory',
             'posts',
-            'cartItemCount', 'suppliers'
+            'cartItemCount',
+            'suppliers'
         ));
     }
-
 }

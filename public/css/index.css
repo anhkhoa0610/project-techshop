@@ -299,6 +299,54 @@
     font-weight: 700;
 }
 
+/* Sale badge styling - red background for discounted products */
+.product-discount.sale-badge {
+    background: linear-gradient(135deg, #dc2626 0%, #b91c1c 100%) !important;
+    color: #ffffff !important;
+    font-weight: 700 !important;
+    animation: pulse-sale 2s ease-in-out infinite;
+    box-shadow: 0 4px 12px rgba(220, 38, 38, 0.4) !important;
+}
+
+@keyframes pulse-sale {
+
+    0%,
+    100% {
+        transform: scale(1);
+    }
+
+    50% {
+        transform: scale(1.05);
+    }
+}
+
+/* Product price styling */
+.product-price {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin: 10px 0;
+}
+
+.current-price {
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: #0ea5e9;
+}
+
+.sale-price {
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: #dc2626;
+}
+
+.original-price {
+    font-size: 1.1rem;
+    font-weight: 500;
+    color: #9ca3af;
+    text-decoration: line-through;
+}
+
 .product-info {
     padding: 1.5rem;
 }
