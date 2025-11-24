@@ -781,6 +781,7 @@ body {
     backdrop-filter: blur(12px) !important;
     -webkit-backdrop-filter: blur(12px) !important;
     border: 1px solid rgba(255, 255, 255, 0.2) !important;
+    text-shadow: 5px 5px 10px rgba(0, 0, 0, 0.527) !important;
 }
 
 .breadcrumb-container {

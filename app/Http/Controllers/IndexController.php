@@ -134,7 +134,7 @@ class IndexController extends Controller
     }
     public function filter(Request $request)
     {
-        $products = Product::with(['specs'])
+        $products = Product::with(['specs', 'discounts'])
             ->withAvg('reviews', 'rating')
             ->withCount('reviews')
             ->filter(
@@ -144,7 +144,8 @@ class IndexController extends Controller
                 $request->supplier_id,
                 $request->rating,
                 $request->stock,
-                $request->release_date
+                $request->release_date,
+                $request->on_sale ?? false
             )
             ->paginate(8);
 
@@ -165,7 +166,7 @@ class IndexController extends Controller
 
         $suppliers = Supplier::all();
 
-        $productQuery = Product::with(['specs'])
+        $productQuery = Product::with(['specs', 'discounts'])
             ->withAvg('reviews', 'rating')
             ->withCount('reviews');
         $currentCategory = null;

@@ -509,16 +509,8 @@
 
 
 <script>
-    const USER_ID = {
-        {
-            auth() - > id() ?? 'null'
-        }
-    };
-    const cartCountFromController = {
-        {
-            $cartItemCount ?? 0
-        }
-    };
+    const USER_ID = {{auth() -> id() ?? 'null'}};
+    const cartCountFromController = {{$cartItemCount ?? 0}};
 
     function updateCartCount() {
         if (typeof cartCountFromController === 'number' && cartCountFromController >= 0) {
