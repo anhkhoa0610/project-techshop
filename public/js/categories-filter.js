@@ -10,6 +10,7 @@ document.addEventListener('DOMContentLoaded', function () {
             stock: document.querySelector('[name="stock_filter"]').value,
             rating: document.querySelector('[name="rating_filter"]').value,
             release_date: document.querySelector('[name="release_filter"]').value,
+            on_sale: document.querySelector('[name="on_sale_filter"]').checked ? '1' : '',
         };
     }
 
@@ -72,7 +73,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
                 let specsHtml = '';
                 coreSpecsData.forEach(spec => {
-                    if (spec.value) { 
+                    if (spec.value) {
                         specsHtml += `
                             <div class="spec-grid-item">
                                 <img src="${spec.iconPath}" alt="${spec.name} icon" class="spec-grid-icon">
@@ -91,17 +92,40 @@ document.addEventListener('DOMContentLoaded', function () {
                     specsHtml = `<div class="specs-grid-container">${specsHtml}</div>`;
                 }
 
+                // Check for active discount
+                const now = new Date();
+                let activeDiscount = null;
+                if (product.discounts && product.discounts.length > 0) {
+                    activeDiscount = product.discounts.find(discount => {
+                        const startValid = !discount.start_date || new Date(discount.start_date) <= now;
+                        const endValid = !discount.end_date || new Date(discount.end_date) >= now;
+                        return startValid && endValid;
+                    });
+                }
+
+                // Badge HTML
+                const badgeHtml = activeDiscount
+                    ? `<div class="product-discount sale-badge">SALE -${Math.round(activeDiscount.discount_percent)}%</div>`
+                    : `<div class="product-discount">Trả góp 0%</div>`;
+
+                // Price HTML
+                const priceHtml = activeDiscount
+                    ? `<span class="sale-price">${Number(activeDiscount.sale_price).toLocaleString('vi-VN')}₫</span>
+                       <span class="original-price">${Number(product.price).toLocaleString('vi-VN')}₫</span>`
+                    : `<span class="current-price">${Number(product.price).toLocaleString('vi-VN')}₫</span>`;
+
                 html += `
                 <div class="product-card">
                     <div class="product-image">
                         <img src="${product.cover_image ? '/uploads/' + product.cover_image : '/images/place-holder.jpg'}" alt="${product.product_name}">
+                        ${badgeHtml}
                     </div>
                     <a class="product-info" href="/product-details/${product.product_id}">
                         <h3 class="product-name">${product.product_name}</h3>
                         ${specsHtml}
                         <div class="product-rating">${starsHtml}</div>
                         <div class="product-price">
-                            <span class="current-price">${Number(product.price).toLocaleString('vi-VN')}₫</span>
+                            ${priceHtml}
                         </div>
                         <div class="product-meta">
                             <div class="release-date">📅 <strong>Phát hành:</strong> ${product.release_date ? new Date(product.release_date).toLocaleDateString('vi-VN') : 'Chưa rõ'}</div>
@@ -218,7 +242,8 @@ document.addEventListener('DOMContentLoaded', function () {
                 supplier_id: document.querySelector('[name="supplier_filter"]').value,
                 stock: document.querySelector('[name="stock_filter"]').value,
                 rating: document.querySelector('[name="rating_filter"]').value,
-                release_date: document.querySelector('[name="release_filter"]').value
+                release_date: document.querySelector('[name="release_filter"]').value,
+                on_sale: document.querySelector('[name="on_sale_filter"]').checked ? '1' : '',
             };
 
             // Reset trạng thái và tải lại từ đầu
@@ -277,6 +302,11 @@ document.addEventListener('DOMContentLoaded', function () {
             filterForm.querySelectorAll('select').forEach(select => {
                 select.value = '';
             });
+            // Reset checkbox
+            const onSaleCheckbox = document.querySelector('[name="on_sale_filter"]');
+            if (onSaleCheckbox) {
+                onSaleCheckbox.checked = false;
+            }
             if (priceSlider) {
                 priceSlider.noUiSlider.set([0, 50000000]);
             }
