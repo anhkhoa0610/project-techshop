@@ -67,7 +67,7 @@ document.getElementById('editOrderForm').addEventListener('submit', async functi
             Swal.fire({
                 icon: 'error',
                 title: 'Cập nhật đơn hàng thất bại',
-                text: 'Lỗi không xác định',
+                text: 'không thể sửa đơn hàng này, vui lòng thử lại sau',
                 confirmButtonText: 'Đóng',
                 confirmButtonColor: '#d33'
             });

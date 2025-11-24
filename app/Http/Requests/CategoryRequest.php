@@ -47,7 +47,7 @@ class CategoryRequest extends FormRequest
     {
         return [
             'category_name.required' => 'Tên danh mục là bắt buộc.',
-            'category_name.min' => 'Tên danh mục phải có ít nhất 2 ký tự.',
+            'category_name.min' => 'Tên danh mục phải nhiều hơn 2 ký tự.',
             'category_name.max' => 'Tên danh mục không quá 255 ký tự.',
             'category_name.regex' => 'Tên danh mục chỉ cho phép chữ, số, khoảng trắng, gạch ngang, gạch dưới',
             'category_name.unique' => 'Tên danh mục đã tồn tại.',
@@ -55,7 +55,7 @@ class CategoryRequest extends FormRequest
             'description.min' => 'Mô tả phải có ít nhất 5 ký tự.',
             'description.max' => 'Mô tả không quá 500 ký tự.',
             'cover_image.image' => 'File tải lên phải là hình ảnh.',
-            'cover_image.max' => 'Hình ảnh không được vượt quá 2MB.',
+            'cover_image.max' => 'Hình ảnh không được vượt quá 5MB.',
         ];
     }
 
