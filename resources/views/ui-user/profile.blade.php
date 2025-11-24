@@ -58,7 +58,7 @@
                 <h6 style="margin-top:25px; font-weight:bold;">
                     <a href="#">Khuyến mãi</a>
                 </h6>
-                <h6 style="margin-top:25px; font-weight:bold;"> <a href="#">Sinh viên TDC</a></h6>
+                <h6 style="margin-top:25px; font-weight:bold;"> <a href="{{ route('user.verifyTdc.send') }}">Sinh viên TDC</a></h6>
             </div>
         
         </div>
@@ -88,7 +88,58 @@
                 </div>
             </div>
         </div>
+<!-- Nút GỬI MÃ XÁC NHẬN -->
+@if (auth()->user()->is_tdc_student !== 'true' && str_ends_with(auth()->user()->email, '@mail.tdc.edu.vn'))
+
+    @if(session('verification_sent'))
+        <div class="alert alert-info">
+            Mã xác nhận đã được gửi đến <strong>{{ auth()->user()->email }}</strong>. 
+            Vui lòng kiểm tra email (kể cả mục Spam/Junk).
+        </div>
+    @endif
+
+    <!-- Form gửi mã -->
+    <form action="{{ route('user.verifyTdc.send') }}" method="POST" class="d-inline">
+        @csrf
+        <button type="submit" class="btn btn-primary btn-sm">
+            Gửi mã xác nhận đến email
+        </button>
+    </form>
+
+    <hr>
+
+    <!-- Form nhập mã xác nhận -->
+    <form action="{{ route('user.verifyTdc.confirm') }}" method="POST">
+        @csrf
+        <div class="row g-3 align-items-center">
+            <div class="col-auto">
+                <label for="verification_code" class="col-form-label">Nhập mã 6 ký tự:</label>
+            </div>
+            <div class="col-auto">
+                <input type="text" name="verification_code" id="verification_code" 
+                       class="form-control @error('verification_code') is-invalid @enderror" 
+                       maxlength="6" required autocomplete="off">
+                @error('verification_code')
+                    <div class="invalid-feedback">{{ $message }}</div>
+                @enderror
+            </div>
+            <div class="col-auto">
+                <button type="submit" class="btn btn-success">Xác nhận</button>
+            </div>
+        </div>
+    </form>
+
+@elseif(str_ends_with(auth()->user()->email, '@mail.tdc.edu.vn'))
+    <p class="text-success">
+        Đã xác nhận là sinh viên TDC
+    </p>
+@else
+    <p class="text-danger">
+        Email không hợp lệ. Chỉ chấp nhận email có đuôi @mail.tdc.edu.vn
+    </p>
+@endif
     </div>
+
 
     <!-- MODAL XÁC NHẬN XÓA -->
     <div id="deleteUserModal" class="modal fade" tabindex="-1" role="dialog">
