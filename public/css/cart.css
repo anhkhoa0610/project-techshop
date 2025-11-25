@@ -79,7 +79,7 @@ body {
 
 .cartp-items {
     padding: clamp(15px, 3vw, 30px); /* Padding động */
-    max-height: 70vh; /* Sử dụng vh để co giãn chiều cao */
+    max-height: 470px; /* Sử dụng vh để co giãn chiều cao */
     overflow-y: auto;
     /* Tùy chỉnh scrollbar */
     scrollbar-width: thin; 
