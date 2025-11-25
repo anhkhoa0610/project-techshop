@@ -6,9 +6,8 @@ use App\Models\Order;
 use Illuminate\Http\Request;
 use App\Models\OrderDetail;
 use App\Models\CartItem;
-
-
-
+use App\Mail\NewOrderAdminMail;
+use Illuminate\Support\Facades\Mail;
 class VnpayController extends Controller
 {
     // public function vnpay_payment(Request $request)
@@ -112,8 +111,8 @@ class VnpayController extends Controller
         $vnp_Url = "https://sandbox.vnpayment.vn/paymentv2/vpcpay.html";
         $vnp_Returnurl = route('vnpay.return');
         ;
-        $vnp_TmnCode = "1VYBIYQP"; //Mã website tại VNPAY 
-        $vnp_HashSecret = "NOH6MBGNLQL9O9OMMFMZ2AX8NIEP50W1"; //Chuỗi bí mật
+        $vnp_TmnCode = "NLAZN0V6"; //Mã website tại VNPAY 
+        $vnp_HashSecret = "9K238HTUG90UYD9G0WRQUUVTWUYK12TP"; //Chuỗi bí mật
 
         $vnp_TxnRef = $code_cart; //Mã đơn hàng. Trong thực tế Merchant cần insert đơn hàng vào DB và gửi mã này sang VNPAY
         $vnp_OrderInfo = 'Thanh toán đơn hàng test';
@@ -208,7 +207,7 @@ class VnpayController extends Controller
                 ->first();
 
             if ($order) {
-                
+
                 // Lấy giỏ hàng của user
 
                 $cartItems = CartItem::where('user_id', $userId)->get();
@@ -216,7 +215,7 @@ class VnpayController extends Controller
                 foreach ($cartItems as $item) {
                     $orderDetail = OrderDetail::where('order_id', $order->order_id)
                         ->where('product_id', $item->product_id)
-                        ->first(); 
+                        ->first();
 
                     $newQuantity = $item->quantity;
                     $newUnitPrice = $item->product->price * $newQuantity;
@@ -249,6 +248,10 @@ class VnpayController extends Controller
 
                 // (Tuỳ chọn) Xoá giỏ hàng sau khi đặt hàng
                 CartItem::where('user_id', $userId)->delete();
+
+                $adminEmail = 'authanhkietvta44@gmail.com'; // Thay bằng email admin thật
+                Mail::to($adminEmail)->send(new NewOrderAdminMail($order));
+
             }
 
             return redirect()->route('index')->with('success', 'Thanh toán VNPAY thành công!');

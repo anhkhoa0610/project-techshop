@@ -34,7 +34,7 @@
                     <a href="#" class="footer-link">Chính sách vận chuyển</a>
                     <a href="#" class="footer-link">Hướng dẫn mua hàng</a>
                     <a href="#" class="footer-link">Câu hỏi thường gặp</a>
-                    <a href="#" class="footer-link">Liên hệ</a>
+                    <a href="{{ route('contact.index') }}" class="footer-link">Liên hệ</a>
                 </div>
             </div>
 

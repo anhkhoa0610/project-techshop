@@ -135,11 +135,10 @@
                                     <div class="label">Bản đồ & trạng thái hiện tại</div>
                                     <?php
                                         $origin_address = "53 Đ. Võ Văn Ngân, Phường, Thủ Đức, Thành phố Hồ Chí Minh"; // Điểm A: Địa chỉ xuất phát
-                                        $destination_address = $order['shipping_address']; // Điểm B: Địa chỉ đích
                                                                                                 ?>
                                     <div class="map glass-map">
                                         <iframe width="100%" height="100%" frameborder="0" style="border:0;border-radius:12px;"
-                                            src="https://maps.google.com/maps?q=/dir/{{ urlencode($origin_address) }}/{{ urlencode($destination_address) }}&output=embed"
+                                            src="https://maps.google.com/maps?q=<?php echo urlencode($origin_address); ?>&output=embed"
                                             allowfullscreen>
                                         </iframe>
                                     </div>

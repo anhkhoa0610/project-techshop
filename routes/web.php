@@ -3,6 +3,7 @@
 use App\Http\Controllers\CartController;
 use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\CheckoutController;
+use App\Http\Controllers\ContactController;
 use App\Http\Controllers\HoaDonController;
 use App\Http\Controllers\OrderController;
 use App\Http\Controllers\PayController;
@@ -119,8 +120,8 @@ Route::post('/cart/add', [CartController::class, 'addToCart'])->name('cart.add')
 // Thanh toán (gửi dữ liệu POST từ giỏ hàng)
 
 // Trang hóa đơn
-Route::get('/hoadon', [HoaDonController::class, 'index'])->name('hoadon.index');
-
+Route::get('/contact', [ContactController::class, 'index'])->name('contact.index');
+Route::post('/contact/send', [ContactController::class, 'send'])->name('contact.send');
 
 
 Route::get('/product-details/{id}', [UIProductDetailsController::class, 'show'])->name('product.details');
