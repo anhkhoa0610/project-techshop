@@ -9,7 +9,7 @@
         @csrf
         @method('DELETE')
         <button type="submit" class="btn btn-link p-0 m-0 align-baseline delete" title="Delete" data-toggle="tooltip"
-            >
+            onclick="return confirm('Bạn có chắc chắn muốn xóa người dùng này không?')">
             <i class="material-icons text-danger">&#xE872;</i>
         </button>
     </form>

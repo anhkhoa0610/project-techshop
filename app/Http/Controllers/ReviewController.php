@@ -184,23 +184,64 @@ class ReviewController extends Controller
             ->with('success', 'Đánh giá đã được cập nhật thành công.');
     }
 
+public function destroy($review_id)
+{
+    try {
+        $review = Review::find($review_id); // Use find() instead of findOrFail()
+        
+        // Check if review exists
+        if (!$review) {
+            if (request()->expectsJson()) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Đánh giá không tồn tại hoặc đã bị xóa.'
+                ], 404);
+            }
+            return back()->with('error', 'Đánh giá không tồn tại hoặc đã bị xóa.');
+        }
 
-    public function destroy($review_id)
-    {
-        try {
-            $review = Review::findOrFail($review_id);
-            $review->delete();
+        $review->delete();
 
+        if (request()->expectsJson()) {
             return response()->json([
                 'success' => true,
                 'message' => 'Đánh giá đã được xóa thành công.'
             ]);
+        }
+        
+        return back()->with('success', 'Đánh giá đã được xóa thành công.');
 
-        } catch (\Exception $e) {
+    } catch (\Exception $e) {
+        \Log::error('Error deleting review: ' . $e->getMessage());
+        
+        if (request()->expectsJson()) {
             return response()->json([
                 'success' => false,
                 'message' => 'Lỗi khi xóa đánh giá: ' . $e->getMessage()
             ], 500);
         }
+        
+        return back()->with('error', 'Đã xảy ra lỗi khi xóa đánh giá.');
     }
+}
+    // public function destroy($review_id)
+    // {
+    //     try {
+    //         $review = Review::findOrFail($review_id);
+    //         $review->delete();
+
+    //         // return response()->json([
+    //         //     'success' => true,
+    //         //     'message' => 'Đánh giá đã được xóa thành công.'
+    //         // ]);
+    //         return back()->with('success', 'Đánh giá đã được xóa thành công.');
+
+    //     } catch (\Exception $e) {
+    //         return response()->json([
+    //             'success' => false,
+    //             'message' => 'Lỗi khi xóa đánh giá: ' . $e->getMessage()
+    //         ], 500);
+    //     }
+
+    // }
 }

@@ -158,26 +158,31 @@ class UserController extends Controller
         }
     }
 
-    /**
-     * Xóa người dùng.
-     */
 
-    public function destroy($user_id)
-    {
-        try {
-            $user = User::findOrFail($user_id);
-            $user->delete();
+    // public function destroy($user_id)
+    // {
+    //     try {
+    //         $user = User::findOrFail($user_id);
+    //         $user->delete();
 
-            return redirect()->back()->with('success', 'Xóa người dùng thành công!');
+    //         return redirect()->back()->with('success', 'Xóa người dùng thành công!');
 
-        } catch (\Exception $e) {
-            return response()->json([
-                'success' => false,
-                'message' => 'Lỗi khi xóa User: ' . $e->getMessage()
-            ], 500);
-        }
+    //     } catch (\Exception $e) {
+    //         return response()->json([
+    //             'success' => false,
+    //             'message' => 'Lỗi khi xóa User: ' . $e->getMessage()
+    //         ], 500);
+    //     }
+    // }
+public function destroy($id)
+{
+    $user = User::find($id);
+    if (!$user) {
+        return response()->json(['message' => 'User da bi xoa hoac khong ton tai!'], 404);
     }
-
+    $user->delete();
+    return response()->json(['message' => 'Xoa nguoi dung thanh cong!']);
+}
     //ui user profile
     public function showProfile()
     {
