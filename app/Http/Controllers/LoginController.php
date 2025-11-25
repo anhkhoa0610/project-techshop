@@ -127,7 +127,7 @@ class LoginController extends Controller
     public function postUser(Request $request)
     {
         $request->validate([
-            'full_name' => 'required|string|max:255',
+            'full_name' => ['required', 'string', 'max:255', 'regex:/^[\p{L}\s]+$/u'],
             'email' => 'required|email|unique:users,email',
             'phone' => 'required|numeric|digits_between:9,15|unique:users,phone',
             'address' => 'required|string|max:255',
@@ -136,6 +136,7 @@ class LoginController extends Controller
             'password_confirmation' => 'required|min:6',
         ], [
             'full_name.required' => 'Vui lòng nhập họ và tên của bạn.',
+            'full_name.regex' => 'tên chỉ được chứa chữ cái.',
             'email.required' => 'Vui lòng nhập địa chỉ email.',
             'email.email' => 'Định dạng email không hợp lệ.',
             'email.unique' => 'Email này đã được sử dụng.',
@@ -145,6 +146,7 @@ class LoginController extends Controller
             'phone.unique' => 'Số điện thoại này đã được sử dụng.',
             'address.required' => 'Vui lòng nhập địa chỉ của bạn.',
             'address.string' => 'Địa chỉ phải là một chuỗi hợp lệ.',
+            'address.max' => 'Địa chỉ không được vượt quá 255 ký tự.',
             'dob.required' => 'Vui lòng nhập ngày sinh.',
             'dob.date' => 'Ngày sinh phải là một ngày hợp lệ.',
             'dob.before' => 'Ngày sinh phải là ngày trong quá khứ.',

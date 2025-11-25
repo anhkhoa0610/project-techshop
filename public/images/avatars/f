@@ -1,0 +1,32 @@
+<div class="avatar-container position-relative d-inline-block">
+                    @php
+                        $user = auth()->user();
+
+                        $avatarUrl = $user->profile ? $user->profile->avatar : '';
+                    @endphp
+                    @if($avatarUrl)
+                        <img src="{{ asset('images/avatars/' . $user->profile->avatar) }}" 
+                            onerror="this.src='{{ asset('images/avatars/user-icon.png') }}'"
+                            alt="{{ $user->full_name }}"
+                            class="rounded-circle user-avatar"
+                            style="width: 150px; height: 150px; object-fit: cover; border: 3px solid #f0f0f0;">
+                    @else
+                        <div class="avatar-placeholder rounded-circle d-flex align-items-center justify-content-center bg-secondary text-white"
+                            style="width: 150px; height: 150px; font-size: 60px; border: 3px solid #f0f0f0;">
+                            {{ strtoupper(substr(auth()->user()->full_name, 0, 1)) }}
+                        </div>
+                    @endif
+
+                    <form action="{{ route('profile.avatar.update') }}" method="POST" enctype="multipart/form-data"
+                        class="avatar-upload-form">
+                        @csrf
+                        <label for="avatar-upload" class="btn btn-sm btn-primary position-absolute"
+                            style="bottom: -85px; right: 55px; width: 25px; height: 25px; display: flex;">
+                            <i class="bi bi-camera"></i>
+                            <input type="file" id="avatar-upload" name="avatar" class="d-none" accept="image/*"
+                                onchange="this.form.submit()">
+                        </label>
+                    </form>
+
+
+                </div>

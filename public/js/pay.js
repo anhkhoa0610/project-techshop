@@ -173,7 +173,7 @@ document.getElementById('voucher').addEventListener('input', function () {
 document.getElementById("payBtn").addEventListener("click", () => {
     const nameInput = document.getElementById("fname");
     const phoneInput = document.getElementById("phone");
-    const emailInput = document.getElementById("email");
+    const emailInput = document.getElementById("email-thanhtoan");
     const addressInput = document.getElementById("address");
 
     // Xóa lỗi cũ
@@ -208,7 +208,7 @@ document.getElementById("payBtn").addEventListener("click", () => {
         Swal.fire({
                 icon: "error",
                 title: "Lỗi!",
-                text: "Vui lòng nhập email hợp lệ",
+                text: "Vui lòng nhập email hợp lệ, user@domain.com",
             });
         emailInput.classList.add("error");
         return;

@@ -16,7 +16,7 @@
                 @csrf
                 <div class="modal-content">
                     <div class="modal-header">
-                        <h5 class="modal-title" id="editVoucherModalLabel">Chỉnh sửa Nhà Cung Cấp</h5>
+                        <h5 class="modal-title" id="editVoucherModalLabel">Chỉnh sửa Voucher</h5>
                         <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                             <span aria-hidden="true">&times;</span>
                         </button>
@@ -163,65 +163,6 @@
         </div>
     </div>
 
-    <!-- Modal View Voucher -->
-    <div class="modal fade" id="viewVoucherModal" tabindex="-1" role="dialog" aria-labelledby="viewVoucherModalLabel"
-        aria-hidden="true">
-        <div class="modal-dialog modal-lg" role="document">
-            <div class="modal-content shadow-lg">
-                <div class="modal-header bg-info text-white">
-                    <h5 class="modal-title" id="viewVoucherModalLabel">
-                        Thông tin Voucher
-                    </h5>
-                </div>
-                <div class="modal-body bg-light">
-                    <div class="row">
-                        <div class="col-md-4 text-center">
-                            <img id="view_logo" src="" alt="Voucher" class="img-fluid rounded shadow mb-3"
-                                style="max-height:160px; width:100%; object-fit:cover;">
-                            <h4 id="view_name" class="h5 font-weight-bold text-secondary mb-1"></h4>
-
-                            <div class="mb-2">
-                                <span id="view_status" class="badge"></span>
-                            </div>
-                            <div class="text-muted small" id="view_dates">
-                                <div>Start: <span id="view_start_date">—</span></div>
-                                <div>End: <span id="view_end_date">—</span></div>
-                            </div>
-                        </div>
-
-                        <div class="col-md-8">
-                            <div class="card border-0">
-                                <div class="card-body p-3">
-                                    <dl class="row mb-2">
-                                        <dt class="col-sm-4 text-muted">Code</dt>
-                                        <dd class="col-sm-8 font-weight-bold" id="view_code"></dd>
-
-                                        <dt class="col-sm-4 text-muted">Discount Type</dt>
-                                        <dd class="col-sm-8" id="view_discount_type"></dd>
-
-                                        <dt class="col-sm-4 text-muted">Discount Value</dt>
-                                        <dd class="col-sm-8" id="view_discount_value"></dd>
-
-                                    </dl>
-                                    <hr>
-                                    <h6 class="mb-1 text-muted">Created At</h6>
-                                    <p id="view_created_at" class="mb-0 text-secondary" style="white-space:pre-wrap;"></p>
-
-                                    <h6 class="mb-1 text-muted">Updated At</h6>
-                                    <p id="view_updated_at" class="mb-0 text-secondary" style="white-space:pre-wrap;"></p>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div class="modal-footer bg-white">
-                    <button type="button" class="btn btn-secondary" data-dismiss="modal">
-                        <i class="material-icons align-middle">close</i> Đóng
-                    </button>
-                </div>
-            </div>
-        </div>
-    </div>
     <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
     <!-- End Main Content -->
     @push('scripts')

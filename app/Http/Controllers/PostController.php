@@ -13,7 +13,7 @@ class PostController extends Controller
      */
     public function index()
     {
-        $posts = Post::latest()->paginate(10); 
+        $posts = Post::latest()->paginate(9); 
 
         return view('posts.index', [
             'posts' => $posts,
@@ -29,7 +29,7 @@ class PostController extends Controller
 
     public function loadPostsApi(Request $request)
     {
-        $posts = Post::latest()->paginate(5); 
+        $posts = Post::latest()->paginate(6); 
         return response()->json([
             'success' => true,
             'data' => $posts->items(),

@@ -3,11 +3,6 @@ document.querySelectorAll('.order-card').forEach(card => {
     // Lấy trạng thái (status) và ID của đơn hàng từ data attributes
     const status = card.dataset.status;
     
-    // Nếu trạng thái không phải 'processing' thì không cần thực hiện logic hiển thị nút Chi tiết/Hủy đơn ở đây
-    // Lưu ý: Nếu muốn nút Chi tiết hiển thị cho TẤT CẢ trạng thái, bạn phải loại bỏ/di chuyển dòng if (status !== 'processing') return;
-    
-
-    // Lấy ID đơn hàng
     const id = card.dataset.id; 
     const actionsDiv = card.querySelector('.order-actions');
 
@@ -64,7 +59,7 @@ document.querySelectorAll('.order-card').forEach(card => {
                                 // Xóa phần hiển thị khỏi giao diện
                                 card.remove();
                             } else {
-                                Swal.fire('Lỗi', data.message, 'error');
+                                Swal.fire('Hủy Đơn hàng không thành công', data.message, 'error');
                             }
                         })
                         .catch(() => Swal.fire('Lỗi', 'Không thể kết nối máy chủ', 'error'));

@@ -111,7 +111,7 @@ class Product extends Model
     }
 
 
-    public function scopeFilter($query, $min_price = null, $max_price = null, $category_id = 0, $supplier_id = 0, $rating = null, $in_stock = null, $days = null)
+    public function scopeFilter($query, $min_price = null, $max_price = null, $category_id = 0, $supplier_id = 0, $rating = null, $in_stock = null, $days = null, $on_sale = false)
     {
         return $query
             ->priceRange($min_price, $max_price)
@@ -119,7 +119,8 @@ class Product extends Model
             ->filterBySupplier($supplier_id)
             ->rating($rating)
             ->inStock($in_stock)
-            ->releasedWithin($days);
+            ->releasedWithin($days)
+            ->onSale($on_sale);
     }
 
     public function scopeSearch($query, $keyword)
@@ -136,6 +137,21 @@ class Product extends Model
     public function scopeWithVideo($query)
     {
         return $query->whereNotNull('embed_url_review');
+    }
+
+    public function scopeOnSale($query, $onSale = false)
+    {
+        if ($onSale) {
+            return $query->whereHas('discounts', function ($q) {
+                $now = now();
+                $q->where(function ($query) use ($now) {
+                    $query->whereNull('start_date')->orWhere('start_date', '<=', $now);
+                })->where(function ($query) use ($now) {
+                    $query->whereNull('end_date')->orWhere('end_date', '>=', $now);
+                });
+            });
+        }
+        return $query;
     }
     // Mỗi sản phẩm có nhiều đánh giá (reviews)
     public function reviews()
@@ -181,7 +197,7 @@ class Product extends Model
     {
         return $this->hasMany(Spec::class, 'product_id');
     }
-    
+
     public function discounts()
     {
         return $this->hasMany(ProductDiscount::class, 'product_id', 'product_id');
@@ -191,7 +207,7 @@ class Product extends Model
     public function getFilteredProducts($categoryId = null, $supplierId = null)
     {
         $query = self::query()
-            ->with(['category', 'supplier', 'specs','discounts']) 
+            ->with(['category', 'supplier', 'specs', 'discounts'])
             ->latest('created_at');
 
         if ($categoryId) {
@@ -204,5 +220,4 @@ class Product extends Model
 
         return $query->take(8)->get();
     }
-
 }

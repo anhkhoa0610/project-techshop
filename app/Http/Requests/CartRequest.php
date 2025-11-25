@@ -65,7 +65,7 @@ class CartRequest extends FormRequest
 
             if ($newTotal > $stock) {
                 $validator->errors()->add('quantity', '
-                Số lượng không hợp lệ(vượt quá số lượng kho).
+                Vượt quá số lượng kho.
                 Bạn đã có (' . $currentQuantity . ') sản phẩm trong giỏ hàng.
                 Không thể thêm số lượng đã chọn vào giỏ hàng 
                 . ');

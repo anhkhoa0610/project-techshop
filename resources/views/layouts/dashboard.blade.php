@@ -39,6 +39,8 @@
                     </li>
                     <li class="category-title"><a href="{{ route('products.list') }}"><i
                                 class="fa fa-archive"></i>Products</a></li>
+                    <li class="category-title"><a href="{{ route('specs.list') }}"><i
+                                class="fa fa-cogs"></i>Specs</a></li>
                     <li class="category-title"><a href="{{ route('categories.list') }}"><i
                                 class="fa fa-list"></i>Categories</a></li>
                     <li class="category-title"><a href="{{ route('orders.list')}}"><i

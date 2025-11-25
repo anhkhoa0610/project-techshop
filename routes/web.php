@@ -3,6 +3,7 @@
 use App\Http\Controllers\CartController;
 use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\CheckoutController;
+use App\Http\Controllers\ContactController;
 use App\Http\Controllers\HoaDonController;
 use App\Http\Controllers\OrderController;
 use App\Http\Controllers\PayController;
@@ -20,8 +21,10 @@ use App\Http\Controllers\LoginController;
 use App\Http\Controllers\MomoController;
 use App\Http\Controllers\VnpayController;
 use App\Http\Controllers\PostController;
+use App\Http\Controllers\UserProfileController;
 use App\Http\Controllers\ChartController;
 use App\Http\Controllers\CancelController;
+use App\Http\Controllers\SpecController;
 
 
 //trang chủ của tui, đụng vào nhớ xin phép =))
@@ -79,6 +82,10 @@ Route::middleware(['checkrole:Admin'])->group(function () {
         Route::delete('/{user}', [UserController::class, 'destroy'])->name('users.destroy');
 
     });
+
+    Route::prefix('specs')->group(function () {
+        Route::get('/', [SpecController::class, 'list'])->name('specs.list');
+    });
 });
 
 
@@ -113,8 +120,8 @@ Route::post('/cart/add', [CartController::class, 'addToCart'])->name('cart.add')
 // Thanh toán (gửi dữ liệu POST từ giỏ hàng)
 
 // Trang hóa đơn
-Route::get('/hoadon', [HoaDonController::class, 'index'])->name('hoadon.index');
-
+Route::get('/contact', [ContactController::class, 'index'])->name('contact.index');
+Route::post('/contact/send', [ContactController::class, 'send'])->name('contact.send');
 
 
 Route::get('/product-details/{id}', [UIProductDetailsController::class, 'show'])->name('product.details');
@@ -187,8 +194,18 @@ Route::get('/tin-tuc', [PostController::class, 'index'])->name('posts.index');
 // Route cho trang chi tiết (ví dụ: /tin-tuc/123)
 Route::get('/tin-tuc/{post}', [PostController::class, 'show'])->name('posts.show');
 
-// Route cho trang profile
+// User Profile Routes
 Route::middleware(['auth'])->group(function () {
+    // Avatar routes
+    Route::post('/profile/avatar', [UserProfileController::class, 'updateAvatar'])
+        ->name('profile.avatar.update');
+        
+    Route::delete('/profile/avatar', [UserProfileController::class, 'removeAvatar'])
+        ->name('profile.avatar.remove');
+        
+    // Profile update route
+    Route::post('/profile/update', [UserProfileController::class, 'updateProfile'])
+        ->name('profile.update');
     Route::get('/user/profile', [UserController::class, 'showProfile'])->name('user.profile');
     Route::get('/user/edit', [UserController::class, 'showEditProfile'])->name('user.editProfile');
     Route::put('/user/edit', [UserController::class, 'updateProfile'])->name('user.updateProfile');
@@ -198,3 +215,12 @@ Route::middleware(['auth'])->group(function () {
 });
 
 Route::get('/supplier-ui/{id}', [SupplierController::class, 'indexView'])->name('supplier.ui');
+Route::middleware(['auth'])->group(function () {
+    // ... (các route hiện có)
+
+    // Route gửi mã xác nhận
+    Route::post('/user/verify-tdc/send', [UserController::class, 'sendTdcVerification'])->name('user.verifyTdc.send');
+
+    // Route xác nhận mã
+    Route::post('/user/verify-tdc/confirm', [UserController::class, 'verifyTdcStudent'])->name('user.verifyTdc.confirm');
+});

@@ -39,7 +39,7 @@
 
                             <div style="margin-top:12px">
                                 <label for="email">Email</label>
-                                <input id="email" name="email" type="email" value="{{ old('email', $user->email ?? '') }}"
+                                <input id="email-thanhtoan" name="email" type="email" value="{{ old('email', $user->email ?? '') }}"
                                     placeholder="you@example.com" required>
                             </div>
                         </div>
