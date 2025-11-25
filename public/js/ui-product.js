@@ -782,7 +782,7 @@ document.addEventListener('DOMContentLoaded', function () {
         products.forEach((prod, i) => {
             const imageUrl = prod.cover_image
                 ? `/uploads/${prod.cover_image}`
-                : `/images/blank_product.png`;
+                : `/images/place-holder.jpg`;
 
             const productHtml = `
             <div class="mb-4 mt-5 d-inline-block related-container fade-in-up" style="animation-delay: ${i * 0.1}s">

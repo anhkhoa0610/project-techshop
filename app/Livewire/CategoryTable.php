@@ -63,7 +63,11 @@ final class CategoryTable extends PowerGridComponent
             ->add(
                 'cover_image',
                 fn($category) =>
-                '<img src="' . asset('uploads/' . $category->cover_image) . '" class="h-12 w-12 object-cover rounded">'
+                    '<img src="' . (
+                        ($category->cover_image && file_exists(public_path('uploads/' . $category->cover_image)))
+                            ? asset('uploads/' . $category->cover_image)
+                            : asset('images/place-holder.jpg')
+                    ) . '" class="h-12 w-12 object-cover rounded">'
             )
             ->add('cover_image_filename', fn($category) => $category->cover_image)
             ->add('created_at');

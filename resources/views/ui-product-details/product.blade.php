@@ -24,12 +24,12 @@
                             </div>
                         @endif
 
-                        <img src="{{!empty($product->cover_image) ? asset('uploads/' . $product->cover_image) : asset('images/blank_product.png') }}"
+                        <img src="{{!empty($product->cover_image) ? asset('uploads/' . $product->cover_image) : asset('images/place-holder.jpg') }}"
                             class="prodcut-image" alt="Ảnh sản phẩm chính" id="mainImage">
                         <div class="swiper">
                             <div class="swiper-wrapper">
                                 <div class="swiper-slide">
-                                    <img src="{{!empty($product->cover_image) ? asset('uploads/' . $product->cover_image) : asset('images/blank_product.png') }}"
+                                    <img src="{{!empty($product->cover_image) ? asset('uploads/' . $product->cover_image) : asset('images/place-holder.jpg') }}"
                                         alt="Ảnh chính" class="swiper-slide-img">
                                 </div>
                                 @if(isset($product->images) && $product->images->count() > 0)
