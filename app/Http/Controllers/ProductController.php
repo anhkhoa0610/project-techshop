@@ -11,8 +11,14 @@ use Illuminate\Http\Request;
 class ProductController extends Controller
 {
     // Hiển thị danh sách sản phẩm
-    public function list()
+    public function list(Request $request)
     {
+        // Validate page parameter - nếu không hợp lệ thì redirect về page 1
+        $page = $request->query('page', 1);
+        if (!is_numeric($page) || $page < 1 || !ctype_digit(strval($page))) {
+            return redirect()->route('products.list');
+        }
+
         $search = request('search');
 
         $products = Product::with(['category', 'supplier'])

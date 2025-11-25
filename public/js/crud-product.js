@@ -39,10 +39,18 @@ $(document).on('click', '#edit-product-btn', function () {
     const imageFile = row.getAttribute('data-cover-image');
     const preview = document.getElementById('preview_image');
 
+    // Reset onerror handler trước
+    preview.onerror = null;
+
     if (imageFile && imageFile.trim() !== '') {
         preview.src = `/uploads/${imageFile}`;
+        // Nếu ảnh không tồn tại, fallback sang placeholder
+        preview.onerror = function () {
+            this.onerror = null; // Tránh loop vô hạn
+            this.src = '/images/place-holder.jpg';
+        };
     } else {
-        preview.src = `/images/place-holder.jpg`;
+        preview.src = '/images/place-holder.jpg';
     }
 
     document.getElementById('edit_cover_image').value = '';
@@ -102,7 +110,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
         const submitButton = formEdit.querySelector('button[type="submit"]');
         const originalButtonHtml = submitButton.innerHTML;
-        
+
         submitButton.disabled = true;
         submitButton.innerHTML = `<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span> Đang lưu...`;
         submitButton.classList.add('btn-loading');
@@ -113,7 +121,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
         try {
             const response = await fetch(url, {
-                method: 'POST', 
+                method: 'POST',
                 headers: {
                     'Accept': 'application/json',
                     'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content
@@ -239,7 +247,7 @@ function confirmDelete(id) {
                             location.reload();
                         });
                     } else {
-                        Swal.fire('Lỗi', data.message , 'error').then(() => location.reload());
+                        Swal.fire('Lỗi', data.message, 'error').then(() => location.reload());
                     }
                 })
                 .catch(() => Swal.fire('Lỗi', 'Không thể kết nối đến server.', 'error'));
