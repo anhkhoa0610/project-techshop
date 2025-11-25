@@ -191,10 +191,11 @@ class ReviewController extends Controller
             $review = Review::findOrFail($review_id);
             $review->delete();
 
-            return response()->json([
-                'success' => true,
-                'message' => 'Đánh giá đã được xóa thành công.'
-            ]);
+            // return response()->json([
+            //     'success' => true,
+            //     'message' => 'Đánh giá đã được xóa thành công.'
+            // ]);
+            return back()->with('success', 'Đánh giá đã được xóa thành công.');
 
         } catch (\Exception $e) {
             return response()->json([
@@ -202,5 +203,6 @@ class ReviewController extends Controller
                 'message' => 'Lỗi khi xóa đánh giá: ' . $e->getMessage()
             ], 500);
         }
+
     }
 }
