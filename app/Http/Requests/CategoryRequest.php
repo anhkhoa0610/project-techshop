@@ -18,6 +18,8 @@ class CategoryRequest extends FormRequest
     public function rules(): array
     {
         $id = $this->route('category') ?? $this->route('id');
+        $isUpdate = $this->isMethod('PUT') || $this->isMethod('PATCH');
+        
         return [
             'category_name' => [
                 'required',
@@ -38,8 +40,9 @@ class CategoryRequest extends FormRequest
                 'nullable',       // Cho phép để trống
                 'image',          // Phải là file ảnh
                 'mimes:jpeg,png,jpg,gif', // Định dạng cho phép
-                'max:2048'        // Kích thước tối đa 2MB (2048 KB)
-            ]
+                'max:5120'        // Kích thước tối đa 2MB (2048 KB)
+            ],
+            'updated_at' => $isUpdate ? 'required|date_format:Y-m-d H:i:s' : '', // Version tracking only for updates
         ];
     }
 
@@ -47,7 +50,7 @@ class CategoryRequest extends FormRequest
     {
         return [
             'category_name.required' => 'Tên danh mục là bắt buộc.',
-            'category_name.min' => 'Tên danh mục phải có ít nhất 2 ký tự.',
+            'category_name.min' => 'Tên danh mục phải nhiều hơn 2 ký tự.',
             'category_name.max' => 'Tên danh mục không quá 255 ký tự.',
             'category_name.regex' => 'Tên danh mục chỉ cho phép chữ, số, khoảng trắng, gạch ngang, gạch dưới',
             'category_name.unique' => 'Tên danh mục đã tồn tại.',
@@ -55,8 +58,9 @@ class CategoryRequest extends FormRequest
             'description.min' => 'Mô tả phải có ít nhất 5 ký tự.',
             'description.max' => 'Mô tả không quá 500 ký tự.',
             'cover_image.image' => 'File tải lên phải là hình ảnh.',
-            'cover_image.mimes' => 'Hình ảnh phải có định dạng: jpeg, png, jpg, gif.',
-            'cover_image.max' => 'Hình ảnh không được vượt quá 2MB.',
+            'cover_image.max' => 'Hình ảnh không được vượt quá 5MB.',
+            'updated_at.required' => 'Phiên bản dữ liệu không xác định.',
+            'updated_at.date_format' => 'Định dạng phiên bản không hợp lệ.',
         ];
     }
 

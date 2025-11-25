@@ -36,13 +36,7 @@
     /* Đẩy nội dung xuống 10vh */
 }
 
-/* ---------------------------------------------------- */
-/* TỐI ƯU HÓA: BACKGROUND KENBURNS */
-/* Đã loại bỏ tất cả các !important không cần thiết */
-/* Sử dụng position: fixed để background luôn nằm ở viewport (cố định) */
-/* ---------------------------------------------------- */
 .background-layout {
-    /* Đảm bảo nội dung con có thể được đặt trên background */
     position: relative;
     overflow: hidden;
 }
@@ -50,35 +44,29 @@
 .background-layout::before {
     content: "";
     position: fixed;
-    /* Cố định vào viewport */
     inset: 0;
     background-image: url('/images/background.jpg');
-    /* Dùng placeholder */
     background-size: cover;
     background-repeat: no-repeat;
     background-position: center center;
     z-index: -10;
-    /* Đặt rất thấp để luôn ở dưới cùng */
     transform-origin: center center;
     will-change: transform;
     animation: kenburns 18s ease-in-out infinite alternate;
 }
 
+/* Nội dung con nằm trên background */
 .background-layout>* {
     position: relative;
-    /* Đảm bảo nội dung con có z-index context */
     z-index: 2;
-    /* Đảm bảo nội dung con nằm trên overlay */
 }
 
 .background-layout::after {
     content: "";
-    position: fixed;
-    /* Cố định overlay vào viewport */
+    position: absolute;
     inset: 0;
     background: rgba(0, 0, 0, 0.4);
     z-index: 1;
-    /* Nằm trên background (-10) nhưng dưới nội dung (2) */
 }
 
 @keyframes kenburns {

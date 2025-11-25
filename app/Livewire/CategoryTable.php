@@ -35,7 +35,7 @@ final class CategoryTable extends PowerGridComponent
         return [
             PowerGrid::header()
                 ->showToggleColumns()
-                ->includeViewOnTop('components.add-category-button')->showSearchInput(),
+                ->includeViewOnTop('components.add-category-button'),
             PowerGrid::footer()
                 ->showPerPage(5, [5, 10, 25, 50])
                 ->showRecordCount(),
@@ -74,23 +74,19 @@ final class CategoryTable extends PowerGridComponent
     {
         return [
             Column::make('Category id', 'category_id')
-                ->sortable()
-                ->searchable(),
+                ->sortable(),
 
             Column::make('Cover image', 'cover_image')
                 ->visibleInExport(false),
 
             Column::make('Category name', 'category_name')
-                ->sortable()
-                ->searchable(),
+                ->sortable(),
 
             Column::make('Description', 'description')
-                ->sortable()
-                ->searchable(),
+                ->sortable(),
 
             Column::make('Created at', 'created_at')
-                ->sortable()
-                ->searchable(),
+                ->sortable(),
 
             Column::action('Action')
         ];

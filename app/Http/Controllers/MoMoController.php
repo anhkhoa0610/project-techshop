@@ -264,6 +264,17 @@ class MoMoController extends Controller
                     $product->increment('volume_sold', $item->quantity);
                 }
             }
+            Momo::create([
+                'order_id' => $orderIdMoMo,
+                'request_id' => $data['requestId'] ?? null,
+                'trans_id' => $data['transId'] ?? null,
+                'amount' => $data['amount'] ?? ($extraData['total_price'] ?? 0),
+                'order_info' => $data['orderInfo'] ?? null,
+                'result_code' => $data['resultCode'] ?? null,
+                'message' => $data['message'] ?? null,
+                'pay_url' => $data['payUrl'] ?? null,
+                'status' => ($data['resultCode'] ?? 1) == 0 ? 'success' : 'fail',
+            ]);
 
             // 3. XÓA GIỎ HÀNG
             CartItem::where('user_id', $userId)->delete();

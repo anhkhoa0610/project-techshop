@@ -12,12 +12,16 @@ use PowerComponents\LivewirePowerGrid\Facades\PowerGrid;
 use PowerComponents\LivewirePowerGrid\PowerGridFields;
 use PowerComponents\LivewirePowerGrid\PowerGridComponent;
 use Illuminate\View\View;
+use PowerComponents\LivewirePowerGrid\Components\SetUp\Exportable;
+use PowerComponents\LivewirePowerGrid\Traits\WithExport;
 
 final class SpecTable extends PowerGridComponent
 {
     public string $tableName = 'specTable';
     public string $sortField = 'spec_id';
     public string $primaryKey = 'spec_id';
+
+    use WithExport;
 
     public function getIdAttribute()
     {
@@ -33,6 +37,8 @@ final class SpecTable extends PowerGridComponent
             PowerGrid::footer()
                 ->showPerPage(5, [5, 10, 25, 50])
                 ->showRecordCount(),
+            PowerGrid::exportable(fileName: 'suppliers-export')
+                ->type(Exportable::TYPE_XLS, Exportable::TYPE_CSV),
             PowerGrid::detail()
                 ->view('components.spec_details')
                 ->showCollapseIcon(),
@@ -104,7 +110,7 @@ final class SpecTable extends PowerGridComponent
                 ->operators(['contains']),
             Filter::datepicker('created_at'),
             Filter::select('name', 'specs.name')
-                ->dataSource(Spec::select('name')->distinct()->get()) 
+                ->dataSource(Spec::select('name')->distinct()->get())
                 ->optionValue('name')
                 ->optionLabel('name'),
         ];
@@ -113,5 +119,10 @@ final class SpecTable extends PowerGridComponent
     public function actionsFromView($row): View
     {
         return view('components.spec-actions', ['spec' => $row]);
+    }
+
+    public function noDataLabel(): string|View
+    {
+        return view('components.spec_nodata');
     }
 }

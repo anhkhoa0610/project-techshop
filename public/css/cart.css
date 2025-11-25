@@ -7,34 +7,49 @@ body {
     font-family: 'Poppins', sans-serif;
 }
 
-/* -------------------------------------------------------------------- */
-/* BACKGROUND STYLES (Không thay đổi) */
-/* -------------------------------------------------------------------- */
-.background-layout::before {
-    content: "" !important;
-    position: absolute !important;
-    inset: 0 !important;
-    background-image: url('/images/background.jpg') !important;
-    background-size: cover !important;
-    background-repeat: no-repeat !important;
-    background-position: center center !important;
-    z-index: -1 !important;
-    transform-origin: center center !important;
-    will-change: transform !important;
-    animation: kenburns 18s ease-in-out infinite alternate !important;
+.background-layout {
+    position: relative;
+    overflow: hidden;
 }
 
-.background-layout>* {
-    position: relative !important;
-    z-index: 2 !important;
+.background-layout::before {
+    content: "";
+    position: fixed;
+    inset: 0;
+    background-image: url('/images/background.jpg');
+    background-size: cover;
+    background-repeat: no-repeat;
+    background-position: center center;
+    z-index: -10;
+    transform-origin: center center;
+    will-change: transform;
+    animation: kenburns 18s ease-in-out infinite alternate;
+}
+
+/* Nội dung con nằm trên background */
+.background-layout > * {
+    position: relative;
+    z-index: 2;
+}
+
+/* ===== CONTAINER ===== */
+.container-layout {
+    max-width: 1200px;
+    margin: 0 auto;
+    display: flex;
+    gap: 30px;
+    padding: 0 20px;
+    margin-top: 130px; /* tránh navbar */
+    margin-bottom: 100px;
+    flex-wrap: wrap;
 }
 
 .background-layout::after {
-    content: "" !important;
-    position: absolute !important;
-    inset: 0 !important;
-    background: rgba(0, 0, 0, 0.4) !important;
-    z-index: 1 !important;
+    content: "" ;
+    position: absolute ;
+    inset: 0 ;
+    background: rgba(0, 0, 0, 0.4) ;
+    z-index: 1;
 }
 
 @keyframes kenburns {
@@ -79,7 +94,7 @@ body {
 
 .cartp-items {
     padding: clamp(15px, 3vw, 30px); /* Padding động */
-    max-height: 70vh; /* Sử dụng vh để co giãn chiều cao */
+    max-height: 470px; /* Sử dụng vh để co giãn chiều cao */
     overflow-y: auto;
     /* Tùy chỉnh scrollbar */
     scrollbar-width: thin; 

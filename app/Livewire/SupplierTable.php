@@ -12,12 +12,16 @@ use PowerComponents\LivewirePowerGrid\Facades\PowerGrid;
 use PowerComponents\LivewirePowerGrid\PowerGridFields;
 use PowerComponents\LivewirePowerGrid\PowerGridComponent;
 use Illuminate\View\View;
+use PowerComponents\LivewirePowerGrid\Components\SetUp\Exportable;
+use PowerComponents\LivewirePowerGrid\Traits\WithExport;
 
 final class SupplierTable extends PowerGridComponent
 {
     public string $tableName = 'supplierTable';
     public string $sortField = 'supplier_id';
     public string $primaryKey = 'supplier_id';
+
+    use WithExport;
 
     public function getIdAttribute()
     {
@@ -32,6 +36,8 @@ final class SupplierTable extends PowerGridComponent
             PowerGrid::footer()
                 ->showPerPage(5, [5, 10, 25, 50])
                 ->showRecordCount(),
+            PowerGrid::exportable(fileName: 'suppliers-export')
+                ->type(Exportable::TYPE_XLS, Exportable::TYPE_CSV),
             PowerGrid::detail()
                 ->view('components.supplier_details')
                 ->showCollapseIcon(),
@@ -64,6 +70,7 @@ final class SupplierTable extends PowerGridComponent
                 fn($supplier) =>
                 '<img src="' . asset($supplier->logo ? 'uploads/' . $supplier->logo : 'uploads/place-holder.png') . '" class="h-12 w-12 object-cover rounded">'
             )
+            ->add('logo')
             ->add('created_at')
             ->add('created_at_formatted', fn(Supplier $model) => Carbon::parse($model->created_at)->format('d/m/Y H:i:s'));
     }
@@ -71,7 +78,11 @@ final class SupplierTable extends PowerGridComponent
     {
         return [
             Column::make('Supplier id', 'supplier_id'),
-            Column::make('Logo', 'logo_html'),
+            Column::make('Logo', 'logo_html')
+                ->visibleInExport(false),
+            Column::make('Logo', 'logo')
+                ->visibleInExport(true)
+                ->hidden(),
 
             Column::make('Name', 'name')
                 ->sortable()
@@ -106,5 +117,10 @@ final class SupplierTable extends PowerGridComponent
     public function actionsFromView($row): View
     {
         return view('components.supplier-actions', ['supplier' => $row]);
+    }
+
+    public function noDataLabel(): string|View
+    {
+        return view('components.supplier_nodata');
     }
 }
