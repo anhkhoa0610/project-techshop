@@ -134,7 +134,7 @@ class IndexController extends Controller
     }
     public function filter(Request $request)
     {
-        $products = Product::with(['specs', 'discounts'])
+        $query = Product::with(['specs', 'discounts'])
             ->withAvg('reviews', 'rating')
             ->withCount('reviews')
             ->filter(
@@ -146,8 +146,31 @@ class IndexController extends Controller
                 $request->stock,
                 $request->release_date,
                 $request->on_sale ?? false
-            )
-            ->paginate(8);
+            );
+
+        // Apply sorting
+        $sortBy = $request->sort_by;
+        if ($sortBy) {
+            // Clear any existing ordering first
+            $query->reorder();
+
+            switch ($sortBy) {
+                case 'price_asc':
+                    $query->orderBy('price', 'asc');
+                    break;
+                case 'price_desc':
+                    $query->orderBy('price', 'desc');
+                    break;
+                case 'name_asc':
+                    $query->orderBy('product_name', 'asc');
+                    break;
+                case 'name_desc':
+                    $query->orderBy('product_name', 'desc');
+                    break;
+            }
+        }
+
+        $products = $query->paginate(8);
 
         return response()->json([
             'success' => true,
