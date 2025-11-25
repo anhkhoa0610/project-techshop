@@ -56,9 +56,26 @@ document.addEventListener('DOMContentLoaded', function () {
     // ==================== Xử lý Form Thêm Spec ====================
     const addForm = document.getElementById('addSpecForm');
 
+    // Hàm reset nút (đặt ở ngoài hoặc trong scope đều được, nhưng nên để ngoài để dùng chung)
+    function resetButton(btn, originalText) {
+        if (btn) {
+            btn.disabled = false;
+            btn.textContent = originalText;
+        }
+    }
+
     if (addForm) {
         addForm.addEventListener('submit', async function (e) {
             e.preventDefault();
+
+            // 1. Lấy nút submit và lưu trạng thái cũ
+            const submitBtn = this.querySelector('button[type="submit"]');
+            const originalText = submitBtn.textContent; // Lưu chữ "Thêm mới"
+
+            // 2. Disable và hiện loading
+            submitBtn.disabled = true;
+            submitBtn.textContent = 'Đang xử lý...';
+
             const url = '/api/specs';
             const formData = new FormData(this);
 
@@ -70,28 +87,42 @@ document.addEventListener('DOMContentLoaded', function () {
                     method: 'POST',
                     headers: {
                         'Accept': 'application/json',
-                        'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content || window.csrfToken || ''
+                        'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]')?.content || window.csrfToken || ''
                     },
                     body: formData
                 });
 
                 const data = await response.json();
+
                 if (response.ok && data.success) {
-                    Swal.fire('Thành công!', 'Thêm Spec thành công.', 'success')
-                        .then(() => location.reload()); // Tải lại trang (hoặc dispatch Livewire event)
+                    // Thành công: Hiện thông báo và reload
+                    // Không cần reset nút vì trang sẽ reload ngay sau đó
+                    Swal.fire({
+                        icon: 'success',
+                        title: 'Thành công!',
+                        text: 'Thêm Spec thành công.',
+                        timer: 1500,
+                        showConfirmButton: false
+                    }).then(() => location.reload());
                 } else if (data.errors) {
-                    // Hiển thị lỗi chi tiết
+                    // Lỗi Validation (422)
                     for (const [key, messages] of Object.entries(data.errors)) {
                         const errorElement = document.getElementById(`error_add_${key}`);
                         if (errorElement) {
                             errorElement.textContent = messages[0];
                         }
                     }
+                    // Có lỗi thì phải mở lại nút để sửa
+                    resetButton(submitBtn, originalText);
                 } else {
+                    // Lỗi logic khác
                     Swal.fire('Lỗi', data.message || 'Thêm thất bại.', 'error');
+                    resetButton(submitBtn, originalText);
                 }
             } catch (err) {
+                console.error(err);
                 Swal.fire('Lỗi', 'Không thể kết nối server.', 'error');
+                resetButton(submitBtn, originalText);
             }
         });
     }

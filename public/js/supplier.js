@@ -95,17 +95,31 @@ document.addEventListener('DOMContentLoaded', function () {
     const addForm = document.getElementById('addSupplierForm');
     const addLogo = document.getElementById('add_logo');
     const addLogoPreview = document.getElementById('add_logo_preview');
-    const closeBtn = document.getElementById('closeAddSupplier');
     const placeholder = '/uploads/place-holder.jpg';
+
+    // Hàm tiện ích để mở lại nút (Clean Code)
+    function resetSubmitButton(btn, originalText) {
+        if (btn) {
+            btn.disabled = false;
+            btn.textContent = originalText;
+        }
+    }
 
     // Xử lý submit thêm nhà cung cấp
     if (addForm) {
         addForm.addEventListener('submit', async function (e) {
             e.preventDefault();
+
+            // 1. Lấy nút submit và khóa lại
+            const submitBtn = this.querySelector('button[type="submit"]');
+            const originalText = submitBtn.textContent;
+            submitBtn.disabled = true;
+            submitBtn.textContent = 'Đang xử lý...';
+
             const url = '/api/suppliers';
             const formData = new FormData(this);
 
-            // Xóa lỗi cũ trước khi submit
+            // 2. Xóa thông báo lỗi cũ
             document.querySelectorAll('.error-message').forEach(el => el.textContent = '');
 
             try {
@@ -113,7 +127,7 @@ document.addEventListener('DOMContentLoaded', function () {
                     method: 'POST',
                     headers: {
                         'Accept': 'application/json',
-                        'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content
+                        'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]')?.content || window.csrfToken || ''
                     },
                     body: formData
                 });
@@ -121,45 +135,50 @@ document.addEventListener('DOMContentLoaded', function () {
                 const data = await response.json();
 
                 if (response.ok && data.success) {
-                    Swal.fire('Thành công!', 'Thêm nhà cung cấp thành công.', 'success')
-                        .then(() => location.reload());
+                    // Thành công: Hiện thông báo và reload
+                    Swal.fire({
+                        icon: 'success',
+                        title: 'Thành công!',
+                        text: 'Thêm nhà cung cấp thành công.',
+                        timer: 1500,
+                        showConfirmButton: false
+                    }).then(() => location.reload());
                 } else if (data.errors) {
-                    // Hiển thị lỗi chi tiết
+                    // Lỗi Validation (422)
                     for (const [key, messages] of Object.entries(data.errors)) {
                         const errorElement = document.getElementById(`error_add_${key}`);
                         if (errorElement) {
                             errorElement.textContent = messages[0];
                         }
                     }
+                    // Mở lại nút để sửa lỗi
+                    resetSubmitButton(submitBtn, originalText);
                 } else {
+                    // Lỗi logic khác
                     Swal.fire('Lỗi', data.message || 'Thêm thất bại.', 'error');
+                    resetSubmitButton(submitBtn, originalText);
                 }
             } catch (err) {
+                console.error(err);
                 Swal.fire('Lỗi', 'Không thể kết nối đến server.', 'error');
+                resetSubmitButton(submitBtn, originalText);
             }
         });
     }
 
-    // reset add form
-    if (closeBtn) {
-        closeBtn.addEventListener('click', function () {
-            addForm?.reset();
-            if (addLogoPreview) addLogoPreview.src = placeholder;
-            document.querySelectorAll('.error-message').forEach(el => el.textContent = '');
-        });
-    }
-
-    // Hiển thị preview ảnh khi chọn
+    // Hiển thị preview ảnh khi chọn file (Add Modal)
     if (addLogo) {
         addLogo.addEventListener('change', function () {
             const [file] = this.files;
-            if (file && addLogoPreview) addLogoPreview.src = URL.createObjectURL(file);
+            if (file && addLogoPreview) {
+                addLogoPreview.src = URL.createObjectURL(file);
+            }
         });
     }
 
-    // Khi bấm nút mở modal thêm mới
-    document.getElementById('addNewSupplierBtn')?.addEventListener('click', function () {
-        addForm?.reset();
+    // Reset form hoàn toàn khi đóng Modal (Sử dụng sự kiện chuẩn của Bootstrap)
+    $('#addSupplierModal').on('hidden.bs.modal', function () {
+        if (addForm) addForm.reset();
         if (addLogoPreview) addLogoPreview.src = placeholder;
         document.querySelectorAll('.error-message').forEach(el => el.textContent = '');
     });

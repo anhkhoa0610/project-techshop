@@ -6,6 +6,7 @@ use App\Models\Spec;
 use App\Models\Product;
 use App\Http\Requests\SpecRequest;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Validator;
 
 class SpecController extends Controller
 {
