@@ -173,7 +173,7 @@ document.getElementById('voucher').addEventListener('input', function () {
 document.getElementById("payBtn").addEventListener("click", () => {
     const nameInput = document.getElementById("fname");
     const phoneInput = document.getElementById("phone");
-    const emailInput = document.getElementById("email-thanhtoan");
+    const emailInput = document.getElementById("email");
     const addressInput = document.getElementById("address");
 
     // Xóa lỗi cũ
@@ -183,7 +183,6 @@ document.getElementById("payBtn").addEventListener("click", () => {
     const phoneRegex = /^(0|\+84)[0-9]{9}$/;
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
-    console.log(nameInput.value, phoneInput.value, emailInput.value, addressInput.value);
     // ✅ Kiểm tra nhập liệu
     if (!nameInput.value.trim() || !phoneInput.value.trim() || !emailInput.value.trim() || !addressInput.value.trim()) {
           Swal.fire({
