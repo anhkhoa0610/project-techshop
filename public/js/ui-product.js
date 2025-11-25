@@ -514,6 +514,13 @@ document.addEventListener('DOMContentLoaded', function () {
         e.preventDefault();
 
         const formData = new FormData(this);
+        const submitButton = this.querySelector('button[type="submit"]');
+        
+        // Disable button to prevent multiple clicks
+        submitButton.disabled = true;
+        const originalText = submitButton.textContent;
+        submitButton.textContent = 'Đang xử lý...';
+        
         // Kiểm tra đăng nhập trước khi xử lý
         if (!check_user) {
             Swal.fire({
@@ -528,6 +535,8 @@ document.addEventListener('DOMContentLoaded', function () {
                     window.location.href = '/login';
                 }
             });
+            submitButton.disabled = false;
+            submitButton.textContent = originalText;
             return;
         }
         else {
@@ -540,17 +549,23 @@ document.addEventListener('DOMContentLoaded', function () {
                 body: formData
             });
 
-            if (response.ok) {
+            try {
+                if (response.ok) {
 
-                Swal.fire('Thành công', 'Đánh giá của bạn đã được lưu lại', 'success');
-                hasReviewed = true;
-                const data = await response.json();
-                const rating = formData.get('rating');
+                    Swal.fire('Thành công', 'Đánh giá của bạn đã được lưu lại', 'success');
+                    hasReviewed = true;
+                    const data = await response.json();
+                    const rating = formData.get('rating');
 
-                updateReviewUI(data, rating, productId, 'add');
-            } else {
-                const errorData = await response.json();
-                Swal.fire('Lỗi', 'Lỗi khi gửi đánh giá, vui lòng thử lại sau.', 'error');
+                    updateReviewUI(data, rating, productId, 'add');
+                } else {
+                    const errorData = await response.json();
+                    Swal.fire('Lỗi', 'Lỗi khi gửi đánh giá, vui lòng thử lại sau.', 'error');
+                }
+            } finally {
+                // Re-enable button after response completes
+                submitButton.disabled = false;
+                submitButton.textContent = originalText;
             }
         }
     });
@@ -654,6 +669,12 @@ document.addEventListener('DOMContentLoaded', function () {
         const form = this;
         const reviewId = document.getElementById('edit_review_id').value;
         const formData = new FormData(form);
+        const submitButton = this.querySelector('button[type="submit"]');
+        
+        // Disable button to prevent multiple clicks
+        submitButton.disabled = true;
+        const originalText = submitButton.textContent;
+        submitButton.textContent = 'Đang xử lý...';
 
         try {
             const response = await fetch(`/api/client-review/${reviewId}`, {
@@ -692,6 +713,10 @@ document.addEventListener('DOMContentLoaded', function () {
                 text: "Không kết nối được server.",
                 confirmButtonText: "Đóng"
             });
+        } finally {
+            // Re-enable button after response completes
+            submitButton.disabled = false;
+            submitButton.textContent = originalText;
         }
 
     });

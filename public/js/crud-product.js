@@ -4,6 +4,20 @@ function decodeHtmlEntities(str) {
     return txt.value;
 }
 
+// Utility: Phát event thông báo tất cả tab khác cần reload danh sách
+function notifyProductsUpdated() {
+    // Phát event qua localStorage để các tab khác biết
+    localStorage.setItem('products_updated_at', new Date().getTime());
+}
+
+// Utility: Lắng nghe event từ các tab khác
+window.addEventListener('storage', function (e) {
+    if (e.key === 'products_updated_at') {
+        // Nếu có tab khác update product, reload trang này
+        location.reload();
+    }
+});
+
 //Mở modal Edit
 $(document).on('click', '#edit-product-btn', function () {
     const formReset = document.getElementById('editProductForm');
@@ -111,7 +125,10 @@ document.addEventListener('DOMContentLoaded', () => {
 
             if (response.ok) {
                 $('#editProductModal').modal('hide');
-                Swal.fire('Cập nhật sản phẩm thành công !', data.message, 'success').then(() => location.reload());
+                Swal.fire('Cập nhật sản phẩm thành công !', data.message, 'success').then(() => {
+                    notifyProductsUpdated();
+                    location.reload();
+                });
             } else if (data.errors) {
                 Object.entries(data.errors).forEach(([field, messages]) => {
                     const errorEl = document.getElementById(`error_edit_${field}`);
@@ -164,7 +181,10 @@ document.addEventListener('DOMContentLoaded', () => {
 
             if (response.ok) {
                 $('#addProductModal').modal('hide');
-                Swal.fire('Thêm sản phẩm thành công !', data.message, 'success').then(() => location.reload());
+                Swal.fire('Thêm sản phẩm thành công !', data.message, 'success').then(() => {
+                    notifyProductsUpdated();
+                    location.reload();
+                });
             } else if (data.errors) {
                 // Hiển thị lỗi validation
                 Object.entries(data.errors).forEach(([field, messages]) => {
@@ -214,7 +234,10 @@ function confirmDelete(id) {
                 .then(res => res.json())
                 .then(data => {
                     if (data.success) {
-                        Swal.fire('Đã xóa!', data.message, 'success').then(() => location.reload());
+                        Swal.fire('Đã xóa!', data.message, 'success').then(() => {
+                            notifyProductsUpdated();
+                            location.reload();
+                        });
                     } else {
                         Swal.fire('Lỗi', data.message , 'error').then(() => location.reload());
                     }
