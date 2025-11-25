@@ -237,7 +237,7 @@ function confirmDelete(id) {
                             location.reload();
                         });
                     } else {
-                        Swal.fire('Lỗi', 'Không thể xóa danh mục.', 'error');
+                        Swal.fire('Lỗi', 'Không thể xóa danh mục này, vui lòng thử lại sau.', 'error');
                     }
                 })
                 .catch(() => Swal.fire('Lỗi', 'Không thể kết nối đến server.', 'error'));
