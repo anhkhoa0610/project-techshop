@@ -2,7 +2,6 @@
 
 namespace App\Http\Requests;
 
-use Attribute;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule;
 
@@ -83,7 +82,6 @@ class ProductRequest extends FormRequest
         ];
     }
 
-
     public function messages()
     {
         return [
@@ -91,8 +89,6 @@ class ProductRequest extends FormRequest
             'required' => ':attribute không được để trống',
             'unique' => ':attribute đã tồn tại',
             'max' => ':attribute không được vượt quá :max ký tự',
-            'numeric' => ':attribute phải là số',
-            'integer' => ':attribute phải là số nguyên',
             'min' => ':attribute phải lớn hơn hoặc bằng :min',
             'image' => ':attribute phải là định dạng ảnh (jpeg, png, bmp, gif, svg, hoặc webp)',
             'mimes' => ':attribute phải là định dạng: :values',
@@ -102,12 +98,12 @@ class ProductRequest extends FormRequest
             'date' => 'Sai định dạng :attribute',
 
             // Messages cho số nguyên ASCII (từ chối full-width)
-            'stock_quantity.regex' => ':attribute chỉ chấp nhận số thông thường (0-9), không chấp nhận số full-width (như ９)',
-            'volume_sold.regex' => ':attribute chỉ chấp nhận số thông thường (0-9), không chấp nhận số full-width (như ９)',
-            'warranty_period.regex' => ':attribute chỉ chấp nhận số thông thường (0-9), không chấp nhận số full-width (như ９)',
+            'stock_quantity.regex' => ':attribute chỉ chấp nhận số thông thường (0-9), không chấp nhận số full-width',
+            'volume_sold.regex' => ':attribute chỉ chấp nhận số thông thường (0-9), không chấp nhận số full-width',
+            'warranty_period.regex' => ':attribute chỉ chấp nhận số thông thường (0-9), không chấp nhận số full-width',
 
             // Message cho số thập phân ASCII (từ chối full-width)
-            'price.regex' => ':attribute chỉ chấp nhận số thông thường (0-9), không chấp nhận số full-width (như ９)',
+            'price.regex' => ':attribute chỉ chấp nhận số thông thường (0-9), không chấp nhận số full-width',
 
             // Message cho YouTube URL
             'embed_url_review.regex' => ':attribute phải là link youtube hợp lệ',
