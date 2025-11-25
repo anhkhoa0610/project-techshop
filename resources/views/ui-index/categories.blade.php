@@ -113,7 +113,19 @@ if ($categoryId && File::exists(public_path($specificVideoPath))) {
                 <div class="sidebar-header">
                     <span class="sidebar-title">Lọc sản phẩm</span>
                 </div>
+
                 <form id="filterForm" class="mt-4">
+                    <!-- Sort Dropdown -->
+                    <div class="mb-3">
+                        <label for="sort_by" class="form-label fw-semibold" style="color: white;">Sắp xếp theo</label>
+                        <select class="form-select" id="sort_by" name="sort_by">
+                            <option value="">Mặc định</option>
+                            <option value="price_asc">Giá: Thấp → Cao</option>
+                            <option value="price_desc">Giá: Cao → Thấp</option>
+                            <option value="name_asc">Tên: A → Z</option>
+                            <option value="name_desc">Tên: Z → A</option>
+                        </select>
+                    </div>
                     <div class="row">
 
                         <div class="col-md-3">
@@ -195,6 +207,7 @@ if ($categoryId && File::exists(public_path($specificVideoPath))) {
                     <button type="button" class="btn-filter-reset btn btn-primary w-100 ms-2">Đặt lại bộ lọc</button>
                 </form>
             </div>
+
             <div class="products-grid show-by-category glass3d">
                 @foreach ($allProducts as $product)
                 <div class="product-card">
@@ -432,8 +445,8 @@ if ($categoryId && File::exists(public_path($specificVideoPath))) {
 @include('ui-index.chatbot')
 
 <script>
-    const USER_ID = {{auth() -> id() ?? 'null'}};
-    const cartCountFromController = {{$cartItemCount ?? 0}};
+    // const USER_ID = {{auth() -> id() ?? 'null'}};
+    // const cartCountFromController = {{$cartItemCount ?? 0}};
 
     function updateCartCount() {
         if (typeof cartCountFromController === 'number' && cartCountFromController >= 0) {

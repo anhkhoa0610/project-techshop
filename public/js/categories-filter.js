@@ -11,6 +11,7 @@ document.addEventListener('DOMContentLoaded', function () {
             rating: document.querySelector('[name="rating_filter"]').value,
             release_date: document.querySelector('[name="release_filter"]').value,
             on_sale: document.querySelector('[name="on_sale_filter"]').checked ? '1' : '',
+            sort_by: document.querySelector('[name="sort_by"]')?.value || '',
         };
     }
 
@@ -195,6 +196,9 @@ document.addEventListener('DOMContentLoaded', function () {
         const params = new URLSearchParams(currentFilterValues);
         params.append('page', page);
 
+        // Debug logging
+        console.log('Filter params:', Object.fromEntries(params));
+
         fetch(`/api/index/filter?${params.toString()}`)
             .then(res => {
                 if (!res.ok) {
@@ -244,6 +248,7 @@ document.addEventListener('DOMContentLoaded', function () {
                 rating: document.querySelector('[name="rating_filter"]').value,
                 release_date: document.querySelector('[name="release_filter"]').value,
                 on_sale: document.querySelector('[name="on_sale_filter"]').checked ? '1' : '',
+                sort_by: document.querySelector('[name="sort_by"]')?.value || '',
             };
 
             // Reset trạng thái và tải lại từ đầu
@@ -307,9 +312,25 @@ document.addEventListener('DOMContentLoaded', function () {
             if (onSaleCheckbox) {
                 onSaleCheckbox.checked = false;
             }
+            // Reset sort dropdown
+            const sortDropdown = document.querySelector('[name="sort_by"]');
+            if (sortDropdown) {
+                sortDropdown.value = '';
+            }
             if (priceSlider) {
                 priceSlider.noUiSlider.set([0, 50000000]);
             }
+        });
+    }
+
+    // Sort dropdown event listener - auto trigger filter on change
+    const sortDropdown = document.querySelector('[name="sort_by"]');
+    if (sortDropdown) {
+        sortDropdown.addEventListener('change', function () {
+            updateCurrentFilterValues();
+            currentPage = 1;
+            hasMorePages = true;
+            loadProductsByFilter(currentPage, false, true);
         });
     }
 
