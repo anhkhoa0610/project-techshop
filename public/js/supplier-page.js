@@ -129,7 +129,7 @@ document.addEventListener('DOMContentLoaded', function () {
                         ${priceOldHtml}
                     </div>
                     ${product.stock_quantity > 0 ?
-                    '<button class="btn-add-cart btn-add-to-cart" data-product-id="${product.product_id}">Thêm vào giỏ</button>' :
+                    `<button class="btn-add-cart btn-add-to-cart" data-product-id="${product.product_id}">Thêm vào giỏ</button>` :
                     '<div class="w-100 h-25 d-flex justify-content-center align-items-center"><span class="fw-bold d-block text-secondary">Liên hệ sau</span></div>'
                 }
                 </div>
@@ -240,7 +240,7 @@ document.addEventListener('DOMContentLoaded', function () {
 });
 
 // --------------------------------------------------
-// PHẦN BACK TO TOP (GIỮ NGUYÊN)
+// PHẦN BACK TO TOP
 // --------------------------------------------------
 let myButton = document.getElementById("backToTopBtn");
 
@@ -274,7 +274,7 @@ function scrollToTop() {
 }
 
 // --------------------------------------------------
-// PHẦN ADD TO CART (GIỮ NGUYÊN)
+// PHẦN ADD TO CART
 // --------------------------------------------------
 async function handleAddToCart(button) {
     // Lưu HTML ban đầu của nút để khôi phục sau
