@@ -10,11 +10,18 @@ class CategoryController extends Controller
     public function list()
     {
         $search = request('search');
+    
+        $page = intval(request('page', 1));
+        $requestedPage = request('page');
+    
+        if ($page < 1 || ($requestedPage && intval($requestedPage) != $requestedPage)) {
+            // Redirect to page 1 if invalid page parameter detected
+            return redirect()->route('categories.list', ['search' => $search]);
+        }
 
         $categories = Category::query()
             ->search($search)
-            ->paginate(5);
-
+            ->paginate(5, ['*'], 'page', $page);
         return view('crud-category.list', compact('categories'));
     }
 
@@ -130,6 +137,15 @@ class CategoryController extends Controller
 
             $filename = $file->getClientOriginalName();
 
+            // If there's an existing cover image and it's different from the new file name, remove the old file
+            if ($category->cover_image && $category->cover_image !== $filename) {
+                $oldPath = public_path('uploads/' . $category->cover_image);
+                if (file_exists($oldPath)) {
+                    @unlink($oldPath);
+                }
+            }
+
+            // Move the new file into uploads
             $file->move(public_path('uploads'), $filename);
 
             $data['cover_image'] = $filename;
@@ -148,6 +164,13 @@ class CategoryController extends Controller
     public function destroy(string $category_id)
     {
         $category = Category::findOrFail($category_id);
+        // Delete uploaded cover image file if exists
+        if ($category->cover_image) {
+            $path = public_path('uploads/' . $category->cover_image);
+            if (file_exists($path)) {
+                @unlink($path);
+            }
+        }
         $category->delete();
         return response()->json([
             'success' => true,
