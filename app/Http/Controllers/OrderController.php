@@ -17,10 +17,26 @@ class OrderController extends Controller
     {
         session(['orders_list_url' => $request->fullUrl()]);
 
+        // Sanitize and validate `page` query parameter
+        $search = $request->search;
+        $startDate = $request->start_date;
+        $endDate = $request->end_date;
+
+        $page = intval($request->query('page', 1));
+        $requestedPage = $request->query('page');
+        if ($page < 1 || ($requestedPage && intval($requestedPage) != $requestedPage)) {
+            // Redirect to a clean URL (preserve filters) when page param is invalid
+            return redirect()->route('orders.list', array_filter([
+                'search' => $search,
+                'start_date' => $startDate,
+                'end_date' => $endDate,
+            ]));
+        }
+
         $orders = Order::with(['user', 'voucher'])
-            ->search($request->search)
-            ->dateRange($request->start_date, $request->end_date)
-            ->paginate(5);
+            ->search($search)
+            ->dateRange($startDate, $endDate)
+            ->paginate(5, ['*'], 'page', $page);
 
         $users = User::all();
         $vouchers = Voucher::all();
