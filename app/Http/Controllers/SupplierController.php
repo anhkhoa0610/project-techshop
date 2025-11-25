@@ -7,32 +7,41 @@ use App\Http\Requests\SupplierRequest;
 use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Support\Facades\Auth;
 use App\Models\CartItem;
+use Illuminate\Http\Request;
 
 class SupplierController extends Controller
 {
 
     // Hiển thị danh sách nhà cung cấp
 
-    public function list()
+    public function list(Request $request)
     {
+        // Kiểm tra page hợp lệ
+        $page = $request->query('page', 1);
+        if (!ctype_digit((string) $page) || $page < 1) {
+            return redirect()->route('supplier.list');
+        }
+
+        // Base query
         $query = Supplier::query();
 
-        // Nếu có tham số tìm kiếm
-        if (request()->has('search') && request('search')) {
-            $query = Supplier::searchByName(request('search'));
+        // Tìm kiếm theo tên
+        if ($request->filled('search')) {
+            $query->where('name', 'like', '%' . $request->search . '%');
         }
 
-        // Lọc theo địa chỉ nếu có
-        if (request()->has('address_filter') && request('address_filter')) {
-            $query->where('address', request('address_filter'));
+        // Lọc theo địa chỉ
+        if ($request->filled('address_filter')) {
+            $query->where('address', $request->address_filter);
         }
 
-        // Lấy danh sách địa chỉ duy nhất để hiển thị trong dropdown
+        // Lấy danh sách địa chỉ duy nhất
         $allAddresses = Supplier::select('address')
             ->whereNotNull('address')
             ->distinct()
             ->pluck('address');
 
+        // Phân trang
         $suppliers = $query->paginate(5);
 
         return view('crud_suppliers.list', compact('suppliers', 'allAddresses'));
