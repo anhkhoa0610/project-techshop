@@ -14,10 +14,10 @@ class UIProductDetailsController extends Controller
 {
     public function show($id)
     {
-        $product = Product::with('specs', 'discounts')->findOrFail($id);
+        $product = Product::with('specs', 'discounts')->find($id);
 
         if (!$product) {
-            return redirect()->back()->with('error', 'Sản phẩm không tồn tại!');
+            return redirect()->route('index')->with('error', 'Sản phẩm không tồn tại hoặc đã bị xóa!');
         }
         $avg = $product->reviews()->avg('rating');
         $reviews_count = $product->reviews()->count();
