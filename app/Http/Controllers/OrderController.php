@@ -8,6 +8,8 @@ use App\Models\User;
 use App\Models\Voucher;
 use Illuminate\Http\Request;
 use App\Http\Requests\UpdateOrderRequest;
+use App\Mail\OrderCancelledMail;
+use Illuminate\Support\Facades\Mail;
 
 class OrderController extends Controller
 {
@@ -128,43 +130,43 @@ class OrderController extends Controller
     // }
 
 
-  
-    
-    public function show()
-{
-    // Lấy ID user hiện tại
-    $userId = auth()->id();
 
-    // Nếu chưa đăng nhập thì redirect (tuỳ app)
-    if (!$userId) {
-        return redirect()->route('login');
+
+    public function show()
+    {
+        // Lấy ID user hiện tại
+        $userId = auth()->id();
+
+        // Nếu chưa đăng nhập thì redirect (tuỳ app)
+        if (!$userId) {
+            return redirect()->route('login');
+        }
+
+        // 1. Lấy toàn bộ đơn hàng của user kèm chi tiết sản phẩm
+        $orders = Order::with('orderDetails.product')
+            ->where('user_id', $userId)
+            ->whereIn('status', ['pending', 'processing', 'completed', 'cancelled'])
+            ->orderBy('order_date', 'desc')
+            ->get();
+
+        // 2. Lọc các đơn hàng không có chi tiết sản phẩm
+        // 🟢 SỬA ĐỔI TẠI ĐÂY: Dùng filter để loại bỏ đơn hàng không có OrderDetails
+        $validOrders = $orders->filter(function ($order) {
+            // Kiểm tra đơn hàng có ít nhất một chi tiết sản phẩm hay không
+            return $order->orderDetails->count() > 0;
+        });
+
+
+        // 3. Định dạng từng đơn hàng hợp lệ
+        // Định dạng (map) chỉ các đơn hàng đã được lọc ($validOrders)
+        $formattedOrders = $validOrders->map(fn($order) => $this->formatOrder($order))->toArray();
+
+        // 4. Truyền sang Blade
+        return view('ui-cancel-order.cancel', ['formattedOrders' => $formattedOrders]);
     }
 
-    // 1. Lấy toàn bộ đơn hàng của user kèm chi tiết sản phẩm
-    $orders = Order::with('orderDetails.product')
-        ->where('user_id', $userId)
-        ->whereIn('status', ['pending', 'processing', 'completed', 'cancelled'])
-        ->orderBy('order_date', 'desc')
-        ->get();
 
-    // 2. Lọc các đơn hàng không có chi tiết sản phẩm
-    // 🟢 SỬA ĐỔI TẠI ĐÂY: Dùng filter để loại bỏ đơn hàng không có OrderDetails
-    $validOrders = $orders->filter(function ($order) {
-        // Kiểm tra đơn hàng có ít nhất một chi tiết sản phẩm hay không
-        return $order->orderDetails->count() > 0;
-    });
-
-
-    // 3. Định dạng từng đơn hàng hợp lệ
-    // Định dạng (map) chỉ các đơn hàng đã được lọc ($validOrders)
-    $formattedOrders = $validOrders->map(fn($order) => $this->formatOrder($order))->toArray();
-
-    // 4. Truyền sang Blade
-    return view('ui-cancel-order.cancel', ['formattedOrders' => $formattedOrders]);
-}
-    
-
-  public function showOrderdetails($id) // 🟢 1. PHẢI NHẬN THAM SỐ ID
+    public function showOrderdetails($id) // 🟢 1. PHẢI NHẬN THAM SỐ ID
     {
         // Lấy ID user hiện tại
         $userId = auth()->id();
@@ -179,7 +181,7 @@ class OrderController extends Controller
             ->where('user_id', $userId) // Bảo mật: Đảm bảo đơn hàng thuộc về user hiện tại
             ->where('order_id', $id)    // Lọc chính xác theo ID đơn hàng
             // Bỏ điều kiện status 'processing' nếu bạn muốn xem chi tiết các đơn hàng đã hoàn thành
-             //->where('status', 'pendding') 
+            //->where('status', 'pendding') 
             ->first(); // Chỉ lấy một kết quả
 
         // 🟢 3. KIỂM TRA TÌM KIẾM
@@ -268,6 +270,10 @@ class OrderController extends Controller
         if (!$order) {
             return response()->json(['success' => false, 'message' => 'Không tìm thấy đơn hàng'], 404);
         }
+        if ($order->user->email) {
+            Mail::to($order->user->email)->send(new OrderCancelledMail($order));
+        }
+
 
         // Nếu bạn muốn xóa luôn chi tiết đơn
         $order->orderDetails()->delete();

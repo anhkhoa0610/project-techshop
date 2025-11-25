@@ -212,7 +212,7 @@ function confirmDelete(id) {
                     if (data.success) {
                         Swal.fire('Đã xóa!', data.message, 'success').then(() => location.reload());
                     } else {
-                        Swal.fire('Lỗi', 'Không thể xóa nhà phân phối.', 'error');
+                        Swal.fire('Lỗi', 'Không thể xóa nhà cung cấp.', 'error');
                     }
                 })
                 .catch(() => Swal.fire('Lỗi', 'Không thể kết nối đến server.', 'error'));

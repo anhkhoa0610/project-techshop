@@ -1,6 +1,7 @@
 <?php
 
 namespace App\Http\Controllers;
+
 use App\Models\Category;
 use App\Models\Product;
 use App\Models\Review;
@@ -16,14 +17,14 @@ class IndexController extends Controller
 {
     public function index()
     {
-        $topProducts = Product::with(['specs'])
+        $topProducts = Product::with(['specs', 'discounts'])
             ->withAvg('reviews', 'rating')
             ->withCount('reviews')
             ->orderByDesc('volume_sold')
             ->limit(8)
             ->get();
 
-        $newProducts = Product::with(['specs', 'category', 'supplier'])
+        $newProducts = Product::with(['specs', 'category', 'supplier', 'discounts'])
             ->withAvg('reviews', 'rating')
             ->withCount('reviews')
             ->orderByDesc('release_date')
@@ -115,7 +116,6 @@ class IndexController extends Controller
                 'message' => 'Cập nhật số lượng sản phẩm trong giỏ hàng thành công!',
                 'cart_item' => $cartItem
             ]);
-
         } else {
             if ($requestedQuantity > $availableStock) {
                 return response()->json([
@@ -134,7 +134,7 @@ class IndexController extends Controller
     }
     public function filter(Request $request)
     {
-        $products = Product::with(['specs'])
+        $query = Product::with(['specs', 'discounts'])
             ->withAvg('reviews', 'rating')
             ->withCount('reviews')
             ->filter(
@@ -144,9 +144,33 @@ class IndexController extends Controller
                 $request->supplier_id,
                 $request->rating,
                 $request->stock,
-                $request->release_date
-            )
-            ->paginate(8);
+                $request->release_date,
+                $request->on_sale ?? false
+            );
+
+        // Apply sorting
+        $sortBy = $request->sort_by;
+        if ($sortBy) {
+            // Clear any existing ordering first
+            $query->reorder();
+
+            switch ($sortBy) {
+                case 'price_asc':
+                    $query->orderBy('price', 'asc');
+                    break;
+                case 'price_desc':
+                    $query->orderBy('price', 'desc');
+                    break;
+                case 'name_asc':
+                    $query->orderBy('product_name', 'asc');
+                    break;
+                case 'name_desc':
+                    $query->orderBy('product_name', 'desc');
+                    break;
+            }
+        }
+
+        $products = $query->paginate(8);
 
         return response()->json([
             'success' => true,
@@ -165,7 +189,7 @@ class IndexController extends Controller
 
         $suppliers = Supplier::all();
 
-        $productQuery = Product::with(['specs'])
+        $productQuery = Product::with(['specs', 'discounts'])
             ->withAvg('reviews', 'rating')
             ->withCount('reviews');
         $currentCategory = null;
@@ -195,8 +219,8 @@ class IndexController extends Controller
             'categories',
             'currentCategory',
             'posts',
-            'cartItemCount', 'suppliers'
+            'cartItemCount',
+            'suppliers'
         ));
     }
-
 }

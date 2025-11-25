@@ -9,6 +9,8 @@ use App\Models\Momo;
 use App\Models\Order;
 use App\Models\OrderDetail;
 use App\Models\CartItem;
+use App\Mail\NewOrderAdminMail;
+use Illuminate\Support\Facades\Mail;
 
 class MoMoController extends Controller
 {
@@ -78,36 +80,36 @@ class MoMoController extends Controller
 
     // }
 
-   
-   public function momo_payment(Request $request)
+
+    public function momo_payment(Request $request)
     {
         $data = $request->all();
         $userId = auth()->id();
         $cartItems = CartItem::where('user_id', $userId)->get();
-        
+
         // Lấy thông tin cần lưu
         $shoppingAddress = $request->input('shipping_address', 'chưa có địa chỉ');
         $voucher = $request->input('voucher_id', null);
-        
+
         // Tính tổng tiền nếu thiếu, nhưng nên dựa vào input từ form checkout
         $amount = $request->input('total', $cartItems->sum(fn($i) => $i->product->price * $i->quantity));
 
         // ❌ BỎ TẠO ĐƠN HÀNG TẠM THỜI TẠI ĐÂY
         // $order = Order::create([...]); 
-        
+
         // 🟢 SỬ DỤNG $orderId LÀ MỘT CHUỖI DUY NHẤT ĐỂ MOẠNG MOOMO TRUY VẤN
         $orderId = time(); // MoMo sẽ sử dụng orderId này
-        
+
         $endpoint = "https://test-payment.momo.vn/v2/gateway/api/create";
         $partnerCode = 'MOMOBKUN20180529';
         $accessKey = 'klm05TvNBzhg7h7j';
         $serectkey = 'at67qH6mk8w5Y1nAyMoYKMWACiEi2bsa';
-        $orderInfo = "Thanh toán cho đơn hàng #{$orderId}"; 
+        $orderInfo = "Thanh toán cho đơn hàng #{$orderId}";
         // Lấy amount từ biến $amount đã tính/nhận
-        
+
         $redirectUrl = route('momo.return');
         $ipnUrl = route('momo.ipn');
-        
+
         // 🟢 LƯU TẤT CẢ THÔNG TIN CẦN THIẾT VÀO extraData
         // Để tái tạo Order và OrderDetails khi quay lại từ MoMo
         $extraData = base64_encode(json_encode([
@@ -121,11 +123,11 @@ class MoMoController extends Controller
 
         $requestId = 3000 . "";
         $requestType = "payWithATM";
-        
+
         //before sign HMAC SHA256 signature
         $rawHash = "accessKey=" . $accessKey . "&amount=" . $amount . "&extraData=" . $extraData . "&ipnUrl=" . $ipnUrl . "&orderId=" . $orderId . "&orderInfo=" . $orderInfo . "&partnerCode=" . $partnerCode . "&redirectUrl=" . $redirectUrl . "&requestId=" . $requestId . "&requestType=" . $requestType;
         $signature = hash_hmac("sha256", $rawHash, $serectkey);
-        
+
         $data = array(
             'partnerCode' => $partnerCode,
             'partnerName' => "Test",
@@ -141,10 +143,10 @@ class MoMoController extends Controller
             'requestType' => $requestType,
             'signature' => $signature
         );
-        
+
         $result = $this->execPostRequest($endpoint, json_encode($data));
-        $jsonResult = json_decode($result, true); 
-        
+        $jsonResult = json_decode($result, true);
+
         if (isset($jsonResult['payUrl'])) {
             return redirect()->to($jsonResult['payUrl']);
         } else {
@@ -218,19 +220,19 @@ class MoMoController extends Controller
 
         // 🟢 Giải mã extraData để lấy thông tin đơn hàng
         $extraData = json_decode(base64_decode($data['extraData'] ?? ''), true);
-        
+
         $userId = $extraData['user_id'] ?? auth()->id(); // Lấy userId từ extraData
         $orderIdMoMo = $extraData['temporary_order_id'] ?? null;
-        
+
         // 🔴 KIỂM TRA MỘT LẦN NỮA XEM ĐƠN HÀNG ĐÃ ĐƯỢC LƯU CHƯA (Tránh trùng lặp do user f5)
         $order = Order::where('order_id', $orderIdMoMo)->first();
         if ($order) {
             return redirect()->route('index')->with('info', 'Đơn hàng đã được xử lý trước đó.');
         }
-        
+
         // 🟢 Nếu thanh toán thành công
         if (($data['resultCode'] ?? 1) == 0) {
-            
+
             // 1. TẠO ĐƠN HÀNG MỚI
             $order = Order::create([
                 'user_id' => $userId,
@@ -242,10 +244,10 @@ class MoMoController extends Controller
                 'total_price' => $extraData['total_price'] ?? 0,
                 'order_momo_id' => $orderIdMoMo, // Thêm cột này để lưu ID MoMo tham chiếu
             ]);
-            
+
             // 2. LẤY CART ITEMS VÀ TẠO ORDER DETAILS
             $cartItems = CartItem::where('user_id', $userId)->get();
-            
+
             foreach ($cartItems as $item) {
                 OrderDetail::create([
                     'order_id' => $order->order_id, // Sử dụng ID đơn hàng vừa tạo
@@ -254,21 +256,34 @@ class MoMoController extends Controller
                     'unit_price' => $item->product->price * $item->quantity,
                 ]);
             }
-               // trừ stock quantity
-                foreach ($cartItems as $item) {
-                    $product = $item->product;
-                    if ($product) {
-                        $product->decrement('stock_quantity', $item->quantity);
-                        $product->increment('volume_sold', $item->quantity);
-                    }
+            // trừ stock quantity
+            foreach ($cartItems as $item) {
+                $product = $item->product;
+                if ($product) {
+                    $product->decrement('stock_quantity', $item->quantity);
+                    $product->increment('volume_sold', $item->quantity);
                 }
+            }
+            Momo::create([
+                'order_id' => $orderIdMoMo,
+                'request_id' => $data['requestId'] ?? null,
+                'trans_id' => $data['transId'] ?? null,
+                'amount' => $data['amount'] ?? ($extraData['total_price'] ?? 0),
+                'order_info' => $data['orderInfo'] ?? null,
+                'result_code' => $data['resultCode'] ?? null,
+                'message' => $data['message'] ?? null,
+                'pay_url' => $data['payUrl'] ?? null,
+                'status' => ($data['resultCode'] ?? 1) == 0 ? 'success' : 'fail',
+            ]);
 
             // 3. XÓA GIỎ HÀNG
             CartItem::where('user_id', $userId)->delete();
+            $adminEmail = 'authanhkietvta44@gmail.com'; // Thay bằng email admin thật
+            Mail::to($adminEmail)->send(new NewOrderAdminMail($order));
 
             return redirect()->route('index')->with('success', 'Thanh toán MoMo thành công và đơn hàng đã được tạo!');
         }
-        
+
         // 🔴 Nếu thất bại hoặc hủy bỏ
         return redirect()->route('cart.index')->with('error', 'Thanh toán MoMo thất bại hoặc bị hủy!');
     }

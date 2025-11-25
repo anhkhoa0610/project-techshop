@@ -12,12 +12,16 @@ use PowerComponents\LivewirePowerGrid\Facades\PowerGrid;
 use PowerComponents\LivewirePowerGrid\PowerGridFields;
 use PowerComponents\LivewirePowerGrid\PowerGridComponent;
 use Illuminate\View\View;
+use PowerComponents\LivewirePowerGrid\Components\SetUp\Exportable;
+use PowerComponents\LivewirePowerGrid\Traits\WithExport;
 
 final class VoucherTable extends PowerGridComponent
 {
     public string $tableName = 'voucherTable';
     public string $sortField = 'voucher_id';
     public string $primaryKey = 'voucher_id';
+
+    use WithExport;
 
     public function getIdAttribute()
     {
@@ -32,6 +36,8 @@ final class VoucherTable extends PowerGridComponent
             PowerGrid::footer()
                 ->showPerPage(5, [5, 10, 25, 50])
                 ->showRecordCount(),
+            PowerGrid::exportable(fileName: 'suppliers-export')
+                ->type(Exportable::TYPE_XLS, Exportable::TYPE_CSV),
             PowerGrid::detail()
                 ->view('components.voucher_details')
                 ->showCollapseIcon(),
@@ -128,5 +134,8 @@ final class VoucherTable extends PowerGridComponent
     {
         return view('components.voucher-actions', ['voucher' => $row]);
     }
-
+    public function noDataLabel(): string|View
+    {
+        return view('components.voucher_nodata');
+    }
 }

@@ -1,0 +1,172 @@
+/* ===== BACKGROUND ===== */
+.background-layout {
+    position: relative;
+    overflow: hidden;
+}
+
+.background-layout::before {
+    content: "";
+    position: fixed;
+    inset: 0;
+    background-image: url('/images/background.jpg');
+    background-size: cover;
+    background-repeat: no-repeat;
+    background-position: center center;
+    z-index: -10;
+    transform-origin: center center;
+    will-change: transform;
+    animation: kenburns 18s ease-in-out infinite alternate;
+}
+
+/* Nội dung con nằm trên background */
+.background-layout > * {
+    position: relative;
+    z-index: 2;
+}
+
+/* ===== CONTAINER ===== */
+.container-layout {
+    max-width: 1200px;
+    margin: 0 auto;
+    display: flex;
+    gap: 30px;
+    padding: 0 20px;
+    margin-top: 130px; /* tránh navbar */
+    margin-bottom: 100px;
+    flex-wrap: wrap;
+}
+
+/* ===== CỘT TRÁI ===== */
+.left {
+    flex: 1;
+}
+
+/* BẢN ĐỒ */
+.map {
+    width: 100%;
+    height: 300px;
+    border-radius: 12px;
+    overflow: hidden;
+    margin-bottom: 20px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+}
+
+/* GRID THÔNG TIN */
+.info-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 15px;
+}
+
+.info-box {
+    background: rgba(255, 255, 255, 0.1);
+    backdrop-filter: blur(10px);
+    padding: 20px;
+    border-radius: 12px;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+    text-align: center;
+    transition: all 0.3s ease;
+    color: #fff;
+}
+
+.info-box h4 {
+    margin: 0 0 10px;
+    font-size: 16px;
+}
+
+.info-box p {
+    margin: 0;
+    font-size: 14px;
+    word-break: break-word;
+}
+
+/* Hover đẹp cho ô thông tin */
+.info-box:hover {
+    transform: translateY(-8px);
+    box-shadow: 0 8px 20px rgba(0,123,255,0.5);
+    border: 1px solid rgba(0,123,255,0.7);
+}
+
+/* ===== CỘT PHẢI ===== */
+.right {
+    flex: 1;
+    background: rgba(255, 255, 255, 0.1);
+    backdrop-filter: blur(15px);
+    padding: 30px;
+    border-radius: 12px;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+}
+
+/* Tiêu đề form */
+.right h2 {
+    margin-top: 0;
+    margin-bottom: 20px;
+    font-size: 24px;
+    color: #fff;
+}
+
+/* ===== FORM ===== */
+.form-group {
+    margin-bottom: 15px;
+}
+
+.form-group input,
+.form-group textarea {
+    width: 100%;
+    padding: 12px;
+    border: 1px solid rgba(255,255,255,0.3);
+    border-radius: 8px;
+    font-size: 14px;
+    resize: vertical;
+    background: rgba(255, 255, 255, 0.1);
+    color: #fff;
+    transition: all 0.3s ease;
+}
+
+.form-group textarea {
+    height: 120px;
+}
+
+.form-group input::placeholder,
+.form-group textarea::placeholder {
+    color: rgba(255,255,255,0.7);
+}
+
+.form-group input:hover,
+.form-group input:focus,
+.form-group textarea:hover,
+.form-group textarea:focus {
+    border-color: #007bff;
+    box-shadow: 0 4px 15px rgba(0,123,255,0.5);
+    outline: none;
+    background: rgba(255,255,255,0.15);
+}
+
+/* Nút submit */
+.form-group button {
+    background: #007bff;
+    color: #fff;
+    padding: 12px 25px;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 16px;
+    transition: all 0.3s ease;
+}
+
+.form-group button:hover {
+    background: #0056b3;
+    transform: translateY(-2px);
+    box-shadow: 0 6px 15px rgba(0,86,179,0.5);
+}
+
+/* ===== RESPONSIVE ===== */
+@media(max-width: 900px) {
+    .container-layout {
+        flex-direction: column;
+    }
+}
+label
+{
+    color: #fff;
+}

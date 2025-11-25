@@ -34,12 +34,22 @@ class ProductFactory extends Factory
         {$productName} chắc chắn sẽ là lựa chọn lý tưởng cho bạn trong phân khúc {$category->category_name}.
         TEXT;
 
+        // Map category_id to cover image
+        $coverImageMap = [
+            1 => 'macbook-product.png',
+            2 => 'laptop-product.png',
+            3 => 'iphone-product.png',
+            4 => 'ipad-product.png',
+            5 => 'watch-product.png',
+            6 => 'airpod-product.png',
+        ];
+
         return [
             'product_name' => $productName,
             'description' => $description,
             'stock_quantity' => $this->faker->numberBetween(0, 10),
             'price' => $this->faker->numberBetween(10, 100) * 100000,
-            'cover_image' => "dell-remove-bg.png",
+            'cover_image' => $coverImageMap[$category->category_id] ?? 'laptop-product.png',
             'volume_sold' => $this->faker->numberBetween(0, 500),
             'category_id' => $category->category_id,
             'supplier_id' => $supplier->supplier_id,
