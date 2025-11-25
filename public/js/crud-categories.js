@@ -34,6 +34,7 @@ $(document).on('click', '.edit', function () {
     document.getElementById('edit_cover_image').value = '';
 
     document.getElementById('editCategoryForm').dataset.id = row.getAttribute('data-category-id');
+    document.getElementById('editCategoryForm').dataset.updatedAt = row.getAttribute('data-updated-at');
 
     $('#editCategoryModal').modal('show');
 });
@@ -70,6 +71,7 @@ document.getElementById('editCategoryForm').addEventListener('submit', async fun
     formData.append('_method', 'PUT');
     formData.append('category_name', document.getElementById('category_name').value);
     formData.append('description', document.getElementById('description').value);
+    formData.append('updated_at', this.dataset.updatedAt);
     const imageInput = document.getElementById('edit_cover_image');
     
     // 1. Kiểm tra xem người dùng có chọn file mới hay không
@@ -100,6 +102,23 @@ document.getElementById('editCategoryForm').addEventListener('submit', async fun
                 location.reload();
             });
             $('#editCategoryModal').modal('hide');
+        } else if (response.status === 409) {
+            // Xung đột dữ liệu - version không match
+            const err = await response.json();
+            Swal.fire({
+                icon: 'warning',
+                title: 'Xung đột dữ liệu!',
+                html: `<p>${err.message}</p>
+                       <p style="font-size: 0.9em; color: #666;">Dữ liệu này đã được ai đó thay đổi.</p>`,
+                confirmButtonText: 'Tải lại & Thử lại',
+                confirmButtonColor: '#ff9800',
+                showCancelButton: true,
+                cancelButtonText: 'Hủy bỏ'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    location.reload();
+                }
+            });
         } else {
             const err = await response.json();
 

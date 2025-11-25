@@ -27,6 +27,7 @@ $(document).on('click', '.edit', function () {
     $('#edit_total').val(row.getAttribute('data-total') || '');
 
     document.getElementById('editOrderForm').dataset.id = row.getAttribute('data-order-id');
+    document.getElementById('editOrderForm').dataset.updatedAt = row.getAttribute('data-updated-at');
 
     $('#editOrderModal').modal('show');
 });
@@ -55,6 +56,7 @@ document.getElementById('editOrderForm').addEventListener('submit', async functi
     formData.append('status', document.getElementById('edit_status').value);
     formData.append('payment_method', document.getElementById('edit_payment_method').value);
     formData.append('voucher_id', document.getElementById('edit_voucher_id').value);
+    formData.append('updated_at', this.dataset.updatedAt);
     const response = await fetch(url, {
         method: 'POST',
         headers: {
@@ -77,6 +79,23 @@ document.getElementById('editOrderForm').addEventListener('submit', async functi
             });
 
             $('#editOrderModal').modal('hide');
+        } else if (response.status === 409) {
+            // Xung đột dữ liệu - version không match
+            const err = await response.json();
+            Swal.fire({
+                icon: 'warning',
+                title: 'Xung đột dữ liệu!',
+                html: `<p>${err.message}</p>
+                       <p style="font-size: 0.9em; color: #666;">Dữ liệu này đã được ai đó thay đổi.</p>`,
+                confirmButtonText: 'Tải lại & Thử lại',
+                confirmButtonColor: '#ff9800',
+                showCancelButton: true,
+                cancelButtonText: 'Hủy bỏ'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    location.reload();
+                }
+            });
         } else {
             const err = await response.json();
             if (err.errors) {

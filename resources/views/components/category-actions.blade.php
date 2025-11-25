@@ -4,6 +4,7 @@
         data-category-id="{{ $category->category_id }}"
         data-cover-image="{{$category->cover_image_filename}}"
         data-category-description="{{ $category->description }}"
+        data-updated-at="{{ $category->updated_at->format('Y-m-d H:i:s') }}"
         >
         <!-- svg edit -->
         <i class="fa-regular fa-pen-to-square"></i>

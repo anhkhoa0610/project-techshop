@@ -110,6 +110,19 @@ class CategoryController extends Controller
             ]);
         }
 
+        // Check for version conflict (optimistic locking)
+        $requestedUpdatedAt = $request->input('updated_at');
+        $currentUpdatedAt = $category->updated_at->format('Y-m-d H:i:s');
+        
+        if ($requestedUpdatedAt !== $currentUpdatedAt) {
+            return response()->json([
+                'success' => false,
+                'conflict' => true,
+                'message' => 'Dữ liệu đã bị thay đổi bởi người khác. Vui lòng tải lại trang và thử lại.',
+                'current_updated_at' => $currentUpdatedAt,
+            ], 409); // HTTP 409 Conflict
+        }
+
         $data = $request->all();
 
         if ($request->hasFile('cover_image')) {
