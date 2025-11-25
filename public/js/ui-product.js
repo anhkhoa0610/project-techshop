@@ -622,24 +622,29 @@ document.addEventListener('DOMContentLoaded', function () {
     // xử lý sửa đánh giá
     document.addEventListener("click", function (e) {
         const button = e.target.closest(".edit-review-btn");
-        if (!button) return; // nếu không phải nút edit thì bỏ qua
+        if (!button) return;
 
-        // Lấy dữ liệu từ data-attributes
         const reviewId = button.dataset.id;
         const rating = button.dataset.rating;
         const comment = button.dataset.comment;
 
-        // Gán vào form
+        // Set hidden ID
         document.getElementById('edit_review_id').value = reviewId;
-        if (isEmptyObject()) {
-            document.getElementById('edit_comment').value = comment;
-        }
 
-        // Gán rating
+
+        // Set comment
+        document.getElementById('edit_comment').value =
+            (comment === null || comment === "null" || comment === undefined || comment === "undefined")
+                ? ""
+                : comment;
+
+
+        // Set rating
         document.querySelectorAll('#editReviewForm input[name="rating"]').forEach(input => {
-            input.checked = parseInt(input.value) === parseInt(rating);
+            input.checked = input.value == rating;
         });
     });
+
 
 
     // XỬ LÝ SUBMIT FORM AJAX
