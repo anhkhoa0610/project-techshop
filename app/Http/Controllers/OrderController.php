@@ -231,7 +231,10 @@ class OrderController extends Controller
         // Xử lý alias cho từng item (dùng tham chiếu)
         foreach ($orderArray['items'] as &$item) {
             // Alias 'img' từ product (với mặc định nếu thiếu)
-            $item['img'] = asset('uploads/' . $item['product']['cover_image'] ?? null);
+            $item['img'] = isset($item['product']['cover_image'])
+                ? asset('uploads/' . $item['product']['cover_image'])
+                : asset('images/place-holder.jpg');
+
 
             // Alias 'title' từ product name
             $item['title'] = $item['product']['product_name'] ?? 'Sản phẩm không xác định';
@@ -262,7 +265,10 @@ class OrderController extends Controller
                     'order_detail_id' => $detail->order_detail_id ?? $detail->id,
                     'product_id' => $detail->product_id,
                     'title' => $detail->product->product_name ?? 'Sản phẩm không tìm thấy',
-                    'img' => asset('uploads/' . $detail->product->cover_image) ?? 'https://via.placeholder.com/200',
+                    'img' => $detail->product?->cover_image
+                        ? asset('uploads/' . $detail->product->cover_image)
+                        : asset('images/place-holder.jpg'),
+
                     'quantity' => $detail->quantity,
                     'unit_price' => $detail->unit_price,
                 ];

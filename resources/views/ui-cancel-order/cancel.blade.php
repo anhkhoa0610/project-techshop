@@ -18,7 +18,7 @@
                         <div class="order-card" data-status="{{ $order['status'] }}" data-id="{{ $order['id'] }}">
                             <div class="order-left">
                                 <div class="order-thumb">
-                                    <img src="{{ $order['items'][0]['img'] ?? 'https://via.placeholder.com/200' }}" alt="">
+                                    <img src="{{ $order['items'][0]['img'] }}" alt="">
                                 </div>
                             </div>
 
