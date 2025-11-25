@@ -34,7 +34,7 @@
                                 </div>
                                 <div class="form-group">
                                     <label for="name">Tên Nhà Phân Phối</label>
-                                    <input type="text" class="form-control" id="edit_name" name="name" required>
+                                    <input type="text" class="form-control" id="edit_name" name="name">
                                     <div class="text-danger error-message" id="error_edit_name"></div>
                                 </div>
                                 <div class="form-group">
@@ -102,7 +102,7 @@
 
                                 <div class="form-group">
                                     <label for="add_name">Tên Nhà Phân Phối</label>
-                                    <input type="text" class="form-control" id="add_name" name="name" required>
+                                    <input type="text" class="form-control" id="add_name" name="name">
                                     <div class="text-danger error-message" id="error_add_name"></div>
                                 </div>
 

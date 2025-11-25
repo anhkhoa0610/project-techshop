@@ -74,45 +74,83 @@ document.addEventListener('DOMContentLoaded', function () {
     });
     // ==================== Add Voucher ====================
     const addForm = document.getElementById('addVoucherForm');
-    const closeBtn = document.getElementById('close');
+
+    // Hàm reset nút submit (Dùng chung cho cả Add và Edit nếu cần)
+    function resetSubmitButton(btn, originalText) {
+        if (btn) {
+            btn.disabled = false;
+            btn.textContent = originalText;
+        }
+    }
 
     if (addForm) {
         addForm.addEventListener('submit', async function (e) {
             e.preventDefault();
+
+            // 1. Lấy nút submit và khóa lại để tránh spam click
+            const submitBtn = this.querySelector('button[type="submit"]');
+            const originalBtnText = submitBtn.textContent;
+            submitBtn.disabled = true;
+            submitBtn.textContent = 'Đang xử lý...';
+
+            // 2. Xóa các thông báo lỗi cũ
+            document.querySelectorAll('.error-message').forEach(el => el.textContent = '');
+
             const url = '/api/vouchers';
             const formData = new FormData(this);
 
             try {
                 const response = await fetch(url, {
                     method: 'POST',
-                    headers: { 'Accept': 'application/json', 'X-CSRF-TOKEN': window.csrfToken || '' },
+                    headers: {
+                        'Accept': 'application/json',
+                        // Ưu tiên lấy từ thẻ meta, fallback sang window variable
+                        'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]')?.content || window.csrfToken
+                    },
                     body: formData
                 });
 
                 const data = await response.json();
+
                 if (response.ok && data.success) {
-                    Swal.fire('Thành công!', 'Thêm Voucher thành công.', 'success')
-                        .then(() => location.reload());
+                    // Thành công: Hiện thông báo và reload
+                    Swal.fire({
+                        icon: 'success',
+                        title: 'Thành công!',
+                        text: 'Thêm Voucher thành công.',
+                        showConfirmButton: false,
+                        timer: 1500
+                    }).then(() => {
+                        location.reload();
+                    });
                 } else if (data.errors) {
-                    // Hiển thị lỗi chi tiết
+                    // Lỗi Validation từ Laravel (422)
                     for (const [key, messages] of Object.entries(data.errors)) {
+                        // Tìm thẻ hiển thị lỗi tương ứng: id="error_add_code", id="error_add_discount_value"...
                         const errorElement = document.getElementById(`error_add_${key}`);
                         if (errorElement) {
                             errorElement.textContent = messages[0];
                         }
                     }
+                    // Mở lại nút để người dùng sửa
+                    resetSubmitButton(submitBtn, originalBtnText);
                 } else {
+                    // Lỗi logic khác
                     Swal.fire('Lỗi', data.message || 'Thêm thất bại.', 'error');
+                    resetSubmitButton(submitBtn, originalBtnText);
                 }
             } catch (err) {
-                Swal.fire('Lỗi', 'Không thể kết nối server.', 'error');
+                console.error(err); // Log lỗi ra console để debug nếu cần
+                Swal.fire('Lỗi', 'Không thể kết nối server hoặc lỗi hệ thống.', 'error');
+                resetSubmitButton(submitBtn, originalBtnText);
             }
         });
     }
 
-    // reset add form
-    if (closeBtn) {
-        closeBtn.addEventListener('click', function () {
+    // Reset form khi đóng modal (Giữ nguyên logic cũ của bạn, chỉ gom gọn)
+    const closeAddBtn = document.getElementById('close'); // Nút đóng modal Add
+    if (closeAddBtn) {
+        closeAddBtn.addEventListener('click', function () {
             if (addForm) addForm.reset();
             document.querySelectorAll('.error-message').forEach(el => el.textContent = '');
         });
