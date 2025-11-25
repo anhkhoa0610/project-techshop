@@ -2,7 +2,6 @@
 
 namespace App\Http\Requests;
 
-use Attribute;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule;
 
@@ -24,6 +23,21 @@ class ProductRequest extends FormRequest
     public function rules(): array
     {
         $id = $this->route()->product;
+
+        // Rule cho số nguyên ASCII
+        $asciiInteger = [
+            'required',
+            'regex:/^[0-9]+$/',     // chỉ nhận 0–9 ASCII
+            'gte:0',                // >= 0
+        ];
+
+        // Rule cho số thập phân ASCII (price)
+        $asciiDecimal = [
+            'required',
+            'regex:/^[0-9]+(\.[0-9]+)?$/',
+            'gte:0',                // >= 0
+        ];
+
         $nameRule = [
             'required',
             'string',
@@ -34,15 +48,31 @@ class ProductRequest extends FormRequest
 
         return [
             'product_name' => $nameRule,
+
             'category_id' => 'required|exists:categories,category_id',
             'supplier_id' => 'required|exists:suppliers,supplier_id',
-            'price' => 'required|numeric|min:0',
-            'stock_quantity' => 'required|integer|min:0',
+
+            // Giá (decimal ASCII)
+            'price' => $asciiDecimal,
+
+            // Số lượng tồn kho
+            'stock_quantity' => $asciiInteger,
+
             'description' => 'nullable|string|max:1000',
-            'volume_sold' => 'required|integer|min:0',
+
+            // Volume sold
+            'volume_sold' => $asciiInteger,
+
+            // Image
             'cover_image' => 'nullable|image|mimes:jpeg,png,jpg,gif,webp|max:5120',
-            'warranty_period' => 'required|integer|min:0',
+
+            // Warranty
+            'warranty_period' => $asciiInteger,
+
+            // Ngày
             'release_date' => 'required|date|before_or_equal:today',
+
+            // YouTube URL
             'embed_url_review' => [
                 'nullable',
                 'url',
@@ -59,16 +89,24 @@ class ProductRequest extends FormRequest
             'required' => ':attribute không được để trống',
             'unique' => ':attribute đã tồn tại',
             'max' => ':attribute không được vượt quá :max ký tự',
-            'numeric' => ':attribute phải là số',
-            'integer' => ':attribute phải là số nguyên',
             'min' => ':attribute phải lớn hơn hoặc bằng :min',
             'image' => ':attribute phải là định dạng ảnh (jpeg, png, bmp, gif, svg, hoặc webp)',
             'mimes' => ':attribute phải là định dạng: :values',
             'max.file' => ':attribute không được vượt quá :max kilobytes',
             'url' => ':attribute phải là link youtube hợp lệ',
-            'regex' => ':attribute phải là link youtube hợp lệ',
             'before_or_equal' => ':attribute không được lớn hơn ngày hiện tại',
             'date' => 'Sai định dạng :attribute',
+
+            // Messages cho số nguyên ASCII (từ chối full-width)
+            'stock_quantity.regex' => ':attribute chỉ chấp nhận số thông thường (0-9), không chấp nhận số full-width',
+            'volume_sold.regex' => ':attribute chỉ chấp nhận số thông thường (0-9), không chấp nhận số full-width',
+            'warranty_period.regex' => ':attribute chỉ chấp nhận số thông thường (0-9), không chấp nhận số full-width',
+
+            // Message cho số thập phân ASCII (từ chối full-width)
+            'price.regex' => ':attribute chỉ chấp nhận số thông thường (0-9), không chấp nhận số full-width',
+
+            // Message cho YouTube URL
+            'embed_url_review.regex' => ':attribute phải là link youtube hợp lệ',
         ];
     }
 
