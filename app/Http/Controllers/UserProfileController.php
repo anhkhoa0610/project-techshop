@@ -4,8 +4,8 @@ namespace App\Http\Controllers;
 
 use App\Models\User;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\File; // Thêm thư viện này để xử lý file thủ công
 
 class UserProfileController extends Controller
 {
@@ -17,26 +17,33 @@ class UserProfileController extends Controller
 
         $user = Auth::user();
 
-        // Xóa ảnh cũ
+        // 1. Xử lý xóa ảnh cũ nếu có (trong thư mục public/images)
         if ($user->profile && $user->profile->avatar) {
-            Storage::disk('public')->delete($user->profile->avatar);
+            $oldPath = public_path('images/' . $user->profile->avatar);
+            if (File::exists($oldPath)) {
+                File::delete($oldPath);
+            }
         }
 
-        // Lưu file vào storage/app/public/avatars
-        $path = $request->file('avatar')->store('avatars', 'public');
+        // 2. Lưu ảnh mới vào public/images
+        $file = $request->file('avatar');
+        // Tạo tên file độc nhất: timestamp_tên_gốc
+        $filename = time() . '_' . $file->getClientOriginalName();
+        // Di chuyển file vào public/images
+        $file->move(public_path('images'), $filename);
 
-        // Cập nhật DB
+        // 3. Cập nhật Database (chỉ lưu tên file)
         $user->profile()->updateOrCreate(
-            ['user_id' => $user->user_id],
-            ['avatar' => $path]
+            ['user_id' => $user->user_id], // Kiểm tra lại khóa ngoại của bạn là id hay user_id
+            ['avatar' => $filename]
         );
 
-        // Trả về JSON để JS cập nhật ảnh
-        // return response()->json([
-        //     'success' => true,
-        //     'avatar_url' => asset('storage/' . $path)
-        // ]);
-        return back()->with('success', 'Cập nhật thông tin thành công!');
+        // 4. TRẢ VỀ JSON (Bắt buộc để JS không bị lỗi)
+        return response()->json([
+            'success' => true,
+            'message' => 'Cập nhật ảnh đại diện thành công!',
+            'avatar_url' => asset('images/' . $filename) // Trả về đường dẫn đầy đủ để hiển thị ngay
+        ]);
     }
 
     public function removeAvatar()
@@ -44,8 +51,15 @@ class UserProfileController extends Controller
         $user = Auth::user();
 
         if ($user->profile && $user->profile->avatar) {
-            Storage::disk('public')->delete($user->profile->avatar);
+            // Xóa file trong public/images
+            $path = public_path('images/' . $user->profile->avatar);
+            if (File::exists($path)) {
+                File::delete($path);
+            }
+            
+            // Cập nhật DB về null
             $user->profile->update(['avatar' => null]);
+            
             return back()->with('success', 'Đã xóa ảnh đại diện!');
         }
 
@@ -54,6 +68,7 @@ class UserProfileController extends Controller
 
     public function updateProfile(Request $request)
     {
+        // ... (Giữ nguyên phần này như cũ)
         $user = Auth::user();
 
         $validated = $request->validate([
@@ -65,11 +80,16 @@ class UserProfileController extends Controller
             'website' => 'nullable|url|max:255',
         ]);
 
-        $user->update($validated);
+        $user->update([
+            'full_name' => $validated['full_name'],
+            'phone' => $validated['phone'],
+            'address' => $validated['address'],
+            'birth' => $validated['birth'],
+        ]);
 
         $profileData = $request->only(['bio', 'website']);
         $user->profile()->updateOrCreate(
-            ['user_id' => $user->id],
+            ['user_id' => $user->user_id],
             $profileData
         );
 
