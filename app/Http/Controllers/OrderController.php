@@ -65,12 +65,25 @@ class OrderController extends Controller
     {
         $order = Order::findOrFail($order_id);
 
+        // Check for version conflict (optimistic locking)
+        $requestedUpdatedAt = $request->input('updated_at');
+        $currentUpdatedAt = $order->updated_at->format('Y-m-d H:i:s');
+        
+        if ($requestedUpdatedAt !== $currentUpdatedAt) {
+            return response()->json([
+                'success' => false,
+                'conflict' => true,
+                'message' => 'Dữ liệu đã bị thay đổi bởi người khác. Vui lòng tải lại trang và thử lại.',
+                'current_updated_at' => $currentUpdatedAt,
+            ], 409); // HTTP 409 Conflict
+        }
+
         // Lưu lại trạng thái cũ để so sánh
         $oldStatus = $order->status;
         $newStatus = $request->input('status');
 
         // Cập nhật các thông tin khác (trừ user_id)
-        $order->fill($request->except('user_id'));
+        $order->fill($request->except('user_id', 'updated_at'));
         $order->status = $newStatus;
         $order->save();
 

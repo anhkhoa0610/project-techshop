@@ -18,6 +18,8 @@ class CategoryRequest extends FormRequest
     public function rules(): array
     {
         $id = $this->route('category') ?? $this->route('id');
+        $isUpdate = $this->isMethod('PUT') || $this->isMethod('PATCH');
+        
         return [
             'category_name' => [
                 'required',
@@ -39,7 +41,8 @@ class CategoryRequest extends FormRequest
                 'image',          // Phải là file ảnh
                 'mimes:jpeg,png,jpg,gif', // Định dạng cho phép
                 'max:5120'        // Kích thước tối đa 2MB (2048 KB)
-            ]
+            ],
+            'updated_at' => $isUpdate ? 'required|date_format:Y-m-d H:i:s' : '', // Version tracking only for updates
         ];
     }
 
@@ -56,6 +59,8 @@ class CategoryRequest extends FormRequest
             'description.max' => 'Mô tả không quá 500 ký tự.',
             'cover_image.image' => 'File tải lên phải là hình ảnh.',
             'cover_image.max' => 'Hình ảnh không được vượt quá 5MB.',
+            'updated_at.required' => 'Phiên bản dữ liệu không xác định.',
+            'updated_at.date_format' => 'Định dạng phiên bản không hợp lệ.',
         ];
     }
 

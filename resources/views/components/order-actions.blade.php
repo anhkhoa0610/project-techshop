@@ -5,6 +5,7 @@
         data-payment-method="{{ $order->payment_value}}"
         data-voucher-id="{{ $order->voucher_id }}"
         data-order-id="{{ $order->order_id }}"
+        data-updated-at="{{ $order->updated_at->format('Y-m-d H:i:s') }}"
         >
         <!-- svg edit -->
         <i class="fa-regular fa-pen-to-square"></i>
