@@ -13,7 +13,6 @@ class ProductController extends Controller
     // Hiển thị danh sách sản phẩm
     public function list(Request $request)
     {
-        // Validate page parameter - nếu không hợp lệ thì redirect về page 1
         $page = $request->query('page', 1);
         if (!is_numeric($page) || $page < 1 || !ctype_digit(strval($page))) {
             return redirect()->route('products.list');
@@ -24,6 +23,11 @@ class ProductController extends Controller
         $products = Product::with(['category', 'supplier'])
             ->search($search)
             ->paginate(5);
+
+        // Kiểm tra nếu page vượt quá tổng số trang
+        if ($page > $products->lastPage() && $products->lastPage() > 0) {
+            return redirect()->route('products.list', ['page' => $products->lastPage(), 'search' => $search]);
+        }
 
         $suppliers = Supplier::all();
         $categories = Category::all();
