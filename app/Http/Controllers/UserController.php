@@ -8,7 +8,11 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Validation\ValidationException;
 use App\Models\Voucher;
-
+use Illuminate\Support\Facades\Cache;
+use Illuminate\Support\Str;
+use Illuminate\Support\Facades\Mail;
+use App\Mail\VerifyTdcStudent;
+use Illuminate\Support\Facades\Auth;
 
 class UserController extends Controller
 {
@@ -246,32 +250,82 @@ class UserController extends Controller
         return redirect()->route('user.profile')->with('success', 'Cập nhật thông tin cá nhân thành công!');
     }
 
-  public function destroyProfile(Request $request)
-{
-    try {
-        $user = $request->user();
-        $user->delete();
+    public function destroyProfile(Request $request)
+    {
+        try {
+            $user = $request->user();
+            $user->delete();
 
-        $request->session()->invalidate();
-        $request->session()->regenerateToken();
+            $request->session()->invalidate();
+            $request->session()->regenerateToken();
 
-        return response()->json([
-            'success' => true,
-            'message' => 'Tài khoản của bạn đã được xóa thành công!',
-            'redirect' => route('index')
-        ]);
-    } catch (\Exception $e) {
-        return response()->json([
-            'success' => false,
-            'message' => 'Lỗi khi xóa tài khoản: ' . $e->getMessage()
-        ], 500);
+            return response()->json([
+                'success' => true,
+                'message' => 'Tài khoản của bạn đã được xóa thành công!',
+                'redirect' => route('index')
+            ]);
+        } catch (\Exception $e) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Lỗi khi xóa tài khoản: ' . $e->getMessage()
+            ], 500);
+        }
     }
-}
-public function profile()
-{
-    $vouchers = Voucher::where('user_id', auth()->id())->get();
+    public function profile()
+    {
+        $vouchers = Voucher::where('user_id', auth()->id())->get();
 
-    return view('user.profile', compact('vouchers'));
+        return view('user.profile', compact('vouchers'));
+    }
+    /**
+     * Gửi mã xác nhận đến email sinh viên TDC
+     */
+    public function sendTdcVerification(Request $request)
+{
+    $user = Auth::user();
+
+    if (!str_ends_with($user->email, '@mail.tdc.edu.vn')) {
+        return back()->withErrors(['email' => 'Email phải có đuôi @mail.tdc.edu.vn']);
+    }
+
+    // Tránh gửi liên tục (giới hạn 1 lần/phút)
+    $key = 'tdc_verification_sent_' . $user->user_id;
+    if (Cache::has($key)) {
+        return back()->with('verification_sent', true);
+    }
+
+    $code = sprintf("%06d", rand(0, 999999)); // 6 chữ số, có số 0 đầu
+
+    Cache::put('tdc_verification_code_' . $user->user_id, $code, now()->addMinutes(10));
+    Cache::put($key, true, now()->addMinute()); // Chặn spam 1 phút
+
+    Mail::to($user->email)->send(new VerifyTdcStudent($code));
+
+    return back()->with('verification_sent', true);
 }
-    
+
+    /**
+     * Xác nhận mã và cập nhật trạng thái sinh viên TDC
+     */
+    public function verifyTdcStudent(Request $request)
+    {
+        $request->validate([
+            'verification_code' => 'required|string|size:6',
+        ]);
+
+        $user = Auth::user();
+        $cachedCode = Cache::get('tdc_verification_code_' . $user->user_id);
+
+        if (!$cachedCode || $cachedCode !== $request->verification_code) {
+            throw ValidationException::withMessages(['verification_code' => 'Mã xác nhận không đúng hoặc đã hết hạn.']);
+        }
+
+        // Cập nhật trạng thái
+        $user->update(['is_tdc_student' => 'true']);
+
+        // Xóa cache
+        Cache::forget('tdc_verification_code_' . $user->user_id);
+
+        return redirect()->route('user.profile')->with('success', 'Xác nhận sinh viên TDC thành công!');
+    }
 }

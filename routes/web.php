@@ -215,3 +215,12 @@ Route::middleware(['auth'])->group(function () {
 });
 
 Route::get('/supplier-ui/{id}', [SupplierController::class, 'indexView'])->name('supplier.ui');
+Route::middleware(['auth'])->group(function () {
+    // ... (các route hiện có)
+
+    // Route gửi mã xác nhận
+    Route::post('/user/verify-tdc/send', [UserController::class, 'sendTdcVerification'])->name('user.verifyTdc.send');
+
+    // Route xác nhận mã
+    Route::post('/user/verify-tdc/confirm', [UserController::class, 'verifyTdcStudent'])->name('user.verifyTdc.confirm');
+});
