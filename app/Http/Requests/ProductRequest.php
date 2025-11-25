@@ -69,8 +69,19 @@ class ProductRequest extends FormRequest
             // Warranty
             'warranty_period' => $asciiInteger,
 
-            // Ngày
-            'release_date' => 'required|date|before_or_equal:today',
+            // Ngày - validate strict để từ chối ngày không hợp lệ như 30/2
+            'release_date' => [
+                'required',
+                'date_format:Y-m-d',
+                'before_or_equal:today',
+                function ($attribute, $value, $fail) {
+                    // Kiểm tra ngày có hợp lệ không (tránh 30/2, 31/4, etc.)
+                    $date = \DateTime::createFromFormat('Y-m-d', $value);
+                    if (!$date || $date->format('Y-m-d') !== $value) {
+                        $fail('Ngày phát hành không hợp lệ');
+                    }
+                },
+            ],
 
             // YouTube URL
             'embed_url_review' => [
