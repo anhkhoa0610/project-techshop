@@ -68,8 +68,14 @@ final class ProductTable extends PowerGridComponent
             ->add('price')
             ->add(
                 'cover_image',
-                fn($product) =>
-                '<img src="' . asset('uploads/' . $product->cover_image) . '" class="h-12 w-12 object-cover rounded">'
+                function ($product) {
+                    if (empty($product->cover_image) || !file_exists(public_path('uploads/' . $product->cover_image))) {
+                        $imageSrc = asset('images/place-holder.jpg');
+                    } else {
+                        $imageSrc = asset('uploads/' . $product->cover_image);
+                    }
+                    return '<img src="' . $imageSrc . '" class="h-12 w-12 object-cover rounded">';
+                }
             )
             ->add('cover_image_filename', fn($product) => $product->cover_image)
             ->add('volume_sold')
