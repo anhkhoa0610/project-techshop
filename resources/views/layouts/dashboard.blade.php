@@ -39,8 +39,8 @@
                     </li>
                     <li class="category-title"><a href="{{ route('products.list') }}"><i
                                 class="fa fa-archive"></i>Products</a></li>
-                    <li class="category-title"><a href="{{ route('specs.list') }}"><i
-                                class="fa fa-cogs"></i>Specs</a></li>
+                    <li class="category-title"><a href="{{ route('specs.list') }}"><i class="fa fa-cogs"></i>Specs</a>
+                    </li>
                     <li class="category-title"><a href="{{ route('categories.list') }}"><i
                                 class="fa fa-list"></i>Categories</a></li>
                     <li class="category-title"><a href="{{ route('orders.list')}}"><i
@@ -62,6 +62,22 @@
                         </form>
                     </li>
                 </ul>
+                @php
+                $user = Auth::user();
+                $defaultAvatar = asset('images/avatars/user-icon.png');
+
+                $avatarUrl = $user && $user->profile && $user->profile->avatar ? asset('images/avatars/' . $user->profile->avatar) : $defaultAvatar;
+                @endphp
+                <div class="sidebar-avatar">
+                    <div class="user-avatar">
+                        <img src="{{ $avatarUrl}}"
+                            alt="User Avatar">
+                    </div>
+                    <div class="user-info">
+                        <span class="user-name">{{ Auth::user()->full_name ?? 'Admin User' }}</span>
+                        <span class="user-role">Administrator</span>
+                    </div>
+                </div>
             </div>
 
             <div class="col-md-10 content-section">
