@@ -505,7 +505,8 @@
 
 
 <!-- Chatbot Bubble -->
-@include('ui-index.chatbot')
+<script src='https://cdn.jotfor.ms/agent/embedjs/019abf67745377df8d515ddced74eb40a02a/embed.js'>
+</script>
 
 
 <script>
