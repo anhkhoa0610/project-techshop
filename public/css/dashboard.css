@@ -21,7 +21,7 @@ body {
      */
     height: 100vh;
     overflow: auto;
-    padding: 20px 0px 20px 0px;
+    padding: 20px 0px 0px 0px;
 }
 
 .sidebar .logo {
@@ -45,7 +45,7 @@ body {
 }
 
 .sidebar ul li {
-    padding: 12px 0;
+    padding: 10px 0;
     font-family: 'Orbitron', sans-serif;
     font-weight: 500;
     letter-spacing: 0.05em;
@@ -287,4 +287,49 @@ table.table th:nth-child(3) {
     display: flex;
     flex-direction: row;
     gap: 8px;
+}
+
+/* [MỚI] Phần Footer User Info */
+.sidebar-avatar {
+    position: absolute;
+    bottom: 0;
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 15px 20px;
+    background-color: rgba(0, 0, 0, 0.2);
+    /* Màu nền tối hơn chút để tách biệt */
+    margin-top: auto;
+    /* Đẩy xuống đáy */
+    border-top: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.sidebar-avatar .user-avatar img {
+    width: 60px;
+    height: 60px;
+    border-radius: 50%;
+    /* Bo tròn ảnh */
+    object-fit: cover;
+    margin-right: 15px;
+    border: 2px solid #3498db;
+    /* Viền xanh nhẹ quanh avatar */
+}
+
+.sidebar-avatar .user-info {
+    display: flex;
+    flex-direction: column;
+}
+
+.sidebar-avatar .user-name {
+    font-size: 20px;
+    font-weight: 600;
+    color: #3498db;
+    /* Màu chữ tên (xanh) */
+}
+
+.sidebar-avatar .user-role {
+    font-size: 18px;
+    color: #bdc3c7;
+    /* Màu chữ role (xám nhạt) */
 }
