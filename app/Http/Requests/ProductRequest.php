@@ -113,10 +113,8 @@ class ProductRequest extends FormRequest
             'volume_sold.regex' => ':attribute chỉ chấp nhận số thông thường (0-9), không chấp nhận số full-width',
             'warranty_period.regex' => ':attribute chỉ chấp nhận số thông thường (0-9), không chấp nhận số full-width',
 
-            // Message cho số thập phân ASCII (từ chối full-width)
             'price.regex' => ':attribute chỉ chấp nhận số thông thường (0-9), không chấp nhận số full-width',
 
-            // Message cho YouTube URL
             'embed_url_review.regex' => ':attribute phải là link youtube hợp lệ',
         ];
     }

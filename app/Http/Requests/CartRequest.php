@@ -43,15 +43,21 @@ class CartRequest extends FormRequest
     public function withValidator($validator)
     {
         $validator->after(function ($validator) {
+            // 🔒 KIỂM TRA BẢO MẬT: user_id phải trùng với user đang đăng nhập
+            if (auth()->check() && $this->user_id != auth()->id()) {
+                $validator->errors()->add('user_id', 'Bạn không có quyền thao tác với giỏ hàng của người khác!');
+                return;
+            }
+
             $product = Product::find($this->product_id);
 
             if (!$product) {
                 return; // Đã được rule exists xử lý rồi
             }
-            
+
             $stock = $product->stock_quantity ?? 0;
 
-            if($this->quantity >  $stock ){
+            if ($this->quantity >  $stock) {
                 $validator->errors()->add('quantity', '
                 số lượng hàng có sẵn trong kho không đủ.');
                 return;
@@ -72,6 +78,4 @@ class CartRequest extends FormRequest
             }
         });
     }
-
-
 }

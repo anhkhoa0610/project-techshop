@@ -10,6 +10,7 @@ use App\Models\CartItem;
 use App\Http\Requests\CartRequest;
 use App\Models\Post;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 use App\Models\Supplier;
 
 
@@ -83,54 +84,61 @@ class IndexController extends Controller
 
     public function addToCart(CartRequest $request)
     {
-        $data = $request->validated();
+        return DB::transaction(function () use ($request) {
+            $data = $request->validated();
 
-        $cartItemCount = 0;
-        $product = Product::find($data['product_id']);
+            // LOCK product row để tránh race condition
+            $product = Product::where('product_id', $data['product_id'])
+                ->lockForUpdate()
+                ->first();
 
-        if (!$product) {
-            return response()->json([
-                'message' => 'Sản phẩm không tồn tại!'
-            ], 404);
-        }
-
-        $requestedQuantity = $data['quantity'];
-        $availableStock = $product->stock_quantity;
-
-        $cartItem = CartItem::where('user_id', $data['user_id'])
-            ->where('product_id', $data['product_id'])
-            ->first();
-
-        if ($cartItem) {
-            $newQuantity = $cartItem->quantity + $requestedQuantity;
-
-            if ($newQuantity > $availableStock) {
+            if (!$product) {
                 return response()->json([
-                    'message' => 'Không thể thêm! Tổng số lượng trong giỏ hàng (' . $newQuantity . ') vượt quá số lượng stock hiện có (' . $availableStock . ') của sản phẩm.'
-                ], 400);
+                    'message' => 'Sản phẩm không tồn tại!'
+                ], 404);
             }
 
-            $cartItem->update(['quantity' => $newQuantity]);
+            $requestedQuantity = $data['quantity'];
+            $availableStock = $product->stock_quantity;
 
-            return response()->json([
-                'message' => 'Cập nhật số lượng sản phẩm trong giỏ hàng thành công!',
-                'cart_item' => $cartItem
-            ]);
-        } else {
-            if ($requestedQuantity > $availableStock) {
+            // LOCK cart item để tránh race condition
+            $cartItem = CartItem::where('user_id', $data['user_id'])
+                ->where('product_id', $data['product_id'])
+                ->lockForUpdate()
+                ->first();
+
+            if ($cartItem) {
+                $newQuantity = $cartItem->quantity + $requestedQuantity;
+
+                if ($newQuantity > $availableStock) {
+                    return response()->json([
+                        'message' => 'Không thể thêm! Tổng số lượng trong giỏ hàng (' . $newQuantity . ') vượt quá số lượng stock hiện có (' . $availableStock . ') của sản phẩm.'
+                    ], 400);
+                }
+
+                $cartItem->update(['quantity' => $newQuantity]);
+
                 return response()->json([
-                    'message' => 'Số lượng yêu cầu vượt quá số lượng stock hiện có (' . $availableStock . ') của sản phẩm.'
-                ], 400);
-            }
-            $cartItem = CartItem::create($data);
+                    'message' => 'Cập nhật số lượng sản phẩm trong giỏ hàng thành công!',
+                    'cart_item' => $cartItem
+                ]);
+            } else {
+                if ($requestedQuantity > $availableStock) {
+                    return response()->json([
+                        'message' => 'Số lượng yêu cầu vượt quá số lượng stock hiện có (' . $availableStock . ') của sản phẩm.'
+                    ], 400);
+                }
 
-            $cartItemCount = CartItem::where('user_id', Auth::id())->count('quantity');
-            return response()->json([
-                'message' => 'Thêm sản phẩm vào giỏ hàng thành công!',
-                'cart_item' => $cartItem,
-                'cartItemCount' => $cartItemCount,
-            ]);
-        }
+                $cartItem = CartItem::create($data);
+                $cartItemCount = CartItem::where('user_id', Auth::id())->count('quantity');
+
+                return response()->json([
+                    'message' => 'Thêm sản phẩm vào giỏ hàng thành công!',
+                    'cart_item' => $cartItem,
+                    'cartItemCount' => $cartItemCount,
+                ]);
+            }
+        });
     }
     public function filter(Request $request)
     {
