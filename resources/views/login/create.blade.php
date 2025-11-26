@@ -33,7 +33,7 @@
                         <div class="row">
                             <div class="col-md-6 mb-2">
                                 <label for="fullname"><b>Tên chủ tài khoản</b></label>
-                                <input type="text" class="form-control" placeholder="Nhập tên" id="full_name" name="full_name" autofocus>
+                                <input type="text" class="form-control" placeholder="Nhập tên" id="full_name" name="full_name" value="{{ old('full_name') }}" autofocus>
                                 @error('full_name')
                                     <div class="text-danger mt-1">{{ $message }}</div>
                                 @enderror
@@ -41,7 +41,7 @@
 
                             <div class="col-md-6 mb-2">
                                 <label for="email"><b>Email</b></label>
-                                <input type="email" class="form-control" placeholder="Nhập Email" id="email_address" name="email">
+                                <input type="email" class="form-control" placeholder="Nhập Email" id="email_address" name="email" value="{{ old('email') }}">
                                 @error('email')
                                     <div class="text-danger mt-1">{{ $message }}</div>
                                 @enderror
@@ -49,7 +49,7 @@
 
                             <div class="col-md-6 mb-2">
                                 <label for="phone"><b>Điện thoại</b></label>
-                                <input type="tel" class="form-control" placeholder="Nhập số điện thoại" name="phone">
+                                <input type="tel" class="form-control" placeholder="Nhập số điện thoại" name="phone" value="{{ old('phone') }}">
                                 @error('phone')
                                     <div class="text-danger mt-1">{{ $message }}</div>
                                 @enderror
@@ -57,7 +57,7 @@
 
                             <div class="col-md-6 mb-2">
                                 <label for="birth"><b>Ngày sinh</b></label>
-                                <input type="date" class="form-control" name="dob">
+                                <input type="date" class="form-control" name="dob" value="{{ old('dob') }}">
                                 @error('dob')
                                     <div class="text-danger mt-1">{{ $message }}</div>
                                 @enderror
@@ -66,7 +66,7 @@
                             {{-- Field địa chỉ chiếm toàn bộ 2 cột --}}
                             <div class="col-12 mb-2">
                                 <label for="address"><b>Địa chỉ</b></label>
-                                <input type="text" class="form-control" placeholder="Nhập địa chỉ" name="address">
+                                <input type="text" class="form-control" placeholder="Nhập địa chỉ" name="address" value="{{ old('address') }}">
                                 @error('address')
                                     <div class="text-danger mt-1">{{ $message }}</div>
                                 @enderror
