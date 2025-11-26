@@ -1,0 +1,354 @@
+<!DOCTYPE html>
+<html lang="vi">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test Race Condition - Add to Cart</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+
+        .container {
+            background: white;
+            border-radius: 20px;
+            padding: 40px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            max-width: 600px;
+            width: 100%;
+        }
+
+        h1 {
+            color: #333;
+            margin-bottom: 10px;
+            font-size: 28px;
+        }
+
+        .subtitle {
+            color: #666;
+            margin-bottom: 30px;
+            font-size: 14px;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 8px;
+            color: #555;
+            font-weight: 600;
+            font-size: 14px;
+        }
+
+        input,
+        select {
+            width: 100%;
+            padding: 12px 16px;
+            border: 2px solid #e0e0e0;
+            border-radius: 10px;
+            font-size: 14px;
+            transition: all 0.3s;
+        }
+
+        input:focus,
+        select:focus {
+            outline: none;
+            border-color: #667eea;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+        }
+
+        .btn {
+            width: 100%;
+            padding: 14px;
+            border: none;
+            border-radius: 10px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            margin-top: 10px;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px rgba(102, 126, 234, 0.3);
+        }
+
+        .btn-primary:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        #results {
+            margin-top: 30px;
+            padding: 20px;
+            background: #f8f9fa;
+            border-radius: 10px;
+            max-height: 400px;
+            overflow-y: auto;
+        }
+
+        .result-item {
+            padding: 10px;
+            margin-bottom: 8px;
+            border-radius: 6px;
+            font-size: 13px;
+        }
+
+        .success {
+            background: #d4edda;
+            color: #155724;
+            border-left: 4px solid #28a745;
+        }
+
+        .error {
+            background: #f8d7da;
+            color: #721c24;
+            border-left: 4px solid #dc3545;
+        }
+
+        .info {
+            background: #d1ecf1;
+            color: #0c5460;
+            border-left: 4px solid #17a2b8;
+        }
+
+        .warning {
+            background: #fff3cd;
+            color: #856404;
+            border-left: 4px solid #ffc107;
+        }
+
+        .stats {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 15px;
+            margin-top: 20px;
+        }
+
+        .stat-card {
+            background: white;
+            padding: 15px;
+            border-radius: 10px;
+            text-align: center;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        .stat-number {
+            font-size: 32px;
+            font-weight: bold;
+            color: #667eea;
+        }
+
+        .stat-label {
+            font-size: 12px;
+            color: #666;
+            margin-top: 5px;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <h1>🧪 Test Race Condition</h1>
+        <p class="subtitle">Kiểm tra bug khi nhiều request cùng thêm sản phẩm vào giỏ hàng</p>
+
+        <div class="form-group">
+            <label for="productId">Product ID (sản phẩm có stock thấp)</label>
+            <input type="number" id="productId" value="1" min="1">
+        </div>
+
+        <div class="form-group">
+            <label for="userId">User ID (đã đăng nhập)</label>
+            <input type="number" id="userId" value="1" min="1">
+        </div>
+
+        <div class="form-group">
+            <label for="quantity">Số lượng mỗi request</label>
+            <input type="number" id="quantity" value="1" min="1">
+        </div>
+
+        <div class="form-group">
+            <label for="requestCount">Số lượng request đồng thời</label>
+            <input type="number" id="requestCount" value="50" min="1" max="200">
+        </div>
+
+        <div class="form-group">
+            <label for="endpoint">API Endpoint</label>
+            <select id="endpoint">
+                <option value="/api/index/add-to-cart">Index Page (/api/index/add-to-cart)</option>
+                <option value="/api/product-details/cart/add">Product Details (/api/product-details/cart/add)</option>
+            </select>
+        </div>
+
+        <button class="btn btn-primary" id="startTest" onclick="startTest()">
+            🚀 Bắt đầu test
+        </button>
+
+        <div id="results" style="display: none;">
+            <div class="stats">
+                <div class="stat-card">
+                    <div class="stat-number" id="successCount">0</div>
+                    <div class="stat-label">Thành công</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-number" id="errorCount">0</div>
+                    <div class="stat-label">Lỗi</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-number" id="totalTime">0</div>
+                    <div class="stat-label">Thời gian (ms)</div>
+                </div>
+            </div>
+            <div id="resultList"></div>
+        </div>
+    </div>
+
+    <script>
+        async function startTest() {
+            const productId = parseInt(document.getElementById('productId').value);
+            const userId = parseInt(document.getElementById('userId').value);
+            const quantity = parseInt(document.getElementById('quantity').value);
+            const requestCount = parseInt(document.getElementById('requestCount').value);
+            const endpoint = document.getElementById('endpoint').value;
+
+            const resultsDiv = document.getElementById('results');
+            const resultList = document.getElementById('resultList');
+            const startBtn = document.getElementById('startTest');
+
+            // Lấy CSRF token từ trang chính
+            let csrfToken = '';
+            try {
+                const response = await fetch('/');
+                const html = await response.text();
+                const match = html.match(/<meta name="csrf-token" content="([^"]+)"/);
+                if (match) {
+                    csrfToken = match[1];
+                }
+            } catch (e) {
+                alert('Không thể lấy CSRF token. Vui lòng đăng nhập trước!');
+                return;
+            }
+
+            // Reset
+            resultsDiv.style.display = 'block';
+            resultList.innerHTML = '';
+            document.getElementById('successCount').textContent = '0';
+            document.getElementById('errorCount').textContent = '0';
+            document.getElementById('totalTime').textContent = '0';
+
+            startBtn.disabled = true;
+            startBtn.textContent = '⏳ Đang test...';
+
+            const startTime = Date.now();
+            let successCount = 0;
+            let errorCount = 0;
+
+            // Tạo array các promise
+            const promises = [];
+
+            for (let i = 0; i < requestCount; i++) {
+                promises.push(
+                    fetch(endpoint, {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'Accept': 'application/json',
+                            'X-CSRF-TOKEN': csrfToken
+                        },
+                        credentials: 'include',
+                        body: JSON.stringify({
+                            product_id: productId,
+                            user_id: userId,
+                            quantity: quantity
+                        })
+                    })
+                        .then(async response => {
+                            const data = await response.json();
+                            return {
+                                index: i + 1,
+                                status: response.status,
+                                ok: response.ok,
+                                data: data
+                            };
+                        })
+                        .catch(error => {
+                            return {
+                                index: i + 1,
+                                status: 0,
+                                ok: false,
+                                error: error.message
+                            };
+                        })
+                );
+            }
+
+            // Chờ tất cả request hoàn thành
+            const results = await Promise.all(promises);
+            const endTime = Date.now();
+
+            // Hiển thị kết quả
+            results.forEach(result => {
+                const div = document.createElement('div');
+                div.className = 'result-item';
+
+                if (result.ok) {
+                    successCount++;
+                    div.className += ' success';
+                    div.innerHTML = `✅ Request #${result.index}: ${result.data.message || 'Thành công'}`;
+                } else {
+                    errorCount++;
+                    div.className += ' error';
+                    const errorMsg = result.data?.message || result.error || 'Lỗi không xác định';
+                    div.innerHTML = `❌ Request #${result.index}: ${errorMsg}`;
+                }
+
+                resultList.appendChild(div);
+            });
+
+            // Cập nhật stats
+            document.getElementById('successCount').textContent = successCount;
+            document.getElementById('errorCount').textContent = errorCount;
+            document.getElementById('totalTime').textContent = endTime - startTime;
+
+            // Thêm warning nếu có race condition
+            if (successCount > 0) {
+                const warningDiv = document.createElement('div');
+                warningDiv.className = 'result-item warning';
+                warningDiv.innerHTML = `
+                    ⚠️ <strong>Kết luận:</strong><br>
+                    - Tổng request thành công: ${successCount}<br>
+                    - Tổng số lượng đã thêm: ${successCount * quantity}<br>
+                    - Kiểm tra database xem tổng quantity trong cart có vượt quá stock không!
+                `;
+                resultList.insertBefore(warningDiv, resultList.firstChild);
+            }
+
+            startBtn.disabled = false;
+            startBtn.textContent = '🚀 Bắt đầu test';
+        }
+    </script>
+</body>
+
+</html>

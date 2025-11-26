@@ -13,15 +13,21 @@ class PostController extends Controller
      */
     public function index()
     {
-        $posts = Post::latest()->paginate(9); 
+        $posts = Post::latest()->paginate(9);
 
         return view('posts.index', [
             'posts' => $posts,
         ]);
     }
 
-    public function show(Post $post) 
+    public function show($id)
     {
+        $post = Post::find($id);
+
+        if (!$post) {
+            return redirect()->route('posts.index')->with('error', 'Bài viết không tồn tại');
+        }
+
         return view('posts.show', [
             'post' => $post,
         ]);
@@ -29,7 +35,7 @@ class PostController extends Controller
 
     public function loadPostsApi(Request $request)
     {
-        $posts = Post::latest()->paginate(6); 
+        $posts = Post::latest()->paginate(6);
         return response()->json([
             'success' => true,
             'data' => $posts->items(),
