@@ -31,14 +31,6 @@ class CartController extends Controller
         return view('ui-giohang.cart', compact('cartItems','cartItemCount'));
     }
 
-    /**
-     * [POST] Xử lý dữ liệu giỏ hàng được gửi đến từ trang Giỏ hàng để chuyển sang thanh toán.
-     */
-    
-
-    /**
-     * [DELETE] Xóa một CartItem bằng AJAX.
-     */
     public function delete(string $cartId)
     {
         $cartItem = CartItem::where('cart_id', $cartId)->where('user_id', Auth::id())->first();

@@ -13,8 +13,11 @@ class UserProfileController extends Controller
     {
         $request->validate([
             'avatar' => 'required|image|mimes:jpeg,png,jpg,gif,jfif,webp|max:2048',
+           
         ]);
-
+         if (!str_starts_with($request->file('avatar')->getMimeType(), 'image/')) {
+            return response()->json(['success' => false, 'message' => 'Chỉ chấp nhận file ảnh có đuôi jpeg,png,jpg,gif,jfif,webp!'], 400);
+        }
         $user = Auth::user();
 
         // 1. Xử lý xóa ảnh cũ nếu có (trong thư mục public/images)

@@ -12,8 +12,12 @@ class VoucherController extends Controller
     /**
      * Display the specified resource.
      */
-    public function list()
+    public function list(Request $request)
     {
+        $page = $request->query('page', 1);
+        if (!ctype_digit((string) $page) || $page < 1) {
+            return redirect()->route('voucher.list');
+        }
         //
         $query = Voucher::query();
 

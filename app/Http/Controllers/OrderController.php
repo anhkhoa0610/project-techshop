@@ -17,10 +17,26 @@ class OrderController extends Controller
     {
         session(['orders_list_url' => $request->fullUrl()]);
 
+        // Sanitize and validate `page` query parameter
+        $search = $request->search;
+        $startDate = $request->start_date;
+        $endDate = $request->end_date;
+
+        $page = intval($request->query('page', 1));
+        $requestedPage = $request->query('page');
+        if ($page < 1 || ($requestedPage && intval($requestedPage) != $requestedPage)) {
+            // Redirect to a clean URL (preserve filters) when page param is invalid
+            return redirect()->route('orders.list', array_filter([
+                'search' => $search,
+                'start_date' => $startDate,
+                'end_date' => $endDate,
+            ]));
+        }
+
         $orders = Order::with(['user', 'voucher'])
-            ->search($request->search)
-            ->dateRange($request->start_date, $request->end_date)
-            ->paginate(5);
+            ->search($search)
+            ->dateRange($startDate, $endDate)
+            ->paginate(5, ['*'], 'page', $page);
 
         $users = User::all();
         $vouchers = Voucher::all();
@@ -231,7 +247,10 @@ class OrderController extends Controller
         // Xử lý alias cho từng item (dùng tham chiếu)
         foreach ($orderArray['items'] as &$item) {
             // Alias 'img' từ product (với mặc định nếu thiếu)
-            $item['img'] = asset('uploads/' . $item['product']['cover_image'] ?? null);
+            $item['img'] = isset($item['product']['cover_image'])
+                ? asset('uploads/' . $item['product']['cover_image'])
+                : asset('images/place-holder.jpg');
+
 
             // Alias 'title' từ product name
             $item['title'] = $item['product']['product_name'] ?? 'Sản phẩm không xác định';
@@ -262,7 +281,10 @@ class OrderController extends Controller
                     'order_detail_id' => $detail->order_detail_id ?? $detail->id,
                     'product_id' => $detail->product_id,
                     'title' => $detail->product->product_name ?? 'Sản phẩm không tìm thấy',
-                    'img' => asset('uploads/' . $detail->product->cover_image) ?? 'https://via.placeholder.com/200',
+                    'img' => $detail->product?->cover_image
+                        ? asset('uploads/' . $detail->product->cover_image)
+                        : asset('images/place-holder.jpg'),
+
                     'quantity' => $detail->quantity,
                     'unit_price' => $detail->unit_price,
                 ];

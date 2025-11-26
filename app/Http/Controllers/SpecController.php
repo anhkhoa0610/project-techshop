@@ -6,15 +6,23 @@ use App\Models\Spec;
 use App\Models\Product;
 use App\Http\Requests\SpecRequest;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Validator;
 
 class SpecController extends Controller
 {
     /**
      * Display a listing of the resource (View cho Web).
      */
-    public function list()
+    public function list(Request $request)
     {
-        $specs = Spec::with('product')->get();
+        $page = $request->query('page', 1);
+
+        if (!ctype_digit((string) $page) || $page < 1) {
+            return redirect()->route('specs.list');
+        }
+
+        $specs = Spec::with('product')->paginate(5)->withQueryString();
+
         return view('crud_spec.list', compact('specs'));
     }
 

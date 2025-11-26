@@ -25,10 +25,18 @@ $(document).on('click', '.edit', function () {
     const imageFile = row.getAttribute('data-cover-image');
     const preview = document.getElementById('preview_image');
 
-    if (imageFile && imageFile.trim() !== '') {
-        preview.src = `/uploads/${imageFile}`;
+    function setPreviewSrc(src) {
+        preview.onerror = function () {
+            preview.onerror = null;
+            preview.src = '/images/place-holder.jpg';
+        };
+        preview.src = src;
+    }
+
+    if (imageFile && (typeof imageFile === 'string') && imageFile.trim() !== '') {
+        setPreviewSrc(`/uploads/${imageFile}`);
     } else {
-        preview.src = `/images/place-holder.jpg`;
+        setPreviewSrc('/images/place-holder.jpg');
     }
 
     document.getElementById('edit_cover_image').value = '';
