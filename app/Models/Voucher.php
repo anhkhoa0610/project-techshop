@@ -51,4 +51,12 @@ class Voucher extends Model
   {
     return self::query()->paginate($perPage);
   }
+
+  public static function getListActive($perPage)
+  {
+    return self::query()
+      ->where('status', 'active')
+      ->orderByDesc('created_at')
+      ->paginate($perPage);
+  }
 }
