@@ -7,6 +7,7 @@ use App\Models\Product;
 use App\Http\Requests\SpecRequest;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
+use Exception;
 
 class SpecController extends Controller
 {
@@ -18,10 +19,16 @@ class SpecController extends Controller
         $page = $request->query('page', 1);
 
         if (!ctype_digit((string) $page) || $page < 1) {
-            return redirect()->route('specs.list');
+            return redirect()->route('specs.list', ['page' => 1]);
         }
 
-        $specs = Spec::with('product')->paginate(5)->withQueryString();
+        $specs = Spec::with('product')->paginate(5);
+
+        $lastPage = $specs ->lastPage();
+
+        if ($page > $lastPage && $lastPage != 0) {
+            return redirect()->route('specs.list', ['page' => $lastPage]);
+        }
 
         return view('crud_spec.list', compact('specs'));
     }
@@ -35,14 +42,13 @@ class SpecController extends Controller
         return response()->json($specs);
     }
 
-    // **** SỬA LỖI POSTMAN TRẢ VỀ "1" NẰM Ở ĐÂY ****
     /**
      * Trả về danh sách sản phẩm cho dropdown.
      */
     public function getProducts()
     {
         // Phải dùng ->get() để lấy danh sách
-        $products = Product::select('product_id', 'product_name')->get();
+        $products = Spec::scopeForDropdown()->get();
 
         // Trả về một mảng JSON
         return response()->json($products);
@@ -102,7 +108,7 @@ class SpecController extends Controller
                 'message' => 'Xóa spec thành công.',
             ]);
 
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             return response()->json([
                 'success' => false,
                 'message' => 'Lỗi khi xóa spec: ' . $e->getMessage(),

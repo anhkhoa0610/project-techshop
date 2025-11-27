@@ -8,6 +8,7 @@ use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Support\Facades\Auth;
 use App\Models\CartItem;
 use Illuminate\Http\Request;
+use Exception;
 
 class SupplierController extends Controller
 {
@@ -19,32 +20,19 @@ class SupplierController extends Controller
         // Kiểm tra page hợp lệ
         $page = $request->query('page', 1);
         if (!ctype_digit((string) $page) || $page < 1) {
-            return redirect()->route('supplier.list');
+            return redirect()->route('supplier.list', ['page' => 1]);
         }
-
-        // Base query
-        $query = Supplier::query();
-
-        // Tìm kiếm theo tên
-        if ($request->filled('search')) {
-            $query->where('name', 'like', '%' . $request->search . '%');
-        }
-
-        // Lọc theo địa chỉ
-        if ($request->filled('address_filter')) {
-            $query->where('address', $request->address_filter);
-        }
-
-        // Lấy danh sách địa chỉ duy nhất
-        $allAddresses = Supplier::select('address')
-            ->whereNotNull('address')
-            ->distinct()
-            ->pluck('address');
 
         // Phân trang
-        $suppliers = $query->paginate(5);
+        $suppliers = Supplier::paginate(5);
 
-        return view('crud_suppliers.list', compact('suppliers', 'allAddresses'));
+        $lastPage = $suppliers->lastPage();
+
+        if ($page > $lastPage && $lastPage != 0) {
+            return redirect()->route('supplier.list', ['page' => $lastPage]);
+        }
+
+        return view('crud_suppliers.list', compact('suppliers'));
     }
 
     public function index()
@@ -99,7 +87,7 @@ class SupplierController extends Controller
                 'message' => 'Xóa nhà cung cấp thành công.',
             ]);
 
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             return response()->json([
                 'success' => false,
                 'message' => 'Lỗi khi xóa nhà cung cấp: ' . $e->getMessage(),
@@ -127,7 +115,7 @@ class SupplierController extends Controller
     }
 
     /**
-     * Chuyển đổi (transform) 1 sản phẩm sang định dạng JSON
+     * Chuyển đổi 1 sản phẩm sang định dạng JSON
      */
     private function transformProduct($product)
     {

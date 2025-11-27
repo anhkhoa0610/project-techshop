@@ -84,6 +84,11 @@ class Supplier extends Model
         $supplier->delete();
     }
 
+    public static function paginate($perPage)
+    {
+        return self::query()->paginate($perPage);
+    }
+
     /**
      * Tự động thêm accessor này vào JSON.
      */
