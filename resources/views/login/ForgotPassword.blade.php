@@ -34,7 +34,7 @@
                             <h2>Quên Mật Khẩu</h2>
                             <div class="mb-3">
                                 <label for="email"><b>Nhập Email</b></label>
-                                <input type="email" placeholder="Nhập email của bạn" name="email" required>
+                                <input type="email" placeholder="Nhập email của bạn" name="email">
                                 @error('email')
                                     <div class="text-danger mt-1">{{ $message }}</div>
                                 @enderror

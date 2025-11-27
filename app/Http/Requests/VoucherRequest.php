@@ -41,6 +41,7 @@ class VoucherRequest extends FormRequest
                     $this->discount_type === 'percent',
                     ['max:100']
                 ),
+                'regex:/^[0-9]+$/',
             ],
             'start_date' => [
                 'required',
@@ -80,6 +81,7 @@ class VoucherRequest extends FormRequest
             'discount_value.numeric' => 'Lượng giảm giá phải là số',
             'discount_value.min' => 'Giá trị giảm giá phải lớn hơn 0',
             'discount_value.max' => 'Giá trị % không được vượt quá 100',
+            'discount_value.regex' => 'Giá trị giảm giá phải là số nguyên dương',
 
             // start_date
             'start_date.required' => 'Ngày bắt đầu không được để trống',

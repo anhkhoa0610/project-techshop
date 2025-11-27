@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Models\Voucher;
 use Illuminate\Http\Request;
 use App\Http\Requests\VoucherRequest;
+use Exception;
 
 class VoucherController extends Controller
 {
@@ -18,41 +19,16 @@ class VoucherController extends Controller
         if (!ctype_digit((string) $page) || $page < 1) {
             return redirect()->route('voucher.list');
         }
-        //
-        $query = Voucher::query();
 
-        // Tìm kiếm
-        if (request()->filled('search')) {
-            $query = Voucher::search(request('search'));
+        $vouchers = Voucher::paginate(5);
+
+        $lastPage = $vouchers->lastPage();
+
+        if ($page > $lastPage && $lastPage != 0) {
+            return redirect()->route('voucher.list', ['page' => $lastPage]);
         }
 
-        // Lọc theo status
-        if (request()->filled('status_filter')) {
-            $query->where('status', request('status_filter'));
-        }
-
-        // Lọc theo discount type
-        if (request()->filled('discount_type_filter')) {
-            $query->where('discount_type', request('discount_type_filter'));
-        }
-
-        // Lọc theo Start Date
-        if (request()->filled('start_date_filter')) {
-            $query->whereDate('start_date', '>=', request('start_date_filter'));
-        }
-
-        // Lọc theo End Date
-        if (request()->filled('end_date_filter')) {
-            $query->whereDate('end_date', '<=', request('end_date_filter'));
-        }
-
-        // Lấy danh sách giá trị duy nhất để hiển thị
-        $allStatus = Voucher::select('status')->distinct()->pluck('status');
-        $allDiscountType = Voucher::select('discount_type')->distinct()->pluck('discount_type');
-
-        $vouchers = $query->paginate(5);
-
-        return view('crud_voucher.list', compact('vouchers', 'allStatus', 'allDiscountType'));
+        return view('crud_voucher.list', compact('vouchers'));
     }
     /**
      * Display a listing of the resource.
@@ -112,7 +88,7 @@ class VoucherController extends Controller
                 'message' => 'Xóa voucher thành công.',
             ]);
 
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             return response()->json([
                 'success' => false,
                 'message' => 'Lỗi khi xóa voucher: ' . $e->getMessage(),
@@ -152,21 +128,11 @@ class VoucherController extends Controller
 
     public function vouchers(Request $request)
     {
-        // Lấy số phần tử mỗi trang
         $perPage = $request->input('per_page', 3);
 
-        // Nếu có tìm kiếm
-        $query = Voucher::query();
-        if ($search = $request->input('search')) {
-            $query->where('code', 'like', "%{$search}%");
-        }
-
-        $query->where('status', 'active');
-
         // Phân trang dữ liệu
-        $vouchers = $query->orderByDesc('created_at')->paginate($perPage);
+        $vouchers = Voucher::getListActive($perPage);
 
-        // Trả về JSON chuẩn
         return response()->json([
             'status' => 'success',
             'current_page' => $vouchers->currentPage(),
