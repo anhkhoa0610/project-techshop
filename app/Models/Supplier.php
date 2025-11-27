@@ -117,4 +117,65 @@ class Supplier extends Model
         );
     }
 
+    public function getProductsForApi($sortType = 'default', $perPage = 6)
+    {
+        // 1. Khởi tạo query với eager loading discounts và supplier
+        $query = $this->products()
+            ->with([
+                'discounts' => function ($q) {
+                    $q->active();
+                },
+                'supplier' // Vẫn load supplier để đảm bảo cấu trúc JSON không đổi
+            ]);
+
+        // 2. Xử lý Sắp Xếp
+        $now = now()->toDateTimeString();
+
+        switch ($sortType) {
+            case 'newest':
+                $query->orderBy('products.created_at', 'desc');
+                break;
+
+            case 'price_asc':
+            case 'price_desc':
+                $direction = ($sortType == 'price_asc') ? 'asc' : 'desc';
+                $rawSql = "COALESCE(
+                    (SELECT sale_price FROM product_discounts 
+                        WHERE product_discounts.product_id = products.product_id 
+                        AND (product_discounts.start_date IS NULL OR product_discounts.start_date <= ?)
+                        AND (product_discounts.end_date IS NULL OR product_discounts.end_date >= ?)
+                        ORDER BY sale_price ASC 
+                        LIMIT 1), 
+                    products.price
+                ) $direction";
+                $query->orderByRaw($rawSql, [$now, $now]);
+                break;
+
+            case 'best_seller':
+                $query->withCount('orderDetails as sales_count')
+                    ->orderBy('sales_count', 'desc');
+                break;
+
+            case 'best_discount':
+                $rawSql = "COALESCE(
+                    (SELECT discount_percent FROM product_discounts 
+                        WHERE product_discounts.product_id = products.product_id 
+                        AND (product_discounts.start_date IS NULL OR product_discounts.start_date <= ?)
+                        AND (product_discounts.end_date IS NULL OR product_discounts.end_date >= ?)
+                        ORDER BY discount_percent DESC
+                        LIMIT 1), 
+                    0
+                ) DESC";
+                $query->orderByRaw($rawSql, [$now, $now]);
+                break;
+
+            default:
+                $query->orderBy('products.created_at', 'desc');
+                break;
+        }
+
+        // 3. Trả về kết quả phân trang
+        return $query->paginate($perPage);
+    }
+
 }
