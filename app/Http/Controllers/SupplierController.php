@@ -144,100 +144,27 @@ class SupplierController extends Controller
     }
 
     /**
-     * HÀM XỬ LÝ API CHÍNH - (ĐÃ CẬP NHẬT LẦN CUỐI)
+     * HÀM XỬ LÝ API CHÍNH CHO NHÀ CUNG CẤP
      */
     private function handleSupplierApi($id, $sortType = 'default')
     {
         try {
             $supplier = Supplier::findOrFail($id);
-            $perPage = 6;
 
-            // 1. Tạo Query cơ bản
-            $query = $supplier->products()
-                ->with([
-                    'discounts' => function ($q) {
-                        $q->active(); // Eager load vẫn hoạt động!
-                    },
-                    // Quan trọng: Tải luôn supplier, vì query gốc là từ $supplier->products()
-                    // Điều này đảm bảo $product->supplier->name luôn tồn tại
-                    'supplier'
-                ]);
+            // --- GỌI HÀM TỪ MODEL ---
+            $products = $supplier->getProductsForApi($sortType, 6);
 
-            // 2. Áp dụng Sắp Xếp (Sort)
-            $now = now()->toDateTimeString(); // Chuyển sang string để dùng trong Raw Query
+            // --- CÁC PHẦN XỬ LÝ KHÁC (Cart, Transform...) GIỮ NGUYÊN ---
+            $cartItemCount = Auth::check() ? CartItem::where('user_id', Auth::id())->sum('quantity') : 0;
 
-            switch ($sortType) {
-
-                case 'newest':
-                    $query->orderBy('products.created_at', 'desc');
-                    break;
-
-                case 'price_asc':
-                case 'price_desc':
-                    $direction = ($sortType == 'price_asc') ? 'asc' : 'desc';
-
-                    // Sắp xếp bằng giá-sau-giảm (dùng subquery)
-                    $query->orderByRaw(
-                        "COALESCE(
-                            (SELECT sale_price FROM product_discounts 
-                             WHERE product_discounts.product_id = products.product_id 
-                             AND (product_discounts.start_date IS NULL OR product_discounts.start_date <= '$now')
-                             AND (product_discounts.end_date IS NULL OR product_discounts.end_date >= '$now')
-                             ORDER BY sale_price ASC 
-                             LIMIT 1), 
-                            products.price
-                        ) $direction"
-                    );
-                    break;
-
-                case 'best_seller':
-                    $query->withCount('orderDetails as sales_count')
-                        ->orderBy('sales_count', 'desc');
-                    break;
-
-                case 'best_discount':
-                    // Sắp xếp bằng % giảm giá (dùng subquery)
-                    $query->orderByRaw(
-                        "COALESCE(
-                            (SELECT discount_percent FROM product_discounts 
-                             WHERE product_discounts.product_id = products.product_id 
-                             AND (product_discounts.start_date IS NULL OR product_discounts.start_date <= '$now')
-                             AND (product_discounts.end_date IS NULL OR product_discounts.end_date >= '$now')
-                             ORDER BY discount_percent DESC
-                             LIMIT 1), 
-                            0
-                        ) DESC"
-                    );
-                    break;
-
-                case 'default':
-                default:
-                    $query->orderBy('products.created_at', 'desc');
-                    break;
-            }
-            $cartItemCount = 0;
-
-            if (Auth::check()) {
-                $cartItemCount = CartItem::where('user_id', Auth::id())->count('quantity');
-            }
-            // 3. Phân trang (Paginate)
-            // Không cần 'groupBy' nữa vì chúng ta không Join
-            $products = $query->paginate($perPage);
-
-            // 4. Transform collection
-            // Bỏ 'setRelation' vì Eager Loading đã hoạt động
             $productItems = $products->getCollection()->map(function ($product) {
-                // Giờ $product->discounts và $product->supplier đều có
                 return $this->transformProduct($product);
             });
 
-            // 5. Chuẩn bị Supplier Data (chỉ cho trang 1)
-            $supplierData = null;
-            if ($products->currentPage() == 1) {
-                $supplierData = $this->getSupplierData($supplier, $products->total());
-            }
+            $supplierData = ($products->currentPage() == 1)
+                ? $this->getSupplierData($supplier, $products->total())
+                : null;
 
-            // 6. Trả về JSON
             return response()->json([
                 'success' => true,
                 'cartItemCount' => $cartItemCount,
@@ -252,11 +179,8 @@ class SupplierController extends Controller
                 ],
             ]);
 
-        } catch (\Exception $e) {
-            return response()->json([
-                'success' => false,
-                'message' => 'Lỗi: ' . $e->getMessage() . ' tại file ' . $e->getFile() . ' dòng ' . $e->getLine() // Lấy lỗi chi tiết
-            ], 500);
+        } catch (Exception $e) {
+            return response()->json(['success' => false, 'message' => 'Server Error'], 500);
         }
     }
 
@@ -296,9 +220,6 @@ class SupplierController extends Controller
     public function getSupplierDetails($id)
     {
         $supplier = Supplier::findOrFail($id);
-
-        // $supplier bây giờ sẽ có cả 'completed_orders' (giả sử có sẵn) 
-        // và 'total_products_sold'
 
         return response()->json($supplier);
     }
