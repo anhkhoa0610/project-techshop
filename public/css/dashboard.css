@@ -289,10 +289,10 @@ table.table th:nth-child(3) {
     gap: 8px;
 }
 
-/* [MỚI] Phần Footer User Info */
+/* Phần Footer User Info */
 .sidebar-avatar {
     position: absolute;
-    bottom: 0;
+    /* bottom: 0; */
     width: 100%;
     display: flex;
     align-items: center;

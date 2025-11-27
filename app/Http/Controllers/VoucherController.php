@@ -17,7 +17,7 @@ class VoucherController extends Controller
     {
         $page = $request->query('page', 1);
         if (!ctype_digit((string) $page) || $page < 1) {
-            return redirect()->route('voucher.list');
+            return redirect()->route('voucher.list', ['page' => 1]);
         }
 
         $vouchers = Voucher::paginate(5);
