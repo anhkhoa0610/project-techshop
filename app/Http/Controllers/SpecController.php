@@ -48,7 +48,7 @@ class SpecController extends Controller
     public function getProducts()
     {
         // Phải dùng ->get() để lấy danh sách
-        $products = Spec::scopeForDropdown()->get();
+        $products = Product::select('product_id', 'product_name')->get();
 
         // Trả về một mảng JSON
         return response()->json($products);

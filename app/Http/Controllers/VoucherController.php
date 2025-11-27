@@ -17,18 +17,43 @@ class VoucherController extends Controller
     {
         $page = $request->query('page', 1);
         if (!ctype_digit((string) $page) || $page < 1) {
-            return redirect()->route('voucher.list', ['page' => 1]);
+            return redirect()->route('voucher.list');
+        }
+        //
+        $query = Voucher::query();
+
+        // Tìm kiếm
+        if (request()->filled('search')) {
+            $query = Voucher::search(request('search'));
         }
 
-        $vouchers = Voucher::paginate(5);
-
-        $lastPage = $vouchers->lastPage();
-
-        if ($page > $lastPage && $lastPage != 0) {
-            return redirect()->route('voucher.list', ['page' => $lastPage]);
+        // Lọc theo status
+        if (request()->filled('status_filter')) {
+            $query->where('status', request('status_filter'));
         }
 
-        return view('crud_voucher.list', compact('vouchers'));
+        // Lọc theo discount type
+        if (request()->filled('discount_type_filter')) {
+            $query->where('discount_type', request('discount_type_filter'));
+        }
+
+        // Lọc theo Start Date
+        if (request()->filled('start_date_filter')) {
+            $query->whereDate('start_date', '>=', request('start_date_filter'));
+        }
+
+        // Lọc theo End Date
+        if (request()->filled('end_date_filter')) {
+            $query->whereDate('end_date', '<=', request('end_date_filter'));
+        }
+
+        // Lấy danh sách giá trị duy nhất để hiển thị
+        $allStatus = Voucher::select('status')->distinct()->pluck('status');
+        $allDiscountType = Voucher::select('discount_type')->distinct()->pluck('discount_type');
+
+        $vouchers = $query->paginate(5);
+
+        return view('crud_voucher.list', compact('vouchers', 'allStatus', 'allDiscountType'));
     }
     /**
      * Display a listing of the resource.
