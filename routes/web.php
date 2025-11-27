@@ -105,6 +105,8 @@ Route::middleware(['auth'])->group(function () {
     Route::post('/pay', [CartController::class, 'handleCheckout'])->name('pay.checkout'); 
    
 });
+// Release reservation API (user cancels payment) - requires auth
+Route::post('/reservations/release', [App\Http\Controllers\ReservationController::class, 'release'])->name('reservations.release');
 Route::post('/checkout', [CheckoutController::class, 'handleCheckout'])->name('checkout'); 
 Route::get('/cancel', [OrderController::class, 'show'])->name('cancel');
 Route::get('/details/{id}', [OrderController::class, 'showOrderdetails'])->name('details.show');

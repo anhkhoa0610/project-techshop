@@ -6,6 +6,7 @@ use App\Models\Order;
 use Illuminate\Http\Request;
 use App\Models\OrderDetail;
 use App\Models\CartItem;
+use App\Models\Reservation;
 use App\Mail\NewOrderAdminMail;
 use Illuminate\Support\Facades\Mail;
 class VnpayController extends Controller
@@ -170,14 +171,35 @@ class VnpayController extends Controller
         $userId = auth()->id(); // hoặc Auth::id()
         $voucher = $request->input('voucher_id');
 
-        //Save transaction to database
+        // Nếu client gửi danh sách items (JSON), chỉ reserve những item được chọn
+        $cartItems = collect();
+        if ($request->filled('items')) {
+            $selected = json_decode($request->input('items'), true);
+            $selectedIds = array_column($selected, 'id');
+            $cartItems = CartItem::whereIn('cart_id', $selectedIds)->where('user_id', $userId)->get();
+        }
+        // Nếu không có items cụ thể, fallback lấy toàn bộ giỏ hàng của user
+        if ($cartItems->isEmpty()) {
+            $cartItems = CartItem::where('user_id', $userId)->get();
+        }
+
+      
+
+        // Giải phóng reservation đã hết hạn trước khi tạo reservation mới
+        Reservation::releaseExpired();
+
+        // Tạo reservation tạm thời để khóa hàng (15 phút)
+        $temporaryOrderId = $vnp_TxnRef;
+        Reservation::createForCartItems($userId, $cartItems, $temporaryOrderId, 15);
+
+        // Save transaction to database (order created now as pending)
         Order::create([
             'user_id' => $userId,
             'order_date' => now(),
             'status' => 'pending',
             'shipping_address' => $shippingAddress ?? 'chưa có địa chỉ',
             'payment_method' => 'vnpay',
-            'voucher_id' => $voucher,
+            'voucher_id' => $voucher -> voucher_id ?? null,
             'total_price' => $amount,
         ]);
 
@@ -255,6 +277,11 @@ class VnpayController extends Controller
             }
 
             return redirect()->route('index')->with('success', 'Thanh toán VNPAY thành công!');
+        }
+        // Nếu thất bại/hủy, giải phóng reservation (nếu có)
+        $txnRef = $data['vnp_TxnRef'] ?? $data['vnp_TransactionNo'] ?? null;
+        if ($txnRef) {
+            Reservation::releaseByTemporaryOrderId($txnRef);
         }
         return redirect()->route('index')->with('error', 'Thanh toán VNPAY không thành công!');
 
