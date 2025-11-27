@@ -50,6 +50,7 @@ async function deleteCartItem(cartId, elementToDelete) {
         if (res.ok) {
             elementToDelete.remove();
             cartpUpdateTotal();
+            Window.location.reload();
             Swal.fire({ icon: "success", title: "Đã xóa sản phẩm!", timer: 1500, showConfirmButton: false });
         } else {
             const data = await res.json();
@@ -115,45 +116,70 @@ document.addEventListener('DOMContentLoaded', () => {
     );
     // bắt dữ liệu input
     document.querySelectorAll('.cartp-qty-input').forEach(input => {
-        input.addEventListener('input', function (e) { // Dùng 'input' để kiểm tra tức thời
-            const value = parseInt(this.value);
-            const max = parseInt(this.max);
-            const min = parseInt(this.min) || 1; // Đảm bảo min có giá trị mặc định là 1
+        input.addEventListener('input', function (e) { 
+            const selectionStart = this.selectionStart;
+            const selectionEnd = this.selectionEnd;
 
-            // 1. Kiểm tra MIN (Bắt buộc)
-            if (isNaN(value) || value < min) {
-                // Nếu không hợp lệ hoặc nhỏ hơn min, đặt lại về min
-                this.value = min;
+            const raw = String(this.value).replace(/[^0-9]/g, '');
+
+            // Convert to number safely
+            let value = raw === '' ? NaN : Number(raw);
+            if (!Number.isFinite(value)) value = NaN;
+
+            const maxAttr = Number(this.max);
+            const stockData = Number(this.dataset.stock);
+            const minAttr = Number(this.min);
+            const min = Number.isFinite(minAttr) ? minAttr : 1;
+            const max = Number.isFinite(maxAttr) ? maxAttr : (Number.isFinite(stockData) ? stockData : 9999999);
+            if (isNaN(value)) {
+                if (raw === '') {
+                    cartpUpdateTotal();
+                    return;
+                }
+                value = min;
             }
 
-            // 2. Kiểm tra MAX (Chỉ giới hạn nếu lớn hơn max)
-            // Nếu người dùng nhập 7, 7 < 8 (max) -> KHÔNG LÀM GÌ, 7 được giữ nguyên.
-            // Nếu người dùng nhập 9, 9 > 8 (max) -> đặt lại về 8.
-            else if (value > max) {
-                this.value = max;
-
-                // Tùy chọn: Hiện cảnh báo (nên dùng)
-                Swal.fire({
-                    icon: "warning",
-                    title: "Số lượng tối đa!",
-                    text: `Số lượng đặt hàng không thể vượt quá ${max}.`,
-                    timer: 2000,
-                    showConfirmButton: false
-                });
+            const clamped = Math.max(min, Math.min(max, Math.floor(value)));
+            if (clamped !== value) {
+                if (clamped === max) {
+                    Swal.fire({
+                        icon: "warning",
+                        title: "Số lượng tối đa!",
+                        text: `Số lượng đặt hàng không thể vượt quá ${max}.`,
+                        timer: 1500,
+                        showConfirmButton: false
+                    });
+                }
             }
 
-            // --- Sau khi giá trị input đã được kiểm tra và hợp lệ ---
+     
+            if (String(this.value) !== String(clamped)) {
+                this.value = clamped;
+                try {
+                    const pos = Math.min(selectionStart, String(this.value).length);
+                    this.setSelectionRange(pos, pos);
+                } catch (err) {
 
-            // Luôn cập nhật tổng tiền trên giao diện
+                }
+            }
+
             cartpUpdateTotal();
-
-            // Gửi AJAX cập nhật CSDL (Chỉ gửi nếu giá trị hợp lệ sau kiểm tra min/max)
-            const finalValue = parseInt(this.value);
+            const finalValue = clamped;
             const cartId = this.dataset.cartId;
-            if (cartId && finalValue >= min) {
-                // Gửi finalValue đã được kiểm tra (ví dụ: 7, 1, hoặc 8 nếu nhập 9)
-                updateCartQuantity(cartId, finalValue);
-            }
+            if (cartId && finalValue >= min) updateCartQuantity(cartId, finalValue);
+        });
+
+        input.addEventListener('blur', function () {
+            const maxAttr = parseInt(this.max, 10);
+            const stockData = parseInt(this.dataset.stock, 10);
+            const minAttr = parseInt(this.min, 10);
+            const min = Number.isFinite(minAttr) ? minAttr : 1;
+            const max = Number.isFinite(maxAttr) ? maxAttr : (Number.isFinite(stockData) ? stockData : 9999999);
+
+            let value = parseInt(String(this.value).replace(/[^0-9]/g, ''), 10);
+            if (isNaN(value) || value < min) value = min;
+            if (value > max) value = max;
+            if (String(this.value) !== String(value)) this.value = value;
         });
     });
     // Sự kiện bấm "Thanh toán"
