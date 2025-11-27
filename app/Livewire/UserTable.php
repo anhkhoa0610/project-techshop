@@ -125,6 +125,9 @@ final class UserTable extends PowerGridComponent
             Filter::inputText('address')
                 ->operators(['contains']),
 
+            Filter::inputText('birth')
+                ->operators(['contains']),
+
             Filter::select('is_tdc_student', 'is_tdc_student')
                 ->dataSource(User::select('is_tdc_student')->distinct()->get())
                 ->optionLabel('is_tdc_student')

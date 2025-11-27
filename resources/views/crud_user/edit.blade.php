@@ -10,6 +10,19 @@
                         <div class="card-header bg-primary text-white">
                             <h4 class="mb-0"><i class="fas fa-edit"></i> Cập Nhật Thông Tin Người Dùng</h4>
                         </div>
+                        @if (session('error'))
+                        <div class="alert alert-warning alert-dismissible fade show" role="alert">
+                            <strong>⚠️ Cảnh báo:</strong> {{ session('error') }}
+                            <button type="button" class="close" data-dismiss="alert">×</button>
+                        </div>
+                    @endif
+
+                    @if (session('success'))
+                        <div class="alert alert-success alert-dismissible fade show" role="alert">
+                            ✓ {{ session('success') }}
+                            <button type="button" class="close" data-dismiss="alert">×</button>
+                        </div>
+                    @endif
                         <div class="card-body">
                             <form action="{{ route('users.update', ['user' => $user->user_id]) }}" method="POST">
                                 @csrf
@@ -73,7 +86,7 @@
                                         <label for="birth">Ngày sinh <span class="text-danger">*</span></label>
                                         <input type="date" class="form-control @error('birth') is-invalid @enderror" 
                                                id="birth" name="birth" 
-                                               value="{{ old('birth', $user->birth) }}" required>
+                                               value="{{ old('birth', \Carbon\Carbon::parse($user->birth)->format('Y-m-d')) }}" required>
                                         @error('birth')
                                             <div class="invalid-feedback">{{ $message }}</div>
                                         @enderror

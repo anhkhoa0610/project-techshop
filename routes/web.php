@@ -35,10 +35,11 @@ Route::prefix('index')->group(function () {
 
 Route::middleware(['checkrole:Admin'])->group(function () {
     Route::get('/', function () {
-        return redirect()->route('charts');;
+        return redirect()->route('charts');
+        ;
     })->name('dashboard');
     Route::get('/charts', [ChartController::class, 'index'])->name('charts');
-    
+
     Route::prefix('supplier')->group(function () {
         Route::get('/', [SupplierController::class, 'list'])->name('supplier.list');
     });
@@ -79,8 +80,7 @@ Route::middleware(['checkrole:Admin'])->group(function () {
         Route::get('/{user}/edit', [UserController::class, 'edit'])->name('users.edit');
         Route::put('/{user}', [UserController::class, 'update'])->name('users.update');
         Route::get('/{user}/show', [UserController::class, 'show'])->name('users.show');
-        Route::delete('/{user}', [UserController::class, 'destroy'])->name('users.destroy');
-
+        Route::delete('/users/{user_id}', [UserController::class, 'destroy'])->name('users.destroy');
     });
 
     Route::prefix('specs')->group(function () {
@@ -100,20 +100,21 @@ Route::delete('/orders/{id}', [OrderController::class, 'deleteOrder'])->name('or
 Route::middleware(['auth'])->group(function () {
     // Trang Giỏ hàng
     Route::get('/cart', [CartController::class, 'index'])->name('cart.index');
-    
+
     // API: Xử lý AJAX Xóa sản phẩm
-    Route::delete('/cart/remove/{cartId}', [CartController::class, 'delete'])->name('cart.delete'); 
-    
+    Route::delete('/cart/remove/{cartId}', [CartController::class, 'delete'])->name('cart.delete');
+
     // API: Xử lý AJAX Cập nhật số lượng
     Route::post('/cart/update/{cartId}', [CartController::class, 'updateQuantity'])->name('cart.update_quantity');
 
     // Xử lý Form Checkout - Route này nhận dữ liệu JSON từ form
-    Route::post('/pay', [CartController::class, 'handleCheckout'])->name('pay.checkout'); 
-   
+    Route::post('/pay', [CartController::class, 'handleCheckout'])->name('pay.checkout');
+
 });
 // Release reservation API (user cancels payment) - requires auth
 Route::post('/reservations/release', [App\Http\Controllers\ReservationController::class, 'release'])->name('reservations.release');
 Route::post('/checkout', [CheckoutController::class, 'handleCheckout'])->name('checkout'); 
+Route::post('/checkout', [CheckoutController::class, 'handleCheckout'])->name('checkout');
 Route::get('/cancel', [OrderController::class, 'show'])->name('cancel');
 Route::get('/details/{id}', [OrderController::class, 'showOrderdetails'])->name('details.show');
 // thêm vào giỏ hàng
@@ -150,17 +151,17 @@ Route::prefix('voucher')->group(function () {
 // login routes //
 Route::get('/export/invoice/{orderId}/xlsx', [App\Http\Controllers\ExportController::class, 'exportInvoice'])->name('export.invoice.xlsx');
 
-Route::prefix('users')->group(function () {
-    Route::get('/', [UserController::class, 'index'])->name('users.index');
-    Route::get('/create', [UserController::class, 'create'])->name('users.create');
-    Route::post('/', [UserController::class, 'store'])->name('users.store');
-    Route::get('/{user}/edit', [UserController::class, 'edit'])->name('users.edit');
-Route::put('/{user}', [UserController::class, 'update'])->name('users.update');
-    Route::delete('/{user}', [UserController::class, 'destroy'])->name('users.destroy');
-    Route::get('/search/autocomplete', [UserController::class, 'search'])->name('users.search');
-});
+// Route::prefix('users')->group(function () {
+//     Route::get('/', [UserController::class, 'index'])->name('users.index');
+//     Route::get('/create', [UserController::class, 'create'])->name('users.create');
+//     Route::post('/', [UserController::class, 'store'])->name('users.store');
+//     Route::get('/{user}/edit', [UserController::class, 'edit'])->name('users.edit');
+//     Route::put('/{user}', [UserController::class, 'update'])->name('users.update');
+//     // Route::delete('/{user}', [UserController::class, 'destroy'])->name('users.destroy');
+//     Route::get('/search/autocomplete', [UserController::class, 'search'])->name('users.search');
+// });
 
- // login routes //
+// login routes //
 Route::get('login', [LoginController::class, 'showLoginForm'])->name('login');
 Route::post('login', [LoginController::class, 'login'])->name('user.authUser');
 
@@ -201,10 +202,10 @@ Route::middleware(['auth'])->group(function () {
     // Avatar routes
     Route::post('/profile/avatar', [UserProfileController::class, 'updateAvatar'])
         ->name('profile.avatar.update');
-        
+
     Route::delete('/profile/avatar', [UserProfileController::class, 'removeAvatar'])
         ->name('profile.avatar.remove');
-        
+
     // Profile update route
     Route::post('/profile/update', [UserProfileController::class, 'updateProfile'])
         ->name('profile.update');
