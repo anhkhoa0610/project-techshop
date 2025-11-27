@@ -70,7 +70,12 @@ class IndexController extends Controller
 
     public function searchProductsAPI(Request $request)
     {
-        $keyword = $request->input('keyword');
+        $validated = $request->validate([
+            'keyword' => 'required|string|max:100',
+        ]);
+
+        $keyword = $validated['keyword'];
+
         $products = Product::withAvg('reviews', 'rating')
             ->withCount('reviews')
             ->search($keyword)
@@ -87,7 +92,6 @@ class IndexController extends Controller
         return DB::transaction(function () use ($request) {
             $data = $request->validated();
 
-            // LOCK product row để tránh race condition
             $product = Product::where('product_id', $data['product_id'])
                 ->lockForUpdate()
                 ->first();
@@ -101,7 +105,6 @@ class IndexController extends Controller
             $requestedQuantity = $data['quantity'];
             $availableStock = $product->stock_quantity;
 
-            // LOCK cart item để tránh race condition
             $cartItem = CartItem::where('user_id', $data['user_id'])
                 ->where('product_id', $data['product_id'])
                 ->lockForUpdate()
@@ -156,10 +159,8 @@ class IndexController extends Controller
                 $request->on_sale ?? false
             );
 
-        // Apply sorting
         $sortBy = $request->sort_by;
         if ($sortBy) {
-            // Clear any existing ordering first
             $query->reorder();
 
             switch ($sortBy) {

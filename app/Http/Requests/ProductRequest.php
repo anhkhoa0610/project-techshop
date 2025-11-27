@@ -58,7 +58,7 @@ class ProductRequest extends FormRequest
             // Số lượng tồn kho
             'stock_quantity' => $asciiInteger,
 
-            'description' => 'nullable|string|max:1000',
+            'description' => 'required|string|max:1000',
 
             // Volume sold
             'volume_sold' => $asciiInteger,
@@ -69,13 +69,12 @@ class ProductRequest extends FormRequest
             // Warranty
             'warranty_period' => $asciiInteger,
 
-            // Ngày - validate strict để từ chối ngày không hợp lệ như 30/2
+            // Release date
             'release_date' => [
                 'required',
-                'date_format:Y-m-d',
+                'date',  
                 'before_or_equal:today',
                 function ($attribute, $value, $fail) {
-                    // Kiểm tra ngày có hợp lệ không (tránh 30/2, 31/4, etc.)
                     $date = \DateTime::createFromFormat('Y-m-d', $value);
                     if (!$date || $date->format('Y-m-d') !== $value) {
                         $fail('Ngày phát hành không hợp lệ');
