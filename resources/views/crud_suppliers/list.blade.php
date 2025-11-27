@@ -24,6 +24,7 @@
                     <div class="modal-body">
                         <div class="row">
                             <!-- Cột trái -->
+                            <input type="hidden" id="edit_original_updated_at" name="original_updated_at">
                             <div class="col-md-6">
                                 <div class="form-group">
                                     <label for="logo">Hình ảnh</label><br>

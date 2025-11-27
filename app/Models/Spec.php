@@ -58,9 +58,4 @@ class Spec extends Model
     {
         return self::where('product_id', 'like', '%' . $search . '%');
     }
-
-    public function scopeForDropdown()
-    {
-        return Product::select('product_id', 'product_name');
-    }
 }
