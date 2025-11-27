@@ -68,8 +68,27 @@ class SupplierController extends Controller
 
     public function update(SupplierRequest $request, $id)
     {
+        // 1. Validate dữ liệu
         $validated = $request->validated();
-        $supplier = Supplier::updateSupplier($id, $validated);
+
+        // 2. Tìm bản ghi (Dùng lockForUpdate nếu muốn chặt chẽ hơn, nhưng ở đây dùng Optimistic Locking)
+        $supplier = Supplier::findOrFail($id);
+
+        // 3. CHECK CONFLICT (Optimistic Locking)
+        // Chuyển cả 2 về string chuẩn 'Y-m-d H:i:s' để so sánh chính xác
+        $dbUpdatedTime = $supplier->updated_at->format('Y-m-d H:i:s');
+        $clientUpdatedTime = \Carbon\Carbon::parse($request->original_updated_at)->format('Y-m-d H:i:s');
+
+        if ($dbUpdatedTime !== $clientUpdatedTime) {
+            return response()->json([
+                'message' => 'Dữ liệu đã bị thay đổi bởi người khác. Vui lòng tải lại trang.',
+                'debug_db' => $dbUpdatedTime, // Debug để xem lệch giờ thế nào (nếu cần)
+                'debug_client' => $clientUpdatedTime
+            ], 409);
+        }
+
+        // 4. Update
+        $supplier->update($validated);
 
         return response()->json([
             'success' => true,
