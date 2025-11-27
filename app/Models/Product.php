@@ -126,9 +126,11 @@ class Product extends Model
     public function scopeSearch($query, $keyword)
     {
         if (!empty($keyword)) {
-            $query->where(function ($q) use ($keyword) {
-                $q->where('product_name', 'like', "%{$keyword}%")
-                    ->orWhere('description', 'like', "%{$keyword}%");
+            $escapedKeyword = str_replace(['\\', '%', '_'], ['\\\\', '\\%', '\\_'], $keyword);
+            
+            $query->where(function ($q) use ($escapedKeyword) {
+                $q->where('product_name', 'like', "%{$escapedKeyword}%")
+                    ->orWhere('description', 'like', "%{$escapedKeyword}%");
             });
         }
         return $query;
