@@ -57,7 +57,7 @@ class UserController extends Controller
     {
         try {
             $validated = $request->validate([
-                'full_name' => 'required|string|max:100',
+                'full_name' => 'required|string|min:3|max:100|regex:/\S+/',
                 'email' => 'required|string|email|max:100|unique:users',
                 'phone' => 'nullable|string|max:10',
                 'password' => 'required|string|min:6|confirmed',
@@ -65,6 +65,7 @@ class UserController extends Controller
                 'role' => 'required|in:User,Admin',
                 'birth' => 'required|date|before_or_equal:today|after:1900-01-01',
             ], [
+                'full_name.regex' => 'Không để khoảng trắng',
                 'full_name.required' => 'Vui lòng nhập họ tên.',
                 'email.required' => 'Vui lòng nhập email.',
                 'email.email' => 'Email không hợp lệ.',
@@ -174,14 +175,42 @@ class UserController extends Controller
     //         ], 500);
     //     }
     // }
-public function destroy($id)
+public function destroy(Request $request, $user_id)
 {
-    $user = User::find($id);
+    $user = User::find($user_id);
+
     if (!$user) {
-        return response()->json(['message' => 'User da bi xoa hoac khong ton tai!'], 404);
+        if ($request->wantsJson() || $request->ajax()) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Người dùng không tồn tại hoặc đã bị xóa!'
+            ], 404);
+        }
+        return redirect()->route('users.index')
+            ->with('error', 'Người dùng không tồn tại hoặc đã bị xóa!');
     }
-    $user->delete();
-    return response()->json(['message' => 'Xoa nguoi dung thanh cong!']);
+
+    try {
+        $user->delete();
+
+        if ($request->wantsJson() || $request->ajax()) {
+            return response()->json([
+                'success' => true,
+                'message' => 'Xóa người dùng thành công!'
+            ]);
+        }
+        return redirect()->route('users.index')
+            ->with('success', 'Xóa người dùng thành công!');
+    } catch (\Exception $e) {
+        if ($request->wantsJson() || $request->ajax()) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Không thể xóa người dùng: ' . $e->getMessage()
+            ], 500);
+        }
+        return redirect()->back()
+            ->with('error', 'Không thể xóa người dùng: ' . $e->getMessage());
+    }
 }
     //ui user profile
     public function showProfile()
@@ -234,7 +263,7 @@ public function destroy($id)
         $user = auth()->user();
 
         $validated = $request->validate([
-            'full_name' => 'required|string|max:100',
+            'full_name' => 'required|string|min:3|max:100|regex:/\S+/',
             'email' => 'required|string|email|max:100|unique:users,email,' . $user->user_id . ',user_id',
             'phone' => 'nullable|string|max:10',
             'address' => 'nullable|string|max:255',
